@@ -1,0 +1,79 @@
+.collection {
+	float: left;
+	margin: 10px;
+	-webkit-border-radius: 4px;
+	cursor: pointer;
+	width: 80px;
+	height: 80px;
+	overflow: hidden;
+	background-color: white;
+}
+
+.collection.has-details {
+	border: 1px solid #ccc;
+	width: 225px;
+	padding: 10px;
+}
+
+.collection .artist, .collection .date-acquired, .collection .rating {
+	color: #999;
+}
+
+.collection .mix, .collection .album {
+	border: 1px solid #999;
+	float: left;
+	margin-right: 10px;
+}
+
+.collection .album {
+	width: 75px;
+	height: 75px;
+}
+
+.collection .mix {
+	width: 65px;
+	height: 65px;
+	padding: 5px;
+	text-align: center;
+	font-size: 9px;
+	line-height: 13px;
+}
+
+.controls {
+	position: fixed;
+	width: 225px;
+}
+
+.controls input[type=text] {
+	width: 225px;
+}
+
+.controls input[type=checkbox] {
+	margin: 0 5px 5px 0;
+}
+
+.controls .sort-menu .dropdown-toggle,
+.controls .sort-menu .dropdown-toggle:hover {
+	background-color: white;
+	text-decoration: none;
+	color: #333;
+}
+
+#export-list ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+#export-list ul li {
+	margin: 0;
+	padding: 0 0 10px 0;
+}
+
+.export-list-active {
+	background-color: white;
+}
+
+.export-list-hover {
+	background-color: #f0f0f0;
+}

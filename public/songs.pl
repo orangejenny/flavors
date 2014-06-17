@@ -34,12 +34,11 @@ print sprintf(q{
 
 		function correlateFilter(rowIndex) {
 			var newRowIndex = rowIndex;
-            for (var i = filters.length - 1; i >= 0; i--) {
-                newRowIndex = filters[i].getControl().applyFilter()
-                    .getTableRowIndex(newRowIndex);
-            }
-            return newRowIndex;
-        }
+			for (var i = filters.length - 1; i >= 0; i--) {
+				newRowIndex = filters[i].getControl().applyFilter().getTableRowIndex(newRowIndex);
+			}
+			return newRowIndex;
+		}
 
 		// Column names hint for filter
 		jQuery(document).ready(function() {
@@ -74,13 +73,24 @@ print sprintf(q{
 			});
 			$table.on("blur", selector, function() {
 				var $td = jQuery(this);
-				var value = trim(jQuery(this).text());
+				var value = trim($td.text());
 				if (oldvalue != value && selectedrow !== undefined) {
-					var datarow = correlateFilter(selectedrow);
+					var datarow;
+					while (!datarow) {
+						try {
+							datarow = correlateFilter(selectedrow);
+						}
+						catch (error) {
+							if (!confirm("Failed to find row. Retry?")) {
+								$td.text(oldvalue);
+								$td.focus();
+								return;
+							}
+						}
+					}
 					var args = {
-						id: data.getValue(datarow, 0)
-					};
-					console.log("Update " + data.getValue(datarow, 0) + " (" + data.getValue(datarow, 1) + ")");
+						id: data.getValue(datarow, 0),
+					}
 					var index = jQuery("td", $td.closest("tr")).index($td);
 					var key = trim(jQuery("#songdata tr:first :nth-child(" + (index + 1) + ")").text()).toLowerCase();
 					if ($td.hasClass("rating")) {
@@ -108,7 +118,6 @@ print sprintf(q{
 				options.TAGS = jQuery("#simple-filter-tags input").val();
 				ExportPlaylist(options);
 			});
-
 		});
 
 		function trim(text) {

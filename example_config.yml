@@ -3,4 +3,6 @@ db:
   database: database_name
   user: username
   password: password
-path: /path/to/music
+path:
+  mac: /path/to/music/
+  pc: C:\different\path\to\music

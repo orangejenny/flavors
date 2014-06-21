@@ -38,7 +38,7 @@ print sprintf(q{
 				newRowIndex = filters[i].getControl().applyFilter().getTableRowIndex(newRowIndex);
 			}
 			return newRowIndex;
-		}
+      }
 
 		// Column names hint for filter
 		jQuery(document).ready(function() {
@@ -111,13 +111,15 @@ print sprintf(q{
 			});
 
 			// Dropdown for exporting
-			jQuery("#export-button").click(function() {
+			jQuery(".export-button").click(function() {
 				var options = BuildArgs('#complexfilter', options);
 				options.NAME = jQuery("#simple-filter-name input").val();
 				options.ARTIST = jQuery("#simple-filter-artist input").val();
 				options.TAGS = jQuery("#simple-filter-tags input").val();
+				options.OS = jQuery(this).data("os");
 				ExportPlaylist(options);
 			});
+
 		});
 
 		function trim(text) {
@@ -184,10 +186,10 @@ print sprintf(q{
 
 			});
 
-		    dashboard = new google.visualization.Dashboard(document.getElementById('dashboard'));
+			dashboard = new google.visualization.Dashboard(document.getElementById('dashboard'));
 			for (var i = 0; i < filters.length - 1; i++) {
-                dashboard.bind(filters[i], filters[i+1]);
-            }
+				dashboard.bind(filters[i], filters[i+1]);
+			}
 			dashboard.bind(filters[filters.length - 1], table).draw(dataview);
 
 			google.visualization.events.addListener(table, 'ready', function() {

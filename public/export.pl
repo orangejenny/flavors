@@ -61,8 +61,17 @@ FlavorsData::UpdateExport($dbh, \%updateexport);
 $filename =~ s/[^\w \-[\]]+//g;
 print $cgi->header(-type => 'text/text', -attachment => "$filename.m3u");
 
-my $directory = FlavorsUtils::Config->{path};
+my $os = lc $fdat->{OS};
+if ($os !~ /^(mac|pc)$/) {
+	$os = "mac";
+}
+my $directory = FlavorsUtils::Config->{path}->{$os};
+
 foreach my $song (@songs) {
-	print "$directory$song->{FILENAME}\n";
+	my $song = "$directory$song->{FILENAME}\n";
+	if ($os eq "pc") {
+		$song =~ s/\//\\/g;
+	}
+	print $song;
 }
 

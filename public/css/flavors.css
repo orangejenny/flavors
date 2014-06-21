@@ -120,7 +120,7 @@ a:hover { color: #fff; background-color:#000; }
 	overflow-y: auto;
 }
 
-.location.btn-group, #export-button {
+.location.btn-group, .navbar .export-button {
 	margin-top: 8px;
 	margin-left: 8px;
 }

@@ -172,7 +172,7 @@ print q{
 			});
 
 			// Export collections
-			jQuery("#export-button").click(function() {
+			jQuery(".export-button").click(function() {
 				var collectionids = [];
 				var collections = jQuery("#export-list li");
 				if (!collections.length) {

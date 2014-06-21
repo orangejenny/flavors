@@ -147,7 +147,14 @@ sub Header {
 
 
 	print qq{
-		<button type="button" class="btn btn-mini btn-info pull-right" id="export-button">Export</button>
+		<button type="button" class="export-button btn btn-mini btn-info pull-right" data-os="mac">
+			<span class="icon-white icon-home"></span>
+			Export
+		</button>
+		<button type="button" class="export-button btn btn-mini btn-info pull-right" data-os="pc">
+			<span class="icon-white icon-briefcase"></span>
+			Export
+		</button>
 	} unless $args->{HIDEEXPORT};
 
 	print qq{

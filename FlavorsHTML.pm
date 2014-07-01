@@ -127,23 +127,6 @@ sub Header {
 						</ul>
 	};
 
-	my @favorites = FlavorsData::PlaylistList(FlavorsData::DBH());
-
-	print sprintf(qq{
-						<!--ul class="nav pull-right">
-							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" id="favorites-button">
-									Quick Export
-									<b class="caret"></b>
-								</a>
-								<ul class="dropdown-menu" id="favorites-menu">
-									%s
-								</ul>
-							</li>
-						</ul-->
-	}, join("", map { "<li><a href='#' data-id='" . $_->{ID} . "'>" . $_->{NAME} . "</a></li>" } @favorites));
-
-
 	print qq{
 		<button type="button" class="export-button btn btn-mini btn-info pull-right" data-os="mac">
 			<span class="icon-white icon-home"></span>

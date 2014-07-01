@@ -19,6 +19,13 @@ FlavorsHTML::Header({
 	TITLE => "Songs",
 });
 
+my @playlists = FlavorsData::PlaylistList($dbh);
+my $playlist;
+if (!exists $fdat->{FILTER}) {
+	$playlist = $playlists[int(rand(scalar(@playlists)))];
+	$fdat->{FILTER} = $playlist->{FILTER};
+}
+
 my @songs = FlavorsData::SongList($dbh, {
 	FILTER => $fdat->{FILTER},
 });
@@ -212,6 +219,12 @@ print sprintf(q{
 			jQuery($headercells[3]).css("width", "5%");
 			jQuery($headercells[4]).css("width", "5%");
 			jQuery($headercells[5]).css("width", "45%");
+
+			var $filters = jQuery('#simple-filters');
+			var placeholders = ["tags", "name", "artist"];
+			$filters.find("input").each(function() {
+				jQuery(this).get(0).placeholder = placeholders.shift();
+			});
 		}
 	</script>
 },
@@ -251,10 +264,8 @@ print sprintf(qq{
 	},
 );
 
-print qq{ <h5><span id="song-count"></span> songs</h5> };
-
 print qq{
-	<div id="simple-filters" style="width: 100%; height: 20px;">
+	<div id="simple-filters" style="width: 100%;" class="clearfix">
 		<div id="simple-filter-tags" style="width: 45%; float: right;"></div>
 		<div id="simple-filter-name" style="width: 20%; float: left;"></div>
 		<div id="simple-filter-artist" style="width: 20%; float: left;"></div>
@@ -265,5 +276,7 @@ print qq{ <div id="songdata"></div> };
 print qq{ </div> };
 
 print "</tbody></table>";
+
+print qq{ <div id="song-count-container"><span id="song-count"></span> songs</div> };
 
 print FlavorsHTML::Footer();

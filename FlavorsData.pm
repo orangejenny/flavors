@@ -384,7 +384,7 @@ sub ArtistGenreList {
 # Description: Get a list of playlists
 #
 # Args:
-#		ONLYISFAVORITE
+#		None
 # Return Value: array of hashrefs
 ################################################################
 sub PlaylistList {
@@ -397,10 +397,9 @@ sub PlaylistList {
 			filter
 		from
 			playlist
-		%s
 		order by
 			name
-	}, $args->{ONLYISFAVORITE} ? "where isfavorite = 1" : "");
+	});
 
 	return _results($dbh, {
 		SQL => $sql,

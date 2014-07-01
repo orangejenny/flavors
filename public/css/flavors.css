@@ -7,7 +7,7 @@ body {
 body, p, ol, ul, td, th {
   font-family: helvetica, arial, sans-serif;
   font-size: 12px;
-  line-height: 1.5em;
+  line-height: 15px;
 }
 
 label {
@@ -23,9 +23,24 @@ label {
 }
 
 #simple-filters input {
-	height: 20px;
-	width: 150px;
-	border: 1px dotted #ccc;
+	height: 35px;
+	width: 200px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	margin: 5px 0;
+	padding: 0 5px;
+}
+
+#song-count-container {
+	text-align: center;
+	font-weight: bold;
+	font-size: 14px;
+	margin: 10px;
+}
+
+#songdata {
+	max-height: 50%;
+	overflow-y: auto;
 }
 
 table {
@@ -155,4 +170,9 @@ ul.plain li {
 
 .update-in-progress {
 	background-color: #ffc !important;
+}
+
+/* Overrides for Google styles */
+td.google-visualization-table-td {
+	
 }

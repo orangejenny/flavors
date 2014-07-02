@@ -230,7 +230,7 @@ print sprintf(q{
 			jQuery($headercells[5]).css("width", "45%");
 
 			var $filters = jQuery('#simple-filters');
-			var placeholders = ["tags", "name", "artist"];
+			var placeholders = ["name", "artist", "tags"];
 			$filters.find("input").each(function() {
 				jQuery(this).get(0).placeholder = placeholders.shift();
 			});
@@ -276,9 +276,9 @@ print sprintf(qq{
 
 print qq{
 	<div id="simple-filters" style="width: 100%;" class="clearfix">
-		<div id="simple-filter-tags" style="width: 45%; float: right;"></div>
 		<div id="simple-filter-name" style="width: 20%; float: left;"></div>
 		<div id="simple-filter-artist" style="width: 20%; float: left;"></div>
+		<div id="simple-filter-tags" style="width: 45%; float: left; margin-left: 15%;"></div>
 	</div>
 };
 

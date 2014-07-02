@@ -117,7 +117,17 @@ print sprintf(q{
 				selectedrow = undefined;
 			});
 
-			// Dropdown for exporting
+			// Complex filter buttons
+			jQuery("#complexfilter input").click(function() {
+				var $button = jQuery(this);
+				var $form = $button.closest("form");
+				if ($button.val().toLowerCase() === "clear") {
+					$form.find("textarea").val("");
+				}
+				$form.submit();
+			});
+
+			// Export buttons
 			jQuery(".export-button").click(function() {
 				var options = BuildArgs('#complexfilter', options);
 				options.NAME = jQuery("#simple-filter-name input").val();
@@ -126,7 +136,6 @@ print sprintf(q{
 				options.OS = jQuery(this).data("os");
 				ExportPlaylist(options);
 			});
-
 		});
 
 		function trim(text) {
@@ -246,10 +255,11 @@ print sprintf(qq{
 
 		<div style="text-align: center;">
 			<form method=POST id="complexfilter">
-				<textarea name=filter rows=2 style="width: 400px;">%s</textarea>
+				<textarea name=filter rows=3 style="width: 410px;">%s</textarea>
 				<i class="icon icon-question-sign hint" style="position: absolute;" title="%s"></i>
 				<br>
-				<input type="submit" value="Filter" class="btn btn-large" style="width: 400px;" />
+				<input type="button" value="Filter" class="btn btn-large" style="width: 300px;" />
+				<input type="button" value="Clear" class="btn btn-large" style="width: 100px; margin-left: 10px;" />
 			</form>
 		</div>
 	},

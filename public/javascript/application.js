@@ -1,11 +1,4 @@
 jQuery(document).ready(function() {
-
-	// Handle exporting favorite playlists
-	jQuery("#favorites-menu a").on('click', function() {
-		var id = jQuery(this).data("id");
-		console.log("Export playlist #" + id);
-	});
-
 	// Set up sliders with their hidden inputs
 	jQuery('.slider').slider({
 		animate: true,

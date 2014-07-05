@@ -253,7 +253,7 @@ join(", ", map {
 print sprintf(qq{
 	<div id="dashboard">
 
-		<div style="text-align: center;">
+		<div class="complex-filter-container">
 			<form method=POST id="complexfilter">
 				<textarea name=filter rows=3 style="width: 410px;">%s</textarea>
 				<i class="icon icon-question-sign hint" style="position: absolute;" title="%s"></i>
@@ -275,18 +275,26 @@ print sprintf(qq{
 );
 
 print qq{
-	<div id="simple-filters" style="width: 100%;" class="clearfix">
+	<div id="simple-filters" class="clearfix">
 		<div id="simple-filter-name" style="width: 20%; float: left;"></div>
 		<div id="simple-filter-artist" style="width: 20%; float: left;"></div>
 		<div id="simple-filter-tags" style="width: 45%; float: left; margin-left: 15%;"></div>
 	</div>
 };
 
+print qq{ <div id="top-veil"></div> };
 print qq{ <div id="songdata"></div> };
 print qq{ </div> };
 
 print "</tbody></table>";
 
-print qq{ <div id="song-count-container"><span id="song-count"></span> songs</div> };
+print qq{
+	<div id="song-count-container">
+		<div id="bottom-veil"></div>
+		<span id="song-count-span" class="ui-corner-all">
+			<span id="song-count"></span> songs
+		</span>
+	</div>
+};
 
 print FlavorsHTML::Footer();

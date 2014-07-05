@@ -80,9 +80,10 @@ sub Header {
 				<title>$args->{TITLE}</title>
 			</head>
 			<body>
-				<div class="navbar">
-					<div class="navbar-inner">
-						<div class="brand">Flavors</div>
+				<div class="navbar-container">
+					<div class="navbar">
+						<div class="navbar-inner">
+							<div class="brand">Flavors</div>
 	};
 
 	my @pages = (
@@ -103,13 +104,13 @@ sub Header {
 	}
 
 	print sprintf(qq{
-						<ul class="nav">
-							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" id="menu-button">
-									%s
-									<b class="caret"></b>
-								</a>
-								<ul class="dropdown-menu" role="menu" aria-labelledby="menu-button">
+							<ul class="nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" id="menu-button">
+										%s
+										<b class="caret"></b>
+									</a>
+									<ul class="dropdown-menu" role="menu" aria-labelledby="menu-button">
 		},
 		$currentpage->{name},
 	);
@@ -122,9 +123,9 @@ sub Header {
 		) unless $page->{url} eq $currentpage->{url};
 	}
 	print qq{
-								</ul>
-							</li>
-						</ul>
+									</ul>
+								</li>
+							</ul>
 	};
 
 	print qq{
@@ -139,6 +140,7 @@ sub Header {
 	} unless $args->{HIDEEXPORT};
 
 	print qq{
+						</div>
 					</div>
 				</div>
 	};

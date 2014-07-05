@@ -1,7 +1,6 @@
 body { 
 	background-color: #fff; 
 	color: #333; 
-	padding: 15px;
 }
 
 body, p, ol, ul, td, th {
@@ -18,8 +17,55 @@ label {
 	clear: both;
 }
 
-.nav-tabs li {
-	margin-left: 15px;
+#song-count-container {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	text-align: center;
+	font-weight: bold;
+	font-size: 14px;
+}
+
+#top-veil, #bottom-veil {
+	background-color: #fff;
+	opacity: 0.8;
+	left: 0;
+	right: 0;
+	z-index: -1;
+
+}
+
+#top-veil {
+	position: fixed;
+	top: 0;
+	height: 260px;
+}
+
+#bottom-veil {
+	padding: 15px;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+}
+
+.navbar-container {
+	position: fixed;
+	padding: 15px;
+	width: calc(100% - 30px);
+}
+
+.complex-filter-container {
+	text-align: center;
+	position: fixed;
+	width: 100%;
+	top: 75px;
+}
+
+#simple-filters {
+	width: 100%;
+	padding: 15px;
+	position: fixed;
+	top: 200px;
 }
 
 #simple-filters input {
@@ -31,21 +77,16 @@ label {
 	padding: 0 5px;
 }
 
-#song-count-container {
-	text-align: center;
-	font-weight: bold;
-	font-size: 14px;
-	margin: 10px;
-}
-
 #songdata {
-	max-height: 50%;
-	overflow-y: auto;
+	position: absolute;
+	top: 250px;
+	z-index: -2;
+	margin: 15px 15px 35px 15px;	// bottom space for #song-count-container
 }
 
 table {
 	width: 100%;
-  border-collapse: collapse;
+	border-collapse: collapse;
 }
 
 th, #songdata tr:first-child td {
@@ -103,7 +144,7 @@ a:hover { color: #fff; background-color:#000; }
 	text-align: center;
 }
 
-.tag {
+.tag, #song-count-span {
 	font-size: 12px;
 	font-weight: bold;
 	margin-right: 10px;

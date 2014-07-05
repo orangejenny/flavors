@@ -86,6 +86,7 @@ label {
 }
 
 #songdata {
+	width: 100%;
 	position: absolute;
 	top: 250px;
 	margin: 15px 15px 35px 15px;	// bottom space for #song-count-container

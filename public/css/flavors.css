@@ -33,7 +33,7 @@ label {
 
 #top-veil, #bottom-veil {
 	background-color: #fff;
-	opacity: 0.8;
+	opacity: 0.9;
 	left: 0;
 	right: 0;
 	z-index: 2;
@@ -221,7 +221,22 @@ ul.plain li {
 	background-color: #ffc !important;
 }
 
-/* Overrides for Google styles */
-td.google-visualization-table-td {
-	
+#helpers {
+	display: none;
+}
+
+#helpers .group:not(:last-child) {
+	margin-bottom: 25px;
+}
+
+#helpers button {
+	width: 155px;
+}
+
+#helpers button:not(:last-child) {
+	margin-right: 25px;
+}
+
+#helpers-trigger {
+	cursor: pointer;
 }

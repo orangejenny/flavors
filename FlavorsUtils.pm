@@ -31,6 +31,12 @@ sub EscapeHTMLAttribute {
 	return $string;
 }
 
+sub EscapeSQL {
+	my ($string) = @_;
+	$string =~ s/'/\'\'/g;
+	return $string;
+}
+
 ################################################################
 # Fdat
 #
@@ -105,21 +111,21 @@ sub ArrayIntersection {
 }
 
 ################################################################
-# CleanFilter
+# Sanitize
 #
 # Description: Sanitizes an SQL where clause input by user
 #
 # Return Value: String (may be blank)
 ################################################################
-sub CleanFilter {
-	my ($filter) = @_;
+sub Sanitize {
+	my ($sql) = @_;
 
-	$filter =~ s/;.*//;
-	if ($filter =~ /update|insert|delete|;/i) {
-		$filter = "";
+	$sql =~ s/;.*//;
+	if ($sql =~ /update|insert|delete|;/i) {
+		$sql = "";
 	}
 
-	return $filter;
+	return $sql;
 }
 
 ################################################################

@@ -31,6 +31,7 @@ sub DBH {
 # Parameters (optional)
 #		FILTER: additional where clause
 #		ID: only this song
+#		ORDERBY: order by this column (may include "desc")
 #		NAME, ARTIST, GENRE, TAGS: 'like' filters for these columns
 #
 # Return Value: array of hashrefs UNLESS ID is passed, in which 
@@ -38,6 +39,8 @@ sub DBH {
 ################################################################
 sub SongList {
 	my ($dbh, $args) = @_;
+
+	$args->{ORDERBY} = FlavorsUtils::Sanitize($args->{ORDERBY});
 
 	my @songcolumns = qw(
 		id
@@ -58,11 +61,14 @@ sub SongList {
 		select distinct
 			$songcolumnstring,
 			artistgenre.genre,
-			songtaglist.taglist,
+			concat(' ', songtaglist.taglist, ' ') as taglist,
 			songtaglist.tagcount,
-			concat(' ', song.name, ' ', coalesce(songtaglist.taglist, ''), ' ') as searchtext,
 			years.minyear,
-			years.maxyear
+			years.maxyear,
+			concat(' ', group_concat(collection.name separator ' '), ' ') as collectionlist,
+			min(collection.dateacquired) as dateacquired,
+			song.exportcount,
+			song.lastexport
 		from 
 			song
 		left join songcollection on song.id = songcollection.songid
@@ -83,15 +89,13 @@ sub SongList {
 			group by
 				songtag.songid
 		) years on years.songid = song.id
-
 	};
 
 	if ($args->{ID}) {
-		$sql .= qq{
-			where
-				song.id = $args->{ID}
-		};
+		$sql .= " where song.id = $args->{ID}";
 	}
+
+	$sql .= " group by song.id ";
 
 	$sql = "select * from ($sql) songs where 1 = 1";
 	my %filtercolumns = (
@@ -110,12 +114,12 @@ sub SongList {
 		}
 	}
 
-	$args->{FILTER} = FlavorsUtils::CleanFilter($args->{FILTER});
+	$args->{FILTER} = FlavorsUtils::Sanitize($args->{FILTER});
 	if ($args->{FILTER}) {
 		$sql .= " and " . $args->{FILTER};
 	}
 
-	$sql .= " order by id";
+	$sql .= " order by " . ($args->{ORDERBY} ? $args->{ORDERBY} . " limit 50" : "id");
 
 	my @results = _results($dbh, {
 		SQL => $sql,
@@ -125,18 +129,6 @@ sub SongList {
 
 	if ($args->{ID}) {
 		return $results[0];
-	}
-	elsif ($args->{BITSTRING}) {
-		my @maxidrow = _results($dbh, {
-			SQL => "select max(id) from song",
-			COLUMNS => ['ID'],
-		});
-		my $maxid = $maxidrow[0]->{ID};
-		my @bitstring = (0) x $maxid;
-		foreach my $result (@results) {
-			@bitstring[$result->{ID}] = 1;
-		};
-		return join("", @bitstring);
 	}
 	else {
 		return $args->{REF} ? \@results : @results;
@@ -379,6 +371,40 @@ sub ArtistGenreList {
 }
 
 ################################################################
+# RandomItem
+#
+# Description: Get a set of distinct items
+#
+# Args:
+#		Column: "artist", "collection", or "tag"
+# Return Value: String
+################################################################
+sub RandomItem {
+	my ($dbh, $column) = @_;
+
+	my $table;
+	if ($column =~ m/collection/i) {
+		$table = "collection";
+		$column = "name";
+	}
+	elsif ($column =~ m/tag/i) {
+		$table = 'songtag';
+	}
+	else {
+		$table = 'song';
+	}
+
+	my $sql = "select distinct $column from $table order by rand() limit 1";
+
+	my @rows = _results($dbh, {
+		SQL => $sql,
+		COLUMNS => [$column],
+	});
+
+	return $rows[0]->{uc $column};
+}
+
+################################################################
 # PlaylistList
 #
 # Description: Get a list of playlists
@@ -423,7 +449,7 @@ sub PlaylistList {
 sub SavePlaylist {
 	my ($dbh, $args) = @_;
 
-	my $filter = FlavorsUtils::CleanFilter($args->{FILTER});
+	my $filter = FlavorsUtils::Sanitize($args->{FILTER});
 	if (!$filter) {
 		return;
 	}
@@ -593,8 +619,6 @@ sub UpdateColor {
 sub UpdateSong {
 	my ($dbh, $newsong) = @_;
 
-use Data::Dumper;
-warn Dumper(\$newsong);
 	my $id = delete $newsong->{ID};
 	my $oldsong = SongList($dbh, { ID => $id });
 

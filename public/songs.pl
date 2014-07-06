@@ -19,15 +19,153 @@ FlavorsHTML::Header({
 	TITLE => "Songs",
 });
 
-my @playlists = FlavorsData::PlaylistList($dbh);
-my $playlist;
+if ($fdat->{RANDOM}) {
+	my $column = $fdat->{RANDOM};
+	my $item = FlavorsData::RandomItem($dbh, $column);
+	$item = FlavorsUtils::EscapeSQL($item);
+	if ($column =~ m/collection/i) {
+		$fdat->{FILTER} = sprintf("collectionlist like '%%%s%%'", $item);
+	}
+	elsif ($column =~ m/tag/i) {
+		$fdat->{FILTER} = sprintf("taglist like '%%%s%%'", $item);
+	}
+	else {
+		$fdat->{FILTER} = sprintf("%s = '%s'", $column, $item);
+	}
+	$fdat->{PLACEHOLDER} = "";
+}
+
+print q{
+	<div id="helpers" class="modal">
+		<div class="modal-dialog">
+			<div class="modal-header">
+				<h4>Songs</h4>
+			</div>
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="group" data-category="random">
+						<button class="btn large-btn">Random collection</button>
+						<button class="btn large-btn">Random artist</button>
+						<button class="btn large-btn">Random tag</button>
+					</div>
+					<div class="group" data-category="stars">
+						<button class="btn large-btn">5 stars</button>
+						<button class="btn large-btn">4 stars</button>
+						<button class="btn large-btn">3 stars</button>
+					</div>
+					<div class="group" data-category="missing">
+						<button class="btn large-btn">Missing rating</button>
+						<button class="btn large-btn">Missing mood</button>
+						<button class="btn large-btn">Missing energy</button>
+					</div>
+					<div class="group" data-category="popular">
+						<button class="btn large-btn">Recently added</button>
+						<button class="btn large-btn">Recently exported</button>
+						<button class="btn large-btn">Frequently exported</button>
+					</div>
+					<div class="group" data-category="unpopular">
+						<button class="btn large-btn">Rarely exported</button>
+						<button class="btn large-btn btn-primary">All songs</button>
+						<button class="btn large-btn">Exported long ago</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="application/javascript">
+		jQuery(document).ready(function() {
+			jQuery("#helpers button").click(function() {
+				var $button = jQuery(this);
+				var buttonText = $button.text();
+				var $form = jQuery("#complexfilter");
+				var filter = "";
+				var orderBy = $form.find('input[name="orderBy"]');
+				switch ($button.closest(".group").data("category")) {
+					case "random":
+						$form.find('input[name="random"]').val(buttonText.replace(/random/i, '').trim());
+						break;
+					case "stars":
+						filter = "rating = " + buttonText.replace(/stars/i, '');
+						break;
+					case "missing":
+						filter = buttonText.replace(/missing/i, '') + " is null";
+						break;
+					case "popular":
+						if (buttonText.match(/frequent/i)) {
+							orderBy.val("exportcount desc");
+						}
+						else if (buttonText.match(/export/i)) {
+							orderBy.val("lastexport desc");
+						}
+						else if (buttonText.match(/add/i)) {
+							orderBy.val("dateacquired desc");
+						}
+						break;
+					case "unpopular":
+						if (buttonText.match(/rare/i)) {
+							orderBy.val("exportcount");
+						}
+						else if (buttonText.match(/ago/i)) {
+							orderBy.val("lastexport");
+						}
+						break;
+				}
+				if (!filter) {
+					$form.find('input[name="placeholder"]').val("(" + buttonText.toLowerCase() + ")");
+				}
+				$form.find("textarea").val(filter);
+				$form.submit();
+			});
+		});
+	</script>
+};
+
+print sprintf(qq{
+		<div class="complex-filter-container">
+			<form method=POST id="complexfilter">
+				<textarea name=filter rows=3 style="width: 400px;" placeholder="%s">%s</textarea>
+				<i class="icon icon-remove clear-filter" style="position: absolute; cursor: pointer;" title="Clear filter"></i>
+				<i class="icon icon-question-sign hint" style="position: absolute; top: 24px;" title="%s"></i>
+				<i class="icon icon-heart helpers-trigger" style="position: absolute; top: 48px; cursor: pointer;" title="Common filters"></i>
+				<br>
+				<input type="button" value="Filter" class="btn btn-large" style="width: 400px;" />
+				<input type="hidden" name="random" value="" />
+				<input type="hidden" name="orderBy" value="" />
+				<input type="hidden" name="placeholder" value="" />
+			</form>
+		</div>
+	},
+	$fdat->{PLACEHOLDER},
+	$fdat->{FILTER},
+	q{
+		id, name, artist,
+		<br>rating, energy, mood,
+		<br>time, filename,
+		<br>ismix, dateacquired,
+		<br>taglist, tagcount, collectionlist,
+		<br>minyear, maxyear
+	},
+);
+
+
 if (!exists $fdat->{FILTER}) {
-	$playlist = $playlists[int(rand(scalar(@playlists)))];
-	$fdat->{FILTER} = $playlist->{FILTER};
+	print qq{
+		<script type="application/javascript">
+			jQuery(document).ready(function() {
+				jQuery("#helpers").modal({
+					backdrop: "static",
+					keyboard: false,
+				});
+			});
+		</script>
+	};
+	print FlavorsHTML::Footer();
+	exit;
 }
 
 my @songs = FlavorsData::SongList($dbh, {
 	FILTER => $fdat->{FILTER},
+	ORDERBY => $fdat->{ORDERBY},
 });
 
 print sprintf(q{
@@ -117,13 +255,16 @@ print sprintf(q{
 				selectedrow = undefined;
 			});
 
-			// Complex filter buttons
+			// Complex filter controls
 			jQuery("#complexfilter input").click(function() {
-				var $button = jQuery(this);
-				var $form = $button.closest("form");
-				if ($button.val().toLowerCase() === "clear") {
-					$form.find("textarea").val("");
-				}
+				jQuery(this).closest("form").submit();
+			});
+			jQuery("#complexfilter .helpers-trigger").click(function() {
+				jQuery("#helpers").modal();
+			});
+			jQuery("#complex-filter .clear-filter").click(function() {
+				var $form = jQuery(this).closest("form");
+				$form.find("textarea").val("");
 				$form.submit();
 			});
 
@@ -250,29 +391,7 @@ join(", ", map {
 	)
 } @songs));
 
-print sprintf(qq{
-	<div id="dashboard">
-
-		<div class="complex-filter-container">
-			<form method=POST id="complexfilter">
-				<textarea name=filter rows=3 style="width: 410px;">%s</textarea>
-				<i class="icon icon-question-sign hint" style="position: absolute;" title="%s"></i>
-				<br>
-				<input type="button" value="Filter" class="btn btn-large" style="width: 300px;" />
-				<input type="button" value="Clear" class="btn btn-large" style="width: 100px; margin-left: 10px;" />
-			</form>
-		</div>
-	},
-	$fdat->{FILTER},
-	q{
-		id, name, artist,
-		<br>rating, energy, mood,
-		<br>time, filename,
-		<br>ismix, dateacquired,
-		<br>taglist, tagcount, searchtext,
-		<br>minyear, maxyear
-	},
-);
+print qq{ <div id="dashboard"> };
 
 print qq{
 	<div id="simple-filters" class="clearfix">

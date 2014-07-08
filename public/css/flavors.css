@@ -247,3 +247,7 @@ ul.plain li {
 #helpers-trigger {
 	cursor: pointer;
 }
+
+.modal-dialog .close {
+	margin: 15px;
+}

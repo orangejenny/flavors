@@ -68,7 +68,7 @@ label {
 	z-index: 3;
 }
 
-#complexfilter textarea {
+#complex-filter textarea {
 	margin: 0 5px;
 	padding: 5px;
 	border-radius: 4px;
@@ -92,7 +92,7 @@ label {
 	padding: 0 5px;
 }
 
-#songdata {
+#song-table-container {
 	width: 100%;
 	position: absolute;
 	top: 230px;
@@ -105,7 +105,7 @@ table {
 	border-collapse: collapse;
 }
 
-th, #songdata tr:first-child td {
+th, #song-table-container tr:first-child td {
 	text-align: left;
 	padding: 0 2px;
 	background: white;
@@ -128,10 +128,6 @@ th {
 .rating {
   font-family: courier;
   font-size: 18px;
-	white-space: nowrap;
-}
-
-.ratinginput {
 	white-space: nowrap;
 }
 

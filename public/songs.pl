@@ -65,7 +65,7 @@ print q{
 					</div>
 					<div class="group" data-category="unpopular">
 						<button class="btn btn-default">Rarely exported</button>
-						<button class="btn btn-default btn-primary">All songs</button>
+						<button class="btn btn-default btn-info">All songs</button>
 						<button class="btn btn-default">Exported long ago</button>
 					</div>
 				</div>
@@ -77,7 +77,7 @@ print q{
 			jQuery("#helpers button").click(function() {
 				var $button = jQuery(this);
 				var buttonText = $button.text();
-				var $form = jQuery("#complexfilter");
+				var $form = jQuery("#complex-filter");
 				var filter = "";
 				var orderBy = $form.find('input[name="orderBy"]');
 				switch ($button.closest(".group").data("category")) {
@@ -122,7 +122,7 @@ print q{
 
 print sprintf(qq{
 		<div class="complex-filter-container">
-			<form method=POST id="complexfilter">
+			<form method=POST id="complex-filter">
 				<textarea name=filter rows=3 style="width: 400px;" placeholder="%s">%s</textarea>
 				<span class="glyphicon glyphicon-remove clear-filter" style="position: absolute; cursor: pointer;" title="Clear filter"></span>
 				<span class="glyphicon glyphicon-question-sign hint" style="position: absolute; top: 20px;" title="%s"></span>
@@ -207,7 +207,7 @@ print sprintf(q{
 			});
 
 			// Click to edit
-			var $table = jQuery("#songdata");
+			var $table = jQuery("#song-table-container");
 			var selector = "td[contenteditable=true]";
 			$table.on("focus", selector, function() {
 				oldvalue = trim(jQuery(this).text());
@@ -237,7 +237,7 @@ print sprintf(q{
 						id: data.getValue(datarow, 0),
 					}
 					var index = jQuery("td", $td.closest("tr")).index($td);
-					var key = trim(jQuery("#songdata tr:first :nth-child(" + (index + 1) + ")").text()).toLowerCase();
+					var key = trim(jQuery("#song-table-container tr:first :nth-child(" + (index + 1) + ")").text()).toLowerCase();
 					if ($td.hasClass("rating")) {
 						value = value.length;
 					}
@@ -256,10 +256,10 @@ print sprintf(q{
 			});
 
 			// Complex filter controls
-			jQuery("#complexfilter input").click(function() {
+			jQuery("#complex-filter input").click(function() {
 				jQuery(this).closest("form").submit();
 			});
-			jQuery("#complexfilter .helpers-trigger").click(function() {
+			jQuery("#complex-filter .helpers-trigger").click(function() {
 				jQuery("#helpers").modal();
 			});
 			jQuery("#complex-filter .clear-filter").click(function() {
@@ -270,7 +270,7 @@ print sprintf(q{
 
 			// Export buttons
 			jQuery(".export-button").click(function() {
-				var options = BuildArgs('#complexfilter', options);
+				var options = BuildArgs('#complex-filter', options);
 				options.NAME = jQuery("#simple-filter-name input").val();
 				options.ARTIST = jQuery("#simple-filter-artist input").val();
 				options.TAGS = jQuery("#simple-filter-tags input").val();
@@ -334,7 +334,7 @@ print sprintf(q{
 
 			table = new google.visualization.ChartWrapper({
 				chartType: 'Table',
-				containerId: 'songdata', 
+				containerId: 'song-table-container', 
 				options: {
 					cssClassNames: {
 						selectedTableRow: 'dummy'
@@ -350,7 +350,7 @@ print sprintf(q{
 			dashboard.bind(filters[filters.length - 1], table).draw(dataview);
 
 			google.visualization.events.addListener(table, 'ready', function() {
-				jQuery("#song-count").text(parseInt(jQuery("#songdata tr:visible").length, 10) - 1);
+				jQuery("#song-count").text(parseInt(jQuery("#song-table-container tr:visible").length, 10) - 1);
 				google.visualization.events.addListener(table.getChart(), 'sort', function() {
 					refreshTable();
 				});
@@ -359,7 +359,7 @@ print sprintf(q{
 		}
 
 		function refreshTable() {
-			var $table = jQuery("#songdata");
+			var $table = jQuery("#song-table-container");
 			var $cells = $table.find("tr:not(:first) td");
 			$cells.attr("contenteditable", "true");
 			var $headercells = $table.find("tr:first td");
@@ -402,7 +402,7 @@ print qq{
 };
 
 print qq{ <div id="top-veil"></div> };
-print qq{ <div id="songdata"></div> };
+print qq{ <div id="song-table-container"></div> };
 print qq{ </div> };
 
 print "</tbody></table>";

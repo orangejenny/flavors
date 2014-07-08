@@ -124,8 +124,8 @@ foreach my $color (@colors) {
 				<div class="name">%s</div>
 				<input type="minicolors" data-slider="wheel" value="#%s" data-textfield="false">
 				<div class="btn-group white-text" data-toggle="buttons-radio">
-					<button class="btn btn-mini%s" value="0">black text</button>
-					<button class="btn btn-mini%s" value="1">white text</button>
+					<button class="btn btn-xs btn-default%s" value="0">black text</button>
+					<button class="btn btn-xs btn-default%s" value="1">white text</button>
 				</div>
 			</div>
 		},

@@ -235,7 +235,7 @@ print qq{
 		<br><br>
 		<div class="well" id="export-list">
 			<ul></ul>
-			<button class="btn btn-small hide clear">Clear</button>
+			<button class="btn btn-sm btn-default hide clear">Clear</button>
 		</div>
 	</div>
 };

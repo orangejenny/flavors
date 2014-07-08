@@ -43,7 +43,7 @@ label {
 #top-veil {
 	position: fixed;
 	top: 0;
-	height: 260px;
+	height: 210px;
 }
 
 #bottom-veil {
@@ -56,7 +56,7 @@ label {
 .navbar-container {
 	position: fixed;
 	padding: 15px;
-	width: calc(100% - 30px);
+	width: 100%;
 	z-index: 3;
 }
 
@@ -64,13 +64,20 @@ label {
 	text-align: center;
 	position: fixed;
 	width: 100%;
-	top: 75px;
+	top: 80px;
 	z-index: 3;
+}
+
+#complexfilter textarea {
+	margin: 0 5px;
+	padding: 5px;
+	border-radius: 4px;
+	border-color: #ccc;
 }
 
 #simple-filters {
 	width: 100%;
-	padding: 15px;
+	padding: 0 15px;
 	position: fixed;
 	z-index: 3;
 	top: 200px;
@@ -88,7 +95,7 @@ label {
 #songdata {
 	width: 100%;
 	position: absolute;
-	top: 250px;
+	top: 230px;
 	margin: 15px 15px 35px 15px;	// bottom space for #song-count-container
 	z-index: 1;
 }
@@ -185,8 +192,8 @@ a:hover { color: #fff; background-color:#000; }
 }
 
 .location.btn-group, .navbar .export-button {
-	margin-top: 8px;
-	margin-left: 8px;
+	margin-top: 14px;
+	margin-right: 14px;
 }
 
 .ui-autocomplete {
@@ -223,6 +230,10 @@ ul.plain li {
 
 #helpers {
 	display: none;
+}
+
+#helpers .modal-body {
+	text-align: center;
 }
 
 #helpers .group:not(:last-child) {

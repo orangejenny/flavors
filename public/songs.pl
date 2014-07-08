@@ -38,35 +38,35 @@ if ($fdat->{RANDOM}) {
 print q{
 	<div id="helpers" class="modal">
 		<div class="modal-dialog">
-			<div class="modal-header">
-				<h4>Songs</h4>
-			</div>
 			<div class="modal-content">
+				<div class="modal-header">
+					<h4>Songs</h4>
+				</div>
 				<div class="modal-body">
 					<div class="group" data-category="random">
-						<button class="btn large-btn">Random collection</button>
-						<button class="btn large-btn">Random artist</button>
-						<button class="btn large-btn">Random tag</button>
+						<button class="btn btn-default">Random collection</button>
+						<button class="btn btn-default">Random artist</button>
+						<button class="btn btn-default">Random tag</button>
 					</div>
 					<div class="group" data-category="stars">
-						<button class="btn large-btn">5 stars</button>
-						<button class="btn large-btn">4 stars</button>
-						<button class="btn large-btn">3 stars</button>
+						<button class="btn btn-default">5 stars</button>
+						<button class="btn btn-default">4 stars</button>
+						<button class="btn btn-default">3 stars</button>
 					</div>
 					<div class="group" data-category="missing">
-						<button class="btn large-btn">Missing rating</button>
-						<button class="btn large-btn">Missing mood</button>
-						<button class="btn large-btn">Missing energy</button>
+						<button class="btn btn-default">Missing rating</button>
+						<button class="btn btn-default">Missing mood</button>
+						<button class="btn btn-default">Missing energy</button>
 					</div>
 					<div class="group" data-category="popular">
-						<button class="btn large-btn">Recently added</button>
-						<button class="btn large-btn">Recently exported</button>
-						<button class="btn large-btn">Frequently exported</button>
+						<button class="btn btn-default">Recently added</button>
+						<button class="btn btn-default">Recently exported</button>
+						<button class="btn btn-default">Frequently exported</button>
 					</div>
 					<div class="group" data-category="unpopular">
-						<button class="btn large-btn">Rarely exported</button>
-						<button class="btn large-btn btn-primary">All songs</button>
-						<button class="btn large-btn">Exported long ago</button>
+						<button class="btn btn-default">Rarely exported</button>
+						<button class="btn btn-default btn-primary">All songs</button>
+						<button class="btn btn-default">Exported long ago</button>
 					</div>
 				</div>
 			</div>
@@ -124,11 +124,11 @@ print sprintf(qq{
 		<div class="complex-filter-container">
 			<form method=POST id="complexfilter">
 				<textarea name=filter rows=3 style="width: 400px;" placeholder="%s">%s</textarea>
-				<i class="icon icon-remove clear-filter" style="position: absolute; cursor: pointer;" title="Clear filter"></i>
-				<i class="icon icon-question-sign hint" style="position: absolute; top: 24px;" title="%s"></i>
-				<i class="icon icon-heart helpers-trigger" style="position: absolute; top: 48px; cursor: pointer;" title="Common filters"></i>
+				<span class="glyphicon glyphicon-remove clear-filter" style="position: absolute; cursor: pointer;" title="Clear filter"></span>
+				<span class="glyphicon glyphicon-question-sign hint" style="position: absolute; top: 20px;" title="%s"></span>
+				<span class="glyphicon glyphicon-heart helpers-trigger" style="position: absolute; top: 40px; cursor: pointer;" title="Common filters"></span>
 				<br>
-				<input type="button" value="Filter" class="btn btn-large" style="width: 400px;" />
+				<input type="button" value="Filter" class="btn btn-default btn-lg" style="width: 400px;" />
 				<input type="hidden" name="random" value="" />
 				<input type="hidden" name="orderBy" value="" />
 				<input type="hidden" name="placeholder" value="" />

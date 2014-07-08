@@ -37,7 +37,6 @@ sub Rating {
 
 	my $html;
 	while ($rating > 0) {
-		#$html .= qq{<i class="icon icon-star-empty"></i>};
 		$html .= "*";
 		$rating--;
 	}
@@ -66,83 +65,61 @@ sub Header {
 	}
 
 	my $url = $0;
+	$url =~ s/.*\///;	# strip anything but foo.pl
 
 	print qq{
 		<html>
 			<head>
-				<link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
+				<link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 				<link href="/css/flavors.css" rel="stylesheet" type="text/css" />
 				<link href="/css/cupertino/jquery-ui-1.8.17.custom.css" rel="stylesheet" type="text/css" />
 				<script type="text/javascript" src="/javascript/jquery-1.7.1.min.js"></script>
 				<script type="text/javascript" src="/javascript/jquery-ui-1.8.17.custom.min.js"></script>
-				<script type="text/javascript" src="/javascript/bootstrap.min.js"></script>
+				<script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
 				<script type="text/javascript" src="/javascript/application.js"></script>
 				<title>$args->{TITLE}</title>
 			</head>
 			<body>
-				<div class="navbar-container">
-					<div class="navbar">
-						<div class="navbar-inner">
-							<div class="brand">Flavors</div>
 	};
 
-	my @pages = (
-		{ url => "songs.pl" },
-		{ url => "collections.pl" },
-		{ url => "categories.pl" },
-		{ url => "tags.pl" },
-		{ url => "lab.pl" },
+	my @urls = qw(
+		songs.pl
+		collections.pl
+		categories.pl
+		tags.pl
+		lab.pl
 	);
-	my $currentpage;
-	foreach my $page (@pages) {
-		if (!$page->{name}) {
-			$page->{name} = $page->{url};
-			$page->{name} =~ s/\..*$//;
-			$page->{name} = ucfirst($page->{name});
-		}
-		$currentpage = $page if $page->{url} eq $url;
-	}
+
+	print qq{ <div class="navbar-container"><nav class="navbar navbar-default"> };
 
 	print sprintf(qq{
-							<ul class="nav">
-								<li class="dropdown">
-									<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" id="menu-button">
-										%s
-										<b class="caret"></b>
-									</a>
-									<ul class="dropdown-menu" role="menu" aria-labelledby="menu-button">
-		},
-		$currentpage->{name},
-	);
-	foreach my $page (@pages) {
-		print sprintf(qq{
-				<li><a href="%s">%s</a></li>
-			},
-			$page->{url},
-			$page->{name},
-		) unless $page->{url} eq $currentpage->{url};
-	}
-	print qq{
-									</ul>
-								</li>
-							</ul>
-	};
+					<a class='navbar-brand' href='#'>Flavors</a>
+					<ul class="nav navbar-nav">
+						%s
+					</ul>
+	}, join("", map {
+		sprintf("<li class='%s'><a href='%s'>%s</a></li>", $url eq $_ ? 'active' : '', $_, ucfirst($1))
+		if $_ =~ m/(.*)\.[^.]+/	# shorthand; all elements will match
+	} @urls));
 
 	print qq{
-		<button type="button" class="export-button btn btn-mini btn-info pull-right" data-os="mac">
-			<span class="icon-white icon-home"></span>
+		<button type="button" class="export-button btn btn-xs btn-info pull-right" data-os="mac">
+			<span class="glyphicon glyphicon-home"></span>
 			Export
 		</button>
-		<button type="button" class="export-button btn btn-mini btn-info pull-right" data-os="pc">
-			<span class="icon-white icon-briefcase"></span>
+		<button type="button" class="export-button btn btn-xs btn-info pull-right" data-os="pc">
+			<span class="glyphicon glyphicon-briefcase"></span>
 			Export
 		</button>
 	} unless $args->{HIDEEXPORT};
+
+	print qq { </nav> };
 
 	print qq{
 						</div>
 					</div>
 				</div>
+			</div>
 	};
 }
 

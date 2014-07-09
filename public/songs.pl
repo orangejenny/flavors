@@ -24,10 +24,10 @@ if ($fdat->{RANDOM}) {
 	my $item = FlavorsData::RandomItem($dbh, $column);
 	$item = FlavorsUtils::EscapeSQL($item);
 	if ($column =~ m/collection/i) {
-		$fdat->{FILTER} = sprintf("collectionlist like '%%%s%%'", $item);
+		$fdat->{FILTER} = sprintf("collectionlist like '%% %s %%'", $item);
 	}
 	elsif ($column =~ m/tag/i) {
-		$fdat->{FILTER} = sprintf("taglist like '%%%s%%'", $item);
+		$fdat->{FILTER} = sprintf("taglist like '%% %s %%'", $item);
 	}
 	else {
 		$fdat->{FILTER} = sprintf("%s = '%s'", $column, $item);
@@ -293,6 +293,7 @@ print sprintf(q{
 				{ type: 'number', label: 'ID' },
 				{ type: 'string', label: 'Name'},
 				{ type: 'string', label: 'Artist'},
+				{ type: 'string', label: 'Collections'},
 				{ type: 'string', label: 'Rating'},
 				{ type: 'string', label: 'Energy'},
 				{ type: 'string', label: 'Mood'},
@@ -320,9 +321,9 @@ print sprintf(q{
 			}
 
 			for (var i = 0; i < rows.length; i++) {
-				data.setProperty(i, 3, 'className', 'google-visualization-table-td rating');
 				data.setProperty(i, 4, 'className', 'google-visualization-table-td rating');
 				data.setProperty(i, 5, 'className', 'google-visualization-table-td rating');
+				data.setProperty(i, 6, 'className', 'google-visualization-table-td rating');
 			}
 
 			dataview = new google.visualization.DataView(data);
@@ -360,15 +361,17 @@ print sprintf(q{
 
 		function refreshTable() {
 			var $table = jQuery("#song-table-container");
-			var $cells = $table.find("tr:not(:first) td");
+			var $cells = $table.find("tr:not(:first)").find("td:not(:first-child):not(:nth-child(2))");
 			$cells.attr("contenteditable", "true");
+
 			var $headercells = $table.find("tr:first td");
-			jQuery($headercells[0]).css("width", "20%");
-			jQuery($headercells[1]).css("width", "20%");
-			jQuery($headercells[2]).css("width", "5%");
+			jQuery($headercells[0]).css("width", "15%");
+			jQuery($headercells[1]).css("width", "15%");
+			jQuery($headercells[2]).css("width", "15%");
 			jQuery($headercells[3]).css("width", "5%");
 			jQuery($headercells[4]).css("width", "5%");
-			jQuery($headercells[5]).css("width", "45%");
+			jQuery($headercells[5]).css("width", "5%");
+			jQuery($headercells[6]).css("width", "40%");
 
 			var $filters = jQuery('#simple-filters');
 			var placeholders = ["name", "artist", "tags"];
@@ -380,10 +383,11 @@ print sprintf(q{
 },
 join(", ", map {
 	sprintf(
-		"{ c: [{v: %s}, {v: '%s'}, {v: '%s'}, {v: '%s'}, {v: '%s'}, {v: '%s'}, {v: '%s'}] }",
+		"{ c: [{v: %s}, {v: '%s'}, {v: '%s'}, {v: '%s'}, {v: '%s'}, {v: '%s'}, {v: '%s'}, {v: '%s'}] }",
 		$_->{ID},
 		FlavorsUtils::EscapeJS($_->{NAME}),
 		FlavorsUtils::EscapeJS($_->{ARTIST}),
+		FlavorsUtils::EscapeJS($_->{COLLECTIONS}),
 		FlavorsHTML::Rating($_->{RATING}),
 		FlavorsHTML::Rating($_->{ENERGY}),
 		FlavorsHTML::Rating($_->{MOOD}),
@@ -395,9 +399,9 @@ print qq{ <div id="dashboard"> };
 
 print qq{
 	<div id="simple-filters" class="clearfix">
-		<div id="simple-filter-name" style="width: 20%; float: left;"></div>
-		<div id="simple-filter-artist" style="width: 20%; float: left;"></div>
-		<div id="simple-filter-tags" style="width: 45%; float: left; margin-left: 15%;"></div>
+		<div id="simple-filter-name" style="width: 15%; float: left;"></div>
+		<div id="simple-filter-artist" style="width: 15%; float: left;"></div>
+		<div id="simple-filter-tags" style="width: 25%; float: left; margin-left: 32%;"></div>
 	</div>
 };
 

@@ -62,10 +62,10 @@ sub SongList {
 			$songcolumnstring,
 			artistgenre.genre,
 			concat(' ', songtaglist.taglist, ' ') as taglist,
+			concat(' ', group_concat(collection.name separator '; '), ' ') as collectionlist,
 			songtaglist.tagcount,
 			years.minyear,
 			years.maxyear,
-			concat(' ', group_concat(collection.name separator ' '), ' ') as collectionlist,
 			min(collection.dateacquired) as dateacquired,
 			song.exportcount,
 			song.lastexport
@@ -123,7 +123,7 @@ sub SongList {
 
 	my @results = _results($dbh, {
 		SQL => $sql,
-		COLUMNS => [@songcolumns, 'genre', 'tags'],
+		COLUMNS => [@songcolumns, 'genre', 'tags', 'collections'],
 		BINDS => \@binds,
 	});
 

@@ -93,7 +93,7 @@ label {
 }
 
 #song-table-container {
-	width: 100%;
+	width: calc(100% - 30px);
 	position: absolute;
 	top: 230px;
 	margin: 15px 15px 35px 15px;	// bottom space for #song-count-container

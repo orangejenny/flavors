@@ -32,7 +32,7 @@ sub DBH {
 #		FILTER: additional where clause
 #		ID: only this song
 #		ORDERBY: order by this column (may include "desc")
-#		NAME, ARTIST, GENRE, TAGS: 'like' filters for these columns
+#		NAME, ARTIST, COLLECTIONS, TAGS: 'like' filters for these columns
 #
 # Return Value: array of hashrefs UNLESS ID is passed, in which 
 #		case, return the single hashref
@@ -62,7 +62,7 @@ sub SongList {
 			$songcolumnstring,
 			artistgenre.genre,
 			concat(' ', songtaglist.taglist, ' ') as taglist,
-			concat(' ', group_concat(collection.name separator '; '), ' ') as collectionlist,
+			concat(' ', group_concat(collection.name order by dateacquired separator '; '), ' ') as collectionlist,
 			songtaglist.tagcount,
 			years.minyear,
 			years.maxyear,
@@ -101,7 +101,7 @@ sub SongList {
 	my %filtercolumns = (
 		NAME => 'name',
 		ARTIST => 'artist',
-		GENRE => 'genre',
+		COLLECTIONS => 'collectionlist',
 		TAGS => 'taglist',
 	);
 	my @binds;

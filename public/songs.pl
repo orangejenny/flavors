@@ -155,7 +155,7 @@ if (!exists $fdat->{FILTER}) {
 				jQuery("#helpers").modal({
 					backdrop: "static",
 					keyboard: false,
-				});
+				}).find(".btn-info").focus();
 			});
 		</script>
 	};
@@ -175,7 +175,7 @@ print sprintf(q{
 		var selectedrow = undefined;
 		var oldvalue = undefined;
 		var dashboard, data, dataview, table = undefined;
-		var filters = ['Name', 'Artist', 'Tags'];
+		var filters = ['Name', 'Artist', 'Collections', 'Tags'];
 
 		function correlateFilter(rowIndex) {
 			var newRowIndex = rowIndex;
@@ -273,6 +273,7 @@ print sprintf(q{
 				var options = BuildArgs('#complex-filter', options);
 				options.NAME = jQuery("#simple-filter-name input").val();
 				options.ARTIST = jQuery("#simple-filter-artist input").val();
+				options.COLLECTIONS = jQuery("#simple-filter-collections input").val();
 				options.TAGS = jQuery("#simple-filter-tags input").val();
 				options.OS = jQuery(this).data("os");
 				ExportPlaylist(options);
@@ -361,7 +362,7 @@ print sprintf(q{
 
 		function refreshTable() {
 			var $table = jQuery("#song-table-container");
-			var $cells = $table.find("tr:not(:first)").find("td:not(:first-child):not(:nth-child(2))");
+			var $cells = $table.find("tr:not(:first)").find("td.rating, td:last-child");
 			$cells.attr("contenteditable", "true");
 
 			var $headercells = $table.find("tr:first td");
@@ -374,7 +375,7 @@ print sprintf(q{
 			jQuery($headercells[6]).css("width", "40%");
 
 			var $filters = jQuery('#simple-filters');
-			var placeholders = ["name", "artist", "tags"];
+			var placeholders = ["name", "artist", "collections", "tags"];
 			$filters.find("input").each(function() {
 				jQuery(this).get(0).placeholder = placeholders.shift();
 			});
@@ -401,7 +402,8 @@ print qq{
 	<div id="simple-filters" class="clearfix">
 		<div id="simple-filter-name" style="width: 15%; float: left;"></div>
 		<div id="simple-filter-artist" style="width: 15%; float: left;"></div>
-		<div id="simple-filter-tags" style="width: 25%; float: left; margin-left: 32%;"></div>
+		<div id="simple-filter-collections" style="width: 15%; float: left;"></div>
+		<div id="simple-filter-tags" style="width: 25%; float: left; margin-left: 15%;"></div>
 	</div>
 };
 

@@ -85,5 +85,6 @@ function ExportPlaylist(args) {
 		params.push(key + '=' + value);
 	}
 
+	console.log('export.pl?' + params.join('&'));
 	document.location = 'export.pl?' + params.join('&');
 }

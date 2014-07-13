@@ -1,0 +1,160 @@
+body { 
+	background-color: #fff; 
+	color: #333; 
+}
+
+body, p, ol, ul, td, th {
+  font-family: helvetica, arial, sans-serif;
+  font-size: 12px;
+  line-height: 15px;
+}
+
+label {
+	cursor: pointer;
+}
+
+.clear {
+	clear: both;
+}
+
+#top-veil, #bottom-veil {
+	background-color: #fff;
+	opacity: 0.9;
+	left: 0;
+	right: 0;
+	z-index: 2;
+}
+
+#top-veil {
+	position: fixed;
+	top: 0;
+	height: 210px;
+}
+
+#bottom-veil {
+	padding: 15px;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+}
+
+.navbar-container {
+	position: fixed;
+	padding: 15px;
+	width: 100%;
+	z-index: 3;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+th, #song-table-container tr:first-child td {
+	text-align: left;
+	padding: 0 2px;
+	background: white;
+	border: none;
+	border-bottom: 1px solid black;
+}
+
+td, th {
+  margin: 1px;
+  padding: 2px 5px;
+	vertical-align: top;
+}
+
+th {
+  text-align: left;
+  padding-right: 10px;
+  font-weight: bold;
+}
+
+.rating {
+  font-family: courier;
+  font-size: 18px;
+	white-space: nowrap;
+}
+
+.slider {
+	width: 400px;
+}
+
+pre {
+  background-color: #eee;
+  padding: 10px;
+  font-size: 11px;
+}
+
+a { color: #000; }
+a:visited { color: #666; }
+a:hover { color: #fff; background-color:#000; }
+
+.horizontal li {
+	display: inline;
+	list-style-type: none;
+	padding-right: 20px;
+}
+
+.tag, #song-count-span {
+	font-size: 12px;
+	font-weight: bold;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	display: inline;
+	line-height: 3;
+	padding: 3px 8px;
+	background-color: #deedf7;
+	border: 1px solid #aed0ea;
+	white-space: nowrap;
+}
+
+.tag-count {
+	font-size: 10px;
+	margin-left: 8px;
+}
+
+.location.btn-group, .navbar .export-button {
+	margin-top: 14px;
+	margin-right: 14px;
+}
+
+.ui-autocomplete {
+	max-height: 300px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding-right: 20px;
+}
+
+.page {
+	padding-top: 20px;
+	display: none;
+}
+
+ul.plain {
+	margin: 0;
+	padding: 0;
+}
+
+ul.plain li {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+#sliders th, #sliders td {
+	vertical-align: middle;
+	height: 30px;
+}
+
+.update-in-progress {
+	background-color: #ffc !important;
+}
+
+.modal-dialog .close {
+	margin: 15px;
+}
+
+#initial-page-data {
+	display: none;
+}

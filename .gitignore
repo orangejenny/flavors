@@ -7,3 +7,4 @@ public/.htaccess
 config.yml
 *.swp
 .ht*
+public/node_modules/*

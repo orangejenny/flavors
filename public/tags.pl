@@ -17,27 +17,6 @@ FlavorsHTML::Header({
 
 my @tags = FlavorsData::TagList($dbh);
 
-print q{
-	<script type="text/javascript">
-		jQuery(function() {
-			jQuery('.tag').css("cursor", "pointer").click(function() {
-				var tag = jQuery(this).text();
-				tag = tag.replace(/\\(.*/, "");
-				CallRemote({
-					SUB: 'FlavorsHTML::TagDetails', 
-					ARGS: { TAG: tag }, 
-					FINISH: function(data) {
-						var $modal = jQuery("#item-detail");
-						$modal.find('.modal-header h4').html(data.TITLE);
-						$modal.find('.modal-body').html(data.CONTENT);
-						$modal.modal();
-					}
-				});
-			});
-		});
-	</script>
-};
-
 # Print tags by frequency, click to pull up related tags
 print "<div class='category-tab'>" . join("", map { FlavorsHTML::Tag($_) } @tags) . "</div>";
 

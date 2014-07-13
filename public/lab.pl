@@ -19,6 +19,9 @@ my $cgi = CGI->new;
 print $cgi->header();
 FlavorsHTML::Header({
 	TITLE => "Lab",
+	INITIALPAGEDATA => {
+		OBJECT => $object,
+	},
 });
 
 my @tags = FlavorsData::TagList($dbh);
@@ -143,52 +146,7 @@ $song->{SCORESTRING} .= "[" . join(" ", FlavorsUtils::ArrayIntersection(\@songta
 	}
 }
 
-
-print sprintf(qq{
-	<script type="text/javascript">
-		jQuery(function() {
-			jQuery('#objectid').autocomplete({
-				autoFocus: true,
-				minLength: 3,
-				source: function(request, response) {
-					CallRemote({
-						SUB: 'FlavorsData::%sList', 
-						ARGS: { NAME: request.term }, 
-						FINISH: function(objects) {
-							var options = new Array();
-							for (var index in objects) {
-								options.push({
-									label: objects[index].NAME%s,
-									value: objects[index].ID
-								});
-							}
-							response(options);
-						}
-					});
-				}
-			});
-
-			jQuery('.tag').css("cursor", "pointer").click(function() {
-				var tag = jQuery(this).text();
-				tag = tag.replace(/\\(.*/, "");
-				CallRemote({
-					SUB: 'FlavorsHTML::TagSongList', 
-					ARGS: { TAG: tag }, 
-					FINISH: function(data) {
-						$modal.find('.modal-header h4').html(data.TITLE);
-						$modal.find('.modal-body').html(data.CONTENT);
-						$modal.modal();
-					}
-				});
-			});
-		});
-	</script>
-}, 
-	ucfirst $object,
-	$object eq "song" ? " + ' (' + objects[index].ARTIST + ')'" : "",
-);
-
-print sprintf(qq{
+printf(qq{
 	<form method=POST>
 		<table id=sliders>
 			<tbody>
@@ -204,7 +162,7 @@ print sprintf(qq{
 		while (scalar(@randomtags) > 5) {
 			splice(@randomtags, int(rand(scalar(@randomtags))), 1);
 		}
-		print sprintf(qq{
+		printf(qq{
 			<tr>
 				<th>%s</th>
 				<td>
@@ -218,7 +176,7 @@ print sprintf(qq{
 		}, ucfirst($slider), join("", @randomtags));
 	}
 
-	print sprintf(qq{
+	printf(qq{
 				<tr>
 					<th>Length</th>
 					<td><input value=$fdat->{LIMIT} name=limit size=3 />%ss</td>
@@ -238,25 +196,25 @@ print sprintf(qq{
 
 		my $i = 1;
 		foreach my $object (@objects) {
-			print sprintf(
+			printf(
 				"$i. $object->{NAME} %s($object->{SCORE}$object->{SCORESTRING}) <br>", 
 				$object eq "song" ? "($object->{ARTIST}) " : ""
 			);
 			$i++;
 		}
 
-		print sprintf(qq{
+		printf(qq{
 					<input id=objectidlist value="%s" type=hidden />
 				</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>
-					<input type=button value=export id=export onclick="ExportPlaylist({ OBJECT: '%s', OBJECTIDLIST: jQuery('#objectidlist').val() });;" />
+					<input type=button value=export id=export />
 					%s
 			</td>
 			</tr>
-		}, join("\t", map { $_->{ID} } @objects), FlavorsHTML::LocationInput(), $object);
+		}, join("\t", map { $_->{ID} } @objects), FlavorsHTML::LocationInput());
 	}
 
 	print qq{

@@ -1,0 +1,41 @@
+.tab-content { overflow: visible; }
+
+.minicolors-panel { top: 22px; }
+
+.minicolors input { height: 22px; }
+
+.btn-group > .btn.active { z-index: 1; }
+
+.color {
+	float: left;
+	width: 325px;
+	padding: 10px;
+}
+
+.color .name {
+	width: 75px;
+	float: left;
+}
+
+.color .btn-group {
+	margin-left: 10px;
+}
+
+.category-tab {
+	text-align: center;
+}
+
+.category {
+	border: 1px #aed0ea solid;
+	margin: 10px;
+	padding: 10px;
+	float: left;
+	text-align: center;
+}
+
+.category-tags {
+	display: none;
+	max-height: 500px;
+	overflow-y: auto;
+}
+

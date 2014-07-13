@@ -17,20 +17,6 @@ label {
 	clear: both;
 }
 
-#song-count-container {
-	position: fixed;
-	bottom: 0;
-	width: 100%;
-	text-align: center;
-	font-weight: bold;
-	font-size: 14px;
-}
-
-#song-count-span {
-	position: relative;
-	z-index: 3;
-}
-
 #top-veil, #bottom-veil {
 	background-color: #fff;
 	opacity: 0.9;
@@ -58,46 +44,6 @@ label {
 	padding: 15px;
 	width: 100%;
 	z-index: 3;
-}
-
-.complex-filter-container {
-	text-align: center;
-	position: fixed;
-	width: 100%;
-	top: 80px;
-	z-index: 3;
-}
-
-#complex-filter textarea {
-	margin: 0 5px;
-	padding: 5px;
-	border-radius: 4px;
-	border-color: #ccc;
-}
-
-#simple-filters {
-	width: 100%;
-	padding: 0 15px;
-	position: fixed;
-	z-index: 3;
-	top: 200px;
-}
-
-#simple-filters input {
-	height: 35px;
-	width: 180px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	margin: 5px 0;
-	padding: 0 5px;
-}
-
-#song-table-container {
-	width: calc(100% - 30px);
-	position: absolute;
-	top: 230px;
-	margin: 15px 15px 35px 15px;	// bottom space for #song-count-container
-	z-index: 1;
 }
 
 table {
@@ -151,10 +97,6 @@ a:hover { color: #fff; background-color:#000; }
 	padding-right: 20px;
 }
 
-.category-tab {
-	text-align: center;
-}
-
 .tag, #song-count-span {
 	font-size: 12px;
 	font-weight: bold;
@@ -171,20 +113,6 @@ a:hover { color: #fff; background-color:#000; }
 .tag-count {
 	font-size: 10px;
 	margin-left: 8px;
-}
-
-.category {
-	border: 1px #aed0ea solid;
-	margin: 10px;
-	padding: 10px;
-	float: left;
-	text-align: center;
-}
-
-.category-tags {
-	display: none;
-	max-height: 500px;
-	overflow-y: auto;
 }
 
 .location.btn-group, .navbar .export-button {
@@ -224,30 +152,10 @@ ul.plain li {
 	background-color: #ffc !important;
 }
 
-#helpers {
-	display: none;
-}
-
-#helpers .modal-body {
-	text-align: center;
-}
-
-#helpers .group:not(:last-child) {
-	margin-bottom: 25px;
-}
-
-#helpers button {
-	width: 155px;
-}
-
-#helpers button:not(:last-child) {
-	margin-right: 25px;
-}
-
-#helpers-trigger {
-	cursor: pointer;
-}
-
 .modal-dialog .close {
 	margin: 15px;
+}
+
+#initial-page-data {
+	display: none;
 }

@@ -3,6 +3,7 @@ package FlavorsHTML;
 use strict;
 use Data::Dumper;
 use FlavorsData;
+use JSON qw(to_json);
 
 ################################################################
 # Tag
@@ -51,6 +52,7 @@ sub Rating {
 #
 # Params:
 #		TITLE: (optional) page title
+#		INITIALPAGEDATA: (optional) hash to convert to JSON
 #
 # Return Value: HTML
 ################################################################
@@ -66,21 +68,30 @@ sub Header {
 
 	my $url = $0;
 	$url =~ s/.*\///;	# strip anything but foo.pl
+	my $title = $url;
+	$title =~ s/\..*//g;
 
-	print qq{
+	printf(qq{
 		<html>
 			<head>
 				<link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 				<link href="/css/flavors.css" rel="stylesheet" type="text/css" />
+				<link href="/css/%s.css" rel="stylesheet" type="text/css" />
 				<link href="/css/cupertino/jquery-ui-1.8.17.custom.css" rel="stylesheet" type="text/css" />
+				<script type='text/javascript' src='https://www.google.com/jsapi'></script>
 				<script type="text/javascript" src="/javascript/jquery-1.7.1.min.js"></script>
 				<script type="text/javascript" src="/javascript/jquery-ui-1.8.17.custom.min.js"></script>
 				<script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
 				<script type="text/javascript" src="/javascript/application.js"></script>
+				<script type="text/javascript" src="/javascript/%s.js"></script>
 				<title>$args->{TITLE}</title>
 			</head>
 			<body>
-	};
+	}, $title, $title);
+
+	if ($args->{INITIALPAGEDATA}) {
+		printf(qq{ <div id="initial-page-data">%s</div> }, JSON::to_json($args->{INITIALPAGEDATA}));
+	}
 
 	my @urls = qw(
 		songs.pl
@@ -92,7 +103,7 @@ sub Header {
 
 	print qq{ <div class="navbar-container"><nav class="navbar navbar-default"> };
 
-	print sprintf(qq{
+	printf(qq{
 					<a class='navbar-brand' href='#'>Flavors</a>
 					<ul class="nav navbar-nav">
 						%s
@@ -288,7 +299,7 @@ sub Categorize {
 		$width = 20;
 		$html .= sprintf(qq{
 			<div class='category ui-corner-all' style='width: %s%%;' category='%s'>
-				<div style='cursor: pointer;' onclick='ToggleCategory(this)'>
+				<div style='cursor: pointer;' class='header'>
 					%s
 				</div>
 				<div class='category-tags'>

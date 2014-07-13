@@ -9,7 +9,6 @@ jQuery(document).ready(function() {
 	jQuery('.slider').each(function() {
 		jQuery(this).slider('option', 'value', jQuery(this).next("input").val());
 	});
-
 });
 
 /*
@@ -87,4 +86,25 @@ function ExportPlaylist(args) {
 
 	console.log('export.pl?' + params.join('&'));
 	document.location = 'export.pl?' + params.join('&');
+}
+
+/*
+ * UpperCaseFirst
+ *
+ * Description: ucfirst
+ *
+ * Args
+ *	String to manipulate.
+ */
+function UpperCaseFirst(str) {
+	var first = str.substring(0, 1).toUpperCase();
+	var rest = str.substring(1).toLowerCase();
+	return first + rest;
+}
+
+function InitialPageData(key) {
+	key = key.toUpperCase();
+	var data = jQuery("#initial-page-data").html();
+	data = jQuery.parseJSON(data);
+	return data[key];
 }

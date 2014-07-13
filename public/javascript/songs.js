@@ -174,6 +174,9 @@ function drawTable() {
 		{ type: 'string', label: 'Tags'}
 	];
 	var rows = InitialPageData('rows');
+	if (!rows) {
+		return;
+	}
 	data = new google.visualization.DataTable({
 		cols: columns,
 		rows: rows,

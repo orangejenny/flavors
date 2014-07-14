@@ -34,11 +34,14 @@ foreach my $song (@tracks) {
 }
 
 print qq{
+<div class="post-nav">
 	<div class="controls">
 		Collections:
 		<input type="text" id="collection-filter">
+		<br /><br />
 		Tags:
 		<input type="text" id="tag-filter">
+		<br /><br />
 		<div class="dropdown sort-menu">
 			Sort by
 			<a class="dropdown-toggle" data-toggle="dropdown" role="label" href="#">
@@ -73,7 +76,7 @@ print qq{
 		<br><br>
 		<div class="well" id="export-list">
 			<ul></ul>
-			<button class="btn btn-sm btn-default hide clear">Clear</button>
+			<button class="btn btn-sm btn-default hide">Clear</button>
 		</div>
 	</div>
 };
@@ -152,6 +155,6 @@ foreach my $collection (@collections) {
 	);
 	print "</div>";
 }
-print "</div>";
+print "</div></div>";
 
 print FlavorsHTML::Footer();

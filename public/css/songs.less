@@ -1,0 +1,99 @@
+@import "imports.less";
+
+#song-count-container {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	text-align: center;
+	font-weight: bold;
+	font-size: 14px;
+
+	#song-count-span {
+		position: relative;
+		z-index: 3;
+	}
+}
+
+.complex-filter-container {
+	text-align: center;
+	position: fixed;
+	width: 100%;
+	top: 80px;
+	z-index: 3;
+}
+
+#complex-filter textarea {
+	margin: 0 @spacingNarrow;
+	padding: @spacingNarrow;
+	border-radius: @borderRadius;
+	border-color: @greyLight;
+}
+
+#simple-filters {
+	width: 100%;
+	position: fixed;
+	z-index: 3;
+	top: 200px;
+
+	input {
+		height: 35px;
+		width: 180px;
+		border: 1px solid #ccc;
+		border-radius: @borderRadius;
+		margin: 5px 0;
+		padding: 0 5px;
+	}
+}
+
+#song-table-container {
+	width: 100%;
+	position: absolute;
+	top: 155px;
+	z-index: 1;
+	margin-bottom: 25px;
+}
+
+#helpers {
+	display: none;
+
+	.modal-body {
+		text-align: center;
+	}
+
+	.group:not(:last-child) {
+		margin-bottom: 25px;
+	}
+
+	button {
+		width: 155px;
+
+		&:not(:last-child) {
+			margin-right: 25px;
+		}
+	}
+}
+
+#helpers-trigger {
+	cursor: pointer;
+}
+
+#top-veil, #bottom-veil {
+	background-color: @white;
+	opacity: 0.9;
+	left: 0;
+	right: 0;
+	z-index: 2;
+}
+
+#top-veil {
+	position: fixed;
+	top: 0;
+	height: 210px;
+}
+
+#bottom-veil {
+	padding: 15px;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+}

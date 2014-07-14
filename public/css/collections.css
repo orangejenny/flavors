@@ -1,79 +1,78 @@
 .collection {
-	float: left;
-	margin: 10px;
-	-webkit-border-radius: 4px;
-	cursor: pointer;
-	width: 80px;
-	height: 80px;
-	overflow: hidden;
-	background-color: white;
+  float: left;
+  margin: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  overflow: hidden;
+  background-color: #ffffff;
 }
-
 .collection.has-details {
-	border: 1px solid #ccc;
-	width: 225px;
-	padding: 10px;
+  border: 1px solid #cccccc;
+  width: 225px;
+  padding: 10px;
+  height: 85px;
 }
-
-.collection .artist, .collection .date-acquired, .collection .rating {
-	color: #999;
+.collection.has-details .details .name,
+.collection.has-details .details .artist {
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
-
-.collection .mix, .collection .album {
-	border: 1px solid #999;
-	float: left;
-	margin-right: 10px;
+.collection .artist,
+.collection .date-acquired,
+.collection .rating {
+  color: #999999;
 }
-
+.collection .mix,
 .collection .album {
-	width: 75px;
-	height: 75px;
+  border: 1px solid #999999;
+  float: left;
+  margin-right: 10px;
 }
-
+.collection .album {
+  width: 75px;
+  height: 75px;
+}
 .collection .mix {
-	width: 65px;
-	height: 65px;
-	padding: 5px;
-	text-align: center;
-	font-size: 9px;
-	line-height: 13px;
+  width: 65px;
+  height: 65px;
+  padding: 5px;
+  text-align: center;
+  font-size: 9px;
+  line-height: 11px;
 }
-
 .controls {
-	position: fixed;
-	width: 225px;
+  margin: 10px;
+  position: fixed;
+  width: 225px;
 }
-
-.controls input[type=text] {
-	width: 225px;
+.controls label {
+  display: block;
 }
-
-.controls input[type=checkbox] {
-	margin: 0 5px 5px 0;
+.controls input[type="text"] {
+  width: 225px;
 }
-
+.controls input[type="checkbox"] {
+  margin: 0 5px 5px 0;
+}
 .controls .sort-menu .dropdown-toggle,
 .controls .sort-menu .dropdown-toggle:hover {
-	background-color: white;
-	text-decoration: none;
-	color: #333;
+  background-color: #ffffff;
+  text-decoration: none;
+  color: #333333;
 }
-
 #export-list ul {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
-
 #export-list ul li {
-	margin: 0;
-	padding: 0 0 10px 0;
+  margin: 0;
+  padding: 0 0 10px 0;
 }
-
 .export-list-active {
-	background-color: white;
+  background-color: #ffffff;
 }
-
 .export-list-hover {
-	background-color: #f0f0f0;
+  background-color: #eeeeee;
 }

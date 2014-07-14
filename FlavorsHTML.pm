@@ -16,7 +16,7 @@ use JSON qw(to_json);
 ################################################################
 sub Tag {
 	my ($tag) = @_;
-	my $html = "<div class='tag ui-corner-all' category='$tag->{CATEGORY}'>$tag->{TAG}";
+	my $html = "<div class='tag' category='$tag->{CATEGORY}'>$tag->{TAG}";
 	if ($tag->{COUNT}) {
 		$html .= "<span class='tag-count'>($tag->{COUNT})</span>";
 	}
@@ -299,7 +299,7 @@ sub Categorize {
 		$width = 20;
 		$html .= sprintf(qq{
 			<div class='category ui-corner-all' style='width: %s%%;' category='%s'>
-				<div style='cursor: pointer;' class='header'>
+				<div class='header clickable'>
 					%s
 				</div>
 				<div class='category-tags'>

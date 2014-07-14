@@ -1,78 +1,83 @@
 #song-count-container {
-	position: fixed;
-	bottom: 0;
-	width: 100%;
-	text-align: center;
-	font-weight: bold;
-	font-size: 14px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
 }
-
-#song-count-span {
-	position: relative;
-	z-index: 3;
+#song-count-container #song-count-span {
+  position: relative;
+  z-index: 3;
 }
-
 .complex-filter-container {
-	text-align: center;
-	position: fixed;
-	width: 100%;
-	top: 80px;
-	z-index: 3;
+  text-align: center;
+  position: fixed;
+  width: 100%;
+  top: 80px;
+  z-index: 3;
 }
-
 #complex-filter textarea {
-	margin: 0 5px;
-	padding: 5px;
-	border-radius: 4px;
-	border-color: #ccc;
+  margin: 0 5px;
+  padding: 5px;
+  border-radius: 4px;
+  border-color: #cccccc;
 }
-
 #simple-filters {
-	width: 100%;
-	padding: 0 15px;
-	position: fixed;
-	z-index: 3;
-	top: 200px;
+  width: 100%;
+  position: fixed;
+  z-index: 3;
+  top: 200px;
 }
-
 #simple-filters input {
-	height: 35px;
-	width: 180px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	margin: 5px 0;
-	padding: 0 5px;
+  height: 35px;
+  width: 180px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 5px 0;
+  padding: 0 5px;
 }
-
 #song-table-container {
-	width: calc(100% - 30px);
-	position: absolute;
-	top: 230px;
-	margin: 15px 15px 35px 15px;	// bottom space for #song-count-container
-	z-index: 1;
+  width: 100%;
+  position: absolute;
+  top: 155px;
+  z-index: 1;
+  margin-bottom: 25px;
 }
-
 #helpers {
-	display: none;
+  display: none;
 }
-
 #helpers .modal-body {
-	text-align: center;
+  text-align: center;
 }
-
 #helpers .group:not(:last-child) {
-	margin-bottom: 25px;
+  margin-bottom: 25px;
 }
-
 #helpers button {
-	width: 155px;
+  width: 155px;
 }
-
 #helpers button:not(:last-child) {
-	margin-right: 25px;
+  margin-right: 25px;
 }
-
 #helpers-trigger {
-	cursor: pointer;
+  cursor: pointer;
 }
-
+#top-veil,
+#bottom-veil {
+  background-color: #ffffff;
+  opacity: 0.9;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+#top-veil {
+  position: fixed;
+  top: 0;
+  height: 210px;
+}
+#bottom-veil {
+  padding: 15px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}

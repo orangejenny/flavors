@@ -1,0 +1,98 @@
+@import "imports.less";
+
+.collection {
+	@albumSize: 75px;
+
+	float: left;
+	margin: @spacingNormal;
+	border-radius: @borderRadius;
+	cursor: pointer;
+	overflow: hidden;
+	background-color: @white;
+
+	&.has-details {
+		border: 1px solid @greyLight;
+		width: 225px;
+		padding: @spacingNormal;
+		height: @albumSize + @spacingNormal;
+
+		.details {
+			.name, .artist {
+				.ellipsis();
+			}
+		}
+	}
+
+	.artist, .date-acquired, .rating {
+		color: @grey;
+	}
+
+	.mix, .album {
+		border: 1px solid @grey;
+		float: left;
+		margin-right: @spacingNormal;
+	}
+
+	.album {
+		width: @albumSize;
+		height: @albumSize;
+	}
+
+	.mix {
+		@size: 65px;
+
+		width: @size;
+		height: @size;
+		padding: @spacingNarrow;
+		text-align: center;
+		font-size: 9px;
+		line-height: 11px;
+	}
+}
+
+.controls {
+	@width: 225px;
+
+	margin: @spacingNormal;
+	position: fixed;
+	width: @width;
+
+	label {
+		display: block;
+	}
+
+	input[type="text"] {
+		width: @width;
+	}
+
+	input[type="checkbox"] {
+		margin: 0 @spacingNarrow @spacingNarrow 0;
+	}
+
+	.sort-menu {
+		.dropdown-toggle, .dropdown-toggle:hover {
+			background-color: @white;
+			text-decoration: none;
+			color: @greyDarkest;
+		}
+	}
+}
+
+#export-list ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+
+	li {
+		margin: 0;
+		padding: 0 0 @spacingNormal 0;
+	}
+}
+
+.export-list-active {
+	background-color: @white;
+}
+
+.export-list-hover {
+	background-color: @greyLightest;
+}

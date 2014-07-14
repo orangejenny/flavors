@@ -18,7 +18,7 @@ FlavorsHTML::Header({
 my @tags = FlavorsData::TagList($dbh);
 
 # Print tags by frequency, click to pull up related tags
-print "<div class='category-tab'>" . join("", map { FlavorsHTML::Tag($_) } @tags) . "</div>";
+print "<div class='post-nav category-tab'>" . join("", map { FlavorsHTML::Tag($_) } @tags) . "</div>";
 
 print q{
 	<div id="item-detail" class="modal">

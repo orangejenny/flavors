@@ -121,16 +121,18 @@ jQuery(document).ready(function() {
 			li += "</li>";
 			$ul.append(li);
 			collections.push(ui.draggable.detach());
-			jQuery(".controls .clear").show();
+			jQuery(".controls #export-list button").removeClass("hide");
 		}
 	});
 
 	// "Clear" button
-	jQuery("button.clear").click(function() {
+	jQuery(".controls #export-list button").click(function() {
+		var $button = jQuery(this);
 		for (var i in collections) {
 			jQuery(".collections").prepend(collections[i]);
 		}
-		jQuery(this).closest(".controls").find("#export-list ul").html("");
+		$button.closest(".controls").find("#export-list ul").html("");
+		$button.addClass("hide");
 		collections = [];
 	});
 

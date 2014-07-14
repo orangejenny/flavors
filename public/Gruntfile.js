@@ -9,7 +9,12 @@ module.exports = function(grunt) {
 					yuicompress: true
 				},
 			files: {
-				"./css/flavors.css": "./css/flavors.less"
+				"./css/flavors.css": "./css/flavors.less",
+				"./css/songs.css": "./css/songs.less",
+				"./css/collections.css": "./css/collections.less",
+				"./css/tags.css": "./css/tags.less",
+				"./css/categories.css": "./css/categories.less",
+				"./css/lab.css": "./css/lab.less"
 			}
 		}
 	},

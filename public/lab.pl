@@ -147,6 +147,7 @@ $song->{SCORESTRING} .= "[" . join(" ", FlavorsUtils::ArrayIntersection(\@songta
 }
 
 printf(qq{
+<div class="post-nav">
 	<form method=POST>
 		<table id=sliders>
 			<tbody>
@@ -221,6 +222,7 @@ printf(qq{
 			</tbody>
 		</table>
 	</form>
+</div>
 };
 
 print q{

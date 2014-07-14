@@ -110,6 +110,7 @@ print q{
 };
 
 print sprintf(qq{
+	<div class="post-nav">
 		<div class="complex-filter-container">
 			<form method=POST id="complex-filter">
 				<textarea name=filter rows=3 style="width: 400px;" placeholder="%s">%s</textarea>
@@ -138,6 +139,7 @@ print sprintf(qq{
 
 
 if (!$reload) {
+	print "</div>";	# close .post-nav
 	print FlavorsHTML::Footer();
 	exit;
 }
@@ -158,6 +160,7 @@ print qq{ <div id="song-table-container"></div> };
 print qq{ </div> };
 
 print "</tbody></table>";
+print qq{ </div> };	# close .post-nav
 
 print qq{
 	<div id="song-count-container">

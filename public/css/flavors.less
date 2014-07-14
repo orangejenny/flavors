@@ -1,6 +1,8 @@
+@import "imports.less";
+
 body { 
-	background-color: #fff; 
-	color: #333; 
+	background-color: @white; 
+	color: @greyDarkest; 
 }
 
 body, p, ol, ul, td, th {
@@ -10,39 +12,28 @@ body, p, ol, ul, td, th {
 }
 
 label {
-	cursor: pointer;
+	.clickable();
 }
 
 .clear {
 	clear: both;
 }
 
-#top-veil, #bottom-veil {
-	background-color: #fff;
-	opacity: 0.9;
-	left: 0;
-	right: 0;
-	z-index: 2;
-}
-
-#top-veil {
-	position: fixed;
-	top: 0;
-	height: 210px;
-}
-
-#bottom-veil {
-	padding: 15px;
-	position: absolute;
-	top: 0;
-	bottom: 0;
-}
-
 .navbar-container {
 	position: fixed;
-	padding: 15px;
+	padding: @spacingWide;
 	width: 100%;
 	z-index: 3;
+}
+
+.post-nav {
+	position: fixed;
+	top: 75px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	overflow-y: auto;
+	margin: @spacingWide;
 }
 
 table {
@@ -53,9 +44,9 @@ table {
 th, #song-table-container tr:first-child td {
 	text-align: left;
 	padding: 0 2px;
-	background: white;
+	background: @white;
 	border: none;
-	border-bottom: 1px solid black;
+	border-bottom: 1px solid @black;
 }
 
 td, th {
@@ -81,26 +72,27 @@ th {
 }
 
 pre {
-  background-color: #eee;
-  padding: 10px;
+  background-color: @greyLightest;
+  padding: @spacingNormal;
   font-size: 11px;
 }
 
-a { color: #000; }
-a:visited { color: #666; }
-a:hover { color: #fff; background-color:#000; }
+a { color: @black; }
+a:visited { color: @greyDark; }
+a:hover { color: @white; background-color: @black; }
 
 .horizontal li {
 	display: inline;
 	list-style-type: none;
-	padding-right: 20px;
+	padding-right: @spacingWide;
 }
 
 .tag, #song-count-span {
+	border-radius: @borderRadius;
 	font-size: 12px;
 	font-weight: bold;
-	margin-right: 10px;
-	margin-bottom: 10px;
+	margin-right: @spacingNormal;
+	margin-bottom: @spacingNormal;
 	display: inline;
 	line-height: 3;
 	padding: 3px 8px;
@@ -119,13 +111,6 @@ a:hover { color: #fff; background-color:#000; }
 	margin-right: 14px;
 }
 
-.ui-autocomplete {
-	max-height: 300px;
-	overflow-x: hidden;
-	overflow-y: auto;
-	padding-right: 20px;
-}
-
 .page {
 	padding-top: 20px;
 	display: none;
@@ -134,17 +119,19 @@ a:hover { color: #fff; background-color:#000; }
 ul.plain {
 	margin: 0;
 	padding: 0;
+
+	li {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+	}
 }
 
-ul.plain li {
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-}
-
-#sliders th, #sliders td {
-	vertical-align: middle;
-	height: 30px;
+#sliders {
+	th, td {
+		vertical-align: middle;
+		height: 30px;
+	}
 }
 
 .update-in-progress {

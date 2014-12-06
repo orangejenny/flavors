@@ -21,9 +21,13 @@ label {
 
 .navbar-container {
 	position: fixed;
-	padding: @spacingWide;
+	padding: @spacingWide @spacingWide 0 @spacingWide;
 	width: 100%;
 	z-index: 3;
+
+	.navbar {
+		margin: 0;
+	}
 }
 
 .post-nav {

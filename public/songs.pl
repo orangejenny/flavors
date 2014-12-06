@@ -15,39 +15,29 @@ my $fdat = FlavorsUtils::Fdat();
 my $cgi = CGI->new;
 print $cgi->header();
 
-my @songs = ();
-my $reload = exists $fdat->{FILTER};
-my $initialpagedata = {};
-if (!$reload) {
-	$initialpagedata = {
-		RELOAD => 0,
-	};
-}
-else {
-	@songs = FlavorsData::SongList($dbh, {
-		FILTER => $fdat->{FILTER},
-		ORDERBY => $fdat->{ORDERBY},
-	});
-	$initialpagedata = {
-		RELOAD => 1,
-		ROWS => [
-			map {
-				{
-					c => [
-						{ v => $_->{ID}} ,
-						{ v => $_->{NAME} },
-						{ v => $_->{ARTIST} },
-						{ v => $_->{COLLECTIONS} },
-						{ v => FlavorsHTML::Rating($_->{RATING}) },
-						{ v => FlavorsHTML::Rating($_->{ENERGY}) },
-						{ v => FlavorsHTML::Rating($_->{MOOD}) },
-						{ v => $_->{TAGS} },
-					],
-				}
-			} @songs
-		],
-	};
-}
+my @songs = FlavorsData::SongList($dbh, {
+	FILTER => $fdat->{FILTER},
+	ORDERBY => $fdat->{ORDERBY},
+});
+my $initialpagedata = {
+	ROWS => [
+		map {
+			{
+				c => [
+					{ v => $_->{ID}} ,
+					{ v => $_->{NAME} },
+					{ v => $_->{ARTIST} },
+					{ v => $_->{COLLECTIONS} },
+					{ v => FlavorsHTML::Rating($_->{RATING}) },
+					{ v => FlavorsHTML::Rating($_->{ENERGY}) },
+					{ v => FlavorsHTML::Rating($_->{MOOD}) },
+					{ v => $_->{TAGS} },
+				],
+			}
+		} @songs
+	],
+};
+
 
 FlavorsHTML::Header({
 	TITLE => "Songs",
@@ -137,12 +127,6 @@ print sprintf(qq{
 	},
 );
 
-
-if (!$reload) {
-	print "</div>";	# close .post-nav
-	print FlavorsHTML::Footer();
-	exit;
-}
 
 print qq{ <div id="dashboard"> };
 

@@ -60,14 +60,6 @@ jQuery(document).ready(function() {
 		$form.submit();
 	});
 
-	if (!InitialPageData('reload')) {
-		jQuery("#helpers").modal({
-			backdrop: "static",
-			keyboard: false,
-		}).find(".btn-info").focus();
-		return;
-	}
-
 	// Column names hint for filter
 	jQuery(".hint").tooltip({
 		html: true,

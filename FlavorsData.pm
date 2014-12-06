@@ -119,7 +119,7 @@ sub SongList {
 		$sql .= " and " . $args->{FILTER};
 	}
 
-	$sql .= " order by " . ($args->{ORDERBY} ? $args->{ORDERBY} . " limit 50" : "maxyear desc, minyear desc, id desc");
+	$sql .= " order by " . ($args->{ORDERBY} ? $args->{ORDERBY} : "maxyear desc, minyear desc, id desc");
 
 	my @results = _results($dbh, {
 		SQL => $sql,

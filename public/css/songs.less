@@ -1,5 +1,9 @@
 @import "imports.less";
 
+.post-nav {
+	overflow-y: none;
+}
+
 #song-count-container {
 	position: fixed;
 	bottom: 0;
@@ -46,11 +50,13 @@
 }
 
 #song-table-container {
-	width: 100%;
-	position: absolute;
-	top: 155px;
+	position: fixed;
+	top: 245px;
+	left: @spacingWide;
+	right: @spacingWide;
+	bottom: 40px;
 	z-index: 1;
-	margin-bottom: 25px;
+	overflow-y: auto;
 }
 
 #helpers {

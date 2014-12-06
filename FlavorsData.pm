@@ -749,7 +749,7 @@ sub UpdateCategory {
 #
 # Parameters (optional):
 #	SONGIDS: arrayref
-#	COLLECTIONID: arrayref
+#	COLLECTIONIDS: arrayref
 #
 # Return Value: none
 ################################################################

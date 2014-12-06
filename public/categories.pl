@@ -26,8 +26,8 @@ my $categorizedartists = FlavorsUtils::Categorize($dbh, {
 my @colors = FlavorsData::ColorList($dbh);
 
 print qq{
-	<link href="/css/jquery.miniColors.css" rel="stylesheet" type="text/css" />
-	<script type="text/javascript" src="/javascript/jquery.miniColors.js"></script>
+	<link href="/css/thirdparty/jquery.miniColors.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="/javascript/thirdparty/jquery.miniColors.js"></script>
 	<div class="post-nav">
 };
 

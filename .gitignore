@@ -8,3 +8,5 @@ config.yml
 *.swp
 .ht*
 public/node_modules/*
+public/css/*.css
+!public/css/thirdparty/*.css

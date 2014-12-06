@@ -78,6 +78,10 @@ function BuildArgs(selector, args) {
  *	(variety of filters that will be passed to FlavorsData::SongList)
  */
 function ExportPlaylist(args) {
+	if (!args.filename) {
+		args. filename = prompt("Playlist name?", "flavors");
+	}
+
 	var params = [];
 	for (var key in args) {
 		var value = args[key] ? encodeURIComponent(args[key]) : '';

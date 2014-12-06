@@ -13,7 +13,6 @@ my $fdat = FlavorsUtils::Fdat($cgi);
 my $dbh = FlavorsData::DBH();
 
 my @songs;
-my $filename;
 my %updateexport;
 
 if ($fdat->{COLLECTIONID} =~ /^[^,]+$/) {
@@ -23,7 +22,6 @@ if ($fdat->{COLLECTIONID}) {
 	# Export a single collection
 	my $collectionid = $fdat->{COLLECTIONID};
 	my $collection = FlavorsData::CollectionList($dbh, { ID => $collectionid });
-	$filename = $collection->{NAME};
 	@songs = FlavorsData::TrackList($dbh, { COLLECTIONIDS => $collectionid });
 	%updateexport = (
 		COLLECTIONIDS => [$collectionid],
@@ -31,7 +29,6 @@ if ($fdat->{COLLECTIONID}) {
 }
 elsif ($fdat->{COLLECTIONIDS}) {
 	# Export a set of collections
-	$filename = "collections";
 	$fdat->{COLLECTIONIDS} =~ s/[^0-9,]//;
 	@songs = FlavorsData::TrackList($dbh, { COLLECTIONIDS => $fdat->{COLLECTIONIDS}	});
 	%updateexport = (
@@ -48,16 +45,15 @@ elsif ($fdat->{SONGIDLIST}) {
 	foreach my $id (split(/,/, $fdat->{SONGIDLIST})) {
 		push @songs, $songsbyid{$id};
 	}
-	$filename = "lab";
 }
 else {
 	# Export a filtered set of songs
-	$filename = "songs";
 	@songs = FlavorsData::SongList($dbh, $fdat);
 }
 $updateexport{SONGIDS} = [map { $_->{ID} } @songs];
 FlavorsData::UpdateExport($dbh, \%updateexport);
 
+my $filename = $fdat->{FILENAME};
 $filename =~ s/[^\w \-[\]]+//g;
 print $cgi->header(-type => 'text/text', -attachment => "$filename.m3u");
 

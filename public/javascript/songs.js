@@ -8,14 +8,6 @@ var filters = ['Name', 'Artist', 'Collections', 'Tags'];
 google.load('visualization', '1', {packages: ['table', 'controls']});
 google.setOnLoadCallback(drawTable);
 
-function correlateFilter(rowIndex) {
-	var newRowIndex = rowIndex;
-	for (var i = filters.length - 1; i >= 0; i--) {
-		newRowIndex = filters[i].getControl().applyFilter().getTableRowIndex(newRowIndex);
-	}
-	return newRowIndex;
-}
-
 jQuery(document).ready(function() {
 	jQuery("#helpers button").click(function() {
 		var $button = jQuery(this);
@@ -94,21 +86,9 @@ jQuery(document).ready(function() {
 		var $td = jQuery(this);
 		var value = $td.text().trim();
 		if (oldvalue != value && selectedrow !== undefined) {
-			var datarow;
-			while (!datarow) {
-				try {
-					datarow = correlateFilter(selectedrow);
-				}
-				catch (error) {
-					if (!confirm("Failed to find row. Retry?")) {
-						$td.text(oldvalue);
-						$td.focus();
-						return;
-					}
-				}
-			}
+			var id = $td.closest("tr").find("td:first").text();
 			var args = {
-				id: data.getValue(datarow, 0),
+				id: id,
 			}
 			var index = jQuery("td", $td.closest("tr")).index($td);
 			var key = jQuery("#song-table-container tr:first :nth-child(" + (index + 1) + ")").text().trim().toLowerCase();
@@ -196,10 +176,8 @@ function drawTable() {
 	}
 
 	dataview = new google.visualization.DataView(data);
-	var viewcolumns = [];
-	for (var i = 1; i < columns.length; i++) {
-		viewcolumns.push(i);
-	}
+	var i = 0;
+	var viewcolumns = jQuery.map(columns, function() { return i++; });
 	dataview.setColumns(viewcolumns);
 
 	table = new google.visualization.ChartWrapper({
@@ -233,13 +211,13 @@ function refreshTable() {
 	$cells.attr("contenteditable", "true");
 
 	var $headercells = $table.find("tr:first td");
-	jQuery($headercells[0]).css("width", "15%");
 	jQuery($headercells[1]).css("width", "15%");
 	jQuery($headercells[2]).css("width", "15%");
-	jQuery($headercells[3]).css("width", "5%");
+	jQuery($headercells[3]).css("width", "15%");
 	jQuery($headercells[4]).css("width", "5%");
 	jQuery($headercells[5]).css("width", "5%");
-	jQuery($headercells[6]).css("width", "40%");
+	jQuery($headercells[6]).css("width", "5%");
+	jQuery($headercells[7]).css("width", "40%");
 
 	var $filters = jQuery('#simple-filters');
 	var placeholders = ["name", "artist", "collections", "tags"];

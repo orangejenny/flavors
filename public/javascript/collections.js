@@ -38,22 +38,17 @@ function FilterCollections() {
 }
 
 jQuery(document).ready(function() {
-	// Popovers with top tags and track lists
-	jQuery(".collection").popover({
-		html: true,
-		placement: "left",
-		trigger: "hover"
+	jQuery(".collection").click(function() {
+		jQuery(this).find(".track-list").toggle('fast');
 	});
 
 	// Controls: Toggle details
 	jQuery("#show-details").click(function() {
 		if (jQuery(this).is(":checked")) {
 			jQuery(".collection").addClass("has-details");
-			jQuery(".collection .details").show();
 		}
 		else {
 			jQuery(".collection").removeClass("has-details");
-			jQuery(".collection .details").hide();
 		}
 	});
 

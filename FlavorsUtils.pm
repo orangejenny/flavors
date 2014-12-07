@@ -37,6 +37,12 @@ sub EscapeSQL {
 	return $string;
 }
 
+sub TrimDate {
+	my ($date) = @_;
+	$date =~ s/ (.*)//;
+	return $date;
+}
+
 ################################################################
 # Fdat
 #

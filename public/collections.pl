@@ -89,14 +89,11 @@ foreach my $color (FlavorsData::ColorList($dbh)) {
 }
 
 foreach my $collection (@collections) {
-	my $dateacquiredstring = $collection->{DATEACQUIRED};
-	$dateacquiredstring  =~ s/ (.*)/<span style='display:none;'>$1<\/span>/;
 	printf(qq{
 			<div 
 				data-id="%s"
 				data-is-mix="%s"
 				data-original-title="%s"
-				data-content="<ol>%s</ol>"
 				data-tag-list="%s"
 				data-date-acquired="%s"
 				data-name="%s"
@@ -112,7 +109,6 @@ foreach my $collection (@collections) {
 		$collection->{ID},
 		$collection->{ISMIX} ? 1 : 0,
 		$collection->{NAME},
-		FlavorsUtils::EscapeHTMLAttribute(join("", map { "<li>" . $_->{NAME} . "</li>" } @{ $tracks{$collection->{ID}} })),
 		FlavorsUtils::EscapeHTMLAttribute($collection->{TAGLIST}),
 		$collection->{DATEACQUIRED},
 		lc($collection->{NAME}),
@@ -154,8 +150,42 @@ foreach my $collection (@collections) {
 		},
 		$collection->{NAME},
 		$collection->{ARTIST},
-		$dateacquiredstring,
+		FlavorsUtils::TrimDate($collection->{DATEACQUIRED}),
 		FlavorsHTML::Rating($collection->{RATING}),
+	);
+
+	my $exporttext = "";
+	if ($collection->{EXPORTCOUNT} == 0) {
+		$exporttext = "Never exported";
+	}
+	else {
+		$exporttext = "Exported ";
+		if ($collection->{EXPORTCOUNT} == 1) {
+			$exporttext .= "once, on ";
+		}
+		else {
+			if ($collection->{EXPORTCOUNT} == 2) {
+				$exporttext .= "twice";
+			}
+			else {
+				$exporttext .= $collection->{EXPORTCOUNT} . " times";
+			}
+			$exporttext .= ", last on ";
+		}
+		$exporttext .= " " . FlavorsUtils::TrimDate($collection->{LASTEXPORT});
+	}
+	printf(qq{
+			<div class="track-list clear">
+				%s
+				%s
+				%s
+				<ol>%s</ol>
+			</div>
+		},
+		$exporttext,
+		$collection->{ENERGY} ? "<br>Energy <div class='rating'>" . FlavorsHTML::Rating($collection->{ENERGY}) . "</div>" : "",
+		$collection->{MOOD} ? "<br>Mood <div class='rating'>" . FlavorsHTML::Rating($collection->{MOOD}) . "</div>" : "",
+		join("", map { "<li>" . $_->{NAME} . "</li>" } @{ $tracks{$collection->{ID}} }),
 	);
 	print "</div>";
 }

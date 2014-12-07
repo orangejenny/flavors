@@ -10,11 +10,16 @@
 	overflow: hidden;
 	background-color: @white;
 
+	&:not(.has-details) {
+		.details, .track-list {
+			display: none !important;	// override effect of jQuery show/hide
+		}
+	}
+
 	&.has-details {
 		border: 1px solid @greyLight;
 		width: 225px;
-		padding: @spacingNormal;
-		height: @albumSize + @spacingNormal;
+		padding: @spacingNormal @spacingNormal 0 @spacingNormal;
 
 		.details {
 			*:not(.name) {
@@ -31,6 +36,14 @@
 				}
 			}
 		}
+
+		.track-list {
+			display: none;
+			ol {
+				margin: @spacingNormal 0 @spacingNormal 0;
+				padding-left: 20px;
+			}
+		}
 	}
 
 	&:not(:hover) {
@@ -43,6 +56,7 @@
 		border: 1px solid @grey;
 		float: left;
 		margin-right: @spacingNormal;
+		margin-bottom: @spacingNormal;
 	}
 
 	.album {

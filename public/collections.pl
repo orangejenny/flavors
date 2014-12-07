@@ -126,14 +126,16 @@ foreach my $collection (@collections) {
 	}
 	else {
 		my $color = $colors{$collection->{COLOR}};
+		my @tags = split(/\s+/, $collection->{TAGLIST});
+		@tags = @tags[0..3];
 		printf(qq{
 				<div class="mix" style="%s%s">
-					<br>%s
+					%s
 				</div>
 			},
 			$color ? ("background-color: #" . $color->{HEX} . ";") : "",
 			$color->{WHITETEXT} ? " color: white; font-weight: bold;" : "",
-			$collection->{NAME},
+			join("", map { "<div>$_</div>" } @tags),
 		);
 	}
 	printf(qq{

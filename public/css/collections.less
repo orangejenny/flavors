@@ -68,9 +68,17 @@
 		width: @albumSize;
 		height: @albumSize;
 		padding: @spacingNarrow;
-		text-align: center;
-		font-size: 10px;
-		line-height: 11px;
+		div {
+			text-align: center;
+			font-size: 10px;
+			max-width: @albumSize - 2 * @spacingNarrow;
+			overflow-x: hidden;
+			text-overflow: ellipsis;
+			&:not(:last-child) {
+				margin-bottom: 1px;
+			}
+			//line-height: 15px;
+		}
 	}
 }
 

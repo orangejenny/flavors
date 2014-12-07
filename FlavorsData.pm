@@ -220,7 +220,7 @@ sub CollectionList {
 		left join (
 			select
 				collectionid,
-				group_concat(distinct tag separator ' ') as taglist
+				group_concat(distinct tag order by rand() separator ' ') as taglist
 			from
 				songcollection
 				inner join songtag on songcollection.songid = songtag.songid

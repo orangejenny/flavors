@@ -17,14 +17,26 @@
 		height: @albumSize + @spacingNormal;
 
 		.details {
+			*:not(.name) {
+				color: @grey;
+			}
 			.name, .artist {
 				.ellipsis();
+			}
+			.export-icons {
+				float: right;
+				span {
+					cursor: pointer;
+					margin-left: @spacingNarrow;
+				}
 			}
 		}
 	}
 
-	.artist, .date-acquired, .rating {
-		color: @grey;
+	&:not(:hover) {
+		.export-icons {
+			display: none;
+		}
 	}
 
 	.mix, .album {

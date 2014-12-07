@@ -145,6 +145,10 @@ foreach my $collection (@collections) {
 				<div class="name">%s</div>
 				<div class="artist">%s</div>
 				<div class="date-acquired">%s</div>
+				<div class="export-icons">
+					<span class="glyphicon glyphicon-home" data-os="mac"></span>
+					<span class="glyphicon glyphicon-briefcase" data-os="pc"></span>
+				</div>
 				<div class="rating">%s</div>
 			</div>
 		},

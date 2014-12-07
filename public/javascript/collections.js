@@ -136,15 +136,27 @@ jQuery(document).ready(function() {
 		collections = [];
 	});
 
-	// Export collections
+	// Export single collection
+	jQuery(".export-icons span").click(function() {
+		var $icon = jQuery(this);
+		var $collectiondiv = $icon.closest(".collection");
+		ExportPlaylist({
+			COLLECTIONIDS: [$collectiondiv.data("id")],
+			FILENAME: $collectiondiv.find(".details .name").text(),
+			OS: $icon.data("os"),
+		});
+	});
+
+	// Export set of collections
 	jQuery(".export-button").click(function() {
+		var $button = jQuery(this);
 		var collectionids = [];
 		var collections = jQuery("#export-list li");
 		if (!collections.length) {
 			collections = jQuery(".collection:visible");
 		}
 		collections.each(function() {
-			collectionids.push(jQuery(this).attr("data-id"));
+			collectionids.push(jQuery(this).data("id"));
 		});
 		if (!collectionids.length) {
 			alert("No collections selected");
@@ -152,6 +164,7 @@ jQuery(document).ready(function() {
 		}
 		ExportPlaylist({
 			COLLECTIONIDS: collectionids,
+			OS: $button.data("os"),
 		});
 	});
 });

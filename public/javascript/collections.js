@@ -132,7 +132,7 @@ jQuery(document).ready(function() {
 	});
 
 	// Export single collection
-	jQuery(".export-icons span").click(function() {
+	jQuery(".export-icons span").click(function(event) {
 		var $icon = jQuery(this);
 		var $collectiondiv = $icon.closest(".collection");
 		ExportPlaylist({
@@ -140,6 +140,7 @@ jQuery(document).ready(function() {
 			FILENAME: $collectiondiv.find(".details .name").text(),
 			OS: $icon.data("os"),
 		});
+		event.stopPropagation();
 	});
 
 	// Export set of collections

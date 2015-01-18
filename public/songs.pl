@@ -121,7 +121,7 @@ print sprintf(qq{
 		id, name, artist,
 		<br>rating, energy, mood,
 		<br>time, filename,
-		<br>ismix, dateacquired,
+		<br>ismix, mindateacquired, maxdateacquired,
 		<br>taglist, tagcount, collectionlist,
 		<br>minyear, maxyear
 	},

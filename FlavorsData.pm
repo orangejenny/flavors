@@ -66,7 +66,7 @@ sub SongList {
 			songtaglist.tagcount,
 			years.minyear,
 			years.maxyear,
-			min(collection.dateacquired) as dateacquired,
+			min(collection.dateacquired) as mindateacquired,
 			max(collection.dateacquired) as maxdateacquired,
 			tracks.tracknumber,
 			song.exportcount,

@@ -67,6 +67,8 @@ sub SongList {
 			years.minyear,
 			years.maxyear,
 			min(collection.dateacquired) as dateacquired,
+			max(collection.dateacquired) as maxdateacquired,
+			tracks.tracknumber,
 			song.exportcount,
 			song.lastexport
 		from 
@@ -89,6 +91,17 @@ sub SongList {
 			group by
 				songtag.songid
 		) years on years.songid = song.id
+		left join (
+			select songid, tracknumber 
+			from songcollection outersongcollection, collection 
+			where outersongcollection.collectionid = collection.id 
+			and collection.dateacquired = (
+				select max(dateacquired) 
+				from collection, songcollection innersongcollection 
+				where innersongcollection.songid = outersongcollection.songid
+				and collection.id = collectionid
+			)
+		) tracks on tracks.songid = song.id
 	};
 
 	if ($args->{ID}) {
@@ -119,7 +132,7 @@ sub SongList {
 		$sql .= " and " . $args->{FILTER};
 	}
 
-	$sql .= " order by " . ($args->{ORDERBY} ? $args->{ORDERBY} : "maxyear desc, minyear desc, id desc");
+	$sql .= " order by " . ($args->{ORDERBY} ? $args->{ORDERBY} : "maxdateacquired desc, tracknumber");
 
 	my @results = _results($dbh, {
 		SQL => $sql,

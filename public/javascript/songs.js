@@ -186,7 +186,8 @@ function drawTable() {
 		options: {
 			cssClassNames: {
 				selectedTableRow: 'dummy'
-			}
+			},
+			allowHtml: true,
 		}
 	});
 

@@ -58,8 +58,35 @@
 	z-index: 1;
 	overflow-y: auto;
 
-	table td:first-child {
-		display: none;
+	table {
+		td {
+			border: none;
+
+			&:first-child {	// ID column
+				display: none;
+			}
+
+			&.isstarred {
+				color: @greyLight;
+				background-color: @backgroundColor;
+				border: none;
+				text-align: right;
+				.glyphicon {
+					cursor: pointer;
+					&.glyphicon-star {
+						color: @grey;
+					}
+					&.update-in-progress {
+						background-color: @white;
+						color: @updateInProgressColor;
+					}
+				}
+			}
+
+			&.name {
+				border-left: none;
+			}
+		}
 	}
 }
 

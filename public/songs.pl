@@ -25,6 +25,7 @@ my $initialpagedata = {
 			{
 				c => [
 					{ v => $_->{ID}} ,
+					{ v => $_->{ISSTARRED}} ,
 					{ v => $_->{NAME} },
 					{ v => $_->{ARTIST} },
 					{ v => $_->{COLLECTIONS} },
@@ -132,10 +133,10 @@ print qq{ <div id="dashboard"> };
 
 print qq{
 	<div id="simple-filters" class="clearfix">
-		<div id="simple-filter-name" style="width: 15%; float: left;"></div>
-		<div id="simple-filter-artist" style="width: 15%; float: left;"></div>
+		<div id="simple-filter-name" style="width: 15%; float: left; margin-left: 2%;"></div>
+		<div id="simple-filter-artist" style="width: 15%; float: left; margin-left: -0.5%;"></div>
 		<div id="simple-filter-collections" style="width: 15%; float: left;"></div>
-		<div id="simple-filter-tags" style="width: 25%; float: left; margin-left: 15%;"></div>
+		<div id="simple-filter-tags" style="width: 25%; float: left; margin-left: 14%;"></div>
 	</div>
 };
 

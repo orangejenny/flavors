@@ -108,6 +108,24 @@ jQuery(document).ready(function() {
 		oldvalue = undefined;
 		selectedrow = undefined;
 	});
+	$table.on("click", ".isstarred .glyphicon", function() {
+		var $star = jQuery(this);
+		$star.toggleClass("glyphicon-star-empty");
+		$star.toggleClass("glyphicon-star");
+		var id = $star.closest("tr").find("td:first").text();
+		var isstarred = $star.hasClass("glyphicon-star");
+		$star.addClass("update-in-progress");
+		CallRemote({
+			SUB: 'FlavorsData::UpdateSong', 
+			ARGS: {
+				ID: id,
+				ISSTARRED: isstarred ? 1 : 0,
+				FINISH: function(data) {
+					$star.removeClass("update-in-progress");
+				}
+			}
+		});
+	});
 
 	// Complex filter controls
 	jQuery("#complex-filter input").click(function() {
@@ -137,6 +155,7 @@ jQuery(document).ready(function() {
 function drawTable() {
 	var columns = [
 		{ type: 'number', label: 'ID' },
+		{ type: 'string', label: '' },
 		{ type: 'string', label: 'Name'},
 		{ type: 'string', label: 'Artist'},
 		{ type: 'string', label: 'Collections'},
@@ -153,6 +172,10 @@ function drawTable() {
 		cols: columns,
 		rows: rows,
 	});
+	for (var i = 0; i < rows.length; i++) {
+		var starClass = data.getValue(i, 1) == 1 ? "glyphicon-star" : "glyphicon-star-empty";
+		data.setValue(i, 1, "<span class='glyphicon " + starClass + "'></span>");	// TODO
+	}
 
 	for (var index in filters) {
 		var column = filters[index];
@@ -170,9 +193,11 @@ function drawTable() {
 	}
 
 	for (var i = 0; i < rows.length; i++) {
-		data.setProperty(i, 4, 'className', 'google-visualization-table-td rating');
+		data.setProperty(i, 1, 'className', 'google-visualization-table-td isstarred');
+		data.setProperty(i, 2, 'className', 'google-visualization-table-td name');
 		data.setProperty(i, 5, 'className', 'google-visualization-table-td rating');
 		data.setProperty(i, 6, 'className', 'google-visualization-table-td rating');
+		data.setProperty(i, 7, 'className', 'google-visualization-table-td rating');
 	}
 
 	dataview = new google.visualization.DataView(data);
@@ -212,13 +237,14 @@ function refreshTable() {
 	$cells.attr("contenteditable", "true");
 
 	var $headercells = $table.find("tr:first td");
-	jQuery($headercells[1]).css("width", "15%");
+	jQuery($headercells[1]).css("width", "2%");
 	jQuery($headercells[2]).css("width", "15%");
 	jQuery($headercells[3]).css("width", "15%");
-	jQuery($headercells[4]).css("width", "5%");
+	jQuery($headercells[4]).css("width", "15%");
 	jQuery($headercells[5]).css("width", "5%");
 	jQuery($headercells[6]).css("width", "5%");
-	jQuery($headercells[7]).css("width", "40%");
+	jQuery($headercells[7]).css("width", "5%");
+	jQuery($headercells[8]).css("width", "38%");
 
 	var $filters = jQuery('#simple-filters');
 	var placeholders = ["name", "artist", "collections", "tags"];

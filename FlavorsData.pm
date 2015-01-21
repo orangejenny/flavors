@@ -53,6 +53,7 @@ sub SongList {
 		year
 		time
 		ispurchased
+		isstarred
 		filename
 	);
 
@@ -624,7 +625,7 @@ sub UpdateColor {
 #
 # Parameters (optional except for ID)
 #		ID
-#		NAME, ARTIST, RATING, ENERGY, MOOD
+#		NAME, ARTIST, RATING, ENERGY, MOOD, ISSTARRED
 #		TAGS
 #
 # Return Value: array of hashrefs
@@ -636,7 +637,7 @@ sub UpdateSong {
 	my $oldsong = SongList($dbh, { ID => $id });
 
 	# song table
-	my @updatefields = qw(NAME ARTIST RATING ENERGY MOOD YEAR);
+	my @updatefields = qw(NAME ARTIST RATING ENERGY MOOD YEAR ISSTARRED);
 	my @updates;
 	my @binds;
 	foreach my $key (@updatefields) {

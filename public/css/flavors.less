@@ -50,6 +50,8 @@ th, #song-table-container tr:first-child td {
 	padding: 0 2px;
 	background: @white;
 	border: none;
+}
+th {
 	border-bottom: 1px solid @black;
 }
 
@@ -140,8 +142,8 @@ ul.plain {
 	}
 }
 
-.update-in-progress {
-	background-color: #ffc !important;
+td.update-in-progress {
+	background-color: @updateInProgressColor !important;
 }
 
 .modal-dialog .close {

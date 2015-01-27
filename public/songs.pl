@@ -124,7 +124,7 @@ print sprintf(qq{
 		<br>time, filename,
 		<br>ismix, mindateacquired, maxdateacquired,
 		<br>taglist, tagcount, collectionlist,
-		<br>minyear, maxyear
+		<br>minyear, maxyear, isstarred
 	},
 );
 

@@ -1,13 +1,13 @@
 @import "imports.less";
 
 body { 
-	background-color: @white; 
+	background-color: @white;
 	color: @greyDarkest; 
 }
 
 body, p, ol, ul, td, th {
   font-family: helvetica, arial, sans-serif;
-  font-size: 12px;
+  font-size: @fontSizeDefault;
   line-height: 15px;
 }
 
@@ -73,6 +73,10 @@ th {
 	white-space: nowrap;
 	display: inline-block;
 	vertical-align: middle;
+	span {
+		color: @grey;
+		font-size: @fontSizeDefault;
+	}
 }
 
 .slider {

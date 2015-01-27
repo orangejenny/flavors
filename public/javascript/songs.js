@@ -1,6 +1,7 @@
 // Globals
-var selectedrow = undefined;
-var oldvalue = undefined;
+var selectedRow = undefined;
+var oldValue = undefined;
+var iconClasses = ['glyphicon-star', 'glyphicon-fire', 'glyphicon-heart'];
 var dashboard, data, dataview, table = undefined;
 var filters = ['Name', 'Artist', 'Collections', 'Tags'];
 
@@ -76,25 +77,33 @@ jQuery(document).ready(function() {
 	var $table = jQuery("#song-table-container");
 	var selector = "td[contenteditable=true]";
 	$table.on("focus", selector, function() {
-		oldvalue = jQuery(this).text().trim();
-		selectedrow = table.getChart().getSelection();
-		if (selectedrow && selectedrow.length) {
-			selectedrow = selectedrow[0].row;
+		var $td = jQuery(this);
+		selectedRow = table.getChart().getSelection();
+		if (selectedRow && selectedRow.length) {
+			selectedRow = selectedRow[0].row;
+		}
+		if ($td.hasClass("rating")) {
+			oldValue = $td.children(".glyphicon").length;
+			$td.html(StringMultiply("*", oldValue));
+		}
+		else {
+			oldValue = $td.text().trim();
 		}
 	});
 	$table.on("blur", selector, function() {
 		var $td = jQuery(this);
 		var value = $td.text().trim();
-		if (oldvalue != value && selectedrow !== undefined) {
+		if ($td.hasClass("rating")) {
+			value = value.length;
+			$td.html(StringMultiply("<span class='glyphicon " + iconClasses[$td.closest("tr").find(".rating").index($td)] + "'></span>", value));
+		}
+		if (oldValue != value && selectedRow !== undefined) {
 			var id = $td.closest("tr").find("td:first").text();
 			var args = {
 				id: id,
 			}
 			var index = jQuery("td", $td.closest("tr")).index($td);
 			var key = jQuery("#song-table-container tr:first :nth-child(" + (index + 1) + ")").text().trim().toLowerCase();
-			if ($td.hasClass("rating")) {
-				value = value.length;
-			}
 			args[key] = value;
 			$td.addClass("update-in-progress");
 			CallRemote({
@@ -105,8 +114,8 @@ jQuery(document).ready(function() {
 				}
 			});
 		}
-		oldvalue = undefined;
-		selectedrow = undefined;
+		oldValue = undefined;
+		selectedRow = undefined;
 	});
 	$table.on("click", ".isstarred .glyphicon", function() {
 		var $star = jQuery(this);
@@ -175,6 +184,9 @@ function drawTable() {
 	for (var i = 0; i < rows.length; i++) {
 		var starClass = data.getValue(i, 1) == 1 ? "glyphicon-star" : "glyphicon-star-empty";
 		data.setValue(i, 1, "<span class='glyphicon " + starClass + "'></span>");	// TODO
+		data.setValue(i, 5, StringMultiply("<span class='glyphicon " + iconClasses[0] + "'></span>", (data.getValue(i, 5) || "").trim().length));
+		data.setValue(i, 6, StringMultiply("<span class='glyphicon " + iconClasses[1] + "'></span>", (data.getValue(i, 6) || "").trim().length));
+		data.setValue(i, 7, StringMultiply("<span class='glyphicon " + iconClasses[2] + "'></span>", (data.getValue(i, 7) || "").trim().length));
 	}
 
 	for (var index in filters) {

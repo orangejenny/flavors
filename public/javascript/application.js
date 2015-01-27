@@ -116,3 +116,19 @@ function InitialPageData(key) {
 	data = jQuery.parseJSON(data);
 	return data[key];
 }
+
+/*
+ * StringMultiply
+ *
+ * Description: Python-style string multiplication
+ *
+ * Args
+ *	String to manipulate and number of times to repeat it (non-negative integer)
+ */
+function StringMultiply(string, factor) {
+	var returnValue = "";
+	for (var i = 0 ; i < factor; i++) {
+		returnValue += string;
+	}
+	return returnValue;
+}

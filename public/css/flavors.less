@@ -73,9 +73,13 @@ th {
 	white-space: nowrap;
 	display: inline-block;
 	vertical-align: middle;
-	span {
+	.glyphicon {
 		color: @grey;
 		font-size: @fontSizeDefault;
+		margin-left: -4px;	// cram icons together horizontally
+		&.blank {
+			color: @greyLightest;
+		}
 	}
 }
 

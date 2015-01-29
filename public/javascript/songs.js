@@ -83,7 +83,7 @@ jQuery(document).ready(function() {
 			selectedRow = selectedRow[0].row;
 		}
 		if ($td.hasClass("rating")) {
-			oldValue = $td.children(".glyphicon").length;
+			oldValue = $td.children(".glyphicon:not(.blank)").length;
 			$td.html(StringMultiply("*", oldValue));
 		}
 		else {
@@ -95,7 +95,7 @@ jQuery(document).ready(function() {
 		var value = $td.text().trim();
 		if ($td.hasClass("rating")) {
 			value = value.length;
-			$td.html(StringMultiply("<span class='glyphicon " + iconClasses[$td.closest("tr").find(".rating").index($td)] + "'></span>", value));
+			$td.html(ratingHTML(iconClasses[$td.closest("tr").find(".rating").index($td)], value));
 		}
 		if (oldValue != value && selectedRow !== undefined) {
 			var id = $td.closest("tr").find("td:first").text();
@@ -168,9 +168,9 @@ function drawTable() {
 		{ type: 'string', label: 'Name'},
 		{ type: 'string', label: 'Artist'},
 		{ type: 'string', label: 'Collections'},
-		{ type: 'string', label: 'Rating'},
-		{ type: 'string', label: 'Energy'},
-		{ type: 'string', label: 'Mood'},
+		{ type: 'string', label: ''},
+		{ type: 'string', label: ''},
+		{ type: 'string', label: ''},
 		{ type: 'string', label: 'Tags'}
 	];
 	var rows = InitialPageData('rows');
@@ -184,9 +184,9 @@ function drawTable() {
 	for (var i = 0; i < rows.length; i++) {
 		var starClass = data.getValue(i, 1) == 1 ? "glyphicon-star" : "glyphicon-star-empty";
 		data.setValue(i, 1, "<span class='glyphicon " + starClass + "'></span>");	// TODO
-		data.setValue(i, 5, StringMultiply("<span class='glyphicon " + iconClasses[0] + "'></span>", (data.getValue(i, 5) || "").trim().length));
-		data.setValue(i, 6, StringMultiply("<span class='glyphicon " + iconClasses[1] + "'></span>", (data.getValue(i, 6) || "").trim().length));
-		data.setValue(i, 7, StringMultiply("<span class='glyphicon " + iconClasses[2] + "'></span>", (data.getValue(i, 7) || "").trim().length));
+		for (var j = 0; j < 3; j++) {
+			data.setValue(i, j + 5, ratingHTML(iconClasses[j], (data.getValue(i, j + 5) || "").trim().length));
+		}
 	}
 
 	for (var index in filters) {
@@ -243,20 +243,27 @@ function drawTable() {
 	});
 }
 
+function ratingHTML(iconClass, number) {
+	if (number) {
+		return StringMultiply("<span class='glyphicon " + iconClass + "'></span>", number);
+	}
+	return StringMultiply("<span class='glyphicon blank " + iconClass + "'></span>", 5);
+}
+
 function refreshTable() {
 	var $table = jQuery("#song-table-container");
 	var $cells = $table.find("tr:not(:first)").find("td.rating, td:last-child");
 	$cells.attr("contenteditable", "true");
 
-	var $headercells = $table.find("tr:first td");
-	jQuery($headercells[1]).css("width", "2%");
-	jQuery($headercells[2]).css("width", "15%");
-	jQuery($headercells[3]).css("width", "15%");
-	jQuery($headercells[4]).css("width", "15%");
-	jQuery($headercells[5]).css("width", "5%");
-	jQuery($headercells[6]).css("width", "5%");
-	jQuery($headercells[7]).css("width", "5%");
-	jQuery($headercells[8]).css("width", "38%");
+	var $cells = $table.find("tr:visible:first td");
+	jQuery($cells[1]).css("width", "2%");
+	jQuery($cells[2]).css("width", "15%");
+	jQuery($cells[3]).css("width", "15%");
+	jQuery($cells[4]).css("width", "15%");
+	jQuery($cells[5]).css("width", "5%");
+	jQuery($cells[6]).css("width", "5%");
+	jQuery($cells[7]).css("width", "5%");
+	jQuery($cells[8]).css("width", "38%");
 
 	var $filters = jQuery('#simple-filters');
 	var placeholders = ["name", "artist", "collections", "tags"];

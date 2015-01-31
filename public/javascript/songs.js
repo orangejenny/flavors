@@ -168,9 +168,9 @@ function drawTable() {
 		{ type: 'string', label: 'Name'},
 		{ type: 'string', label: 'Artist'},
 		{ type: 'string', label: 'Collections'},
-		{ type: 'string', label: ''},
-		{ type: 'string', label: ''},
-		{ type: 'string', label: ''},
+		{ type: 'string', label: 'Rating'},
+		{ type: 'string', label: 'Energy'},
+		{ type: 'string', label: 'Mood'},
 		{ type: 'string', label: 'Tags'}
 	];
 	var rows = InitialPageData('rows');
@@ -255,15 +255,26 @@ function refreshTable() {
 	var $cells = $table.find("tr:not(:first)").find("td.rating, td:last-child");
 	$cells.attr("contenteditable", "true");
 
+	var tableWidth = $table.width();
 	var $cells = $table.find("tr:visible:first td");
-	jQuery($cells[1]).css("width", "2%");
-	jQuery($cells[2]).css("width", "15%");
-	jQuery($cells[3]).css("width", "15%");
-	jQuery($cells[4]).css("width", "15%");
-	jQuery($cells[5]).css("width", "5%");
-	jQuery($cells[6]).css("width", "5%");
-	jQuery($cells[7]).css("width", "5%");
-	jQuery($cells[8]).css("width", "38%");
+	var $filters = jQuery("#simple-filters").find("input");
+	var cellWidths = [undefined, .02, .15, .15, .15, .05, .05, .05, .38];
+	var filterWidths = [undefined, undefined, .15, .15, .15, undefined, undefined, undefined, .25];
+	var filterIndex = 0;
+	var leftMargin = 0;
+	for (var i = 1; i < cellWidths.length; i++) {
+		jQuery($cells[i]).css("width", Math.round(cellWidths[i] * tableWidth) + "px");
+		/*if (filterWidths[i]) {
+			jQuery($filters[filterIndex]).css("float", "left");
+			jQuery($filters[filterIndex]).css("width", Math.round(filterWidths[i] * tableWidth) + "px");
+			//jQuery($filters[filterIndex]).css("leftMargin", leftMargin + "px");
+			filterIndex++;
+			leftMargin = 0;
+		}
+		else {
+			leftMargin += cellWidths[i] * screenWidth;
+		}*/
+	}
 
 	var $filters = jQuery('#simple-filters');
 	var placeholders = ["name", "artist", "collections", "tags"];

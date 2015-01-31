@@ -111,6 +111,7 @@ jQuery(document).ready(function() {
 		drop: function(event, ui) {
 			var $this = jQuery(this);
 			var $ul = $this.find("ul");
+			$this.find(".subtle").addClass("hide");
 			var li = "<li data-id=\"" + ui.draggable.attr("data-id") + "\">";
 			li += ui.draggable.find(".name").text();
 			li += "</li>";
@@ -126,7 +127,9 @@ jQuery(document).ready(function() {
 		for (var i in collections) {
 			jQuery(".collections").prepend(collections[i]);
 		}
-		$button.closest(".controls").find("#export-list ul").html("");
+		var $controls = $button.closest(".controls");
+		$controls.find("#export-list ul").html("");
+		$controls.find(".subtle").removeClass("hide");
 		$button.addClass("hide");
 		collections = [];
 	});

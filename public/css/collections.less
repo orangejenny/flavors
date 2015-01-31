@@ -95,6 +95,7 @@
 
 	input[type="text"] {
 		width: @width;
+		margin-bottom: 10px;
 	}
 
 	input[type="checkbox"] {
@@ -110,14 +111,20 @@
 	}
 }
 
-#export-list ul {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
+#export-list {
+	.subtle {
+		text-align: center;
+	}
 
-	li {
+	ul {
+		list-style-type: none;
 		margin: 0;
-		padding: 0 0 @spacingNormal 0;
+		padding: 0;
+
+		li {
+			margin: 0;
+			padding: 0 0 @spacingNormal 0;
+		}
 	}
 }
 

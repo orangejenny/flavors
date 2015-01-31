@@ -36,11 +36,8 @@ foreach my $song (@tracks) {
 print qq{
 <div class="post-nav">
 	<div class="controls">
-		Collections:
-		<input type="text" id="collection-filter">
-		<br /><br />
-		Tags:
-		<input type="text" id="tag-filter">
+		<input type="text" id="collection-filter" placeholder="name">
+		<input type="text" id="tag-filter" placeholder="tags">
 		<br /><br />
 		<div class="dropdown sort-menu">
 			Sort by
@@ -75,6 +72,7 @@ print qq{
 		</label>
 		<br><br>
 		<div class="well" id="export-list">
+			<div class="subtle">drag collections here</div>
 			<ul></ul>
 			<button class="btn btn-sm btn-default hide">Clear</button>
 		</div>

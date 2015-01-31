@@ -41,11 +41,11 @@
 
 	input {
 		height: 35px;
-		width: 180px;
 		border: 1px solid #ccc;
 		border-radius: @borderRadius;
-		margin: 5px 0;
-		padding: 0 5px;
+		margin: 5px;
+		padding: 5px;
+		position: absolute;
 	}
 }
 
@@ -61,6 +61,7 @@
 	table {
 		td {
 			border: none;
+			max-width: 200px;	// hacky way to fiddle with column widths
 
 			&[contenteditable="true"] {
 				cursor: pointer;

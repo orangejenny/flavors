@@ -235,7 +235,7 @@ function drawTable() {
 	dashboard.bind(filters[filters.length - 1], table).draw(dataview);
 
 	google.visualization.events.addListener(table, 'ready', function() {
-		jQuery("#song-count").text(parseInt(jQuery("#song-table-container tr:visible").length, 10) - 1);
+		jQuery("#song-count").text(parseInt(jQuery("#song-table-container tr:visible").length, 10));
 		google.visualization.events.addListener(table.getChart(), 'sort', function() {
 			refreshTable();
 		});
@@ -261,7 +261,7 @@ function refreshTable() {
 		jQuery($cells[i]).css("width", Math.round(cellWidths[i] * tableWidth) + "px");
 	}
 
-	// Align filter inputs with columns, which vary. Terrible.
+	// Align filter input positions and widths with columns. Terrible.
 	var $filters = jQuery('#simple-filters');
 	var placeholders = ["name", "artist", "collections", "tags"];
 	var cells = {};
@@ -269,19 +269,18 @@ function refreshTable() {
 		cells[jQuery(this).text().trim().toLowerCase()] = i + 1;
 	});
 	var $firstRow = $table.find("tr:visible:first");
-	$filters.find("input").each(function() {
-		var placeholder = placeholders.shift();
-		var $input = jQuery(this);
-		var $cell = $firstRow.find("td:nth-child(" + cells[placeholder] + ")");
-		$input.width($cell.width() - parseInt($input.css("margin-left")) - parseInt($input.css("margin-right")));
-		var left = 0;
-		for (var i = 1; i < cells[placeholder]; i++) {
-			var $cell = $firstRow.find("td:nth-child(" + i + "):visible");
-			if ($cell.length) {
-				left += $cell.width() + 5;
-			}
-		}
-		$input.css("left", left + "px");
-		$input.get(0).placeholder = placeholder;
-	});
+	var $previousInput;
+	if ($table.find("tr:visible").length) {
+		$filters.find("input").each(function() {
+			var placeholder = placeholders.shift();
+			var $input = jQuery(this);
+			var $cell = $firstRow.find("td:nth-child(" + cells[placeholder] + ")");
+			$input.width($cell.width() - parseInt($input.css("margin-left")) - parseInt($input.css("margin-right")));
+			var cellLeft = $cell.offset().left;
+			var previousInputRight = $previousInput ? $previousInput.offset().left + $previousInput.outerWidth() : $filters.offset().left;
+			$input.css("margin-left", cellLeft - previousInputRight);
+			$input.get(0).placeholder = placeholder;
+			$previousInput = $input;
+		});
+	}
 }

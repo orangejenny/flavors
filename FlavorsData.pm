@@ -302,6 +302,59 @@ sub CollectionList {
 }
 
 ################################################################
+# CollectionSuggestions
+#
+# Description: Get a list of suggested collections
+#
+# Parameters
+#		None
+#
+# Return Value: array of hashrefs
+################################################################
+sub CollectionSuggestions {
+	my ($dbh, $args) = @_;
+
+	my $sql = qq{
+		select 
+			collection.id,
+			collection.name
+		from
+			collection
+		where
+		exists (
+			select 1
+			from song, songcollection
+			where song.id = songcollection.songid
+			and collection.id = songcollection.collectionid
+			and song.isstarred = 1
+		) or
+		exists (
+			select 1
+			from song, songcollection, songtag
+			where song.id = songcollection.songid
+			and collection.id = songcollection.collectionid
+			and songtag.songid = song.id
+			and songtag.tag in ('2015')
+		)
+		and exists (
+		select 1
+			from song, songcollection, songtag
+			where song.id = songcollection.songid
+			and collection.id = songcollection.collectionid
+			and songtag.songid = song.id
+			and songtag.tag in ('winter', 'january', 'february', 'march')
+		)
+		order by
+			collection.name
+	};
+
+	return _results($dbh, {
+		SQL => $sql,
+		COLUMNS => [qw(id name)],
+	});
+}
+
+################################################################
 # TagList
 #
 # Description: Get a list of tags

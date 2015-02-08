@@ -33,7 +33,8 @@ foreach my $song (@tracks) {
 	push(@{ $tracks{$song->{COLLECTIONID}} }, $song);
 }
 
-print qq{
+my @suggestions = FlavorsData::CollectionSuggestions($dbh);
+print sprintf(qq{
 <div class="post-nav">
 	<div class="controls">
 		<input type="text" id="collection-filter" placeholder="name">
@@ -72,11 +73,14 @@ print qq{
 		</label>
 		<br><br>
 		<div class="well" id="export-list">
-			<div class="subtle">drag collections here to export</div>
-			<ul></ul>
+			<div class="subtle%s">drag collections here to export</div>
+			<ul>%s</ul>
 		</div>
 	</div>
-};
+	},
+	(@suggestions ? " hide" : ""),
+	join("", map { "<li data-id='" . $_->{ID} . "'>" . $_->{NAME} . "</li>" } @suggestions)
+);
 
 print "<div class=\"collections clearfix\" style=\"margin-left: 250px;\">";
 

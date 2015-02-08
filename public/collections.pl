@@ -72,9 +72,8 @@ print qq{
 		</label>
 		<br><br>
 		<div class="well" id="export-list">
-			<div class="subtle">drag collections here</div>
+			<div class="subtle">drag collections here to export</div>
 			<ul></ul>
-			<button class="btn btn-sm btn-default hide">Clear</button>
 		</div>
 	</div>
 };

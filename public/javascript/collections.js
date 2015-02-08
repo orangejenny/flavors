@@ -104,7 +104,6 @@ jQuery(document).ready(function() {
 	});
 
 	// Drop collections onto target
-	var collections = [];
 	jQuery("#export-list").droppable({
 		activeClass: "export-list-active",
 		hoverClass: "export-list-hover",
@@ -116,7 +115,6 @@ jQuery(document).ready(function() {
 			li += ui.draggable.find(".name").text();
 			li += "</li>";
 			$ul.append(li);
-			collections.push(ui.draggable.detach());
 			jQuery(".controls #export-list button").removeClass("hide");
 		}
 	});
@@ -124,14 +122,10 @@ jQuery(document).ready(function() {
 	// "Clear" button
 	jQuery(".controls #export-list button").click(function() {
 		var $button = jQuery(this);
-		for (var i in collections) {
-			jQuery(".collections").prepend(collections[i]);
-		}
 		var $controls = $button.closest(".controls");
 		$controls.find("#export-list ul").html("");
 		$controls.find(".subtle").removeClass("hide");
 		$button.addClass("hide");
-		collections = [];
 	});
 
 	// Export single collection

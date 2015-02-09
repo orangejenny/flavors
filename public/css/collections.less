@@ -4,7 +4,7 @@
 	@albumSize: 75px;
 
 	float: left;
-	margin: @spacingNormal;
+	margin: 0 0 @spacingWide @spacingWide;
 	border-radius: @borderRadius;
 	cursor: pointer;
 	overflow: hidden;
@@ -88,6 +88,10 @@
 	margin: @spacingNormal;
 	position: fixed;
 	width: @width;
+	top: @navHeight + @spacingNormal;
+	bottom: 0;
+	overflow-x: visible;
+	overflow-y: scroll;
 
 	label {
 		display: block;
@@ -128,6 +132,7 @@
 
 			.glyphicon {
 				margin-left: 5px;
+float: right;
 				.clickable();
 			}
 		}

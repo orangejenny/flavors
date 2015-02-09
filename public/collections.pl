@@ -143,18 +143,21 @@ foreach my $collection (@collections) {
 			<div class="details">
 				<div class="name">%s</div>
 				<div class="artist">%s</div>
-				<div class="date-acquired">%s</div>
 				<div class="export-icons">
+					<br><br>
 					<span class="glyphicon glyphicon-home" data-os="mac"></span>
 					<span class="glyphicon glyphicon-briefcase" data-os="pc"></span>
 				</div>
 				<div class="rating">%s</div>
+				<br><div class="rating">%s</div>
+				<br><div class="rating">%s</div>
 			</div>
 		},
 		$collection->{NAME},
 		$collection->{ARTIST},
-		FlavorsUtils::TrimDate($collection->{DATEACQUIRED}),
-		FlavorsHTML::Rating($collection->{RATING}),
+		FlavorsHTML::Rating($collection->{RATING}, 'star'),
+		FlavorsHTML::Rating($collection->{ENERGY}, 'fire'),
+		FlavorsHTML::Rating($collection->{MOOD}, 'heart'),
 	);
 
 	my $exporttext = "";
@@ -173,21 +176,19 @@ foreach my $collection (@collections) {
 			else {
 				$exporttext .= $collection->{EXPORTCOUNT} . " times";
 			}
-			$exporttext .= ", last on ";
+			$exporttext .= "<br>Last exported ";
 		}
 		$exporttext .= " " . FlavorsUtils::TrimDate($collection->{LASTEXPORT});
 	}
 	printf(qq{
 			<div class="track-list clear">
 				%s
-				%s
-				%s
+				<div>Acquired %s</div>
 				<ol>%s</ol>
 			</div>
 		},
 		$exporttext,
-		$collection->{ENERGY} ? "<br>Energy <div class='rating'>" . FlavorsHTML::Rating($collection->{ENERGY}) . "</div>" : "",
-		$collection->{MOOD} ? "<br>Mood <div class='rating'>" . FlavorsHTML::Rating($collection->{MOOD}) . "</div>" : "",
+		FlavorsUtils::TrimDate($collection->{DATEACQUIRED}),
 		join("", map { "<li>" . $_->{NAME} . "</li>" } @{ $tracks{$collection->{ID}} }),
 	);
 	print "</div>";

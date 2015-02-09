@@ -34,11 +34,11 @@ sub Tag {
 # Return Value: HTML
 ################################################################
 sub Rating {
-	my ($rating) = @_;
+	my ($rating, $symbol) = @_;
 
 	my $html;
 	while ($rating > 0) {
-		$html .= "*";
+		$html .= $symbol ? "<span class='glyphicon glyphicon-$symbol'></span>" : "*";
 		$rating--;
 	}
 

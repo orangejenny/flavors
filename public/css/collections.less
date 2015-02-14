@@ -97,7 +97,7 @@
 		display: block;
 	}
 
-	input[type="text"] {
+	input[type="text"], button {
 		width: @width;
 		margin-bottom: 10px;
 	}
@@ -132,7 +132,7 @@
 
 			.glyphicon {
 				margin-left: 5px;
-float: right;
+				float: right;
 				.clickable();
 			}
 		}
@@ -145,4 +145,39 @@ float: right;
 
 .export-list-hover {
 	background-color: @greyLightest;
+}
+
+#new-collection {
+	.modal-header {
+		input[type='text'] {
+			width: 500;
+		}
+
+		input[type='checkbox'] {
+			margin-left: @spacingNormal;
+		}
+	}
+
+	.song {
+		input {
+			margin-bottom: @spacingNormal;
+			&[name='name'], &[name='artist'], &[name='seconds'] {
+				margin-right: @spacingNormal;
+			}
+			&[name='name'] {
+				width: 300px;
+			}
+			&[name='artist'] {
+				width: 200px;
+			}
+			&[name='minutes'], &[name='seconds'] {
+				width: 35px;
+			}
+		}
+
+		.glyphicon-trash {
+			.clickable();
+			margin-top: @spacingNormal;
+		}
+	}
 }

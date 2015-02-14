@@ -37,6 +37,10 @@ my @suggestions = FlavorsData::CollectionSuggestions($dbh);
 print sprintf(qq{
 <div class="post-nav">
 	<div class="controls">
+		<button id='add-collection' class='btn btn-default btn-large'>
+			<span class='glyphicon glyphicon-plus'></span>
+			New
+		</button>
 		<input type="text" id="collection-filter" placeholder="name">
 		<input type="text" id="tag-filter" placeholder="tags">
 		<br /><br />
@@ -194,5 +198,47 @@ foreach my $collection (@collections) {
 	print "</div>";
 }
 print "</div></div>";
+
+print q{
+	<div id="new-collection" class="modal">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<div class="modal-header">
+					<h4>
+						<input type='text' name='name' placeholder='collection' />
+						<label>
+							<input type='checkbox' name='ismix' />
+							is mix
+						</label>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class='song hide'>
+						<input type='text' name='name' placeholder='song' />
+						<input type='text' name='artist' placeholder='artist' />
+						<input type='text' name='minutes' placeholder='0' />
+						:
+						<input type='text' name='seconds' placeholder='00' />
+						<span class='glyphicon glyphicon-trash'></span>
+					</div>
+					<button id='add-song' class='btn btn-default btn-large'>
+						<span class='glyphicon glyphicon-plus'></span>
+					</button>
+				</div>
+				<div class="modal-footer">
+					<button id='cancel-add-collection' class='btn btn-default btn-large'>
+						cancel
+					</button>
+					<button id='save-collection' class='btn btn-primary btn-large'>
+						save
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+};
 
 print FlavorsHTML::Footer();

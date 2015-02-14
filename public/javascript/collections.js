@@ -37,9 +37,46 @@ function FilterCollections() {
 	});
 }
 
+function addSong(focus) {
+	var $modal = jQuery("#new-collection");
+	var lastArtist = $modal.find(".song [name='artist']:last").val();
+	var $newSong = $modal.find(".song.hide").clone().removeClass("hide");
+	$modal.find("#add-song").before($newSong);
+	if (lastArtist) {
+		$newSong.find("[name='artist']").val(lastArtist);
+	}
+	if (focus) {
+		$newSong.find("input:first").focus();
+	}
+}
+
 jQuery(document).ready(function() {
 	jQuery(".collection").click(function() {
 		jQuery(this).find(".track-list").toggle('fast');
+	});
+
+	// Controls: Add collection
+	jQuery("#add-collection").click(function() {
+		var $modal = jQuery("#new-collection");
+		$modal.modal();
+		$modal.find("input:first").focus();
+		addSong(false);
+	});
+
+	jQuery("#new-collection #add-song").click(function() {
+		addSong(true);
+	});
+
+	jQuery("#new-collection").on("click", ".glyphicon-trash", function() {
+		jQuery(this).closest(".song").remove();
+	});
+
+	jQuery("#cancel-add-collection").click(function() {
+		var $modal = jQuery("#new-collection");
+		$modal.find(".song:visible").remove();
+		$modal.find("input[type='text']").val("");
+		$modal.find("input[type='checkbox']").attr("checked", false);
+		$modal.modal('hide');
 	});
 
 	// Controls: Toggle details

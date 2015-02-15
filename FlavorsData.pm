@@ -737,7 +737,7 @@ sub AddCollection {
 		};
 		_results($dbh, {
 			SQL => $sql,
-			BINDS => [$lastid, $song->{NAME}, $song->{ARTIST}, $song->{TIME}, $song->{NAME}, $song->{ARTIST}],
+			BINDS => [$lastid, $song->{NAME}, $song->{ARTIST}, $song->{TIME}, $song->{ARTIST}, $song->{NAME}],
 			SKIPFETCH => 1,
 		});
 		$lastid++;

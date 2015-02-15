@@ -159,6 +159,12 @@
 	}
 
 	.song {
+		.ordinal {
+			display: inline-block;
+			font-size: @fontSizeLarge;
+			margin: @spacingNormal;
+		}
+
 		input {
 			margin-bottom: @spacingNormal;
 			&[name='name'], &[name='artist'], &[name='seconds'] {
@@ -171,13 +177,31 @@
 				width: 200px;
 			}
 			&[name='minutes'], &[name='seconds'] {
-				width: 35px;
+				width: @inputHeight;
+				text-align: center;
 			}
 		}
 
 		.glyphicon-trash {
 			.clickable();
 			margin-top: @spacingNormal;
+		}
+	}
+
+	#add-song {
+		button, input {
+			width: @inputHeight;
+			height: @inputHeight;
+			text-align: center;
+		}
+
+		button {
+			padding: 0;
+			margin-right: @spacingNormal;
+
+			.glyphicon {
+				margin: 0 0 3px 3px;
+			}
 		}
 	}
 }

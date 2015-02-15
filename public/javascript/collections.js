@@ -48,6 +48,13 @@ function addSong(focus) {
 	if (focus) {
 		$newSong.find("input:first").focus();
 	}
+	numberSongs();
+}
+
+function numberSongs() {
+	jQuery("#new-collection .ordinal:visible").each(function(index) {
+		jQuery(this).html(index + 1 + '.');
+	});
 }
 
 jQuery(document).ready(function() {
@@ -60,15 +67,28 @@ jQuery(document).ready(function() {
 		var $modal = jQuery("#new-collection");
 		$modal.modal();
 		$modal.find("input:first").focus();
-		addSong(false);
+		if (!$modal.find(".song:visible").length) {
+			addSong(false);
+		}
 	});
 
-	jQuery("#new-collection #add-song").click(function() {
-		addSong(true);
+	jQuery("#add-song input").focus(function() {
+		jQuery(this).select();
+	});
+
+	jQuery("#new-collection #add-song button").click(function() {
+		var count = jQuery("#add-song input").val();
+		if (!parseInt(count)) {
+			count = 1;
+		}
+		for (var i = 0; i < count; i++) {
+			addSong(true);
+		}
 	});
 
 	jQuery("#new-collection").on("click", ".glyphicon-trash", function() {
 		jQuery(this).closest(".song").remove();
+		numberSongs();
 	});
 
 	jQuery("#cancel-add-collection").click(function() {

@@ -217,6 +217,7 @@ print q{
 				</div>
 				<div class="modal-body">
 					<div class='song hide'>
+						<span class='ordinal'>0</span>
 						<input type='text' name='name' placeholder='song' />
 						<input type='text' name='artist' placeholder='artist' />
 						<input type='text' name='minutes' placeholder='0' />
@@ -224,9 +225,12 @@ print q{
 						<input type='text' name='seconds' placeholder='00' />
 						<span class='glyphicon glyphicon-trash'></span>
 					</div>
-					<button id='add-song' class='btn btn-default btn-large'>
-						<span class='glyphicon glyphicon-plus'></span>
-					</button>
+					<div id="add-song">
+						<button class='btn btn-default btn-large'>
+							<span class='glyphicon glyphicon-plus'></span>
+						</button>
+						<input type='text' value='1' />
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button id='cancel-add-collection' class='btn btn-default btn-large'>

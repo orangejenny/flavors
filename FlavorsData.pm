@@ -672,6 +672,91 @@ sub UpdateColor {
 }
 
 ################################################################
+# AddCollection
+#
+# Description: Add a new collection and set of songs
+#
+# Parameters
+#		COLLECTION: Hashref containing
+#			NAME
+#			ISMIX
+#		SONGS: Arrayref, each with
+#			NAME
+#			ARTIST
+#			TIME
+#
+# Return Value: nothing
+################################################################
+sub AddCollection {
+	my ($dbh, $args) = @_;
+	# TODO: Everything within a transaction
+
+	my @songkeys = grep { $_ =~ m/^SONGS\[/ } keys %$args;
+	my @songs = ();
+	foreach my $key (@songkeys) {
+		if ($key =~ m/^SONGS\[.*\[NAME]$/) {
+			push(@songs, {});
+		}
+	}
+	foreach my $key (@songkeys) {
+		if ($key =~ m/^SONGS\[(\d+)]\[(\w+)]$/) {
+			my $index = $1;
+			my $attribute = $2;
+			$songs[$index]->{$attribute} = $args->{$key};
+		}
+	}
+
+	# Add collection
+	my @ids = _results($dbh, {
+		SQL => qq{ select max(id) id from collection },
+		COLUMNS => ['id'],
+	});
+	my $collectionid = $ids[0]->{ID} + 1;
+	my $sql = qq{
+		insert into collection (id, name, ismix, dateacquired, exportcount)
+		values (?, ?, ?, now(), 0)
+	};
+	_results($dbh, {
+		SQL => $sql,
+		BINDS => [$collectionid, $args->{NAME}, $args->{ISMIX} ? 1 : 0],
+		SKIPFETCH => 1,
+	});
+
+	# Add songs
+	my @songids = _results($dbh, {
+		SQL => qq{ select max(id) id from song },
+		COLUMNS => ['id'],
+	});
+	my $lastid = $songids[0]->{ID} + 1;
+	my $firstid = $lastid;
+	foreach my $song (@songs) {
+		my $sql = qq{
+			insert into song (id, name, artist, time, ispurchased, filename)
+			values (?, ?, ?, ?, 1, concat(?, '/', ?, '.mp3'))
+		};
+		_results($dbh, {
+			SQL => $sql,
+			BINDS => [$lastid, $song->{NAME}, $song->{ARTIST}, $song->{TIME}, $song->{NAME}, $song->{ARTIST}],
+			SKIPFETCH => 1,
+		});
+		$lastid++;
+	}
+
+	# Add tracks
+	my $sql = qq{
+		insert into songcollection (songid, collectionid, tracknumber)
+		select id, ?, id - ?
+		from song
+		where id >= ? and id <= ?
+	};
+	_results($dbh, {
+		SQL => $sql,
+		BINDS => [$collectionid, $firstid - 1, $firstid, $lastid],
+		SKIPFETCH => 1,
+	});
+}
+
+################################################################
 # UpdateSong
 #
 # Description: Update given song

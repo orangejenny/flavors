@@ -79,6 +79,48 @@ jQuery(document).ready(function() {
 		$modal.modal('hide');
 	});
 
+	jQuery("#save-collection").click(function() {
+		var data = {};
+		var $modal = jQuery("#new-collection");
+		var $header = $modal.find(".modal-header");
+		var $name = $header.find("[name='name']");
+		if (!$name.val()) {
+			alert("Missing name");
+			$name.focus();
+		}
+
+		var args = {
+			NAME: $name.val(),
+			ISMIX: $header.find("input[type='checkbox']").attr("checked"),
+			SONGS: [],
+		};
+		var attributes = ['name', 'artist', 'minutes', 'seconds'];
+		$modal.find(".song:visible").each(function() {
+			var values = {};
+			for (var i = 0; i < attributes.length; i++) {
+				var $obj = jQuery(this).find("[name='" + attributes[i] + "']");
+				if (!$obj.val()) {
+					alert("Missing data");
+					$obj.focus();
+				}
+				values[attributes[i].toUpperCase()] = $obj.val();
+			}
+			if (values.SECONDS < 10) {
+				values.SECONDS = '0' + values.SECONDS;
+			}
+			values.TIME = values.MINUTES + ':' + values.SECONDS;
+			args.SONGS.push(values);
+		});
+		jQuery(this).attr("disabled", true);
+		CallRemote({
+			SUB: 'FlavorsData::AddCollection',
+			ARGS: args,
+			FINISH: function() {
+				location.reload();
+			}
+		});
+	});
+
 	// Controls: Toggle details
 	jQuery("#show-details").click(function() {
 		if (jQuery(this).is(":checked")) {

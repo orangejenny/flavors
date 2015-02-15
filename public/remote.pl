@@ -19,6 +19,7 @@ $fdat->{REF} = 1;
 my $dbh = FlavorsData::DBH();
 #warn "DO THIS: $sub(\$dbh, \$fdat)";
 my $results = eval("$sub(\$dbh, \$fdat)");
+warn $@ if $@;
 
 print JSON::to_json($results) if $results;
 

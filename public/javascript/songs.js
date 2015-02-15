@@ -207,9 +207,9 @@ function drawTable() {
 	for (var i = 0; i < rows.length; i++) {
 		data.setProperty(i, 1, 'className', 'google-visualization-table-td isstarred');
 		data.setProperty(i, 2, 'className', 'google-visualization-table-td name');
-		data.setProperty(i, 5, 'className', 'google-visualization-table-td rating');
-		data.setProperty(i, 6, 'className', 'google-visualization-table-td rating');
-		data.setProperty(i, 7, 'className', 'google-visualization-table-td rating');
+		for (var j = 5; j < 8; j++) {
+			data.setProperty(i, j, 'className', 'google-visualization-table-td rating');
+		}
 	}
 
 	dataview = new google.visualization.DataView(data);

@@ -314,27 +314,35 @@ sub CollectionList {
 sub CollectionSuggestions {
 	my ($dbh, $args) = @_;
 
-	my $sql = qq{
-		select 
-			collection.id,
-			collection.name
-		from
-			collection
-		where
-		exists (
-			select 1
-			from song, songcollection
-			where song.id = songcollection.songid
-			and collection.id = songcollection.collectionid
-			and song.isstarred = 1
-		) or
+	my $maxcollections = 24;
+	my ($sec, $min, $hour, $monthday, $month, $year) = localtime();
+	$year += 1900;
+
+	my @clauses = ();
+
+	# Collections with a starred song
+	push(@clauses, qq{
+			exists (
+				select 1
+				from song, songcollection
+				where song.id = songcollection.songid
+				and collection.id = songcollection.collectionid
+				and song.isstarred = 1
+			)
+	});
+
+	# Collections with a song tagged with the current season
+	my @seasons = qw(winter spring summer autumn);
+	my @months = qw(january february march april may june july august september october november december);
+	my $seasonindex = $seasons[$month / 3];
+	push(@clauses, sprintf(qq{
 		exists (
 			select 1
 			from song, songcollection, songtag
 			where song.id = songcollection.songid
 			and collection.id = songcollection.collectionid
 			and songtag.songid = song.id
-			and songtag.tag in ('2015')
+			and songtag.tag in ('%s')
 		)
 		and exists (
 		select 1
@@ -344,14 +352,51 @@ sub CollectionSuggestions {
 			and songtag.songid = song.id
 			and songtag.tag in ('winter', 'january', 'february', 'march')
 		)
-		order by
-			collection.name
-	};
+		},
+		$year,
+		$seasons[$seasonindex],
+		join(", ", map { sprintf("'%s'", $_) } $months[($seasonindex * 3) .. (($seasonindex + 1) * 3)]),
+	));
 
-	return _results($dbh, {
-		SQL => $sql,
-		COLUMNS => [qw(id name)],
-	});
+	# Recently acquired collections
+	push(@clauses, "1 = 1");
+
+	my $collections = {};
+	while (@clauses && scalar(keys %$collections) < $maxcollections) {
+		my $sql = sprintf(qq{
+			select 
+				collection.id,
+				collection.name
+			from
+				collection
+			where
+				%s
+			order by dateacquired desc
+			limit %s
+			},
+			pop(@clauses),
+			$maxcollections,
+		);
+
+		my @newcollections = _results($dbh, {
+			SQL => $sql,
+			COLUMNS => [qw(id name)],
+		});
+		foreach my $new (@newcollections) {
+			$collections->{$new->{NAME}} = $new->{ID};
+		}
+	}
+
+	# Sort alphabetically
+	my @collections = ();
+	foreach my $name (sort keys %$collections) {
+		push(@collections, {
+			ID => $collections->{$name},
+			NAME => $name,
+		});
+	}
+
+	return @collections;
 }
 
 ################################################################

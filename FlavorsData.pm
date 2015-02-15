@@ -689,8 +689,8 @@ sub UpdateColor {
 ################################################################
 sub AddCollection {
 	my ($dbh, $args) = @_;
-	# TODO: Everything within a transaction
 
+	# TODO: Genericize
 	my @songkeys = grep { $_ =~ m/^SONGS\[/ } keys %$args;
 	my @songs = ();
 	foreach my $key (@songkeys) {
@@ -706,6 +706,7 @@ sub AddCollection {
 		}
 	}
 
+	# TODO: Everything within a transaction
 	# Add collection
 	my @ids = _results($dbh, {
 		SQL => qq{ select max(id) id from collection },

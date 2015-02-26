@@ -265,7 +265,7 @@ function refreshTable() {
 	var $filters = jQuery('#simple-filters');
 	var placeholders = ["name", "artist", "collections", "tags"];
 	var cells = {};
-	$table.find("tr:first td").each(function(i) {
+	$table.find("tr:first td, tr:first th").each(function(i) {
 		cells[jQuery(this).text().trim().toLowerCase()] = i + 1;
 	});
 	var $firstRow = $table.find("tr:visible:first");

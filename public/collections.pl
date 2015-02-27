@@ -93,6 +93,7 @@ foreach my $color (FlavorsData::ColorList($dbh)) {
 	$colors{$color->{NAME}} = $color;
 }
 
+my %suggestionsbyid = map { $_->{ID} => $_->{NAME} } @suggestions;
 foreach my $collection (@collections) {
 	printf(qq{
 			<div 
@@ -108,7 +109,7 @@ foreach my $collection (@collections) {
 				data-mood="%s"
 				data-last-export="%s"
 				data-export-count="%s"
-				class="collection has-details clearfix"
+				class="collection has-details clearfix %s"
 			>
 		},
 		$collection->{ID},
@@ -123,6 +124,7 @@ foreach my $collection (@collections) {
 		$collection->{MOOD},
 		$collection->{LASTEXPORT},
 		$collection->{EXPORTCOUNT},
+		$suggestionsbyid{$collection->{ID}} ? "selected" : "",
 	);
 
 	my $image = sprintf("images/collections/%s.jpg", $collection->{ID});

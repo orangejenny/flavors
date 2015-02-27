@@ -216,6 +216,7 @@ jQuery(document).ready(function() {
 				li += ui.draggable.find(".name").text();
 				li += "</li>";
 				$ul.append(li);
+				ui.draggable.addClass("selected");
 			}
 		}
 	});
@@ -234,7 +235,9 @@ jQuery(document).ready(function() {
 		if ($trash.closest("ul").children().length === 1) {
 			jQuery(".controls .subtle").removeClass("hide");
 		}
-		$trash.closest("li").remove();
+		var $li = $trash.closest("li");
+		$(".collections .collection[data-id='" + $li.data("id") + "']").removeClass("selected");
+		$li.remove();
 	});
 
 	// Export single collection

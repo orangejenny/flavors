@@ -78,12 +78,9 @@ function BuildArgs(selector, args) {
  *	(variety of filters that will be passed to FlavorsData::SongList)
  */
 function ExportPlaylist(args) {
+	args.FILENAME = prompt("Playlist name?", args.FILENAME || "flavors");
 	if (!args.FILENAME) {
-		var filename = prompt("Playlist name?", "flavors");
-		if (!filename) {
-			return;
-		}
-		args.FILENAME = filename;
+		return;
 	}
 
 	var params = [];

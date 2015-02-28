@@ -151,12 +151,24 @@ jQuery(document).ready(function() {
 
 	// Export buttons
 	jQuery(".export-button").click(function() {
-		var options = BuildArgs('#complex-filter', options);
-		options.NAME = jQuery("#simple-filter-name input").val();
-		options.ARTIST = jQuery("#simple-filter-artist input").val();
-		options.COLLECTIONS = jQuery("#simple-filter-collections input").val();
-		options.TAGS = jQuery("#simple-filter-tags input").val();
+		var options = {};
 		options.OS = jQuery(this).data("os");
+		var keys = ['name', 'artist', 'collections', 'tags'];
+		var values = [];
+		for (var i = 0; i < keys.length; i++) {
+			var value = jQuery("#simple-filter-" + keys[i] + " input").val();
+			if (value) {
+				values.push(value);
+				options[keys[i].toUpperCase()] = value;
+			}
+		}
+		var complex = jQuery('#complex-filter textarea').val();
+		if (complex) {
+			options.FILTER = complex;
+			values.push(complex);
+		}
+		values = jQuery.map(values, function(str) { return "[" + str + "]"; });
+		options.FILENAME = values.join("");
 		ExportPlaylist(options);
 	});
 });

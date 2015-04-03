@@ -247,7 +247,8 @@ function drawTable() {
 	dashboard.bind(filters[filters.length - 1], table).draw(dataview);
 
 	google.visualization.events.addListener(table, 'ready', function() {
-		jQuery("#song-count").text(parseInt(jQuery("#song-table-container tr:visible").length, 10));
+		// .transparent filter to use only one of the two full tables of markup Google tables creates
+		jQuery("#song-count").text(parseInt(jQuery("#song-table-container .transparent tr:visible").length, 10));
 		google.visualization.events.addListener(table.getChart(), 'sort', function() {
 			refreshTable();
 		});

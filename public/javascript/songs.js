@@ -93,9 +93,11 @@ jQuery(document).ready(function() {
 	$table.on("blur", selector, function() {
 		var $td = jQuery(this);
 		var value = $td.text().trim();
+		var clientValue = value;
 		if ($td.hasClass("rating")) {
 			value = value.length;
-			$td.html(ratingHTML(iconClasses[$td.closest("tr").find(".rating").index($td)], value));
+			clientValue = ratingHTML(iconClasses[$td.closest("tr").find(".rating").index($td)], value);
+			$td.html(clientValue);
 		}
 		if (oldValue != value && selectedRow !== undefined) {
 			var id = $td.closest("tr").find("td:first").text();
@@ -107,7 +109,7 @@ jQuery(document).ready(function() {
 			args[key] = value;
 
 			// Update client
-			data.setValue(rowIndexById[id], index, value);
+			data.setValue(rowIndexById[id], index, clientValue);
 
 			// Update server
 			$td.addClass("update-in-progress");

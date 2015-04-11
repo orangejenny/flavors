@@ -55,6 +55,7 @@ FlavorsData::UpdateExport($dbh, \%updateexport);
 
 my $filename = $fdat->{FILENAME};
 $filename =~ s/[^\w \-[\]]+//g;
+$filename .= " (" . @songs . ")";
 print $cgi->header(-type => 'text/text', -attachment => "$filename.m3u");
 
 my $os = lc $fdat->{OS};

@@ -105,6 +105,11 @@ jQuery(document).ready(function() {
 			var index = jQuery("td", $td.closest("tr")).index($td);
 			var key = jQuery("#song-table-container tr:first :nth-child(" + (index + 1) + ")").text().trim().toLowerCase();
 			args[key] = value;
+
+			// Update client
+			data.setValue(rowIndexById[id], index, value);
+
+			// Update server
 			$td.addClass("update-in-progress");
 			CallRemote({
 				SUB: 'FlavorsData::UpdateSong', 

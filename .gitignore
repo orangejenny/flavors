@@ -10,3 +10,6 @@ config.yml
 public/node_modules/*
 public/css/*.css
 !public/css/thirdparty/*.css
+*DS_Store
+public/flavors
+public/bootstrap/dist/

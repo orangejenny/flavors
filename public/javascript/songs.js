@@ -119,10 +119,17 @@ jQuery(document).ready(function() {
 	});
 	$table.on("click", ".isstarred .glyphicon", function() {
 		var $star = jQuery(this);
+		var id = $star.closest("tr").find("td:first").text();
+		var isstarred = !$star.hasClass("glyphicon-star");
+
+		// Update markup
 		$star.toggleClass("glyphicon-star-empty");
 		$star.toggleClass("glyphicon-star");
-		var id = $star.closest("tr").find("td:first").text();
-		var isstarred = $star.hasClass("glyphicon-star");
+
+		// Update client data
+		data.setValue(rowIndexById[id], 1, starHTML(isstarred));
+
+		// Update server data
 		$star.addClass("update-in-progress");
 		CallRemote({
 			SUB: 'FlavorsData::UpdateSong', 
@@ -173,6 +180,7 @@ jQuery(document).ready(function() {
 	});
 });
 
+var rowIndexById = {};
 function drawTable() {
 	var columns = [
 		{ type: 'number', label: 'ID' },
@@ -194,8 +202,8 @@ function drawTable() {
 		rows: rows,
 	});
 	for (var i = 0; i < rows.length; i++) {
-		var starClass = data.getValue(i, 1) == 1 ? "glyphicon-star" : "glyphicon-star-empty";
-		data.setValue(i, 1, "<span class='glyphicon " + starClass + "'></span>");	// TODO
+		rowIndexById[data.getValue(i, 0)] = i;
+		data.setValue(i, 1, starHTML(data.getValue(i, 1) == 1));
 		for (var j = 0; j < 3; j++) {
 			data.setValue(i, j + 5, ratingHTML(iconClasses[j], (data.getValue(i, j + 5) || "").trim().length));
 		}
@@ -248,11 +256,12 @@ function drawTable() {
 
 	google.visualization.events.addListener(table, 'ready', function() {
 		jQuery("#song-count").text(table.getDataTable().getNumberOfRows());
-		google.visualization.events.addListener(table.getChart(), 'sort', function() {
-			refreshTable();
-		});
 		refreshTable();
 	});
+}
+
+function starHTML(isstarred) {
+	return "<span class='glyphicon glyphicon-star" + (isstarred ? "" : "-empty") + "'></span>"
 }
 
 function ratingHTML(iconClass, number) {

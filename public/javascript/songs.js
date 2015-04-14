@@ -1,15 +1,50 @@
 // Globals
-var selectedRow = undefined;
 var oldValue = undefined;
 var iconClasses = ['glyphicon-star', 'glyphicon-fire', 'glyphicon-heart'];
-var dashboard, data, dataview, table = undefined;
-var filters = ['Name', 'Artist', 'Collections', 'Tags'];
-
-// Table initialization
-google.load('visualization', '1', {packages: ['table', 'controls']});
-google.setOnLoadCallback(drawTable);
 
 jQuery(document).ready(function() {
+	var tokens = InitialPageData('tokens');
+	var letters = InitialPageData('letters');
+	var lettercounts = InitialPageData('lettercounts');
+	updateRowCount();
+
+	jQuery('#test-filter').keyup(function() {
+		var query = jQuery(this).val();
+		var rowselector = "#song-table-container tbody tr";
+
+		if (!query) {
+			jQuery(rowselector).show();
+			updateRowCount();
+			return;
+		}
+
+		var leastcommonletter = "";
+		var leastcommoncount;
+		for (var i = 0; i < query.length; i++) {
+			if (!leastcommonletter || leastcommoncount > lettercounts[query[i]]) {
+				leastcommonletter = query[i];
+				leastcommoncount = lettercounts[leastcommonletter];
+			}
+		}
+
+		var toshow = {};
+		for (var i = 0; i < letters[leastcommonletter].length; i++) {
+			var token = letters[leastcommonletter][i];
+			if (token.indexOf(query) != -1) {
+				for (var j = 0; j < tokens[token].length; j++) {
+					toshow[tokens[token][j]] = 1;
+				}
+			}
+		}
+
+		jQuery(rowselector).hide();
+		for (var songid in toshow) {
+			jQuery("#song-" + songid).show();
+		}
+
+		updateRowCount();
+	});
+
 	jQuery("#helpers button").click(function() {
 		var $button = jQuery(this);
 		var buttonText = $button.text();
@@ -66,22 +101,12 @@ jQuery(document).ready(function() {
 		trigger: "hover"
 	});
 
-	// Press enter to filter
-	jQuery("textarea[name=filter]").keydown(function(evt) {
-		if (evt.keyCode == 13) {
-			jQuery(this).closest("form").submit();
-		}
-	});
-
 	// Click to edit
 	var $table = jQuery("#song-table-container");
 	var selector = "td[contenteditable=true]";
+	var columns = ['isstarred', 'name', 'artist', 'collections', 'rating', 'energy', 'mood', 'tags'];
 	$table.on("focus", selector, function() {
 		var $td = jQuery(this);
-		selectedRow = table.getChart().getSelection();
-		if (selectedRow && selectedRow.length) {
-			selectedRow = selectedRow[0].row;
-		}
 		if ($td.hasClass("rating")) {
 			oldValue = $td.children(".glyphicon:not(.blank)").length;
 			$td.html(StringMultiply("*", oldValue));
@@ -93,23 +118,21 @@ jQuery(document).ready(function() {
 	$table.on("blur", selector, function() {
 		var $td = jQuery(this);
 		var value = $td.text().trim();
-		var clientValue = value;
 		if ($td.hasClass("rating")) {
 			value = value.length;
-			clientValue = ratingHTML(iconClasses[$td.closest("tr").find(".rating").index($td)], value);
-			$td.html(clientValue);
+			$td.html(ratingHTML(iconClasses[$td.closest("tr").find(".rating").index($td)], value));
 		}
-		if (oldValue != value && selectedRow !== undefined) {
-			var id = $td.closest("tr").find("td:first").text();
+		if (oldValue != value) {
+			var id = $td.closest("tr").data("song-id");
 			var args = {
 				id: id,
 			}
 			var index = jQuery("td", $td.closest("tr")).index($td);
-			var key = jQuery("#song-table-container tr:first :nth-child(" + (index + 1) + ")").text().trim().toLowerCase();
+			var key = columns[index];
 			args[key] = value;
 
 			// Update client
-			data.setValue(rowIndexById[id], index, clientValue);
+			// TODO: update index
 
 			// Update server
 			$td.addClass("update-in-progress");
@@ -122,19 +145,15 @@ jQuery(document).ready(function() {
 			});
 		}
 		oldValue = undefined;
-		selectedRow = undefined;
 	});
 	$table.on("click", ".isstarred .glyphicon", function() {
 		var $star = jQuery(this);
-		var id = $star.closest("tr").find("td:first").text();
+		var id = $star.closest("tr").data("song-id");
 		var isstarred = !$star.hasClass("glyphicon-star");
 
 		// Update markup
 		$star.toggleClass("glyphicon-star-empty");
 		$star.toggleClass("glyphicon-star");
-
-		// Update client data
-		data.setValue(rowIndexById[id], 1, starHTML(isstarred));
 
 		// Update server data
 		$star.addClass("update-in-progress");
@@ -187,90 +206,6 @@ jQuery(document).ready(function() {
 	});
 });
 
-var rowIndexById = {};
-function drawTable() {
-	var columns = [
-		{ type: 'number', label: 'ID' },
-		{ type: 'string', label: '' },
-		{ type: 'string', label: 'Name'},
-		{ type: 'string', label: 'Artist'},
-		{ type: 'string', label: 'Collections'},
-		{ type: 'string', label: 'Rating'},
-		{ type: 'string', label: 'Energy'},
-		{ type: 'string', label: 'Mood'},
-		{ type: 'string', label: 'Tags'}
-	];
-	var rows = InitialPageData('rows');
-	if (!rows) {
-		return;
-	}
-	data = new google.visualization.DataTable({
-		cols: columns,
-		rows: rows,
-	});
-	for (var i = 0; i < rows.length; i++) {
-		rowIndexById[data.getValue(i, 0)] = i;
-		data.setValue(i, 1, starHTML(data.getValue(i, 1) == 1));
-		for (var j = 0; j < 3; j++) {
-			data.setValue(i, j + 5, ratingHTML(iconClasses[j], (data.getValue(i, j + 5) || "").trim().length));
-		}
-	}
-
-	for (var index in filters) {
-		var column = filters[index];
-		filters[index] = new google.visualization.ControlWrapper({
-			'controlType': 'StringFilter',
-			'containerId': 'simple-filter-' + column.toLowerCase(),
-			'options': {
-				filterColumnLabel: column,
-				matchType: 'any',
-				ui: {
-					label: ''
-				}
-			}
-		});
-	}
-
-	for (var i = 0; i < rows.length; i++) {
-		data.setProperty(i, 1, 'className', 'google-visualization-table-td isstarred');
-		data.setProperty(i, 2, 'className', 'google-visualization-table-td name');
-		for (var j = 5; j < 8; j++) {
-			data.setProperty(i, j, 'className', 'google-visualization-table-td rating');
-		}
-	}
-
-	dataview = new google.visualization.DataView(data);
-	var i = 0;
-	var viewcolumns = jQuery.map(columns, function() { return i++; });
-	dataview.setColumns(viewcolumns);
-
-	table = new google.visualization.ChartWrapper({
-		chartType: 'Table',
-		containerId: 'song-table-container', 
-		options: {
-			cssClassNames: {
-				selectedTableRow: 'dummy'
-			},
-			allowHtml: true,
-		}
-	});
-
-	dashboard = new google.visualization.Dashboard(document.getElementById('dashboard'));
-	for (var i = 0; i < filters.length - 1; i++) {
-		dashboard.bind(filters[i], filters[i+1]);
-	}
-	dashboard.bind(filters[filters.length - 1], table).draw(dataview);
-
-	google.visualization.events.addListener(table, 'ready', function() {
-		jQuery("#song-count").text(table.getDataTable().getNumberOfRows());
-		refreshTable();
-	});
-}
-
-function starHTML(isstarred) {
-	return "<span class='glyphicon glyphicon-star" + (isstarred ? "" : "-empty") + "'></span>"
-}
-
 function ratingHTML(iconClass, number) {
 	if (number) {
 		return StringMultiply("<span class='glyphicon " + iconClass + "'></span>", number);
@@ -278,37 +213,10 @@ function ratingHTML(iconClass, number) {
 	return StringMultiply("<span class='glyphicon blank " + iconClass + "'></span>", 5);
 }
 
-function refreshTable() {
-	var $table = jQuery("#song-table-container");
-	$table.find("tr:not(:first)").find("td.rating, td:last-child").attr("contenteditable", "true");
+function starHTML(isstarred) {
+	return "<span class='glyphicon glyphicon-star" + (isstarred ? "" : "-empty") + "'></span>"
+}
 
-	var tableWidth = $table.width();
-	var $cells = $table.find("tr:visible:first td");
-	var cellWidths = [undefined, .02, .15, .15, .15, .05, .05, .05, .38];
-	for (var i = 1; i < cellWidths.length; i++) {
-		jQuery($cells[i]).css("width", Math.round(cellWidths[i] * tableWidth) + "px");
-	}
-
-	// Align filter input positions and widths with columns. Terrible.
-	var $filters = jQuery('#simple-filters');
-	var placeholders = ["name", "artist", "collections", "tags"];
-	var cells = {};
-	$table.find("tr:first td, tr:first th").each(function(i) {
-		cells[jQuery(this).text().trim().toLowerCase()] = i + 1;
-	});
-	var $firstRow = $table.find("tr:visible:first");
-	var $previousInput;
-	if ($table.find("tr:visible").length) {
-		$filters.find("input").each(function() {
-			var placeholder = placeholders.shift();
-			var $input = jQuery(this);
-			var $cell = $firstRow.find("td:nth-child(" + cells[placeholder] + ")");
-			$input.width($cell.width() - parseInt($input.css("margin-left")) - parseInt($input.css("margin-right")));
-			var cellLeft = $cell.offset().left;
-			var previousInputRight = $previousInput ? $previousInput.offset().left + $previousInput.outerWidth() : $filters.offset().left;
-			$input.css("margin-left", cellLeft - previousInputRight);
-			$input.get(0).placeholder = placeholder;
-			$previousInput = $input;
-		});
-	}
+function updateRowCount() {
+	jQuery("#song-count").text(jQuery("#song-table-container tbody tr:visible").length);
 }

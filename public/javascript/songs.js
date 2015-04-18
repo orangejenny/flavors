@@ -180,16 +180,11 @@ jQuery(document).ready(function() {
 	});
 
 	// Complex filter controls
-	jQuery("#complex-filter input").click(function() {
+	jQuery("#complex-filter form input").click(function() {
 		jQuery(this).closest("form").submit();
 	});
-	jQuery("#complex-filter .helpers-trigger").click(function() {
-		jQuery("#helpers").modal();
-	});
-	jQuery("#complex-filter .clear-filter").click(function() {
-		var $form = jQuery(this).closest("form");
-		$form.find("textarea").val("");
-		$form.submit();
+	jQuery("#complex-filter-trigger").click(function() {
+		jQuery("#complex-filter").modal().find("textarea").focus();
 	});
 
 	// Export buttons

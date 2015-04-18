@@ -78,29 +78,26 @@ if ($fdat->{RANDOM}) {
 }
 
 print sprintf(q{
-	<div id="helpers" class="modal">
+	<div id="complex-filter" class="modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<div class="modal-header">
-					<h4>Songs</h4>
-				</div>
-
-				<form method=POST id="complex-filter">
-					<textarea name=filter rows=3 style="width: 400px;" placeholder="%s">%s</textarea>
-					<input type="button" value="Filter" class="btn btn-default btn-lg" style="width: 400px;" />
-					<input type="hidden" name="random" value="" />
-					<input type="hidden" name="orderBy" value="" />
-					<input type="hidden" name="placeholder" value="" />
-				</form>
-
-		id, name, artist,
-		<br>rating, energy, mood,
-		<br>time, filename,
-		<br>ismix, mindateacquired, maxdateacquired,
-		<br>taglist, tagcount, collectionlist,
-		<br>minyear, maxyear, isstarred
-
 				<div class="modal-body">
+
+					id, name, artist,
+					<br>rating, energy, mood,
+					<br>time, filename,
+					<br>ismix, mindateacquired, maxdateacquired,
+					<br>taglist, tagcount, collectionlist,
+					<br>minyear, maxyear, isstarred
+
+					<form method="POST">
+						<textarea name=filter rows=3 style="width: 400px;" placeholder="%s">%s</textarea>
+						<input type="button" value="Filter" class="btn btn-default btn-lg" style="width: 400px;" />
+						<input type="hidden" name="random" value="" />
+						<input type="hidden" name="orderBy" value="" />
+						<input type="hidden" name="placeholder" value="" />
+					</form>
+
 					<div class="group" data-category="random">
 						<button class="btn btn-default">Random collection</button>
 						<button class="btn btn-default">Random artist</button>
@@ -135,16 +132,16 @@ print sprintf(q{
 	$fdat->{FILTER},
 );
 
-print qq{
+print sprintf(qq{
 	<div class="post-nav">
 		<div class="filter-container">
 			<div id="filter-container">
 				<span class='glyphicon glyphicon-search'></span>
 				<input id='filter' type='text'/>
 			</div>
-			<a href='#'>advanced search</a>
+			<a id="complex-filter-trigger" href='#'>%s</a>
 		</div>
-};
+}, $fdat->{PLACEHOLDER} || $fdat->{FILTER} || "advanced search");
 
 print qq{ <div id="top-veil"></div> };
 print qq{ <div id="song-table-container"> };

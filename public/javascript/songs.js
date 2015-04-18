@@ -229,12 +229,4 @@ function starHTML(isstarred) {
 
 function updateRowCount() {
 	jQuery("#song-count").text(jQuery("#song-table-container tbody tr:visible").length);
-	var className = "odd";
-	jQuery("#song-table-container tbody tr").each(function() {
-		var $row = jQuery(this);
-		$row.removeClass("odd");
-		$row.removeClass("even");
-		$row.addClass(className);
-		className = className === "even" ? "odd" : "even";
-	});
 }

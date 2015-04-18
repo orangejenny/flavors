@@ -17,12 +17,28 @@
 	}
 }
 
-.complex-filter-container {
+.filter-container {
 	text-align: center;
 	position: fixed;
 	width: 100%;
 	top: 80px;
 	z-index: 3;
+
+	#filter-container {
+		position: relative;
+		width: 50%;
+		margin: 0 25%;
+		#filter {
+			margin: @spacingNarrow;
+			width: 100%;
+			text-align: center;
+		}
+		.glyphicon-search {
+			position: absolute;
+			right: @spacingNarrow;
+			top: 10px + @spacingNarrow;
+		}
+	}
 }
 
 #complex-filter textarea {
@@ -50,7 +66,7 @@
 
 #song-table-container {
 	position: fixed;
-	top: 245px;
+	top: 150px;
 	left: @spacingWide;
 	right: @spacingWide;
 	bottom: 40px;
@@ -121,7 +137,6 @@
 
 #top-veil, #bottom-veil {
 	background-color: @white;
-	opacity: 0.9;
 	left: 0;
 	right: 0;
 	z-index: 2;
@@ -130,7 +145,7 @@
 #top-veil {
 	position: fixed;
 	top: 0;
-	height: 210px;
+	height: 150px;
 }
 
 #bottom-veil {

@@ -8,7 +8,7 @@ jQuery(document).ready(function() {
 	var lettercounts = InitialPageData('lettercounts');
 	updateRowCount();
 
-	jQuery('#test-filter').keyup(function() {
+	jQuery('#filter').keyup(function() {
 		var query = jQuery(this).val();
 		var rowselector = "#song-table-container tbody tr";
 
@@ -198,8 +198,8 @@ jQuery(document).ready(function() {
 		options.OS = jQuery(this).data("os");
 		var keys = ['name', 'artist', 'collections', 'tags'];
 		var values = [];
+		var value = jQuery("#filter").val();
 		for (var i = 0; i < keys.length; i++) {
-			var value = jQuery("#simple-filter-" + keys[i] + " input").val();
 			if (value) {
 				values.push(value);
 				options[keys[i].toUpperCase()] = value;
@@ -210,8 +210,7 @@ jQuery(document).ready(function() {
 			options.FILTER = complex;
 			values.push(complex);
 		}
-		values = jQuery.map(values, function(str) { return "[" + str + "]"; });
-		options.FILENAME = values.join("");
+		options.FILENAME = value || complex;
 		ExportPlaylist(options);
 	});
 });

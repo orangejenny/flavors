@@ -77,13 +77,29 @@ if ($fdat->{RANDOM}) {
 	$fdat->{PLACEHOLDER} = "";
 }
 
-print q{
+print sprintf(q{
 	<div id="helpers" class="modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h4>Songs</h4>
 				</div>
+
+				<form method=POST id="complex-filter">
+					<textarea name=filter rows=3 style="width: 400px;" placeholder="%s">%s</textarea>
+					<input type="button" value="Filter" class="btn btn-default btn-lg" style="width: 400px;" />
+					<input type="hidden" name="random" value="" />
+					<input type="hidden" name="orderBy" value="" />
+					<input type="hidden" name="placeholder" value="" />
+				</form>
+
+		id, name, artist,
+		<br>rating, energy, mood,
+		<br>time, filename,
+		<br>ismix, mindateacquired, maxdateacquired,
+		<br>taglist, tagcount, collectionlist,
+		<br>minyear, maxyear, isstarred
+
 				<div class="modal-body">
 					<div class="group" data-category="random">
 						<button class="btn btn-default">Random collection</button>
@@ -114,54 +130,24 @@ print q{
 			</div>
 		</div>
 	</div>
-};
-
-print sprintf(qq{
-	<div class="post-nav">
-		<div class="complex-filter-container">
-			<form method=POST id="complex-filter">
-				<textarea name=filter rows=3 style="width: 400px;" placeholder="%s">%s</textarea>
-				<span class="glyphicon glyphicon-remove clear-filter" style="position: absolute; cursor: pointer;" title="Clear filter"></span>
-				<span class="glyphicon glyphicon-question-sign hint" style="position: absolute; top: 20px;" title="%s"></span>
-				<span class="glyphicon glyphicon-heart helpers-trigger" style="position: absolute; top: 40px; cursor: pointer;" title="Common filters"></span>
-				<br>
-				<input type="button" value="Filter" class="btn btn-default btn-lg" style="width: 400px;" />
-				<input type="hidden" name="random" value="" />
-				<input type="hidden" name="orderBy" value="" />
-				<input type="hidden" name="placeholder" value="" />
-			</form>
-		</div>
-	},
+},
 	$fdat->{PLACEHOLDER},
 	$fdat->{FILTER},
-	q{
-		id, name, artist,
-		<br>rating, energy, mood,
-		<br>time, filename,
-		<br>ismix, mindateacquired, maxdateacquired,
-		<br>taglist, tagcount, collectionlist,
-		<br>minyear, maxyear, isstarred
-	},
 );
 
-
-print qq{ <div id="dashboard"> };
-
 print qq{
-	<div id="simple-filters" class="clearfix">
-		<div id="simple-filter-name"></div>
-		<div id="simple-filter-artist"></div>
-		<div id="simple-filter-collections"></div>
-		<div id="simple-filter-tags"></div>
-	</div>
+	<div class="post-nav">
+		<div class="filter-container">
+			<div id="filter-container">
+				<span class='glyphicon glyphicon-search'></span>
+				<input id='filter' type='text'/>
+			</div>
+			<a href='#'>advanced search</a>
+		</div>
 };
 
 print qq{ <div id="top-veil"></div> };
 print qq{ <div id="song-table-container"> };
-
-print qq{
-	<input id='test-filter' type='text' placeholder='test filter' />
-};
 
 print qq{ <table><tbody> };
 
@@ -201,9 +187,6 @@ print qq{ </tbody></table> };
 
 print qq{</div> };
 print qq{ </div> };
-
-print "</tbody></table>";
-print qq{ </div> };	# close .post-nav
 
 print qq{
 	<div id="song-count-container">

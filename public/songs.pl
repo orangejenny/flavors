@@ -165,9 +165,14 @@ print qq{
 
 print qq{ <table><tbody> };
 
+my @colors = FlavorsData::ColorList($dbh);
+my %colormap = ();
+foreach my $color (@colors) {
+	$colormap{$color->{NAME}} = $color->{HEX};
+}
 foreach my $song (@songs) {
 	print sprintf(qq {
-		<tr id="song-%s" data-song-id="%s">
+		<tr id="song-%s" data-song-id="%s" data-colors="%s">
 			<td class='isstarred'><span class='glyphicon glyphicon-star%s'></span></td>
 			<td>%s</td>
 			<td>%s</td>
@@ -180,6 +185,7 @@ foreach my $song (@songs) {
 		},
 		$song->{ID},
 		$song->{ID},
+		join(" ", map { $colormap{$_} } grep { exists $colormap{$_} } split(/\s+/, $song->{TAGS})),
 		$song->{ISSTARRED} ? "" : "-empty",
 		$song->{NAME},
 		$song->{ARTIST},

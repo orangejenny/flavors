@@ -58,21 +58,19 @@
 	overflow-y: auto;
 
 	table {
-		tr:nth-child(odd) {
-			background-color: @white;
+		tr {
 		}
-
-		tr:nth-child(even) {
-			background-color: @stripe;
-		}
-
 		tr:hover {
-			background-color: #dfeffa;
-		}
 
+		}
 		td {
 			border: none;
 			max-width: 200px;	// hacky way to fiddle with column widths
+			vertical-align: middle;
+
+			&:not(:first-child) {
+				border-bottom: 1px solid @greyLightest;
+			}
 
 			&[contenteditable="true"] {
 				cursor: pointer;

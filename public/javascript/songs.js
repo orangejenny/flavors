@@ -94,15 +94,25 @@ jQuery(document).ready(function() {
 		placement: "right"
 	});
 
-	// Song details when hovering on names
-	jQuery(".song-name").popover({
-		html: true,
-		placement: "right",
-		trigger: "hover"
+	var $table = jQuery("#song-table-container");
+
+	// Highlight on hover
+	// TODO: Lighten the hover colors and/or make them background colors
+	$table.on("mouseover", "tr", function() {
+		var $row = jQuery(this);
+		var color = "fafafa";
+		var colordata = $row.data("colors");
+		if (colordata) {
+			var colors = colordata.split(/\s+/);
+			color = colors[Math.floor(Math.random() * colors.length)];
+		}
+		jQuery(this).css("background-color", color);
+	});
+	$table.on("mouseout", "tr", function() {
+		jQuery(this).css("background-color", "");
 	});
 
 	// Click to edit
-	var $table = jQuery("#song-table-container");
 	var selector = "td[contenteditable=true]";
 	var columns = ['isstarred', 'name', 'artist', 'collections', 'rating', 'energy', 'mood', 'tags'];
 	$table.on("focus", selector, function() {
@@ -219,4 +229,12 @@ function starHTML(isstarred) {
 
 function updateRowCount() {
 	jQuery("#song-count").text(jQuery("#song-table-container tbody tr:visible").length);
+	var className = "odd";
+	jQuery("#song-table-container tbody tr").each(function() {
+		var $row = jQuery(this);
+		$row.removeClass("odd");
+		$row.removeClass("even");
+		$row.addClass(className);
+		className = className === "even" ? "odd" : "even";
+	});
 }

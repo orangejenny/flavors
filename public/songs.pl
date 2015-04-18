@@ -129,7 +129,7 @@ foreach my $song (@songs) {
 			<td contenteditable='true' class='rating'>%s</td>
 			<td contenteditable='true' class='rating'>%s</td>
 			<td contenteditable='true' class='rating'>%s</td>
-			<td contenteditable='true'>%s</td>
+			<td contenteditable='true' style='width:35%;'>%s</td>
 		</tr>
 		},
 		$song->{ID},

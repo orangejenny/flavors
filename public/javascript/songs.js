@@ -45,10 +45,10 @@ jQuery(document).ready(function() {
 		updateRowCount();
 	});
 
-	jQuery("#helpers button").click(function() {
+	jQuery("#complex-filter button").click(function() {
 		var $button = jQuery(this);
 		var buttonText = $button.text();
-		var $form = jQuery("#complex-filter");
+		var $form = jQuery("#complex-filter form");
 		var filter = "";
 		var orderBy = $form.find('input[name="orderBy"]');
 		switch ($button.closest(".group").data("category")) {

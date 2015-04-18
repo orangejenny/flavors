@@ -61,58 +61,25 @@ FlavorsHTML::Header({
 	},
 });
 
-if ($fdat->{RANDOM}) {
-	my $column = $fdat->{RANDOM};
-	my $item = FlavorsData::RandomItem($dbh, $column);
-	$item = FlavorsUtils::EscapeSQL($item);
-	if ($column =~ m/collection/i) {
-		$fdat->{FILTER} = sprintf("collectionlist like '%% %s %%'", $item);
-	}
-	elsif ($column =~ m/tag/i) {
-		$fdat->{FILTER} = sprintf("taglist like '%% %s %%'", $item);
-	}
-	else {
-		$fdat->{FILTER} = sprintf("%s = '%s'", $column, $item);
-	}
-	$fdat->{PLACEHOLDER} = "";
-}
-
 print sprintf(q{
 	<div id="complex-filter" class="modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-body">
 
-					id, name, artist,
-					<br>rating, energy, mood,
-					<br>time, filename,
-					<br>ismix, mindateacquired, maxdateacquired,
-					<br>taglist, tagcount, collectionlist,
-					<br>minyear, maxyear, isstarred
-
 					<form method="POST">
-						<textarea name=filter rows=3 style="width: 400px;" placeholder="%s">%s</textarea>
-						<input type="button" value="Filter" class="btn btn-default btn-lg" style="width: 400px;" />
-						<input type="hidden" name="random" value="" />
+						<textarea name=filter rows=3 placeholder="%s">%s</textarea>
+						<input type="button" value="Filter" class="btn btn-default btn-lg"/>
 						<input type="hidden" name="orderBy" value="" />
 						<input type="hidden" name="placeholder" value="" />
 					</form>
 
-					<div class="group" data-category="random">
-						<button class="btn btn-default">Random collection</button>
-						<button class="btn btn-default">Random artist</button>
-						<button class="btn btn-default">Random tag</button>
+					<div id="column-hints">
+						id, name, artist, rating, energy, mood, time, filename,
+						<br>ismix, mindateacquired, maxdateacquired,
+						<br>taglist, tagcount, collectionlist, minyear, maxyear, isstarred
 					</div>
-					<div class="group" data-category="stars">
-						<button class="btn btn-default">5 stars</button>
-						<button class="btn btn-default">4 stars</button>
-						<button class="btn btn-default">3 stars</button>
-					</div>
-					<div class="group" data-category="missing">
-						<button class="btn btn-default">Missing rating</button>
-						<button class="btn btn-default">Missing mood</button>
-						<button class="btn btn-default">Missing energy</button>
-					</div>
+
 					<div class="group" data-category="popular">
 						<button class="btn btn-default">Recently added</button>
 						<button class="btn btn-default">Recently exported</button>
@@ -120,7 +87,6 @@ print sprintf(q{
 					</div>
 					<div class="group" data-category="unpopular">
 						<button class="btn btn-default">Rarely exported</button>
-						<button class="btn btn-default btn-info">All songs</button>
 						<button class="btn btn-default">Exported long ago</button>
 					</div>
 				</div>

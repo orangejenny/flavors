@@ -41,29 +41,6 @@
 	}
 }
 
-#complex-filter textarea {
-	margin: 0 @spacingNarrow;
-	padding: @spacingNarrow;
-	border-radius: @borderRadius;
-	border-color: @greyLight;
-}
-
-#simple-filters {
-	width: 100%;
-	position: fixed;
-	z-index: 3;
-	top: 200px;
-
-	input {
-		height: @inputHeight;
-		border: 1px solid #ccc;
-		border-radius: @borderRadius;
-		padding: 5px;
-		margin: 5px 0;
-		float: left;
-	}
-}
-
 #song-table-container {
 	position: fixed;
 	top: 150px;
@@ -113,9 +90,22 @@
 
 #complex-filter {
 	display: none;
+	text-align: center;
 
-	.modal-body {
-		text-align: center;
+	#column-hints {
+		line-height: 1.5;
+		margin-bottom: @spacingWide;
+	}
+
+	textarea, input {
+		width: 100%;
+		margin-bottom: @spacingNormal;
+	}
+
+	textarea {
+		padding: @spacingNarrow;
+		border-radius: @borderRadius;
+		border-color: @greyLight;
 	}
 
 	.group:not(:last-child) {

@@ -52,15 +52,6 @@ jQuery(document).ready(function() {
 		var filter = "";
 		var orderBy = $form.find('input[name="orderBy"]');
 		switch ($button.closest(".group").data("category")) {
-			case "random":
-				$form.find('input[name="random"]').val(buttonText.replace(/random/i, '').trim());
-				break;
-			case "stars":
-				filter = "rating = " + buttonText.replace(/stars/i, '');
-				break;
-			case "missing":
-				filter = buttonText.replace(/missing/i, '') + " is null";
-				break;
 			case "popular":
 				if (buttonText.match(/frequent/i)) {
 					orderBy.val("exportcount desc");

@@ -19,30 +19,46 @@ my @songs = FlavorsData::SongList($dbh, {
 	FILTER => $fdat->{FILTER},
 	ORDERBY => $fdat->{ORDERBY},
 });
-my $initialpagedata = {
-	ROWS => [
-		map {
-			{
-				c => [
-					{ v => $_->{ID}} ,
-					{ v => $_->{ISSTARRED}} ,
-					{ v => $_->{NAME} },
-					{ v => $_->{ARTIST} },
-					{ v => $_->{COLLECTIONS} },
-					{ v => FlavorsHTML::Rating($_->{RATING}) },
-					{ v => FlavorsHTML::Rating($_->{ENERGY}) },
-					{ v => FlavorsHTML::Rating($_->{MOOD}) },
-					{ v => $_->{TAGS} },
-				],
-			}
-		} @songs
-	],
-};
 
+my $tokens = {};	# token => [songid1, songid2, ... ]
+foreach my $song (@songs) {
+	my @songtokens = split(/\s+/, lc(join(" ", $song->{NAME}, $song->{ARTIST}, $song->{COLLECTIONS}, $song->{TAGS})));
+	my $songtokenset = {};
+	foreach my $token (@songtokens) {
+		if ($token) {
+			$songtokenset->{$token} = 1;
+		}
+	}
+	foreach my $token (keys $songtokenset) {
+		if (!$tokens->{$token}) {
+			$tokens->{$token} = [];
+		}
+		push($tokens->{$token}, $song->{ID});
+	}
+}
+
+my $letters = {};	# letter => [token1, token2, ... ]
+foreach my $token (keys $tokens) {
+	foreach my $letter (split(//, $token)) {
+		if (!$letters->{$letter}) {
+			$letters->{$letter} = [];
+		}
+		push($letters->{$letter}, $token);
+	}
+}
+
+my $lettercounts = {};
+foreach my $letter (keys $letters) {
+	$lettercounts->{$letter} = scalar(@{ $letters->{$letter} });
+}
 
 FlavorsHTML::Header({
 	TITLE => "Songs",
-	INITIALPAGEDATA => $initialpagedata,
+	INITIALPAGEDATA => {
+		TOKENS => $tokens,
+		LETTERS => $letters,
+		LETTERCOUNTS => $lettercounts,
+	},
 });
 
 if ($fdat->{RANDOM}) {
@@ -141,7 +157,49 @@ print qq{
 };
 
 print qq{ <div id="top-veil"></div> };
-print qq{ <div id="song-table-container"></div> };
+print qq{ <div id="song-table-container"> };
+
+print qq{
+	<input id='test-filter' type='text' placeholder='test filter' />
+};
+
+print qq{ <table><tbody> };
+
+my @colors = FlavorsData::ColorList($dbh);
+my %colormap = ();
+foreach my $color (@colors) {
+	$colormap{$color->{NAME}} = $color->{HEX};
+}
+foreach my $song (@songs) {
+	print sprintf(qq {
+		<tr id="song-%s" data-song-id="%s" data-colors="%s">
+			<td class='isstarred'><span class='glyphicon glyphicon-star%s'></span></td>
+			<td>%s</td>
+			<td>%s</td>
+			<td>%s</td>
+			<td contenteditable='true' class='rating'>%s</td>
+			<td contenteditable='true' class='rating'>%s</td>
+			<td contenteditable='true' class='rating'>%s</td>
+			<td contenteditable='true'>%s</td>
+		</tr>
+		},
+		$song->{ID},
+		$song->{ID},
+		join(" ", map { $colormap{$_} } grep { exists $colormap{$_} } split(/\s+/, $song->{TAGS})),
+		$song->{ISSTARRED} ? "" : "-empty",
+		$song->{NAME},
+		$song->{ARTIST},
+		$song->{COLLECTIONS},
+		FlavorsHTML::Rating($song->{RATING}, 'star'),
+		FlavorsHTML::Rating($song->{ENERGY}, 'fire'),
+		FlavorsHTML::Rating($song->{MOOD}, 'heart'),
+		$song->{TAGS},
+	);
+}
+
+print qq{ </tbody></table> };
+
+print qq{</div> };
 print qq{ </div> };
 
 print "</tbody></table>";

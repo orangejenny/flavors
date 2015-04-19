@@ -182,22 +182,9 @@ jQuery(document).ready(function() {
 	jQuery(".export-button").click(function() {
 		var options = {};
 		options.OS = jQuery(this).data("os");
-		var keys = ['name', 'artist', 'collections', 'tags'];
-		var values = [];
-		var value = jQuery("#filter").val();
-		if (value) {
-			for (var i = 0; i < keys.length; i++) {
-				values.push(value);
-				options[keys[i].toUpperCase()] = value;
-			}
-			options.DISJUNCTION = 1;
-		}
-		var complex = jQuery('#complex-filter textarea').val();
-		if (complex) {
-			options.FILTER = complex;
-			values.push(complex);
-		}
-		options.FILENAME = value ? '[' + value + ']' : complex;
+		options.SIMPLEFILTER = jQuery("#filter").val();
+		options.FILTER = jQuery('#complex-filter textarea').val();
+		options.FILENAME = options.SIMPLEFILTER || options.FILTER;
 		ExportPlaylist(options);
 	});
 });

@@ -32,8 +32,8 @@ sub DBH {
 #		FILTER: additional where clause
 #		ID: only this song
 #		ORDERBY: order by this column (may include "desc")
-#		NAME, ARTIST, COLLECTIONS, TAGS: 'like' filters for these columns
-#		DISJUNCTION: If truthy, OR together name/artist/collection/tags
+#		SIMPLEFILTER: string to apply against name, artist, and 
+#			collection names (disjunctive)
 #
 # Return Value: array of hashrefs UNLESS ID is passed, in which 
 #		case, return the single hashref
@@ -113,20 +113,17 @@ sub SongList {
 	$sql .= " group by song.id ";
 
 	$sql = "select * from ($sql) songs where 1 = 1";
-	my %filtercolumns = (
-		NAME => 'name',
-		ARTIST => 'artist',
-		COLLECTIONS => 'collectionlist',
-		TAGS => 'taglist',
-	);
 	my @binds;
-	foreach my $column (keys %filtercolumns) {
-		if ($args->{$column}) {
-			my @values = split(/\s+/, $args->{$column});
-			my @conditions = map { "$filtercolumns{$column} like concat('%', ?, '%')" } @values;
-			push @binds, @values;
-			$sql .= sprintf(($args->{DISJUNCTION} ? " or " : " and ") . "(%s)", join(" and ", @conditions));
-		}
+	if ($args->{SIMPLEFILTER}) {
+		$sql .= qq{
+			and (
+				name like concat('%', ? '%')
+				or artist like concat('%', ? '%')
+				or collectionlist like concat('%', ? '%')
+				or taglist like concat('%', ? '%')
+			)
+		}; 
+		push(@binds, $args->{SIMPLEFILTER}, $args->{SIMPLEFILTER}, $args->{SIMPLEFILTER}, $args->{SIMPLEFILTER});
 	}
 
 	$args->{FILTER} = FlavorsUtils::Sanitize($args->{FILTER});

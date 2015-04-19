@@ -48,6 +48,8 @@ elsif ($fdat->{SONGIDLIST}) {
 }
 else {
 	# Export a filtered set of songs
+use Data::Dumper;
+warn Dumper($fdat);
 	@songs = FlavorsData::SongList($dbh, $fdat);
 }
 $updateexport{SONGIDS} = [map { $_->{ID} } @songs];

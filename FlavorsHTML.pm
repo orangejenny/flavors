@@ -168,7 +168,9 @@ sub TagDetails {
 sub TagSongList {
 	my ($dbh, $args) = @_;
 
-	my @songs = FlavorsData::SongList($dbh, { TAGS => $args->{TAG} });
+	my @songs = FlavorsData::SongList($dbh, {
+		FILTER => sprintf("exists (select 1 from songtag where id=songid and tag = '%s')", $args->{TAG}),
+	});
 	@songs = sort { $a->{ARTIST} cmp $b->{ARTIST} || $a->{NAME} cmp $b->{NAME} } @songs;
 
 	return {

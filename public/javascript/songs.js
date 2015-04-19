@@ -8,7 +8,7 @@ jQuery(document).ready(function() {
 	var lettercounts = InitialPageData('lettercounts');
 	updateRowCount();
 
-	jQuery('#filter').keyup(function() {
+	jQuery('#filter').keyup(_.debounce(function() {
 		var query = jQuery(this).val();
 		var rowselector = "#song-table-container tbody tr";
 
@@ -43,7 +43,7 @@ jQuery(document).ready(function() {
 		}
 
 		updateRowCount();
-	});
+	}, 100));
 
 	jQuery("#complex-filter button").click(function() {
 		var $button = jQuery(this);

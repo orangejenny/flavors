@@ -185,18 +185,19 @@ jQuery(document).ready(function() {
 		var keys = ['name', 'artist', 'collections', 'tags'];
 		var values = [];
 		var value = jQuery("#filter").val();
-		for (var i = 0; i < keys.length; i++) {
-			if (value) {
+		if (value) {
+			for (var i = 0; i < keys.length; i++) {
 				values.push(value);
 				options[keys[i].toUpperCase()] = value;
 			}
+			options.DISJUNCTION = 1;
 		}
 		var complex = jQuery('#complex-filter textarea').val();
 		if (complex) {
 			options.FILTER = complex;
 			values.push(complex);
 		}
-		options.FILENAME = value || complex;
+		options.FILENAME = value ? '[' + value + ']' : complex;
 		ExportPlaylist(options);
 	});
 });

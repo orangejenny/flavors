@@ -33,6 +33,7 @@ sub DBH {
 #		ID: only this song
 #		ORDERBY: order by this column (may include "desc")
 #		NAME, ARTIST, COLLECTIONS, TAGS: 'like' filters for these columns
+#		DISJUNCTION: If truthy, OR together name/artist/collection/tags
 #
 # Return Value: array of hashrefs UNLESS ID is passed, in which 
 #		case, return the single hashref
@@ -124,7 +125,7 @@ sub SongList {
 			my @values = split(/\s+/, $args->{$column});
 			my @conditions = map { "$filtercolumns{$column} like concat('%', ?, '%')" } @values;
 			push @binds, @values;
-			$sql .= sprintf(" and (%s)", join(" and ", @conditions));
+			$sql .= sprintf(($args->{DISJUNCTION} ? " or " : " and ") . "(%s)", join(" and ", @conditions));
 		}
 	}
 

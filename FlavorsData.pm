@@ -115,15 +115,19 @@ sub SongList {
 	$sql = "select * from ($sql) songs where 1 = 1";
 	my @binds;
 	if ($args->{SIMPLEFILTER}) {
-		$sql .= qq{
-			and (
-				name like concat('%', ? '%')
-				or artist like concat('%', ? '%')
-				or collectionlist like concat('%', ? '%')
-				or taglist like concat('%', ? '%')
-			)
-		}; 
-		push(@binds, $args->{SIMPLEFILTER}, $args->{SIMPLEFILTER}, $args->{SIMPLEFILTER}, $args->{SIMPLEFILTER});
+		my @tokens = grep { $_ } split(/\s+/, $args->{SIMPLEFILTER});
+		my @conditions = [];
+		foreach my $token (@tokens) {
+			$sql .= qq{ 
+				and (
+					name like concat('%', ? '%')
+					or artist like concat('%', ? '%')
+					or collectionlist like concat('%', ? '%')
+					or taglist like concat('%', ? '%')
+				)
+			};
+			push(@binds, $token, $token, $token, $token);
+		}
 	}
 
 	$args->{FILTER} = FlavorsUtils::Sanitize($args->{FILTER});

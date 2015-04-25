@@ -36,6 +36,11 @@ sub Tag {
 sub Rating {
 	my ($rating, $symbol) = @_;
 
+	if (!$rating && $symbol) {
+		$rating = 5;
+		$symbol .= " blank";
+	}
+
 	my $html;
 	while ($rating > 0) {
 		$html .= $symbol ? "<span class='glyphicon glyphicon-$symbol'></span>" : "*";

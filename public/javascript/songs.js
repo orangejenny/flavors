@@ -8,6 +8,11 @@ jQuery(document).ready(function() {
 	var letterCounts = InitialPageData('lettercounts');
 	updateRowCount();
 
+	var sqlError = InitialPageData('sqlerror');
+	if (sqlError) {
+		jQuery("#complex-filter").modal();
+	}
+
 	jQuery('#filter').keyup(_.debounce(function() {
 		var query = jQuery(this).val();
 		var rowselector = "#song-table-container tbody tr";

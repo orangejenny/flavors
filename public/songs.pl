@@ -15,10 +15,21 @@ my $fdat = FlavorsUtils::Fdat();
 my $cgi = CGI->new;
 print $cgi->header();
 
-my @songs = FlavorsData::SongList($dbh, {
-	FILTER => $fdat->{FILTER},
-	ORDERBY => $fdat->{ORDERBY},
-});
+my @songs = ();
+eval {
+	@songs = FlavorsData::SongList($dbh, {
+		FILTER => $fdat->{FILTER},
+		ORDERBY => $fdat->{ORDERBY},
+	});
+};
+
+my $sqlerror = "";
+if ($fdat->{FILTER} && $@) {
+	# assume this was an error in user's complex filter SQL
+	$sqlerror = $@;
+	$sqlerror =~ s/\n.*//s;
+	$sqlerror =~ s/\(select \* from \(\s*//s;
+}
 
 my $tokens = {};	# token => [songid1, songid2, ... ]
 foreach my $song (@songs) {
@@ -58,6 +69,7 @@ FlavorsHTML::Header({
 		TOKENS => $tokens,
 		LETTERS => $letters,
 		LETTERCOUNTS => $lettercounts,
+		SQLERROR => $sqlerror,
 	},
 });
 
@@ -66,6 +78,8 @@ print sprintf(q{
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-body">
+
+					<div class="alert alert-danger sql-error %s">%s</div>
 
 					<form method="POST">
 						<textarea name=filter rows=3 placeholder="%s">%s</textarea>
@@ -94,6 +108,8 @@ print sprintf(q{
 		</div>
 	</div>
 },
+	$sqlerror ? "" : "hide",
+	$sqlerror,
 	$fdat->{PLACEHOLDER},
 	$fdat->{FILTER},
 );

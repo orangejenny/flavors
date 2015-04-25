@@ -132,8 +132,27 @@ jQuery(document).ready(function() {
 			var key = columns[index];
 			args[key] = value;
 
-			// Update client
-			// TODO: update index
+			// Update tokens and letters; don't bother with lettercounts
+			if (!$td.hasClass("rating")) {
+				var oldTokens = oldValue.split(/\s+/);
+				var newTokens = value.split(/\s+/);
+				var commonTokens = _.intersection(oldTokens, newTokens);
+				oldTokens = _.difference(oldTokens, commonTokens);
+				newTokens = _.difference(newTokens, commonTokens);
+
+				// update letter counts; don't bother deduping
+				_.each(newTokens, function(token) {
+					letters[token.substring(0, 1)].push(token);
+				});
+
+				// update token index
+				_.each(newTokens, function(token) {
+					tokens[token].push(id);
+				});
+				_.each(oldTokens, function(token) {
+					tokens[token] = _.without(tokens[token], "" + id);
+				});
+			}
 
 			// Update server
 			$td.addClass("update-in-progress");

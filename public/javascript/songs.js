@@ -5,42 +5,44 @@ var iconClasses = ['glyphicon-star', 'glyphicon-fire', 'glyphicon-heart'];
 jQuery(document).ready(function() {
 	var tokens = InitialPageData('tokens');
 	var letters = InitialPageData('letters');
-	var lettercounts = InitialPageData('lettercounts');
+	var letterCounts = InitialPageData('lettercounts');
 	updateRowCount();
 
 	jQuery('#filter').keyup(_.debounce(function() {
 		var query = jQuery(this).val();
 		var rowselector = "#song-table-container tbody tr";
 
-		if (!query) {
+		var queryTokens = _.without(query.split(/\s+/), "");
+		if (!queryTokens.length) {
 			jQuery(rowselector).show();
 			updateRowCount();
 			return;
 		}
 
-		var leastcommonletter = "";
-		var leastcommoncount;
-		for (var i = 0; i < query.length; i++) {
-			if (!leastcommonletter || leastcommoncount > lettercounts[query[i]]) {
-				leastcommonletter = query[i];
-				leastcommoncount = lettercounts[leastcommonletter];
-			}
-		}
+		var matches = {};	// song id => { queryToken1 => 1, queryToken2 => 1, ... }
+		_.each(queryTokens, function(queryToken) {
+			var leastCommonLetter = _.min(queryToken.split(""), function(letter) {
+				return letterCounts[letter];
+			});
 
-		var toshow = {};
-		for (var i = 0; i < letters[leastcommonletter].length; i++) {
-			var token = letters[leastcommonletter][i];
-			if (token.indexOf(query) != -1) {
-				for (var j = 0; j < tokens[token].length; j++) {
-					toshow[tokens[token][j]] = 1;
+			_.each(letters[leastCommonLetter], function(searchToken) {
+				if (searchToken.indexOf(queryToken) != -1) {
+					_.each(tokens[searchToken], function(songID) {
+						if (!matches[songID]) {
+							matches[songID] = {};
+						}
+						matches[songID][queryToken] = 1;
+					});
 				}
-			}
-		}
+			});
+		});
 
 		jQuery(rowselector).hide();
-		for (var songid in toshow) {
-			jQuery("#song-" + songid).show();
-		}
+		_.each(matches, function(matchTriggers, songID) {
+			if (_.values(matchTriggers).length === queryTokens.length) {
+				jQuery("#song-" + songID).show();
+			}
+		});
 
 		updateRowCount();
 	}, 100));
@@ -132,7 +134,7 @@ jQuery(document).ready(function() {
 			var key = columns[index];
 			args[key] = value;
 
-			// Update tokens and letters; don't bother with lettercounts
+			// Update tokens and letters; don't bother with letter counts
 			if (!$td.hasClass("rating")) {
 				var oldTokens = oldValue.split(/\s+/);
 				var newTokens = value.split(/\s+/);

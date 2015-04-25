@@ -1,16 +1,3 @@
-jQuery(document).ready(function() {
-	// Set up sliders with their hidden inputs
-	jQuery('.slider').slider({
-		animate: true,
-		change: function(event, ui) {
-			jQuery(this).next('input').val(ui.value);
-		}
-	});
-	jQuery('.slider').each(function() {
-		jQuery(this).slider('option', 'value', jQuery(this).next("input").val());
-	});
-});
-
 /*
  * CallRemote
  *

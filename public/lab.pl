@@ -7,7 +7,6 @@ use Data::Dumper;
 use FlavorsData;
 use FlavorsHTML;
 use FlavorsUtils;
-use POSIX;
 
 my $dbh = FlavorsData::DBH();
 my $fdat = FlavorsUtils::Fdat();
@@ -37,7 +36,7 @@ foreach my $tag (@tags) {
 }
 my %temp = map { $_ => 1 } @categories;
 @categories = sort(keys %temp);
-my %slidervalues = (
+my %factors = (
 	mood => 64,
 	energy => 73,
 	rating => 28,
@@ -149,17 +148,17 @@ $song->{SCORESTRING} .= "[" . join(" ", FlavorsUtils::ArrayIntersection(\@songta
 printf(qq{
 <div class="post-nav">
 	<form method=POST>
-		<table id=sliders>
+		<table>
 			<tbody>
 				<tr>
-					<th>%s</th>
-					<td><input name=objectid value="$fdat->{OBJECTID}" id=objectid /></td>
+					<th>%s ID</th>
+					<td><input name='objectid' value="$fdat->{OBJECTID}" id='objectid' type='text' /></td>
 				</tr>
 	}, ucfirst $object);
 
-	foreach my $slider (sort { $slidervalues{$b} <=> $slidervalues{$a} } keys(%slidervalues)) {
-		my $value = exists $fdat->{uc $slider} ? $fdat->{uc $slider} : $slidervalues{$slider};
-		my @randomtags = $categorytags{$slider} ? map { FlavorsHTML::Tag({ TAG => $_ }) } @{ $categorytags{$slider} } : ();
+	foreach my $factor (sort { $factors{$b} <=> $factors{$a} } keys(%factors)) {
+		my $value = exists $fdat->{uc $factor} ? $fdat->{uc $factor} : $factors{$factor};
+		my @randomtags = $categorytags{$factor} ? map { FlavorsHTML::Tag({ TAG => $_ }) } @{ $categorytags{$factor} } : ();
 		while (scalar(@randomtags) > 5) {
 			splice(@randomtags, int(rand(scalar(@randomtags))), 1);
 		}
@@ -167,20 +166,19 @@ printf(qq{
 			<tr>
 				<th>%s</th>
 				<td>
-					<div class=slider></div>
-					<input name=$slider value='$value' type=hidden />
+					<input name='$factor' value='$value' type='text' />
 				</td>
 				<td>
 					%s
 				</td>
 			</tr>
-		}, ucfirst($slider), join("", @randomtags));
+		}, ucfirst($factor), join("", @randomtags));
 	}
 
 	printf(qq{
 				<tr>
 					<th>Length</th>
-					<td><input value=$fdat->{LIMIT} name=limit size=3 />%ss</td>
+					<td><input value='$fdat->{LIMIT}' name='limit' type='text' size=3 />%ss</td>
 				</tr>
 				<tr>
 					<td></td>

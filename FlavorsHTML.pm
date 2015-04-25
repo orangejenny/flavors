@@ -77,9 +77,7 @@ sub Header {
 				<link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 				<link href="/css/flavors.css" rel="stylesheet" type="text/css" />
 				<link href="/css/%s.css" rel="stylesheet" type="text/css" />
-				<link href="/css/thirdparty/cupertino/jquery-ui-1.8.17.custom.css" rel="stylesheet" type="text/css" />
 				<script type="text/javascript" src="/javascript/thirdparty/jquery-1.7.1.min.js"></script>
-				<script type="text/javascript" src="/javascript/thirdparty/jquery-ui-1.8.17.custom.min.js"></script>
 				<script type="text/javascript" src="/javascript/thirdparty/underscore-min.js"></script>
 				<script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
 				<script type="text/javascript" src="/javascript/application.js"></script>

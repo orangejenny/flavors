@@ -98,16 +98,24 @@ print sprintf(q{
 	$fdat->{FILTER},
 );
 
+my $iconcount = $fdat->{FILTER} ? 2 : ($fdat->{PLACEHOLDER} ? 1 : 0);
 print sprintf(qq{
-	<div class="post-nav">
-		<div class="filter-container">
+		<div class="post-nav">
 			<div id="filter-container">
-				<span class='glyphicon glyphicon-search'></span>
-				<input id='filter' type='text'/>
+				<div id="filter-input">
+					<span class='glyphicon glyphicon-search'></span>
+					<input id='filter' type='text'/>
+				</div>
+				<div id="complex-filter-trigger" class="icon-count-%i">
+					<a href='#'>%s</a> %s %s
+				</div>
 			</div>
-			<a id="complex-filter-trigger" href='#'>%s</a>
-		</div>
-}, $fdat->{PLACEHOLDER} || $fdat->{FILTER} || "advanced search");
+	},
+	$iconcount,
+	$fdat->{PLACEHOLDER} || $fdat->{FILTER} || "advanced search",
+	$iconcount == 2 ? "<span class='glyphicon glyphicon-refresh'></span>" : "",
+	$iconcount > 0 ? "<span class='glyphicon glyphicon-remove'></span>" : "",
+);
 
 print qq{ <div id="top-veil"></div> };
 print qq{ <div id="song-table-container"> };

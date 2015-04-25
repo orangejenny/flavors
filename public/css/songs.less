@@ -17,14 +17,14 @@
 	}
 }
 
-.filter-container {
+#filter-container {
 	text-align: center;
 	position: fixed;
 	width: 100%;
 	top: 80px;
 	z-index: 3;
 
-	#filter-container {
+	#filter-input {
 		position: relative;
 		width: 50%;
 		margin: 0 25%;
@@ -37,6 +37,23 @@
 			position: absolute;
 			right: @spacingNarrow;
 			top: 10px + @spacingNarrow;
+		}
+	}
+
+	#complex-filter-trigger {
+		.glyphicon {
+			cursor: pointer;
+			color: @linkColor;
+			display: inline-block;
+			margin-left: @spacingNormal;
+		}
+
+		// center text, not text + icons
+		&.icon-count-1 {
+			padding-left: @fontSizeDefault + @spacingNormal;
+		}
+		&.icon-count-2 {
+			padding-left: (@fontSizeDefault + @spacingNormal) * 2;
 		}
 	}
 }
@@ -53,7 +70,6 @@
 	table {
 		td {
 			border: none;
-			max-width: 200px;	// hacky way to fiddle with column widths
 			vertical-align: middle;
 
 			&:not(:first-child) {
@@ -65,7 +81,7 @@
 			}
 
 			&.isstarred {
-				width: 25px;
+				width: @fontSizeDefault + @spacingNarrow * 2;
 				color: @greyLight;
 				background-color: @backgroundColor;
 				border: none;

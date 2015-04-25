@@ -3,9 +3,7 @@ var oldValue = undefined;
 var iconClasses = ['glyphicon-star', 'glyphicon-fire', 'glyphicon-heart'];
 
 jQuery(document).ready(function() {
-	var tokens = InitialPageData('tokens');
-	var letters = InitialPageData('letters');
-	var letterCounts = InitialPageData('lettercounts');
+	var substringSongs = InitialPageData('substringsongs');
 	updateRowCount();
 
 	var sqlError = InitialPageData('sqlerror');
@@ -26,19 +24,11 @@ jQuery(document).ready(function() {
 
 		var matches = {};	// song id => { queryToken1 => 1, queryToken2 => 1, ... }
 		_.each(queryTokens, function(queryToken) {
-			var leastCommonLetter = _.min(queryToken.split(""), function(letter) {
-				return letterCounts[letter];
-			});
-
-			_.each(letters[leastCommonLetter], function(searchToken) {
-				if (searchToken.indexOf(queryToken) != -1) {
-					_.each(tokens[searchToken], function(songID) {
-						if (!matches[songID]) {
-							matches[songID] = {};
-						}
-						matches[songID][queryToken] = 1;
-					});
+			_.each(substringSongs[queryToken], function(songID) {
+				if (!matches[songID]) {
+					matches[songID] = {};
 				}
+				matches[songID][queryToken] = 1;
 			});
 		});
 
@@ -139,6 +129,7 @@ jQuery(document).ready(function() {
 			var key = columns[index];
 			args[key] = value;
 
+			// TODO: do this with new index
 			// Update tokens and letters; don't bother with letter counts
 			if (!$td.hasClass("rating")) {
 				var oldTokens = oldValue.split(/\s+/);

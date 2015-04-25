@@ -3,7 +3,6 @@
 use lib "..";
 use strict;
 
-use Data::Dumper;
 use FlavorsHTML;
 use FlavorsUtils;
 use FlavorsData;
@@ -31,45 +30,41 @@ if ($fdat->{FILTER} && $@) {
 	$sqlerror =~ s/\(select \* from \(\s*//s;
 }
 
-my $tokens = {};	# token => [songid1, songid2, ... ]
+my $tokensubstrings = {};	# all substrings that can be derived from token
+my $substringsongs = {};	# all songs containing substring
 foreach my $song (@songs) {
 	my @songtokens = split(/\s+/, lc(join(" ", $song->{NAME}, $song->{ARTIST}, $song->{COLLECTIONS}, $song->{TAGS})));
-	my $songtokenset = {};
+
+	my $songsubstrings = {};
 	foreach my $token (@songtokens) {
-		if ($token) {
-			$songtokenset->{$token} = 1;
+		if (!$tokensubstrings->{$token}) {
+			my $substrings = {};
+			for (my $offset = 0; $offset < length($token); $offset++) {
+				for (my $length = 1; $length <= length($token) - $offset; $length++) {
+					$substrings->{substr($token, $offset, $length)} = 1;
+				}
+			}
+			$tokensubstrings->{$token} = [keys $substrings];
 		}
-	}
-	foreach my $token (keys $songtokenset) {
-		if (!$tokens->{$token}) {
-			$tokens->{$token} = [];
-		}
-		push($tokens->{$token}, $song->{ID});
-	}
-}
 
-my $letters = {};	# letter => [token1, token2, ... ]
-foreach my $token (keys $tokens) {
-	foreach my $letter (split(//, $token)) {
-		if (!$letters->{$letter}) {
-			$letters->{$letter} = [];
+		foreach my $substring (@{ $tokensubstrings->{$token} }) {
+			$songsubstrings->{$substring} = 1;
 		}
-		push($letters->{$letter}, $token);
 	}
-}
-
-my $lettercounts = {};
-foreach my $letter (keys $letters) {
-	$lettercounts->{$letter} = scalar(@{ $letters->{$letter} });
+	
+	foreach my $substring (keys $songsubstrings) {
+		if (!$substringsongs->{$substring}) {
+			$substringsongs->{$substring} = [];
+		}
+		push($substringsongs->{$substring}, $song->{ID});
+	}
 }
 
 FlavorsHTML::Header({
 	TITLE => "Songs",
 	INITIALPAGEDATA => {
-		TOKENS => $tokens,
-		LETTERS => $letters,
-		LETTERCOUNTS => $lettercounts,
 		SQLERROR => $sqlerror,
+		SUBSTRINGSONGS => $substringsongs,
 	},
 });
 

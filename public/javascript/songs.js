@@ -6,6 +6,7 @@ jQuery(document).ready(function() {
 	var tokens = InitialPageData('tokens');
 	var letters = InitialPageData('letters');
 	var letterCounts = InitialPageData('lettercounts');
+	var lastQuery = "";
 	updateRowCount();
 
 	var sqlError = InitialPageData('sqlerror');
@@ -16,6 +17,11 @@ jQuery(document).ready(function() {
 	jQuery('#filter').keyup(_.debounce(function() {
 		var query = jQuery(this).val();
 		var rowselector = "#song-table-container tbody tr";
+
+		if (query === lastQuery) {
+			return;
+		}
+		lastQuery = query;
 
 		var queryTokens = _.without(query.split(/\s+/), "");
 		if (!queryTokens.length) {

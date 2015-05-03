@@ -146,7 +146,7 @@ foreach my $color (@colors) {
 foreach my $song (@songs) {
 	print sprintf(qq {
 		<tr id="song-%s" data-song-id="%s" data-colors="%s">
-			<td class='isstarred'><span class='glyphicon glyphicon-star%s'></span></td>
+			<td class='isstarred'>%s</td>
 			<td>%s</td>
 			<td>%s</td>
 			<td>%s</td>
@@ -159,7 +159,7 @@ foreach my $song (@songs) {
 		$song->{ID},
 		$song->{ID},
 		join(" ", map { $colormap{$_} } grep { exists $colormap{$_} } split(/\s+/, $song->{TAGS})),
-		$song->{ISSTARRED} ? "" : "-empty",
+		FlavorsHTML::Rating(1, $song->{ISSTARRED} ? 'star' : 'star-empty'),
 		$song->{NAME},
 		$song->{ARTIST},
 		$song->{COLLECTIONS},

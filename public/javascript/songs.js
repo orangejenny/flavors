@@ -230,14 +230,7 @@ jQuery(document).ready(function() {
 });
 
 function ratingHTML(iconClass, number) {
-	if (number) {
-		return StringMultiply("<span class='glyphicon " + iconClass + "'></span>", number);
-	}
-	return StringMultiply("<span class='glyphicon blank " + iconClass + "'></span>", 5);
-}
-
-function starHTML(isstarred) {
-	return "<span class='glyphicon glyphicon-star" + (isstarred ? "" : "-empty") + "'></span>"
+	return StringMultiply("<span class='glyphicon " + (number ? "" : "blank ") + iconClass + "'></span>", number || 5);
 }
 
 function updateRowCount() {

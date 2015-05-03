@@ -51,6 +51,19 @@ function addSong(focus) {
 	numberSongs();
 }
 
+function dropCollection(id, name) {
+	var $well = jQuery(".controls .well");
+	if (!$well.find("li[data-id='" + id + "']").length)  {
+		var $ul = $well.find("ul");
+		$well.find(".subtle").addClass("hide");
+		var li = "<li data-id=\"" + id + "\">";
+		li += name;
+		li += "</li>";
+		$ul.append(li);
+		jQuery(".collections .collection[data-id='" + id + "']").addClass("selected");
+	}
+}
+
 function numberSongs() {
 	jQuery("#new-collection .ordinal:visible").each(function(index) {
 		jQuery(this).html(index + 1 + '.');
@@ -195,6 +208,19 @@ jQuery(document).ready(function() {
 	jQuery("#is-mix input:checkbox").click(FilterCollections);
 	jQuery("#collection-filter, #tag-filter").keyup(FilterCollections);
 
+	// Car list trigger
+	jQuery('#suggestions-trigger').click(function() {
+		CallRemote({
+			SUB: 'FlavorsData::CollectionSuggestions',
+			FINISH: function(results) {
+// TODO: clear any collections
+				_.each(results, function(collection) {
+					dropCollection(collection.ID, collection.NAME);
+				});
+			}
+		});
+	});
+
 	// Drag collections
 	jQuery(".collection").draggable({
 		helper: 'clone',
@@ -207,17 +233,7 @@ jQuery(document).ready(function() {
 		activeClass: "export-list-active",
 		hoverClass: "export-list-hover",
 		drop: function(event, ui) {
-			var $this = jQuery(this);
-			var id = ui.draggable.attr("data-id");
-			if (!$this.find("li[data-id='" + id + "']").length)  {
-				var $ul = $this.find("ul");
-				$this.find(".subtle").addClass("hide");
-				var li = "<li data-id=\"" + id + "\">";
-				li += ui.draggable.find(".name").text();
-				li += "</li>";
-				$ul.append(li);
-				ui.draggable.addClass("selected");
-			}
+			dropCollection(ui.draggable.attr("data-id"), ui.draggable.find(".name").text());
 		}
 	});
 

@@ -311,7 +311,7 @@ sub CollectionList {
 # Parameters
 #		None
 #
-# Return Value: array of hashrefs
+# Return Value: arrayref of hashrefs
 ################################################################
 sub CollectionSuggestions {
 	my ($dbh, $args) = @_;
@@ -398,7 +398,7 @@ sub CollectionSuggestions {
 		});
 	}
 
-	return @collections;
+	return \@collections;
 }
 
 ################################################################

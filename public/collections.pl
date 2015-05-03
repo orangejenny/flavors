@@ -33,7 +33,6 @@ foreach my $song (@tracks) {
 	push(@{ $tracks{$song->{COLLECTIONID}} }, $song);
 }
 
-my @suggestions = FlavorsData::CollectionSuggestions($dbh);
 print sprintf(qq{
 <div class="post-nav">
 	<div class="controls">
@@ -76,14 +75,19 @@ print sprintf(qq{
 			Show Details
 		</label>
 		<br><br>
+		<br><br>
 		<div class="well" id="export-list">
-			<div class="subtle%s">drag collections here to export</div>
-			<ul>%s</ul>
+			<div class="subtle">
+				drag collections here to export
+				<br><br>
+				<a href='#' id='suggestions-trigger'>
+					suggest some collections
+				</a>
+			</div>
+			<ul></ul>
 		</div>
 	</div>
 	},
-	(@suggestions ? " hide" : ""),
-	join("", map { "<li data-id='" . $_->{ID} . "'>" . $_->{NAME} . "</li>" } @suggestions)
 );
 
 print "<div class=\"collections clearfix\" style=\"margin-left: 250px;\">";
@@ -93,7 +97,6 @@ foreach my $color (FlavorsData::ColorList($dbh)) {
 	$colors{$color->{NAME}} = $color;
 }
 
-my %suggestionsbyid = map { $_->{ID} => $_->{NAME} } @suggestions;
 foreach my $collection (@collections) {
 	printf(qq{
 			<div 
@@ -109,7 +112,7 @@ foreach my $collection (@collections) {
 				data-mood="%s"
 				data-last-export="%s"
 				data-export-count="%s"
-				class="collection has-details clearfix %s"
+				class="collection has-details clearfix"
 			>
 		},
 		$collection->{ID},
@@ -124,7 +127,6 @@ foreach my $collection (@collections) {
 		$collection->{MOOD},
 		$collection->{LASTEXPORT},
 		$collection->{EXPORTCOUNT},
-		$suggestionsbyid{$collection->{ID}} ? "selected" : "",
 	);
 
 	my $image = sprintf("images/collections/%s.jpg", $collection->{ID});

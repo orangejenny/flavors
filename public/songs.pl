@@ -153,7 +153,7 @@ foreach my $song (@songs) {
 			<td contenteditable='true' class='rating'>%s</td>
 			<td contenteditable='true' class='rating'>%s</td>
 			<td contenteditable='true' class='rating'>%s</td>
-			<td contenteditable='true' style='width:35%;'>%s</td>
+			<td contenteditable='true'>%s</td>
 		</tr>
 		},
 		$song->{ID},
@@ -178,7 +178,7 @@ print qq{ </div> };
 print qq{
 	<div id="song-count-container">
 		<div id="bottom-veil"></div>
-		<span id="song-count-span" class="ui-corner-all">
+		<span id="song-count-span">
 			<span id="song-count"></span> songs
 		</span>
 	</div>

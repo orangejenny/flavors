@@ -155,7 +155,7 @@ sub TagDetails {
 
 	return {
 		TITLE => "Related Tags: $args->{TAG}",
-		CONTENT => "<div style='text-align: center;'>" . join("", map { Tag($_) } @tags) . "</div>",
+		CONTENT => join("", map { Tag($_) } @tags),
 	};
 }
 
@@ -206,13 +206,8 @@ sub Categorize {
 	$html .= "<div class=\"clearfix\">";
 	foreach my $category (sort keys %categories) {
 		my @categorytags = @{ $categories{$category} };
-		my $width = sqrt(scalar(@categorytags)) * 5;
-		if ($width > 100) {
-			$width = 100;
-		}
-		$width = 20;
 		$html .= sprintf(qq{
-			<div class='category ui-corner-all' style='width: %s%%;' category='%s'>
+			<div class='category' category='%s'>
 				<div class='header clickable'>
 					%s
 				</div>
@@ -220,12 +215,12 @@ sub Categorize {
 					%s
 				</div>
 			</div>
-		}, $width, $category, uc($category), join("", map { FlavorsHTML::Tag({ TAG => $_ }) } @categorytags));
+		}, $category, uc($category), join("", map { FlavorsHTML::Tag({ TAG => $_ }) } @categorytags));
 	}
 	$html .= "</div>";
 
 	# Uncategorized items
-	$html .= "<div style=\"text-align: center;\">";
+	$html .= "<div class=\"uncategorized\">";
 	foreach my $item (@uncategorized) {
 		$html .= FlavorsHTML::Tag({ TAG => $item });
 	}

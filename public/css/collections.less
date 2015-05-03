@@ -1,87 +1,90 @@
 @import "imports.less";
 
-.collection {
-	@albumSize: 75px;
-
-	float: left;
-	margin: 0 0 @spacingWide @spacingWide;
-	border-radius: @borderRadius;
-	cursor: pointer;
-	overflow: hidden;
-	background-color: @white;
-
-	&:not(.has-details) {
-		.details, .track-list {
-			display: none !important;	// override effect of jQuery show/hide
+.collections {
+	margin-left: 250px;
+	.collection {
+		@albumSize: 75px;
+	
+		float: left;
+		margin: 0 0 @spacingWide @spacingWide;
+		border-radius: @borderRadius;
+		cursor: pointer;
+		overflow: hidden;
+		background-color: @white;
+	
+		&:not(.has-details) {
+			.details, .track-list {
+				display: none !important;	// override effect of jQuery show/hide
+			}
 		}
-	}
-
-	&.has-details {
-		border: 1px solid @greyLight;
-		width: 225px;
-		padding: @spacingNormal @spacingNormal 0 @spacingNormal;
-
-		.details {
-			*:not(.name) {
-				color: @grey;
+	
+		&.has-details {
+			border: 1px solid @greyLight;
+			width: 225px;
+			padding: @spacingNormal @spacingNormal 0 @spacingNormal;
+	
+			.details {
+				*:not(.name) {
+					color: @grey;
+				}
+				.name, .artist {
+					.ellipsis();
+				}
+				.export-icons {
+					float: right;
+					span {
+						cursor: pointer;
+						margin-left: @spacingNarrow;
+					}
+				}
 			}
-			.name, .artist {
-				.ellipsis();
-			}
-			.export-icons {
-				float: right;
-				span {
-					cursor: pointer;
-					margin-left: @spacingNarrow;
+	
+			.track-list {
+				display: none;
+				ol {
+					margin: @spacingNormal 0 @spacingNormal 0;
+					padding-left: 20px;
 				}
 			}
 		}
-
-		.track-list {
-			display: none;
-			ol {
-				margin: @spacingNormal 0 @spacingNormal 0;
-				padding-left: 20px;
+	
+		&:not(:hover) {
+			.export-icons {
+				display: none;
 			}
 		}
-	}
-
-	&:not(:hover) {
-		.export-icons {
-			display: none;
+	
+		&.selected {
+			opacity: 0.3;
 		}
-	}
-
-	&.selected {
-		opacity: 0.3;
-	}
-
-	.mix, .album {
-		border: 1px solid @grey;
-		float: left;
-		margin-right: @spacingNormal;
-		margin-bottom: @spacingNormal;
-	}
-
-	.album {
-		width: @albumSize;
-		height: @albumSize;
-	}
-
-	.mix {
-		width: @albumSize;
-		height: @albumSize;
-		padding: @spacingNarrow;
-		div {
-			text-align: center;
-			font-size: 10px;
-			max-width: @albumSize - 2 * @spacingNarrow;
-			overflow-x: hidden;
-			text-overflow: ellipsis;
-			&:not(:last-child) {
-				margin-bottom: 1px;
+	
+		.mix, .album {
+			border: 1px solid @grey;
+			float: left;
+			margin-right: @spacingNormal;
+			margin-bottom: @spacingNormal;
+		}
+	
+		.album {
+			width: @albumSize;
+			height: @albumSize;
+		}
+	
+		.mix {
+			width: @albumSize;
+			height: @albumSize;
+			padding: @spacingNarrow;
+			div {
+				text-align: center;
+				font-size: 10px;
+				max-width: @albumSize - 2 * @spacingNarrow;
+				overflow-x: hidden;
+				text-overflow: ellipsis;
+				&:not(:last-child) {
+					margin-bottom: 1px;
+				}
+				//line-height: 15px;
 			}
-			//line-height: 15px;
 		}
 	}
 }

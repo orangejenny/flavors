@@ -90,7 +90,7 @@ print sprintf(qq{
 	},
 );
 
-print "<div class=\"collections clearfix\" style=\"margin-left: 250px;\">";
+print "<div class=\"collections clearfix\">";
 
 my %colors;
 foreach my $color (FlavorsData::ColorList($dbh)) {

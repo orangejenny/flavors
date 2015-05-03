@@ -12,6 +12,7 @@
 	font-weight: bold;
 
 	#song-count-span {
+		border-radius: @borderRadius;
 		position: relative;
 		z-index: 3;
 	}
@@ -78,6 +79,10 @@
 
 			&:not(:first-child) {
 				border-bottom: 1px solid @greyLightest;
+			}
+
+			&:last-child {
+				width: 35%;
 			}
 
 			&[contenteditable="true"] {

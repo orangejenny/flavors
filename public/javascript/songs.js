@@ -92,6 +92,18 @@ jQuery(document).ready(function() {
 		$form.submit();
 	});
 
+	jQuery(".playlists a").click(function() {
+		var $link = jQuery(this);
+		var $form = jQuery("#complex-filter form");
+		$form.find("textarea").val($link.text());
+		$form.submit();
+	});
+
+	jQuery(".playlists .glyphicon").click(function() {
+		var $star = jQuery(this);
+		toggleStar($star, $star.closest("li").data("id"), 'FlavorsData::StarPlaylist');
+	});
+
 	// Column names hint for filter
 	jQuery(".hint").tooltip({
 		html: true,
@@ -181,25 +193,7 @@ jQuery(document).ready(function() {
 	});
 	$table.on("click", ".isstarred .glyphicon", function() {
 		var $star = jQuery(this);
-		var id = $star.closest("tr").data("song-id");
-		var isstarred = !$star.hasClass("glyphicon-star");
-
-		// Update markup
-		$star.toggleClass("glyphicon-star-empty");
-		$star.toggleClass("glyphicon-star");
-
-		// Update server data
-		$star.addClass("update-in-progress");
-		CallRemote({
-			SUB: 'FlavorsData::UpdateSong', 
-			ARGS: {
-				ID: id,
-				ISSTARRED: isstarred ? 1 : 0,
-				FINISH: function(data) {
-					$star.removeClass("update-in-progress");
-				}
-			}
-		});
+		toggleStar($star, $star.closest("tr").data("song-id"), 'FlavorsData::UpdateSong');
 	});
 
 	// Complex filter controls
@@ -231,6 +225,28 @@ jQuery(document).ready(function() {
 
 function ratingHTML(iconClass, number) {
 	return StringMultiply("<span class='glyphicon " + (number ? "" : "blank ") + iconClass + "'></span>", number || 5);
+}
+
+function toggleStar($star, id, sub) {
+	var isstarred = !$star.hasClass("glyphicon-star");
+console.log("id="+id+", sub="+sub+",isstarred="+isstarred);
+
+	// Update markup
+	$star.toggleClass("glyphicon-star-empty");
+	$star.toggleClass("glyphicon-star");
+
+	// Update server data
+	$star.addClass("update-in-progress");
+	CallRemote({
+		SUB: sub,
+		ARGS: {
+			ID: id,
+			ISSTARRED: isstarred ? 1 : 0,
+			FINISH: function(data) {
+				$star.removeClass("update-in-progress");
+			}
+		}
+	});
 }
 
 function updateRowCount() {

@@ -30,6 +30,11 @@ if ($fdat->{FILTER} && $@) {
 	$sqlerror =~ s/\n.*//s;
 	$sqlerror =~ s/\(select \* from \(\s*//s;
 }
+else {
+	FlavorsData::UpdatePlaylists($dbh, {
+		FILTER => $fdat->{FILTER},
+	});
+}
 
 my $tokens = {};	# token => [songid1, songid2, ... ]
 foreach my $song (@songs) {
@@ -73,6 +78,7 @@ FlavorsHTML::Header({
 	},
 });
 
+my @playlists = FlavorsData::PlaylistList($dbh);
 print sprintf(q{
 	<div id="complex-filter" class="modal">
 		<div class="modal-dialog">
@@ -94,6 +100,10 @@ print sprintf(q{
 						<br>taglist, tagcount, collectionlist, minyear, maxyear, isstarred
 					</div>
 
+					<ul class="playlists">
+						%s
+					</ul>
+
 					<div class="group" data-category="popular">
 						<button class="btn btn-default">Recently added</button>
 						<button class="btn btn-default">Recently exported</button>
@@ -112,6 +122,14 @@ print sprintf(q{
 	$sqlerror,
 	$fdat->{PLACEHOLDER},
 	$fdat->{FILTER},
+	join("", map {
+		sprintf(
+			"<li data-id='%s'>%s <a href='#'>%s</a></li>",
+			$_->{ID}, 
+			FlavorsHTML::Rating(1, $_->{ISSTARRED} ? 'star' : 'star-empty'), 
+			$_->{FILTER},
+		)
+	} @playlists),
 );
 
 my $iconcount = $fdat->{FILTER} ? 2 : ($fdat->{PLACEHOLDER} ? 1 : 0);

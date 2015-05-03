@@ -533,34 +533,53 @@ sub PlaylistList {
 	my $sql = sprintf(qq{
 		select
 			id,
-			name,
-			filter
+			filter,
+			isstarred
 		from
 			playlist
 		order by
-			name
+			isstarred,
+			lasttouched desc
 	});
 
 	return _results($dbh, {
 		SQL => $sql,
-		COLUMNS => [qw(id name filter)],
+		COLUMNS => [qw(id filter isstarred)],
 	});
 }
 
 ################################################################
-# SavePlaylist
+# StarPlaylist
 #
-# Description: Save a playlist
+# Description: Update playlist metadata
 #
-# Args:
-#		NAME
+# Parameters:
+#		ID
+#		ISSTARRED
+#
+# Return Value: none
+################################################################
+sub StarPlaylist {
+	my ($dbh, $args) = @_;
+
+	_results($dbh, {
+		SQL => "update playlist set isstarred = ? where id = ?",
+		BINDS => [$args->{ISSTARRED} ? 1 : 0, $args->{ID}],
+		SKIPFETCH => 1,
+	});
+}
+
+################################################################
+# UpdatePlaylists
+#
+# Description: Update playlist metadata
+#
+# Parameters:
 #		FILTER
 #
-# Return Value: nothing (if save failed) or hashref of
-#		NAME
-#		FILTER: The filter that actually saved (sanitized)
+# Return Value: none
 ################################################################
-sub SavePlaylist {
+sub UpdatePlaylists {
 	my ($dbh, $args) = @_;
 
 	my $filter = FlavorsUtils::Sanitize($args->{FILTER});
@@ -569,29 +588,59 @@ sub SavePlaylist {
 	}
 
 	my @results = _results($dbh, {
-		SQL => "select max(id) from playlist",
+		SQL => "select id from playlist where filter = ?",
+		BINDS => [$filter],
 		COLUMNS => ['id'],
 	});
+	if (@results) {
+		# touch playlist
+		_results($dbh, {
+			SQL => "update playlist set lasttouched = now() where id = ?",
+			BINDS => [$results[0]->{ID}],
+			SKIPFETCH => 1,
+		});
+	}
+	else {
+		# create playlist
+		@results = _results($dbh, {
+			SQL => "select max(id) from playlist",
+			COLUMNS => ['id'],
+		});
+		my $sql = qq{
+			insert into playlist
+				(id, filter)
+			values
+				(?, ?)
+		};
+		_results($dbh, {
+			SQL => $sql,
+			BINDS => [$results[0]->{ID} + 1, $filter],
+			SKIPFETCH => 1,
+		});
 
-	my $newid = $results[0]->{ID} + 1;
-
-	my $sql = qq{
-		insert into playlist
-			(id, name, filter)
-		values
-			(?, ?, ?)
-	};
-
-	_results($dbh, {
-		SQL => $sql,
-		BINDS => [$newid, $args->{NAME}, $filter],
-		SKIPFETCH => 1,
-	});
-
-	return { 
-		NAME => $args->{NAME},
-		FILTER => $filter,
-	};
+		# delete expired playlists
+		my $sql = qq{
+			select 
+				id
+			from
+				playlist
+			where
+				isstarred = 0
+			order by
+				lasttouched desc
+		};
+		@results = _results($dbh, {
+			SQL => $sql,
+			COLUMNS => ['id'],
+		});
+		for (my $i = 5; $i < @results; $i++) {
+			_results($dbh, {
+				SQL => "delete from playlist where id = ?",
+				BINDS => [$results[$i]->{ID}],
+				SKIPFETCH => 1,
+			});
+		}
+	}
 }
 
 ################################################################

@@ -608,9 +608,9 @@ sub UpdatePlaylists {
 		});
 		my $sql = qq{
 			insert into playlist
-				(id, filter)
+				(id, filter, lasttouched)
 			values
-				(?, ?)
+				(?, ?, now())
 		};
 		_results($dbh, {
 			SQL => $sql,

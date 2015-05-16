@@ -165,13 +165,19 @@ jQuery(document).ready(function() {
 				oldTokens = _.difference(oldTokens, commonTokens);
 				newTokens = _.difference(newTokens, commonTokens);
 
-				// update letter counts; don't bother deduping
+				// update letters; don't bother deduping
 				_.each(newTokens, function(token) {
 					letters[token.substring(0, 1)].push(token);
 				});
 
-				// update token index
+				// update token index and letter counts
 				_.each(newTokens, function(token) {
+					if (!tokens[token]) {
+						tokens[token] = [];
+						_.each(token.split(""), function(letter) {
+							letterCounts[letter] = (letterCounts[letter] || 0) + 1;
+						});
+					}
 					tokens[token].push(id);
 				});
 				_.each(oldTokens, function(token) {

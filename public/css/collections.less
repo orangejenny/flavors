@@ -24,11 +24,15 @@
 			padding: @spacingNormal @spacingNormal 0 @spacingNormal;
 	
 			.details {
-				*:not(.name) {
-					color: @grey;
-				}
+				color: @grey;
 				.name, .artist {
 					.ellipsis();
+				}
+				.name {
+					color: @defaultFontColor;
+				}
+				.rating .blank {
+					display: none;
 				}
 				.export-icons {
 					float: right;

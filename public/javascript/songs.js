@@ -232,7 +232,7 @@ jQuery(document).ready(function() {
 		options.OS = jQuery(this).data("os");
 		options.SIMPLEFILTER = jQuery("#filter").val();
 		options.FILTER = jQuery('#complex-filter textarea').val();
-		options.FILENAME = options.SIMPLEFILTER || options.FILTER;
+		options.FILENAME = options.FILTER || "[" + options.SIMPLEFILTER.trim().replace(/\s+/g, "][") + "]";
 		ExportPlaylist(options);
 	});
 });

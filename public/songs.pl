@@ -159,7 +159,7 @@ print qq{ <table><tbody> };
 my @colors = FlavorsData::ColorList($dbh);
 my %colormap = ();
 foreach my $color (@colors) {
-	$colormap{$color->{NAME}} = $color->{HEX};
+	$colormap{$color->{NAME}} = $color;
 }
 foreach my $song (@songs) {
 	print sprintf(qq {
@@ -176,7 +176,9 @@ foreach my $song (@songs) {
 		},
 		$song->{ID},
 		$song->{ID},
-		join(" ", map { $colormap{$_} } grep { exists $colormap{$_} } split(/\s+/, $song->{TAGS})),
+		FlavorsUtils::EscapeHTMLAttribute(lc(JSON::to_json([
+			grep { $_->{HEX} } map { $colormap{$_} } grep { exists $colormap{$_} } split(/\s+/, $song->{TAGS})
+		]))),
 		FlavorsHTML::Rating(1, $song->{ISSTARRED} ? 'star' : 'star-empty'),
 		$song->{NAME},
 		$song->{ARTIST},

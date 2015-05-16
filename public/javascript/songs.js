@@ -115,17 +115,25 @@ jQuery(document).ready(function() {
 	// Highlight on hover
 	// TODO: Lighten the hover colors and/or make them background colors
 	$table.on("mouseover", "tr", function() {
+		// default highlight: pale grey
+		var backgroundColor = "fafafa";
+		var color = "";
+
 		var $row = jQuery(this);
-		var color = "fafafa";
-		var colordata = $row.data("colors");
-		if (colordata) {
-			var colors = colordata.split(/\s+/);
-			color = colors[Math.floor(Math.random() * colors.length)];
+		var colors = $row.data("colors");
+		if (colors.length) {
+			colors = colors[Math.floor(Math.random() * colors.length)];
+			backgroundColor = colors.hex;
+			if (parseInt(colors.whitetext)) {
+				color = "ffffff";
+			}
 		}
-		jQuery(this).css("background-color", color);
+		jQuery(this).css("background-color", backgroundColor);
+		jQuery(this).css("color", color);
 	});
 	$table.on("mouseout", "tr", function() {
 		jQuery(this).css("background-color", "");
+		jQuery(this).css("color", "");
 	});
 
 	// Click to edit

@@ -68,18 +68,46 @@ foreach my $letter (keys $letters) {
 	$lettercounts->{$letter} = scalar(@{ $letters->{$letter} });
 }
 
+my $ratingicons = {
+	RATING => 'star',
+	ENERGY => 'fire',
+	MOOD => 'heart'
+};
+my $ratings = {};
+foreach my $field (keys %$ratingicons) {
+	$ratings->{$field} = {
+		0 => [],
+		1 => [],
+		2 => [],
+		3 => [],
+		4 => [],
+		5 => [],
+	};
+}
+foreach my $song (@songs) {
+	foreach my $field (keys %$ratingicons) {
+		if ($song->{$field}) {
+			push($ratings->{$field}->{$song->{$field}}, $song->{ID});
+		}
+		else {
+			push($ratings->{$field}->{0}, $song->{ID});
+		}
+	}
+}
+
 FlavorsHTML::Header({
 	TITLE => "Songs",
 	INITIALPAGEDATA => {
 		TOKENS => $tokens,
 		LETTERS => $letters,
 		LETTERCOUNTS => $lettercounts,
+		RATINGS => $ratings,
 		SQLERROR => $sqlerror,
 	},
 });
 
 my @playlists = FlavorsData::PlaylistList($dbh);
-print sprintf(q{
+printf(q{
 	<div id="complex-filter" class="modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -133,23 +161,45 @@ print sprintf(q{
 );
 
 my $iconcount = $fdat->{FILTER} ? 2 : ($fdat->{PLACEHOLDER} ? 1 : 0);
-print sprintf(qq{
+print qq{
 		<div class="post-nav">
 			<div id="filter-container">
+};
+
+print qq{
 				<div id="filter-input">
 					<span class='glyphicon glyphicon-search'></span>
 					<input id='filter' type='text'/>
 				</div>
+};
+
+print "<div id='icon-filters'>";
+foreach my $field (keys %$ratingicons) {
+	printf("<div class='icon-filter' data-field='%s'>", $field);
+	foreach my $i (0..4) {
+		printf("<span class='glyphicon glyphicon-%s selected'></span>", $ratingicons->{$field});
+	}
+	printf(qq{
+		<span class='glyphicon glyphicon-%s selected'>
+			<span class='glyphicon glyphicon-ban-circle'></span>
+		</span>
+	}, $ratingicons->{$field});
+	print "</div>";
+}
+print"</div>";
+
+printf(qq{
 				<div id="complex-filter-trigger" class="icon-count-%i">
 					<a href='#'>%s</a> %s %s
 				</div>
-			</div>
 	},
 	$iconcount,
 	$fdat->{PLACEHOLDER} || $fdat->{FILTER} || "advanced search",
 	$iconcount == 2 ? "<span class='glyphicon glyphicon-refresh'></span>" : "",
 	$iconcount > 0 ? "<span class='glyphicon glyphicon-remove'></span>" : "",
 );
+
+print "</div>";	# close #filter-container
 
 print qq{ <div id="top-veil"></div> };
 print qq{ <div id="song-table-container"> };
@@ -162,7 +212,7 @@ foreach my $color (@colors) {
 	$colormap{$color->{NAME}} = $color;
 }
 foreach my $song (@songs) {
-	print sprintf(qq {
+	printf(qq {
 		<tr id="song-%s" data-song-id="%s" data-colors="%s">
 			<td class='isstarred'>%s</td>
 			<td>%s</td>
@@ -183,9 +233,9 @@ foreach my $song (@songs) {
 		$song->{NAME},
 		$song->{ARTIST},
 		$song->{COLLECTIONS},
-		FlavorsHTML::Rating($song->{RATING}, 'star'),
-		FlavorsHTML::Rating($song->{ENERGY}, 'fire'),
-		FlavorsHTML::Rating($song->{MOOD}, 'heart'),
+		FlavorsHTML::Rating($song->{RATING}, $ratingicons->{RATING}),
+		FlavorsHTML::Rating($song->{ENERGY}, $ratingicons->{ENERGY}),
+		FlavorsHTML::Rating($song->{MOOD}, $ratingicons->{MOOD}),
 		$song->{TAGS},
 	);
 }

@@ -6,6 +6,7 @@ jQuery(document).ready(function() {
 	var tokens = InitialPageData('tokens');
 	var letters = InitialPageData('letters');
 	var letterCounts = InitialPageData('lettercounts');
+	var ratings = InitialPageData('ratings');
 	var lastQuery = "";
 	updateRowCount();
 
@@ -57,6 +58,35 @@ jQuery(document).ready(function() {
 
 		updateRowCount();
 	}, 100));
+
+	jQuery(".icon-filter .glyphicon").click(function(event) {
+		var rowselector = "#song-table-container tbody tr";
+		var $icon = jQuery(this);
+		var $filter = $icon.closest(".icon-filter");
+		if ($icon.hasClass("glyphicon-ban-circle")) {
+			$icon = $icon.parents(".glyphicon");
+		}
+		$icon.toggleClass("selected");
+		var rating = $filter.find(".glyphicon").index($icon) + 1;
+		if (rating === 6) {
+			rating = 0;
+		}
+		if ($icon.hasClass("selected")) {
+			_.each(ratings[$filter.data("field")][rating], function(id) {
+				// TODO: don't automatically show (what if filter is on?)
+				jQuery("#song-" + id).show();
+			});
+		}
+		else {
+			_.each(ratings[$filter.data("field")][rating], function(id) {
+				// TODO: don't automatically hide (what if filter is on?)
+				jQuery("#song-" + id).hide();
+			});
+		}
+		console.log(ratings[$filter.data("field")]);
+		updateRowCount();
+		event.stopPropagation();
+	});
 
 	jQuery("#complex-filter button").click(function() {
 		var $button = jQuery(this);
@@ -165,8 +195,14 @@ jQuery(document).ready(function() {
 			var key = columns[index];
 			args[key] = value;
 
-			// Update tokens and letters; don't bother with letter counts
-			if (!$td.hasClass("rating")) {
+			if ($td.hasClass("rating")) {
+				// TODO: test this works
+				var data = ratings[key.toUpperCase()];
+				data[oldValue] = _.without(data[oldValue], id);
+				data[value].push(id);
+			}
+			else {
+				// Update tokens and letters; don't bother with letter counts
 				var oldTokens = oldValue.split(/\s+/);
 				var newTokens = value.split(/\s+/);
 				var commonTokens = _.intersection(oldTokens, newTokens);
@@ -243,7 +279,6 @@ function ratingHTML(iconClass, number) {
 
 function toggleStar($star, id, sub) {
 	var isstarred = !$star.hasClass("glyphicon-star");
-console.log("id="+id+", sub="+sub+",isstarred="+isstarred);
 
 	// Update markup
 	$star.toggleClass("glyphicon-star-empty");

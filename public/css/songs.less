@@ -24,6 +24,7 @@
 	width: 100%;
 	top: 80px;
 	z-index: 3;
+	line-height: 2;
 
 	#filter-input {
 		position: relative;
@@ -38,6 +39,37 @@
 			position: absolute;
 			right: @spacingNarrow;
 			top: 10px + @spacingNarrow;
+		}
+	}
+
+	#icon-filters {
+		margin: @spacingNarrow;
+		font-size: @fontSizeLarge;
+
+		.icon-filter {
+			display: inline-block;
+			margin: 0 @spacingNormal;
+			color: @greyLightest;
+			position: relative;
+			width: 128px;
+			.glyphicon {
+				.clickable();
+				&:last-child {
+					font-size: @fontSizeDefault;
+					position: absolute;
+					top: 4px;
+					right: 3px;
+					.glyphicon-ban-circle {
+						font-size: @fontSizeLarge;
+						position: absolute;
+						right: -3px;
+						top: -3px;
+					}
+				}
+				&.selected {
+					color: @grey;
+				}
+			}
 		}
 	}
 
@@ -63,9 +95,10 @@
 	font-family: monospace;
 }
 
+@contentTop: 180px;
 #song-table-container {
 	position: fixed;
-	top: 150px;
+	top: @contentTop;
 	left: @spacingWide;
 	right: @spacingWide;
 	bottom: 40px;
@@ -168,7 +201,7 @@
 #top-veil {
 	position: fixed;
 	top: 0;
-	height: 150px;
+	height: @contentTop;
 }
 
 #bottom-veil {

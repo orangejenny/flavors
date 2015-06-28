@@ -120,10 +120,10 @@ sub SongList {
 		foreach my $token (@tokens) {
 			$sql .= qq{ 
 				and (
-					name like concat('%', ? '%')
-					or artist like concat('%', ? '%')
-					or collectionlist like concat('%', ? '%')
-					or taglist like concat('%', ? '%')
+					name like concat('%', ?, '%')
+					or artist like concat('%', ?, '%')
+					or collectionlist like concat('%', ?, '%')
+					or taglist like concat('%', ?, '%')
 				)
 			};
 			push(@binds, $token, $token, $token, $token);
@@ -132,7 +132,7 @@ sub SongList {
 
 	$args->{FILTER} = FlavorsUtils::Sanitize($args->{FILTER});
 	if ($args->{FILTER}) {
-		$sql .= " and " . $args->{FILTER};
+		$sql .= " and (" . $args->{FILTER} . ")";
 	}
 
 	$sql .= " order by " . ($args->{ORDERBY} ? $args->{ORDERBY} : "maxdateacquired desc, tracknumber");

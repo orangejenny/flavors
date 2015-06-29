@@ -1,3 +1,7 @@
+jQuery(document).ready(function() {
+	jQuery("#loading").fadeOut('slow');
+});
+
 /*
  * CallRemote
  *

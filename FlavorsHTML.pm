@@ -91,6 +91,11 @@ sub Header {
 				<title>$args->{TITLE}</title>
 			</head>
 			<body>
+			<div id="loading">
+				<div>
+					<div></div>
+				</div>
+			</div>
 	}, $title, $title);
 
 	if ($args->{INITIALPAGEDATA}) {

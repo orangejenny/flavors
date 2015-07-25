@@ -9,6 +9,12 @@ use FlavorsData;
 
 my $dbh = FlavorsData::DBH();
 
+my %icons = (
+	rating => 'star',
+	mood => 'heart',
+	energy => 'fire',
+);
+
 my $cgi = CGI->new;
 print $cgi->header();
 FlavorsHTML::Header({
@@ -17,13 +23,14 @@ FlavorsHTML::Header({
 
 print qq{ <div class="post-nav"> };
 
-foreach my $facet (qw(rating mood energy)) {
+foreach my $facet (qw(rating energy mood)) {
 	print sprintf(qq{
 		<div class="rating-container" data-facet="%s">
+			<i class="glyphicon glyphicon-%s"></i>
 			<svg class="distribution"></svg>
 			<svg class="unrated"></svg>
 		</div>
-	}, $facet);
+	}, $facet, $icons{$facet});
 }
 
 print qq{ </div> };

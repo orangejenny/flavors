@@ -85,6 +85,7 @@ sub Header {
 				<script type="text/javascript" src="/javascript/thirdparty/jquery-1.7.1.min.js"></script>
 				<script type="text/javascript" src="/javascript/thirdparty/jquery-ui.min.js"></script>
 				<script type="text/javascript" src="/javascript/thirdparty/underscore-min.js"></script>
+				<script type="text/javascript" src="/javascript/thirdparty/d3.min.js"></script>
 				<script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
 				<script type="text/javascript" src="/javascript/application.js"></script>
 				<script type="text/javascript" src="/javascript/%s.js"></script>
@@ -107,6 +108,7 @@ sub Header {
 		collections.pl
 		tags.pl
 		categories.pl
+		data.pl
 	);
 
 	print qq{ <div class="navbar-container"><nav class="navbar navbar-default"> };
@@ -219,7 +221,7 @@ sub Categorize {
 					%s
 				</div>
 			</div>
-		}, $category, uc($category), join("", map { FlavorsHTML::Tag({ TAG => $_ }) } @categorytags));
+		}, $category, $category, join("", map { FlavorsHTML::Tag({ TAG => $_ }) } @categorytags));
 	}
 	$html .= "</div>";
 

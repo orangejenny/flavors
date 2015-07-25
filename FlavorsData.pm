@@ -458,6 +458,28 @@ sub TagList {
 }
 
 ################################################################
+# SongStats
+#
+# Description: Get statistics, by song
+#
+# Return Value: array of hashrefs
+################################################################
+sub SongStats {
+	my ($dbh, $args) = @_;
+	my $facet = FlavorsUtils::Sanitize($args->{FACET});	# just in case...
+	my $sql = "select coalesce($facet, 0), count(*) from song group by $facet;";
+	my @rows = _results($dbh, {
+		SQL => $sql,
+		COLUMNS => [qw(rating count)],
+	});
+	my @counts = ();
+	foreach my $row (@rows) {
+		$counts[$row->{RATING}] = $row->{COUNT};
+	}
+	return \@counts;
+}
+
+################################################################
 # ArtistGenreList
 #
 # Description: Get mapping of artists to genres

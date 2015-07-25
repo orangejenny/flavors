@@ -1,0 +1,29 @@
+@import "imports.less";
+
+@barColor: #31b0d5;	// bootstrap "info"
+
+.post-nav {
+	text-align: center;
+
+	.rating-container {
+		width: 30%;
+		display: inline-block;
+		padding: @spacingWide;
+	
+		svg.ratings {
+			rect {
+				fill: @barColor;
+			}
+	
+			text {
+				fill: @white;
+				font: @fontSizeDefault sans-serif;
+				text-anchor: middle;
+			}
+		}
+		.x-axis {
+			text-align: center;
+			margin-top: @spacingNormal;
+		}
+	}
+}

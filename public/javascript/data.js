@@ -1,9 +1,23 @@
 jQuery(document).ready(function() {
+	// Generate charts
+	// TODO: fix spinner so it diappears after all data is loaded
 	jQuery(".rating-container").each(function() {
 		generateRatingChart(jQuery(this).data("facet"));
 	});
 
-	// TODO: Support page-level export (export all selected sets)
+	// Page-level export: all selected set of data
+	jQuery(".export-button").click(function() {
+		var selected = d3.selectAll(".selected");
+		if (!selected.data().length) {
+			alert("Nothing selected");
+			return;
+		}
+		ExportPlaylist({
+			OS: 'mac',	// TODO: auto-detect (everywhere, not just here)
+			FILTER: _.pluck(selected.data(), 'condition').join(" or "),
+		});
+		selected.classed("selected", false);
+	});
 });
 
 function generateRatingChart(facet) {
@@ -27,7 +41,7 @@ function generateRatingChart(facet) {
 		SUB: 'FlavorsData::SongStats',
 		ARGS: { FACET: facet },
 		FINISH: function(data) {
-			data = _.map(data, function(d, i) { return { 'condition': facet + ' = ' + i, 'value': +d } });
+			data = _.map(data, function(d, i) { return { 'condition': facet + '=' + i, 'value': +d } });
 			// Create unrated chart
 			var unratedData = data.shift();
 			unratedData.condition = facet + ' is null';

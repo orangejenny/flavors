@@ -10,7 +10,9 @@
 		display: inline-block;
 		padding: @spacingWide;
 	
-		svg.ratings {
+		svg {
+			margin: @spacingNormal;
+
 			rect {
 				fill: @barColor;
 			}
@@ -18,12 +20,23 @@
 			text {
 				fill: @white;
 				font: @fontSizeDefault sans-serif;
+			}
+
+			&.distribution text {
 				text-anchor: middle;
 			}
-		}
-		.x-axis {
-			text-align: center;
-			margin-top: @spacingNormal;
+
+			&.unrated {
+				g:first-child {
+					text-anchor: start;
+				}
+				g:not(:first-child) {
+					rect {
+						fill: @greyLight;
+					}
+					text-anchor: end;
+				}
+			}
 		}
 	}
 }

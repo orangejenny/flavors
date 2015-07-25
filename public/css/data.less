@@ -2,6 +2,16 @@
 
 @barColor: #31b0d5;	// bootstrap "info"
 
+.background-with-states(@color) {
+	fill: @color;
+	&.highlighted {
+		fill: lighten(@color, 5%);
+	}
+	&.selected {
+		fill: darken(@color, 25%);
+	}
+}
+
 .post-nav {
 	text-align: center;
 
@@ -20,7 +30,8 @@
 			margin: @spacingNormal;
 
 			rect {
-				fill: @barColor;
+				cursor: pointer;
+				.background-with-states(@barColor);
 			}
 	
 			text {
@@ -38,7 +49,7 @@
 				}
 				g:not(:first-child) {
 					rect {
-						fill: @greyLight;
+						.background-with-states(@greyLight);
 					}
 					text-anchor: end;
 				}

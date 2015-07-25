@@ -105,9 +105,8 @@ sub Header {
 	my @urls = qw(
 		songs.pl
 		collections.pl
-		categories.pl
 		tags.pl
-		lab.pl
+		categories.pl
 	);
 
 	print qq{ <div class="navbar-container"><nav class="navbar navbar-default"> };

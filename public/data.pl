@@ -23,6 +23,13 @@ FlavorsHTML::Header({
 
 print qq{ <div class="post-nav"> };
 
+print qq{
+	<button class="btn btn-default btn-xs hide clear-button">
+		<i class="glyphicon glyphicon-remove"></i>
+		clear selection
+	</button>
+};
+
 foreach my $facet (qw(rating energy mood)) {
 	print sprintf(qq{
 		<div class="rating-container" data-facet="%s">

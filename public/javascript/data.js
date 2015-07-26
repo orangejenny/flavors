@@ -5,6 +5,11 @@ jQuery(document).ready(function() {
 		generateRatingChart(jQuery(this).data("facet"));
 	});
 
+	jQuery(".clear-button").click(function() {
+		d3.selectAll(".selected").classed("selected", false);
+		setClearVisibility();
+	});
+
 	// Page-level export: all selected set of data
 	jQuery(".export-button").click(function() {
 		var selected = d3.selectAll(".selected");
@@ -17,8 +22,18 @@ jQuery(document).ready(function() {
 			FILTER: _.pluck(selected.data(), 'condition').join(" or "),
 		});
 		selected.classed("selected", false);
+		selClearVisibility();
 	});
 });
+
+function setClearVisibility() {
+	if (jQuery(".selected").length) {
+		jQuery(".clear-button").removeClass("hide");
+	}
+	else {
+		jQuery(".clear-button").addClass("hide");
+	}
+}
 
 function generateRatingChart(facet) {
 	var containerSelector = ".rating-container[data-facet='" + facet + "']";
@@ -101,6 +116,7 @@ function generateRatingChart(facet) {
 			d3.selectAll("rect").on("click", function() {
 				var s = d3.select(this);
 				s.classed("selected", !s.classed("selected"));
+				setClearVisibility();
 			});
 
 			// Event handlers: export on double click

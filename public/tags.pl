@@ -13,7 +13,6 @@ my $cgi = CGI->new;
 print $cgi->header();
 FlavorsHTML::Header({
 	TITLE => "Tags",
-	HIDEEXPORT => 1,
 });
 
 my @tags = FlavorsData::TagList($dbh);

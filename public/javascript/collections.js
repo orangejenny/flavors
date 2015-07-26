@@ -263,7 +263,6 @@ jQuery(document).ready(function() {
 		ExportPlaylist({
 			COLLECTIONIDS: [$collectiondiv.data("id")],
 			FILENAME: $collectiondiv.find(".details .name").text(),
-			OS: $icon.data("os"),
 		});
 		event.stopPropagation();
 	});

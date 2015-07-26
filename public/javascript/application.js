@@ -75,6 +75,8 @@ function ExportPlaylist(args) {
 		return;
 	}
 
+	args.OS = navigator.appVersion.toLowerCase().indexOf("win") != -1 ? "pc" : "mac";
+
 	var params = [];
 	for (var key in args) {
 		var value = args[key] ? encodeURIComponent(args[key]) : '';

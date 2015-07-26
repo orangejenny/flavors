@@ -11,7 +11,7 @@ my $dbh = FlavorsData::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
-FlavorsHTML::Header({ HIDEEXPORT => 1 });
+FlavorsHTML::Header();
 
 my @tags = FlavorsData::TagList($dbh);
 my $categorizedtags = FlavorsUtils::Categorize($dbh, {

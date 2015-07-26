@@ -123,16 +123,7 @@ sub Header {
 		if $_ =~ m/(.*)\.[^.]+/	# shorthand; all elements will match
 	} @urls));
 
-	print qq{
-		<button type="button" class="export-button btn btn-xs btn-info pull-right" data-os="mac">
-			<span class="glyphicon glyphicon-home"></span>
-			Export
-		</button>
-		<button type="button" class="export-button btn btn-xs btn-info pull-right" data-os="pc">
-			<span class="glyphicon glyphicon-briefcase"></span>
-			Export
-		</button>
-	} unless $args->{HIDEEXPORT};
+	print $args->{BUTTONS};
 
 	print qq { </nav> };
 
@@ -141,6 +132,22 @@ sub Header {
 					</div>
 				</div>
 			</div>
+	};
+}
+
+################################################################
+# ExportButton
+#
+# Description: Generates HTML for button to export playlist
+#
+# Return Value: HTML
+################################################################
+sub ExportButton {
+	return qq{
+		<button type="button" class="export-button btn btn-xs btn-info">
+			<span class="glyphicon glyphicon-download"></span>
+			Export
+		</button>
 	};
 }
 

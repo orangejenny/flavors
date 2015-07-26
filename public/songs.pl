@@ -70,6 +70,7 @@ foreach my $letter (keys $letters) {
 
 FlavorsHTML::Header({
 	TITLE => "Songs",
+	BUTTONS => FlavorsHTML::ExportButton(),
 	INITIALPAGEDATA => {
 		TOKENS => $tokens,
 		LETTERS => $letters,

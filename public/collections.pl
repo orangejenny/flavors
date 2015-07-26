@@ -16,6 +16,7 @@ print $cgi->header();
 my $fdat = FlavorsUtils::Fdat($cgi);
 FlavorsHTML::Header({
 	TITLE => "Collections",
+	BUTTONS => FlavorsHTML::ExportButton(),
 });
 
 my @collections = FlavorsData::CollectionList($dbh);
@@ -153,8 +154,7 @@ foreach my $collection (@collections) {
 				<div class="artist">%s</div>
 				<div class="export-icons">
 					<br><br>
-					<span class="glyphicon glyphicon-home" data-os="mac"></span>
-					<span class="glyphicon glyphicon-briefcase" data-os="pc"></span>
+					<span class="glyphicon glyphicon-download"></span>
 				</div>
 				<div class="rating">%s</div>
 				<br><div class="rating">%s</div>

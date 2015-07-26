@@ -18,11 +18,10 @@ jQuery(document).ready(function() {
 			return;
 		}
 		ExportPlaylist({
-			OS: 'mac',	// TODO: auto-detect (everywhere, not just here)
 			FILTER: _.pluck(selected.data(), 'condition').join(" or "),
 		});
 		selected.classed("selected", false);
-		selClearVisibility();
+		setClearVisibility();
 	});
 });
 
@@ -124,7 +123,6 @@ function generateRatingChart(facet) {
 				var condition = d3.select(this).data()[0].condition;
 				ExportPlaylist({
 					FILENAME: condition,
-					OS: 'mac',	// TODO: auto-detect (everywhere, not just here)
 					FILTER: condition,
 				});
 			});

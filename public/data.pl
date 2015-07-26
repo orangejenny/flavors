@@ -19,16 +19,15 @@ my $cgi = CGI->new;
 print $cgi->header();
 FlavorsHTML::Header({
 	TITLE => "Data",
+	BUTTONS => FlavorsHTML::ExportButton() . qq{
+		<button class="btn btn-info btn-xs hide clear-button">
+			<i class="glyphicon glyphicon-remove"></i>
+			Clear
+		</button>
+	},
 });
 
 print qq{ <div class="post-nav"> };
-
-print qq{
-	<button class="btn btn-default btn-xs hide clear-button">
-		<i class="glyphicon glyphicon-remove"></i>
-		clear selection
-	</button>
-};
 
 foreach my $facet (qw(rating energy mood)) {
 	print sprintf(qq{

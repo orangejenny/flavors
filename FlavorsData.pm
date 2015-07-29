@@ -462,21 +462,104 @@ sub TagList {
 #
 # Description: Get statistics, by song
 #
-# Return Value: array of hashrefs
+# Args:
+#	FACET: one of qw(rating energy mood)
+#
+# Return Value: array of counts, with each index representing
+#	the number of songs with that value. Zero maps to null.
 ################################################################
 sub SongStats {
 	my ($dbh, $args) = @_;
-	my $facet = FlavorsUtils::Sanitize($args->{FACET});	# just in case...
+	my $facet = FlavorsUtils::Sanitize($args->{FACET});
 	my $sql = "select coalesce($facet, 0), count(*) from song group by $facet;";
 	my @rows = _results($dbh, {
 		SQL => $sql,
 		COLUMNS => [qw(rating count)],
 	});
-	my @counts = ();
+	my @counts = (0, 0, 0, 0, 0, 0);
 	foreach my $row (@rows) {
 		$counts[$row->{RATING}] = $row->{COUNT};
 	}
 	return \@counts;
+}
+
+################################################################
+# CategoryStats
+#
+# Description: Get statistics, by category
+#
+# Args:
+#	FACET: one of qw(rating energy mood)
+#	CATEGORY: string, may be 'genres'
+#
+# Return Value: array of hashrefs, each containing
+#	TAG: string
+#	VALUES: arrayref of length 5, each a count mapping to index + 1
+################################################################
+sub CategoryStats {
+	my ($dbh, $args) = @_;
+	my $facet = FlavorsUtils::Sanitize($args->{FACET});
+	my $category = FlavorsUtils::Sanitize($args->{CATEGORY});
+	my $sql;
+	my @binds = ();
+	if ($category =~ m/genre/i) {
+		$sql = sprintf(qq{
+			select artistgenre.genre, %s, count(*)
+			from song, artistgenre
+			where song.artist = artistgenre.artist
+			and %s is not null
+			group by artistgenre.genre, %s;
+		}, $args->{FACET}, $args->{FACET}, $args->{FACET});
+	}
+	else {
+		$sql = sprintf(qq{
+			select songtag.tag, %s, count(*)
+			from song, songtag, tagcategory
+			where song.id = songtag.songid and songtag.tag = tagcategory.tag
+			and tagcategory.category = ?
+			and %s is not null
+			group by songtag.tag, %s;
+		}, $args->{FACET}, $args->{FACET}, $args->{FACET});
+		push(@binds, $args->{CATEGORY});
+	}
+	my @rows = _results($dbh, {
+		SQL => $sql,
+		BINDS => \@binds,
+		COLUMNS => [qw(tag rating count)],
+	});
+
+	# Transform SQL rows into hash of tag => [count1, count2, count3, count4, count5]
+	my %tagcounts = ();
+	foreach my $row (@rows) {
+		if (!exists $tagcounts{$row->{TAG}}) {
+			$tagcounts{$row->{TAG}} = [0, 0, 0, 0, 0];
+		}
+		$tagcounts{$row->{TAG}}[$row->{RATING} - 1] = $row->{COUNT};
+	}
+
+	# Generate sorted lsit of tags, descending based on total count per tag
+	my @sortedtags = sort {
+		my $suma = 0;
+		foreach my $value (@{ $tagcounts{$a} }) {
+			$suma += $value;
+		}
+		my $sumb = 0;
+		foreach my $value (@{ $tagcounts{$b} }) {
+			$sumb += $value;
+		}
+		return $sumb <=> $suma;
+	} keys %tagcounts;
+
+	# Generate sorted list of hashrefs to send back
+	my @data = ();
+	foreach my $tag (@sortedtags) {
+		push(@data, {
+			TAG => $tag,
+			VALUES => $tagcounts{$tag},
+		});
+	}
+
+	return \@data;
 }
 
 ################################################################
@@ -503,6 +586,22 @@ sub ArtistGenreList {
 	return _results($dbh, {
 		SQL => $sql,
 		COLUMNS => [qw(tag category)],
+	});
+}
+
+################################################################
+# CategoryList
+#
+# Description: Get list of all tag categories
+#
+# Return Value: array of strings
+################################################################
+sub CategoryList {
+	my ($dbh, $args) = @_;
+
+	return map { $_->{CATEGORY} } _results($dbh, {
+		SQL => "select distinct category from tagcategory;",
+		COLUMNS => [qw(category)],
 	});
 }
 

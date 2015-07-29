@@ -9,6 +9,7 @@ use FlavorsData;
 
 my $dbh = FlavorsData::DBH();
 
+my @facets = qw(rating energy mood);
 my %icons = (
 	rating => 'star',
 	mood => 'heart',
@@ -22,14 +23,15 @@ FlavorsHTML::Header({
 	BUTTONS => FlavorsHTML::ExportButton() . qq{
 		<button class="btn btn-info btn-xs hide clear-button">
 			<i class="glyphicon glyphicon-remove"></i>
-			Clear
+			Clear Selection
 		</button>
 	},
 });
 
 print qq{ <div class="post-nav"> };
 
-foreach my $facet (qw(rating energy mood)) {
+# Distribution and rated/unrated charts
+foreach my $facet (@facets) {
 	print sprintf(qq{
 		<div class="rating-container" data-facet="%s">
 			<i class="glyphicon glyphicon-%s"></i>
@@ -39,7 +41,25 @@ foreach my $facet (qw(rating energy mood)) {
 	}, $facet, $icons{$facet});
 }
 
-print qq{ </div> };
+# Toolbar
+my @categories = FlavorsData::CategoryList($dbh);
+push(@categories, "genres");
+print "<div class='btn-group category-buttons'>";
+foreach my $category (sort @categories) {
+	printf("<button class='btn btn-default' data-category='%s'>%s</button>", $category, $category);
+}
+print "</div>";
+
+# Category charts
+foreach my $facet (qw(rating)) {#(@facets) {
+	print sprintf(qq{
+		<div class="category-container" data-category="%s">
+			<svg></svg>
+		</div>
+	}, $facet, $icons{$facet});
+}
+
+print qq{ </div> };	# .post-nav
 
 
 print FlavorsHTML::Footer();

@@ -1,10 +1,20 @@
 jQuery(document).ready(function() {
-	// Generate charts
+	// Generate rating charts
 	// TODO: fix spinner so it diappears after all data is loaded
 	jQuery(".rating-container").each(function() {
 		generateRatingChart(jQuery(this).data("facet"));
 	});
 
+	// Generate initial category chart and set handler for future ones
+	jQuery(".category-buttons button").click(function() {
+		var args = { CATEGORY: jQuery(this).text() };
+		jQuery(".rating-container").each(function() {
+			args.FACET = jQuery(this).data("facet");
+			generateCategoryCharts(args);
+		});
+	});
+
+	// Clear anything selected
 	jQuery(".clear-button").click(function() {
 		d3.selectAll(".selected").classed("selected", false);
 		setClearVisibility();
@@ -25,6 +35,9 @@ jQuery(document).ready(function() {
 	});
 });
 
+// Chart aesthetics
+var barTextOffset = 4;
+
 function setClearVisibility() {
 	if (jQuery(".selected").length) {
 		jQuery(".clear-button").removeClass("hide");
@@ -34,11 +47,55 @@ function setClearVisibility() {
 	}
 }
 
+function generateCategoryCharts(args) {
+	var category = args.CATEGORY;
+	var facet = args.FACET;
+
+	jQuery(".category-buttons .active").removeClass("active");
+	jQuery(".category-buttons button[data-category='" + category + "']").addClass("active");
+
+	var containerSelector = ".category-container[data-category='" + category + "']";
+	var width = jQuery(containerSelector).width();
+	var barSize = 20;
+
+	var height = 500;
+	var xScale = d3.scale.linear().range([0, width]);
+	var chart = d3.select(containerSelector + " svg")
+						.attr("width", width)
+						.attr("height", height);	// TODO: set after getting data (barSize * number of items)
+
+	CallRemote({
+		SUB: 'FlavorsData::CategoryStats',
+		ARGS: args,
+		FINISH: function(data) {	// arry of objects, each with TAG (string) and VALUES (array with length 5)
+			debugger;
+			//data = _.map(data, function(d, i) { return { 'condition': facet + '=' + i, 'value': +d } });
+
+			/*distributionScale.domain([0, d3.max(_.pluck(data, 'value'))])
+			var distributionBars = distribution.selectAll("g")
+															.data(data)
+															.enter().append("g")
+															.attr("transform", function(d, i) { return "translate(" + i * barSize + ", 0)"; });
+			distributionBars.append("rect")
+									.attr("y", function(d) { return distributionScale(d.value); })
+									.attr("width", barSize - 5)
+									.attr("height", function(d) { return distributionHeight - distributionScale(d.value); });
+			distributionBars.append("text")
+									.attr("x", barSize / 2)
+									.attr("y",  function(d) { return distributionScale(d.value) + barTextOffset; })
+									.attr("dy", "0.75em")	// center-align text
+									.text(function(d) { return d.value; });
+			*/
+
+			attachEventHandlers(containerSelector);
+		},
+	});
+}
+
 function generateRatingChart(facet) {
 	var containerSelector = ".rating-container[data-facet='" + facet + "']";
 	var width = jQuery(containerSelector).width();
 	var barSize = width / 5;	// 5 bars in each distribution
-	var barTextOffset = 4;
 
 	var distributionHeight = 150;
 	var distributionScale = d3.scale.linear().range([distributionHeight, 0]);
@@ -56,7 +113,7 @@ function generateRatingChart(facet) {
 		ARGS: { FACET: facet },
 		FINISH: function(data) {
 			data = _.map(data, function(d, i) { return { 'condition': facet + '=' + i, 'value': +d } });
-			// Create unrated chart
+			// Create unrated chart: quite janky
 			var unratedData = data.shift();
 			unratedData.condition = facet + ' is null';
 			var ratedData = {
@@ -69,13 +126,11 @@ function generateRatingChart(facet) {
 												.enter().append("g");
 			// "rated" bar
 			unratedBars.filter(":nth-child(1)").append("rect")
-															.attr("value", facet + " is not null")
 															.attr("x", 0)
 															.attr("width", unratedScale(ratedData.value))
 															.attr("height", barSize / 2);
 			// "unrated" bar
 			unratedBars.filter(":nth-child(2)").append("rect")
-															.attr("value", facet + " is null")
 															.attr("x", unratedScale(ratedData.value))
 															.attr("width", unratedScale(unratedData.value))
 															.attr("height", barSize / 2);
@@ -93,7 +148,6 @@ function generateRatingChart(facet) {
 															.enter().append("g")
 															.attr("transform", function(d, i) { return "translate(" + i * barSize + ", 0)"; });
 			distributionBars.append("rect")
-									.attr("value", function(d, i) { return facet + " = " + (i + 1); })
 									.attr("y", function(d) { return distributionScale(d.value); })
 									.attr("width", barSize - 5)
 									.attr("height", function(d) { return distributionHeight - distributionScale(d.value); });
@@ -103,30 +157,33 @@ function generateRatingChart(facet) {
 									.attr("dy", "0.75em")	// center-align text
 									.text(function(d) { return d.value; });
 
-			// Event handlers: highlight on hover
-			d3.selectAll("rect").on("mouseenter", function() {
-				d3.select(this).classed("highlighted", true);
-			});
-			d3.selectAll("rect").on("mouseleave", function() {
-				d3.select(this).classed("highlighted", false);
-			});
-
-			// Event handlers: toggle .selected on click
-			d3.selectAll("rect").on("click", function() {
-				var s = d3.select(this);
-				s.classed("selected", !s.classed("selected"));
-				setClearVisibility();
-			});
-
-			// Event handlers: export on double click
-			d3.selectAll("rect").on("dblclick", function() {
-				var condition = d3.select(this).data()[0].condition;
-				ExportPlaylist({
-					FILENAME: condition,
-					FILTER: condition,
-				});
-			});
+			attachEventHandlers(containerSelector);
 		},
 	});
 }
 
+function attachEventHandlers(selector) {
+	// Highlight on hover
+	d3.selectAll(selector + " rect").on("mouseenter", function() {
+		d3.select(this).classed("highlighted", true);
+	});
+	d3.selectAll(selector + " rect").on("mouseleave", function() {
+		d3.select(this).classed("highlighted", false);
+	});
+
+	// Toggle .selected on click
+	d3.selectAll(selector + " rect").on("click", function() {
+		var s = d3.select(this);
+		s.classed("selected", !s.classed("selected"));
+		setClearVisibility();
+	});
+
+	// Export on double click
+	d3.selectAll(selector + " rect").on("dblclick", function() {
+		var condition = d3.select(this).data()[0].condition;
+		ExportPlaylist({
+			FILENAME: condition,
+			FILTER: condition,
+		});
+	});
+}

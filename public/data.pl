@@ -51,9 +51,9 @@ foreach my $category (sort @categories) {
 print "</div>";
 
 # Category charts
-foreach my $facet (qw(rating)) {#(@facets) {
+foreach my $facet (@facets) {
 	print sprintf(qq{
-		<div class="category-container" data-category="%s">
+		<div class="category-container" data-facet="%s">
 			<svg></svg>
 		</div>
 	}, $facet, $icons{$facet});

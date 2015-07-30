@@ -8,7 +8,7 @@ jQuery(document).ready(function() {
 	// Generate initial category chart and set handler for future ones
 	jQuery(".category-buttons button").click(function() {
 		var args = { CATEGORY: jQuery(this).text() };
-		jQuery(".rating-container").each(function() {
+		jQuery(".category-container").each(function() {
 			args.FACET = jQuery(this).data("facet");
 			generateCategoryCharts(args);
 		});
@@ -54,38 +54,75 @@ function generateCategoryCharts(args) {
 	jQuery(".category-buttons .active").removeClass("active");
 	jQuery(".category-buttons button[data-category='" + category + "']").addClass("active");
 
-	var containerSelector = ".category-container[data-category='" + category + "']";
+	var containerSelector = ".category-container[data-facet='" + facet + "']";
 	var width = jQuery(containerSelector).width();
 	var barSize = 20;
 
-	var height = 500;
-	var xScale = d3.scale.linear().range([0, width]);
 	var chart = d3.select(containerSelector + " svg")
-						.attr("width", width)
-						.attr("height", height);	// TODO: set after getting data (barSize * number of items)
+						.attr("width", width);
+
+	var xScale = d3.scale.linear().range([0, width]);
+	var color = d3.scale.ordinal()
+								.range(["red", "yellow", "green", "blue", "lime"])
+								.domain([0, 1, 2, 3, 4]);
 
 	CallRemote({
 		SUB: 'FlavorsData::CategoryStats',
 		ARGS: args,
-		FINISH: function(data) {	// arry of objects, each with TAG (string) and VALUES (array with length 5)
-			debugger;
-			//data = _.map(data, function(d, i) { return { 'condition': facet + '=' + i, 'value': +d } });
+		FINISH: function(data) {	// arry of objects, each with TAG (string) and VALUES (array with length 5)*/
+			data = _.map(data, function(d) { return {
+				TAG: d.TAG,
+				VALUES: _.map(d.VALUES, function(v) { return +v; }),
+				SUM: _.reduce(d.VALUES, function(memo, v) { return +v + memo; }, 0),
+			}; });
+			xScale.domain([0, d3.max(_.map(data, function(d) {
+				return 2 * (d.VALUES[2] / 2 + Math.max(d.VALUES[1] + d.VALUES[0], d.VALUES[3] + d.VALUES[4]));
+			}))]);
 
-			/*distributionScale.domain([0, d3.max(_.pluck(data, 'value'))])
-			var distributionBars = distribution.selectAll("g")
-															.data(data)
-															.enter().append("g")
-															.attr("transform", function(d, i) { return "translate(" + i * barSize + ", 0)"; });
-			distributionBars.append("rect")
-									.attr("y", function(d) { return distributionScale(d.value); })
-									.attr("width", barSize - 5)
-									.attr("height", function(d) { return distributionHeight - distributionScale(d.value); });
-			distributionBars.append("text")
-									.attr("x", barSize / 2)
-									.attr("y",  function(d) { return distributionScale(d.value) + barTextOffset; })
-									.attr("dy", "0.75em")	// center-align text
-									.text(function(d) { return d.value; });
-			*/
+			chart.attr("height", data.length * barSize);
+			var bars = chart.selectAll("g")
+									.data(data)
+									.enter().append("g")
+									.attr("transform", function(d, i) { return "translate(0, " + i * barSize + ")"; });
+
+			_.each(_.range(5), function(index) {
+				bars.append("rect")
+						.attr("height", barSize - 5)
+						.attr("width", function(d) { return xScale(d.VALUES[index]); })
+						.attr("x", function(d) {
+							// Start at midpoint
+							var x = width / 2;
+							var direction = index > 2 ? 1 : -1;
+							x += direction * xScale(d.VALUES[2] / 2);
+							if (index == 2) {
+								// Center the 3-star rating
+								return x;
+							}
+							if (index < 2) {
+								// Push 1 and 2-star ratings left of center
+								_.each([0, 1], function(i) {
+									if (i >= index) {
+										x -= xScale(d.VALUES[i]);
+									}
+								});
+							}
+							else {
+								// Push 4 and 5-star ratings right of center
+								_.each([3, 4], function(i) {
+									if (i <= index) {
+										x += xScale(d.VALUES[i]);
+									}
+								});
+								x -= xScale(d.VALUES[index]);
+							}
+							return x;
+						})
+						.style("fill", color(index));
+			});
+			bars.append("text")
+									.attr("x", width / 2)
+									.attr("y", barSize / 2)
+									.text(function(d) { return d.TAG; });
 
 			attachEventHandlers(containerSelector);
 		},

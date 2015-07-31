@@ -55,15 +55,17 @@ function generateCategoryCharts(args) {
 	jQuery(".category-buttons button[data-category='" + category + "']").addClass("active");
 
 	var containerSelector = ".category-container[data-facet='" + facet + "']";
+	var chartSelector = containerSelector + " svg";
 	var width = jQuery(containerSelector).width();
 	var barSize = 20;
 
-	var chart = d3.select(containerSelector + " svg")
+	jQuery(chartSelector).html("");
+	var chart = d3.select(chartSelector)
 						.attr("width", width);
 
 	var xScale = d3.scale.linear().range([0, width]);
 	var color = d3.scale.ordinal()
-								.range(["red", "yellow", "green", "blue", "lime"])
+								.range(["#82a6b0", "#559aaf", "#31b0d5", "#18bbec", "#08c3fd"])
 								.domain([0, 1, 2, 3, 4]);
 
 	CallRemote({

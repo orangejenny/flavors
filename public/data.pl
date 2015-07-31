@@ -51,6 +51,7 @@ foreach my $category (sort @categories) {
 print "</div>";
 
 # Category charts
+print qq{ <div> };
 foreach my $facet (@facets) {
 	print sprintf(qq{
 		<div class="category-container" data-facet="%s">
@@ -58,6 +59,7 @@ foreach my $facet (@facets) {
 		</div>
 	}, $facet, $icons{$facet});
 }
+print qq{ </div> };
 
 print qq{ </div> };	# .post-nav
 

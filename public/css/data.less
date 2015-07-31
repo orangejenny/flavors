@@ -15,21 +15,17 @@
 .post-nav {
 	text-align: center;
 
-	.buttons {
-		position: absolute;
-		top: 0;
-		right: 0;
-
-		.clear-button {
-			color: @greyLight;
-		}
+	.category-buttons.active {
+		background-color: @greyLight;
 	}
 
-	.rating-container {
+	.rating-container, .category-container {
 		width: 30%;
 		display: inline-block;
 		padding: @spacingWide;
+	}
 
+	.rating-container {
 		.glyphicon {
 			font-size: 32px;
 			z-index: -1;
@@ -63,6 +59,25 @@
 					}
 					text-anchor: end;
 				}
+			}
+		}
+	}
+
+	.category-container {
+		vertical-align: top;
+
+		svg {
+			margin: @spacingNormal;
+
+			rect {
+				cursor: pointer;
+				.background-with-states(@barColor);
+			}
+	
+			text {
+				fill: @black;
+				font: @fontSizeDefault sans-serif;
+				text-anchor: middle;
 			}
 		}
 	}

@@ -58,7 +58,9 @@ sub Rating {
 # Params:
 #		TITLE: (optional) page title
 #		INITIALPAGEDATA: (optional) hash to convert to JSON
-#		FDAT: (optional)
+#		CSS (optional): arrayref of strings
+#		JS (optional): arrayref of strings
+#		FDAT (optional)
 #
 # Return Value: HTML
 ################################################################
@@ -83,6 +85,7 @@ sub Header {
 				<link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 				<link href="/css/flavors.css" rel="stylesheet" type="text/css" />
 				<link href="/css/%s.css" rel="stylesheet" type="text/css" />
+				%s
 				<script type="text/javascript" src="/javascript/thirdparty/jquery-1.7.1.min.js"></script>
 				<script type="text/javascript" src="/javascript/thirdparty/jquery-ui.min.js"></script>
 				<script type="text/javascript" src="/javascript/thirdparty/underscore-min.js"></script>
@@ -90,6 +93,7 @@ sub Header {
 				<script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
 				<script type="text/javascript" src="/javascript/application.js"></script>
 				<script type="text/javascript" src="/javascript/%s.js"></script>
+				%s
 				<title>$args->{TITLE}</title>
 			</head>
 			<body>
@@ -98,7 +102,13 @@ sub Header {
 					<div></div>
 				</div>
 			</div>
-	}, $title, $title);
+		},
+		$title,
+		join("", map { sprintf(qq{ <link href="%s" rel="stylesheet" type="text/css" /> }, $_) } @{ $args->{CSS} || [] }),
+		$title,
+		join("", map { sprintf(qq{ <script type="text/javascript" src="%s"></script> }, $_) } @{ $args->{JS} || [] }),
+		$args->{TITLE},
+	);
 
 	if ($args->{INITIALPAGEDATA}) {
 		printf(qq{ <div id="initial-page-data">%s</div> }, JSON::to_json($args->{INITIALPAGEDATA}));

@@ -11,62 +11,49 @@ my $dbh = FlavorsData::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
-FlavorsHTML::Header();
+my $fdat = FlavorsUtils::Fdat($cgi);
+my $task = $fdat->{TASK} || 'categories';	# qw(categories genres colors)
 
-my @tags = FlavorsData::TagList($dbh);
-my $categorizedtags = FlavorsUtils::Categorize($dbh, {
-	ITEMS => \@tags,
+FlavorsHTML::Header({
+	CSS => $task eq 'colors' ? ['/css/thirdparty/jquery.miniColors.css'] : [],
+	JS => $task eq 'colors' ? ['/javascript/thirdparty/jquery.miniColors.js'] : [],
 });
 
-my @artists = FlavorsData::ArtistGenreList($dbh);
-my $categorizedartists = FlavorsUtils::Categorize($dbh, {
-	ITEMS => \@artists,
-});
-
-my @colors = FlavorsData::ColorList($dbh);
-
-print qq{
-	<link href="/css/thirdparty/jquery.miniColors.css" rel="stylesheet" type="text/css" />
-	<script type="text/javascript" src="/javascript/thirdparty/jquery.miniColors.js"></script>
-	<div class="post-nav">
-};
-
-my $colorscontent = "";
-foreach my $color (@colors) {
-	$colorscontent .= sprintf(qq{
-			<div class="color">
-				<div class="name">%s</div>
-				<input type="minicolors" data-slider="wheel" value="#%s" data-textfield="false">
-				<div class="btn-group white-text" data-toggle="buttons-radio">
-					<button class="btn btn-xs btn-default%s" value="0">black text</button>
-					<button class="btn btn-xs btn-default%s" value="1">white text</button>
-				</div>
-			</div>
-		},
-		$color->{NAME},
-		$color->{HEX},
-		$color->{WHITETEXT} ? "" : " active",
-		$color->{WHITETEXT} ? " active" : "",
-	);
+print qq{ <div class="post-nav"> };
+if ($task eq 'categories') {
+	my @tags = FlavorsData::TagList($dbh);
+	my $categorizedtags = FlavorsUtils::Categorize($dbh, {
+		ITEMS => \@tags,
+	});
+	print FlavorsHTML::Categorize($dbh, $categorizedtags),
 }
-
-printf(qq{
-		<ul class="nav nav-tabs">
-			<li class="active"><a data-toggle="tab" href="#tag-category">Tags &rArr; Categories</a></li>
-			<li><a data-toggle="tab" href="#artist-genre">Artists &rArr; Genres</a></li>
-			<li><a data-toggle="tab" href="#colors">Colors</a></li>
-		</ul>
-
-		<div class="tab-content">
-			<div class="tab-pane active" id="tag-category">%s</div>
-			<div class="tab-pane" id="artist-genre">%s</div>
-			<div class="tab-pane" id="colors">%s</div>
-		</div>
-	},
-	FlavorsHTML::Categorize($dbh, $categorizedtags),
-	FlavorsHTML::Categorize($dbh, $categorizedartists),
-	$colorscontent,
-);
+elsif ($task eq 'genres') {
+	my @artists = FlavorsData::ArtistGenreList($dbh);
+	my $categorizedartists = FlavorsUtils::Categorize($dbh, {
+		ITEMS => \@artists,
+	});
+	print FlavorsHTML::Categorize($dbh, $categorizedartists),
+}
+else {
+	my @colors = FlavorsData::ColorList($dbh);
+	foreach my $color (@colors) {
+		printf(qq{
+				<div class="color">
+					<div class="name">%s</div>
+					<input type="minicolors" data-slider="wheel" value="#%s" data-textfield="false">
+					<div class="btn-group white-text" data-toggle="buttons-radio">
+						<button class="btn btn-xs btn-default%s" value="0">black text</button>
+						<button class="btn btn-xs btn-default%s" value="1">white text</button>
+					</div>
+				</div>
+			},
+			$color->{NAME},
+			$color->{HEX},
+			$color->{WHITETEXT} ? "" : " active",
+			$color->{WHITETEXT} ? " active" : "",
+		);
+	}
+}
 
 print qq{ </div> };
 print FlavorsHTML::Footer();

@@ -1,7 +1,9 @@
 jQuery(document).ready(function() {
 	jQuery('.tag').css("cursor", "move").draggable();
 
-	jQuery('.category .header').click('ToggleCategory');
+	jQuery('.category .header').click(function() {
+		jQuery(this).next('.category-tags').slideToggle();
+	});
 
 	jQuery('.category').droppable({
 		hoverClass: "ui-state-active",
@@ -43,10 +45,6 @@ jQuery(document).ready(function() {
 		UpdateColor(this, { HEX: jQuery(this).val().replace("#", "") });
 	});
 });
-
-function ToggleCategory(obj) {
-	jQuery(obj).next('.category-tags').slideToggle();
-}
 
 function UpdateColor(obj, args) {
 	var $color = jQuery(obj).closest(".color");

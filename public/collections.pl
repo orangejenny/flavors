@@ -17,6 +17,8 @@ my $fdat = FlavorsUtils::Fdat($cgi);
 FlavorsHTML::Header({
 	TITLE => "Collections",
 	BUTTONS => FlavorsHTML::ExportButton(),
+	CSS => ['collections.css'],
+	JS => ['collections.js'],
 });
 
 my @collections = FlavorsData::CollectionList($dbh);

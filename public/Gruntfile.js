@@ -13,6 +13,7 @@ module.exports = function(grunt) {
 
 				"./css/categories.css": "./css/categories.less",
 				"./css/collections.css": "./css/collections.less",
+				"./css/colors.css": "./css/colors.less",
 				"./css/data.css": "./css/data.less",
 				"./css/songs.css": "./css/songs.less",
 				"./css/tags.css": "./css/tags.less",

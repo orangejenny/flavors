@@ -1,40 +1,5 @@
 @import "imports.less";
 
-.tab-content { overflow: visible; }
-
-@minicolorsDimension: 22px;
-
-.minicolors-panel {
-	top: @minicolorsDimension;
-}
-
-.minicolors input {
-	height: @minicolorsDimension;
-}
-
-.btn-group > .btn.active {
-	z-index: 1;
-}
-
-.color {
-	float: left;
-	width: 325px;
-	padding: @spacingNormal;
-
-	.name {
-		width: 75px;
-		float: left;
-	}
-
-	.btn-group {
-		margin-left: @spacingNormal;
-	}
-}
-
-.category-tab {
-	text-align: center;
-}
-
 .category {
 	border: 1px @greyBlue solid;
 	border-radius: @borderRadius;
@@ -46,7 +11,6 @@
 }
 
 .category-tags {
-	display: none;
 	max-height: 500px;
 	overflow-y: auto;
 }

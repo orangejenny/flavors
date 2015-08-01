@@ -35,6 +35,8 @@ FlavorsHTML::Header({
 			</button>
 		</span>
 	},
+	CSS => ['data.css'],
+	JS => ['data.js'],
 });
 
 print qq{ <div class="post-nav"> };

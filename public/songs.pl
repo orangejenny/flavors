@@ -77,6 +77,8 @@ FlavorsHTML::Header({
 		LETTERCOUNTS => $lettercounts,
 		SQLERROR => $sqlerror,
 	},
+	CSS => ['songs.css'],
+	JS => ['songs.js'],
 });
 
 my @playlists = FlavorsData::PlaylistList($dbh);

@@ -202,6 +202,10 @@ function generateRatingChart(facet) {
 }
 
 function attachEventHandlers(selector) {
+	var associatedRect = function(text) {
+		return jQuery(text).closest("g").find("rect").get(0);
+	}
+
 	// Highlight on hover
 	d3.selectAll(selector + " rect").on("mouseenter", function() {
 		d3.select(this).classed("highlighted", true);
@@ -211,18 +215,30 @@ function attachEventHandlers(selector) {
 	});
 
 	// Toggle .selected on click
-	d3.selectAll(selector + " rect").on("click", function() {
-		var s = d3.select(this);
+	var _handleClick = function(rect) {
+		var s = d3.select(rect);
 		s.classed("selected", !s.classed("selected"));
 		setClearVisibility();
+	};
+	d3.selectAll(selector + " rect").on("click", function() {
+		_handleClick(this);
+	});
+	d3.selectAll(selector + " text").on("click", function() {
+		_handleClick(associatedRect(this));
 	});
 
 	// Export on double click
-	d3.selectAll(selector + " rect").on("dblclick", function() {
-		var condition = d3.select(this).data()[0].condition;
+	var _handleDblClick = function(rect) {
+		var condition = d3.select(rect).data()[0].condition;
 		ExportPlaylist({
 			FILENAME: condition,
 			FILTER: condition,
 		});
+	};
+	d3.selectAll(selector + " rect").on("dblclick", function() {
+		_handleDblClick(associatedRect(this));
+	});
+	d3.selectAll(selector + " text").on("dblclick", function() {
+		_handleDblClick(jQuery(this).closest("g").find("rect").get(0));
 	});
 }

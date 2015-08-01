@@ -58,6 +58,7 @@ sub Rating {
 # Params:
 #		TITLE: (optional) page title
 #		INITIALPAGEDATA: (optional) hash to convert to JSON
+#		FDAT: (optional)
 #
 # Return Value: HTML
 ################################################################
@@ -108,26 +109,53 @@ sub Header {
 		collections.pl
 		tags.pl
 		categories.pl
-		data.pl
 	);
 
-	print qq{ <div class="navbar-container"><nav class="navbar navbar-default"> };
-
-	printf(qq{
-					<a class='navbar-brand' href='#'>Flavors</a>
+	print qq{
+		<div class="navbar-container">
+			<nav class="navbar navbar-default">
+				<a class='navbar-brand' href='#'>Flavors</a>
 					<ul class="nav navbar-nav">
-						%s
-					</ul>
-	}, join("", map {
-		sprintf("<li class='%s'><a href='%s'>%s</a></li>", $url eq $_ ? 'active' : '', $_, ucfirst($1))
-		if $_ =~ m/(.*)\.[^.]+/	# shorthand; all elements will match
-	} @urls));
+	};
+
+	# Single menu items
+	foreach my $u (@urls) {
+		if ($u =~ m/(.*)\.[^.]+/) {		# all elements will match
+			printf("<li class='%s'><a href='%s'>%s</a></li>", $u eq $url ? 'active' : '', $u, ucfirst($1));
+		}
+	}
+
+	# Data dropdown
+	my %icons = (
+		rating => 'star',
+		energy => 'fire',
+		mood => 'heart',
+	);
+	printf(qq{ <li class='dropdown %s'> }, $url =~ m/data/ ? "active" : "");
+	print qq{
+		<a class='dropdown-toggle' data-toggle='dropdown' role='label' href='#'>
+			Data <span class="caret"></span>
+		</a>
+	};
+	print qq{ <ul class="dropdown-menu"> };
+	$args->{FDAT}->{FACET} ||= 'rating';
+	$args->{FDAT}->{FACET} = lc($args->{FDAT}->{FACET});
+	foreach my $facet (qw(rating energy mood)) {
+		printf(qq{ <li class='%s'><a href='data.pl?facet=%s'><i class='glyphicon glyphicon-%s'></i> %s</a></li> }, 
+			$args->{FDAT}->{FACET} eq $facet ? "active" : "",
+			$facet,
+			$icons{$facet},
+			ucfirst($facet),
+		);
+	}
+	print qq{ </ul> };
+	print qq{ </li> };
+	print qq{ </ul> };
 
 	print $args->{BUTTONS};
 
-	print qq { </nav> };
-
 	print qq{
+							</nav>
 						</div>
 					</div>
 				</div>

@@ -35,6 +35,16 @@ label {
 
 	.navbar {
 		margin: 0;
+		.dropdown-toggle {
+			cursor: pointer;
+		}
+		.dropdown-menu .glyphicon {
+			color: @grey;
+			margin-right: @spacingNarrow;
+		}
+		li.active > a > .glyphicon {
+			color: @white;
+		}
 	}
 }
 

@@ -14,26 +14,28 @@
 
 .post-nav {
 	text-align: center;
+	padding: @spacingWide;
 
 	.category-buttons.active {
 		background-color: @greyLight;
 	}
 
-	.rating-container, .category-container {
-		width: 30%;
-		display: inline-block;
-		padding: @spacingWide;
-	}
+	.distribution-container {
+		width: 50%;
+		margin: 0 25%;
 
-	.rating-container {
-		.glyphicon {
-			font-size: 32px;
-			z-index: -1;
-			color: @greyLight;
+		.axis {
+			margin: @spacingNarrow;
+			.axis-label {
+				display: inline-block;
+				width: 20%;
+				font-size: @fontSizeLarge;
+				color: @grey;
+			}
 		}
-	
+
 		svg {
-			margin: @spacingNormal;
+			margin-top: @spacingNormal;
 
 			rect, text {
 				cursor: pointer;
@@ -68,6 +70,7 @@
 
 	.category-container {
 		vertical-align: top;
+		padding: @spacingWide;
 
 		svg {
 			margin: @spacingNormal;

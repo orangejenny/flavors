@@ -10,7 +10,7 @@ jQuery(document).ready(function() {
 
 	// Generate rating charts
 	// TODO: fix spinner so it diappears after all data is loaded
-	jQuery(".rating-container").each(function() {
+	jQuery(".distribution-container").each(function() {
 		generateRatingChart(jQuery(this).data("facet"));
 	});
 
@@ -146,10 +146,12 @@ function generateCategoryCharts(args) {
 	});
 }
 
+// TODO: genericize (not 5 bars)
 function generateRatingChart(facet) {
-	var containerSelector = ".rating-container[data-facet='" + facet + "']";
+	var containerSelector = ".distribution-container[data-facet='" + facet + "']";
 	var width = jQuery(containerSelector).width();
 	var barSize = width / 5;	// 5 bars in each distribution
+	var barMargin = 10;
 
 	var distributionHeight = 150;
 	var distributionScale = d3.scale.linear().range([distributionHeight, 0]);
@@ -157,10 +159,11 @@ function generateRatingChart(facet) {
 								.attr("width", width)
 								.attr("height", distributionHeight);
 
-	var unratedScale = d3.scale.linear().range([0, width]);
+	var unratedScale = d3.scale.linear().range([0, width - barMargin]);
+	var unratedBarSize = 50;
 	var unrated = d3.select(containerSelector + " svg.unrated")
 							.attr("width", width)
-							.attr("height", barSize / 2);
+							.attr("height", unratedBarSize);
 
 	CallRemote({
 		SUB: 'FlavorsData::SongStats',
@@ -182,18 +185,18 @@ function generateRatingChart(facet) {
 			unratedBars.filter(":nth-child(1)").append("rect")
 															.attr("x", 0)
 															.attr("width", unratedScale(ratedData.value))
-															.attr("height", barSize / 2);
+															.attr("height", unratedBarSize / 2);
 			// "unrated" bar
 			unratedBars.filter(":nth-child(2)").append("rect")
 															.attr("x", unratedScale(ratedData.value))
 															.attr("width", unratedScale(unratedData.value))
-															.attr("height", barSize / 2);
+															.attr("height", unratedBarSize / 2);
 			// text for both bars
 			unratedBars.append("text")
-							.attr("x", function(d, i) { return i == 0 ? barTextOffset : width - barTextOffset; })
-							.attr("y", barSize / 4)
+							.attr("x", function(d, i) { return i == 0 ? barTextOffset : width - barTextOffset - barMargin; })
+							.attr("y", unratedBarSize / 4)
 							.attr("dy", "0.35em")
-							.text(function(d, i) { return i == 0 ? ratedData.value : unratedData.value; });
+							.text(function(d, i) { return i == 0 ? ratedData.value + " rated" : unratedData.value + " unrated"; });
 
 			// Create distribution chart
 			distributionScale.domain([0, d3.max(_.pluck(data, 'value'))])
@@ -203,7 +206,7 @@ function generateRatingChart(facet) {
 															.attr("transform", function(d, i) { return "translate(" + i * barSize + ", 0)"; });
 			distributionBars.append("rect")
 									.attr("y", function(d) { return distributionScale(d.value); })
-									.attr("width", barSize - 5)
+									.attr("width", barSize - barMargin)
 									.attr("height", function(d) { return distributionHeight - distributionScale(d.value); });
 			distributionBars.append("text")
 									.attr("x", barSize / 2)

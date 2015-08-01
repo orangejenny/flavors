@@ -9,16 +9,19 @@ use FlavorsData;
 
 my $dbh = FlavorsData::DBH();
 
-my @facets = qw(rating energy mood);
+my $cgi = CGI->new;
+print $cgi->header();
+my $fdat = FlavorsUtils::Fdat($cgi);
+
+my $facet = $fdat->{FACET} || "rating";
 my %icons = (
 	rating => 'star',
 	mood => 'heart',
 	energy => 'fire',
 );
 
-my $cgi = CGI->new;
-print $cgi->header();
 FlavorsHTML::Header({
+	FDAT => $fdat,
 	TITLE => "Data",
 	BUTTONS => FlavorsHTML::ExportButton() . qq{
 		<span class="selection-buttons hide">
@@ -36,16 +39,17 @@ FlavorsHTML::Header({
 
 print qq{ <div class="post-nav"> };
 
-# Distribution and rated/unrated charts
-foreach my $facet (@facets) {
-	print sprintf(qq{
-		<div class="rating-container" data-facet="%s">
-			<i class="glyphicon glyphicon-%s"></i>
-			<svg class="distribution"></svg>
-			<svg class="unrated"></svg>
-		</div>
-	}, $facet, $icons{$facet});
+# Distribution and rated/unrated chart
+printf(qq{ <div class="distribution-container" data-facet="%s"> }, $facet);
+print qq{ <svg class="distribution"></svg> };
+print qq{ <div class='axis'> };
+foreach my $i (1..5) {
+	printf("<span class='axis-label'>%s</span>", FlavorsHTML::Rating($i, $icons{$facet}));
 }
+print qq{ </div> };
+
+print qq{ <svg class="unrated"></svg> };
+print qq{ </div> };
 
 # Toolbar
 my @categories = FlavorsData::CategoryList($dbh);
@@ -58,13 +62,11 @@ print "</div>";
 
 # Category charts
 print qq{ <div> };
-foreach my $facet (@facets) {
-	print sprintf(qq{
-		<div class="category-container" data-facet="%s">
-			<svg></svg>
-		</div>
-	}, $facet, $icons{$facet});
-}
+print sprintf(qq{
+	<div class="category-container" data-facet="%s">
+		<svg></svg>
+	</div>
+}, $facet, $icons{$facet});
 print qq{ </div> };
 
 print qq{ </div> };	# .post-nav

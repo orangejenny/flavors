@@ -16,7 +16,7 @@ print $cgi->header();
 my $fdat = FlavorsUtils::Fdat($cgi);
 FlavorsHTML::Header({
 	TITLE => "Collections",
-	BUTTONS => FlavorsHTML::ExportButton(),
+	BUTTONS => FlavorsHTML::ExportControl(),
 	CSS => ['collections.css'],
 	JS => ['collections.js'],
 });

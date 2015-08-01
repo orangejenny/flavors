@@ -158,7 +158,7 @@ sub Header {
 		energy => 'fire',
 		mood => 'heart',
 	);
-	printf(qq{ <li class='dropdown %s'> }, $url =~ m/data/ ? "active" : "");
+	printf(qq{ <li class='dropdown %s'> }, (grep { $url eq $_ } qw(facet.pl moody.pl)) ? "active" : "");
 	print qq{
 		<a class='dropdown-toggle' data-toggle='dropdown' role='label' href='#'>
 			Data <span class="caret"></span>
@@ -168,13 +168,16 @@ sub Header {
 	$args->{FDAT}->{FACET} ||= 'rating';
 	$args->{FDAT}->{FACET} = lc($args->{FDAT}->{FACET});
 	foreach my $facet (qw(rating energy mood)) {
-		printf(qq{ <li class='%s'><a href='data.pl?facet=%s'><i class='glyphicon glyphicon-%s'></i> %s</a></li> }, 
-			$url eq 'data.pl' && $args->{FDAT}->{FACET} eq $facet ? "active" : "",
+		printf(qq{ <li class='%s'><a href='facet.pl?facet=%s'><i class='glyphicon glyphicon-%s'></i> %s</a></li> }, 
+			$url eq 'facet.pl' && $args->{FDAT}->{FACET} eq $facet ? "active" : "",
 			$facet,
 			$icons{$facet},
 			ucfirst($facet),
 		);
 	}
+	printf(qq{ 
+		<li class='%s'><a href='moody.pl'>Matrix</a></li> 
+	}, $url eq 'moody.pl' ? 'active' : '');
 	print qq{ </ul> };
 	print qq{ </li> };
 	print qq{ </ul> };
@@ -191,18 +194,40 @@ sub Header {
 }
 
 ################################################################
-# ExportButton
+# ExportControl
 #
 # Description: Generates HTML for button to export playlist
 #
 # Return Value: HTML
 ################################################################
-sub ExportButton {
+sub ExportControl {
 	return qq{
 		<button type="button" class="export-button btn btn-xs btn-info">
 			<span class="glyphicon glyphicon-download"></span>
 			Export
 		</button>
+	};
+}
+
+################################################################
+# SelectionControl
+#
+# Description: Generates HTML for buttons to act on selections
+#
+# Return Value: HTML
+################################################################
+sub SelectionControl {
+	return qq{
+		<span class="selection-buttons hide">
+			<button class="btn btn-info btn-xs clear-button">
+				<i class="glyphicon glyphicon-remove"></i>
+				Clear Selection
+			</button>
+			<button class="btn btn-info btn-xs songs-button">
+				<i class="glyphicon glyphicon-share-alt"></i>
+				View Songs
+			</button>
+		</span>
 	};
 }
 

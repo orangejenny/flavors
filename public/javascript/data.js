@@ -1,45 +1,21 @@
 jQuery(document).ready(function() {
-	var _selectionCondition = function() {
-		var selected = d3.selectAll(".selected");
-		if (!selected.data().length) {
-			alert("Nothing selected");
-			return '';
-		}
-		return _.pluck(selected.data(), 'condition').join(" or ");
-	};
-
-	// Generate rating charts
-	// TODO: fix spinner so it diappears after all data is loaded
-	jQuery(".distribution-container").each(function() {
-		generateRatingChart(jQuery(this).data("facet"));
-	});
-
-	// Generate initial category chart and set handler for future ones
-	jQuery(".category-buttons button").click(function() {
-		var args = { CATEGORY: jQuery(this).text() };
-		jQuery(".category-container").each(function() {
-			args.FACET = jQuery(this).data("facet");
-			generateCategoryCharts(args);
-		});
-	});
-
-	// Clear anything selected
+	// Controls: clear anything selected
 	jQuery(".clear-button").click(function() {
 		d3.selectAll(".selected").classed("selected", false);
 		setClearVisibility();
 	});
 
-	// Open selection in songs.pl
+	// Controls: open selection in songs.pl
 	jQuery(".songs-button").click(function() {
-		var condition = _selectionCondition();
+		var condition = getSelectionCondition();
 		if (condition) {
 			window.open("songs.pl?FILTER=" + condition);
 		}
 	});
 
-	// Page-level export: all selected set of data
+	// Controls: export selections
 	jQuery(".export-button").click(function() {
-		var condition = _selectionCondition();
+		var condition = getSelectionCondition();
 		if (condition) {
 			ExportPlaylist({
 				FILTER: condition,
@@ -50,7 +26,8 @@ jQuery(document).ready(function() {
 	});
 });
 
-// Chart aesthetics
+// Global chart aesthetics
+// TODO: get out of global namespace
 var barTextOffset = 4;
 
 function setClearVisibility() {
@@ -60,166 +37,6 @@ function setClearVisibility() {
 	else {
 		jQuery(".selection-buttons").addClass("hide");
 	}
-}
-
-function generateCategoryCharts(args) {
-	var category = args.CATEGORY;
-	var facet = args.FACET;
-
-	jQuery(".category-buttons .active").removeClass("active");
-	jQuery(".category-buttons button[data-category='" + category + "']").addClass("active");
-
-	var containerSelector = ".category-container[data-facet='" + facet + "']";
-	var chartSelector = containerSelector + " svg";
-	var width = jQuery(containerSelector).width();
-	var barSize = 20;
-
-	jQuery(chartSelector).html("");
-	var chart = d3.select(chartSelector)
-						.attr("width", width);
-
-	var xScale = d3.scale.linear().range([0, width]);
-	var color = d3.scale.ordinal()
-								.range(["#82a6b0", "#559aaf", "#31b0d5", "#18bbec", "#08c3fd"])
-								.domain([0, 1, 2, 3, 4]);
-
-	CallRemote({
-		SUB: 'FlavorsData::CategoryStats',
-		ARGS: args,
-		FINISH: function(data) {	// arry of objects, each with TAG (string) and VALUES (array with length 5)*/
-			data = _.map(data, function(d) { return {
-				TAG: d.TAG,
-				VALUES: _.map(d.VALUES, function(v) { return +v; }),
-				SUM: _.reduce(d.VALUES, function(memo, v) { return +v + memo; }, 0),
-			}; });
-			xScale.domain([0, d3.max(_.map(data, function(d) {
-				return 2 * (d.VALUES[2] / 2 + Math.max(d.VALUES[1] + d.VALUES[0], d.VALUES[3] + d.VALUES[4]));
-			}))]);
-
-			chart.attr("height", data.length * barSize);
-			var bars = chart.selectAll("g")
-									.data(data)
-									.enter().append("g")
-									.attr("transform", function(d, i) { return "translate(0, " + i * barSize + ")"; });
-
-			_.each(_.range(5), function(index) {
-				bars.append("rect")
-						.attr("height", barSize - 5)
-						.attr("width", function(d) { return xScale(d.VALUES[index]); })
-						.attr("x", function(d) {
-							// Start at midpoint
-							var x = width / 2;
-							var direction = index > 2 ? 1 : -1;
-							x += direction * xScale(d.VALUES[2] / 2);
-							if (index == 2) {
-								// Center the 3-star rating
-								return x;
-							}
-							if (index < 2) {
-								// Push 1 and 2-star ratings left of center
-								_.each([0, 1], function(i) {
-									if (i >= index) {
-										x -= xScale(d.VALUES[i]);
-									}
-								});
-							}
-							else {
-								// Push 4 and 5-star ratings right of center
-								_.each([3, 4], function(i) {
-									if (i <= index) {
-										x += xScale(d.VALUES[i]);
-									}
-								});
-								x -= xScale(d.VALUES[index]);
-							}
-							return x;
-						})
-						.style("fill", color(index));
-			});
-			bars.append("text")
-									.attr("x", width / 2)
-									.attr("y", barSize / 2)
-									.text(function(d) { return d.TAG; });
-
-			attachEventHandlers(containerSelector);
-		},
-	});
-}
-
-// TODO: genericize (not 5 bars)
-function generateRatingChart(facet) {
-	var containerSelector = ".distribution-container[data-facet='" + facet + "']";
-	var width = jQuery(containerSelector).width();
-	var barSize = width / 5;	// 5 bars in each distribution
-	var barMargin = 10;
-
-	var distributionHeight = 150;
-	var distributionScale = d3.scale.linear().range([distributionHeight, 0]);
-	var distribution = d3.select(containerSelector + " svg.distribution")
-								.attr("width", width)
-								.attr("height", distributionHeight);
-
-	var unratedScale = d3.scale.linear().range([0, width - barMargin]);
-	var unratedBarSize = 50;
-	var unrated = d3.select(containerSelector + " svg.unrated")
-							.attr("width", width)
-							.attr("height", unratedBarSize);
-
-	CallRemote({
-		SUB: 'FlavorsData::SongStats',
-		ARGS: { GROUPBY: facet },
-		FINISH: function(data) {
-			data = _.map(data, function(d, i) { return {
-				condition: facet + '=' + i,
-				value: +d.COUNT,
-			} });
-			// Create unrated chart: quite janky
-			var unratedData = data.shift();
-			unratedData.condition = facet + ' is null';
-			var ratedData = {
-				value: _.reduce(data, function(memo, value) { return memo + value.value; }, 0),
-				condition: facet + ' is not null',
-			};
-			unratedScale.domain([0, ratedData.value + unratedData.value]);
-			var unratedBars = unrated.selectAll("g")
-												.data([ratedData, unratedData])
-												.enter().append("g");
-			// "rated" bar
-			unratedBars.filter(":nth-child(1)").append("rect")
-															.attr("x", 0)
-															.attr("width", unratedScale(ratedData.value))
-															.attr("height", unratedBarSize / 2);
-			// "unrated" bar
-			unratedBars.filter(":nth-child(2)").append("rect")
-															.attr("x", unratedScale(ratedData.value))
-															.attr("width", unratedScale(unratedData.value))
-															.attr("height", unratedBarSize / 2);
-			// text for both bars
-			unratedBars.append("text")
-							.attr("x", function(d, i) { return i == 0 ? barTextOffset : width - barTextOffset - barMargin; })
-							.attr("y", unratedBarSize / 4)
-							.attr("dy", "0.35em")
-							.text(function(d, i) { return i == 0 ? ratedData.value + " rated" : unratedData.value + " unrated"; });
-
-			// Create distribution chart
-			distributionScale.domain([0, d3.max(_.pluck(data, 'value'))])
-			var distributionBars = distribution.selectAll("g")
-															.data(data)
-															.enter().append("g")
-															.attr("transform", function(d, i) { return "translate(" + i * barSize + ", 0)"; });
-			distributionBars.append("rect")
-									.attr("y", function(d) { return distributionScale(d.value); })
-									.attr("width", barSize - barMargin)
-									.attr("height", function(d) { return distributionHeight - distributionScale(d.value); });
-			distributionBars.append("text")
-									.attr("x", barSize / 2)
-									.attr("y",  function(d) { return distributionScale(d.value) + barTextOffset; })
-									.attr("dy", "0.75em")	// center-align text
-									.text(function(d) { return d.value; });
-
-			attachEventHandlers(containerSelector);
-		},
-	});
 }
 
 function attachEventHandlers(selector) {
@@ -263,3 +80,12 @@ function attachEventHandlers(selector) {
 		_handleDblClick(jQuery(this).closest("g").find("rect").get(0));
 	});
 }
+
+function getSelectionCondition() {
+	var selected = d3.selectAll(".selected");
+	if (!selected.data().length) {
+		alert("Nothing selected");
+		return '';
+	}
+	return _.pluck(selected.data(), 'condition').join(" or ");
+};

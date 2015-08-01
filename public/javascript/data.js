@@ -40,50 +40,29 @@ function setClearVisibility() {
 }
 
 function attachEventHandlers(selector) {
-	var associatedRect = function(text) {
-		return jQuery(text).closest("g").find("rect").get(0);
-	}
-
 	// Highlight on hover
-	d3.selectAll(selector + " rect").on("mouseenter", function() {
-		d3.select(this).classed("highlighted", true);
+	d3.selectAll(selector + " g").on("mouseenter", function() {
+		d3.select(this).selectAll("rect, circle").classed("highlighted", true);
 	});
-	d3.selectAll(selector + " rect").on("mouseleave", function() {
-		d3.select(this).classed("highlighted", false);
+	d3.selectAll(selector + " g").on("mouseleave", function() {
+		d3.select(this).selectAll(".highlighted").classed("highlighted", false);
 	});
 
 	// Toggle .selected on click
-	var _handleClick = function(shape) {
-		var s = d3.select(shape);
-		s.classed("selected", !s.classed("selected"));
+	d3.selectAll(selector + " g").on("click", function() {
+		var g = d3.select(this);
+		var isSelected = g.selectAll(".selected")[0].length;
+		g.selectAll("rect, circle").classed("selected", !isSelected);
 		setClearVisibility();
-	};
-	d3.selectAll(selector + " rect").on("click", function() {
-		_handleClick(this);
-	});
-	d3.selectAll(selector + " circle").on("click", function() {
-		_handleClick(this);
-	});
-	d3.selectAll(selector + " text").on("click", function() {
-		_handleClick(associatedRect(this));
 	});
 
 	// Export on double click
-	var _handleDblClick = function(shape) {
-		var condition = d3.select(shape).data()[0].condition;
+	d3.selectAll(selector + " g").on("dblclick", function() {
+		var condition = d3.select(this).data()[0].condition;
 		ExportPlaylist({
 			FILENAME: condition,
 			FILTER: condition,
 		});
-	};
-	d3.selectAll(selector + " rect").on("dblclick", function() {
-		_handleDblClick(associatedRect(this));
-	});
-	d3.selectAll(selector + " circle").on("dblclick", function() {
-		_handleDblClick(this);
-	});
-	d3.selectAll(selector + " text").on("dblclick", function() {
-		_handleDblClick(associatedRect(this));
 	});
 }
 

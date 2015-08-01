@@ -28,7 +28,7 @@ function generateBubbleChart() {
 						}), function(memo, d) {
 							return memo + +d.COUNT;
 						}, 0),
-						condition: 'mood=' + m + ' && energy=' + e,
+						condition: 'mood=' + m + ' and energy=' + e,
 					});
 				}
 			}

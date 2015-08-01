@@ -18,9 +18,10 @@ jQuery(document).ready(function() {
 		var condition = getSelectionCondition();
 		if (condition) {
 			ExportPlaylist({
+				//FILENAME: condition,	// TODO: store in data
 				FILTER: condition,
 			});
-			selected.classed("selected", false);
+			d3.selectAll('.selected').classed("selected", false);
 			setClearVisibility();
 		}
 	});

@@ -24,7 +24,7 @@ FlavorsHTML::Header({
 	FDAT => $fdat,
 	TITLE => "Data",
 	BUTTONS => FlavorsHTML::ExportControl() . FlavorsHTML::SelectionControl(),
-	CSS => ['data.css'],
+	CSS => ['data.css', 'facet.css'],
 	JS => ['data.js', 'facet.js'],
 });
 

@@ -1,7 +1,5 @@
 @import "imports.less";
 
-@barColor: #31b0d5;	// bootstrap "info"
-
 .background-with-states(@color) {
 	fill: @color;
 	&.highlighted {
@@ -12,79 +10,12 @@
 	}
 }
 
-.post-nav {
-	text-align: center;
-	padding: @spacingWide;
-
-	.category-buttons.active {
-		background-color: @greyLight;
+svg {
+	rect, circle, text {
+		cursor: pointer;
 	}
-
-	.distribution-container {
-		width: 50%;
-		margin: 0 25%;
-
-		.axis {
-			margin: @spacingNarrow;
-			.axis-label {
-				display: inline-block;
-				width: 20%;
-				font-size: @fontSizeLarge;
-				color: @grey;
-			}
-		}
-
-		svg {
-			margin-top: @spacingNormal;
-
-			rect, text {
-				cursor: pointer;
-			}
-
-			rect {
-				.background-with-states(@barColor);
-			}
-	
-			text {
-				fill: @white;
-				font: @fontSizeDefault sans-serif;
-			}
-
-			&.distribution text {
-				text-anchor: middle;
-			}
-
-			&.unrated {
-				g:first-child {
-					text-anchor: start;
-				}
-				g:not(:first-child) {
-					rect {
-						.background-with-states(@greyLight);
-					}
-					text-anchor: end;
-				}
-			}
-		}
-	}
-
-	.category-container {
-		vertical-align: top;
-		padding: @spacingWide;
-
-		svg {
-			margin: @spacingNormal;
-
-			rect {
-				cursor: pointer;
-				.background-with-states(@barColor);
-			}
-	
-			text {
-				fill: @black;
-				font: @fontSizeDefault sans-serif;
-				text-anchor: middle;
-			}
-		}
+	text {
+		font: @fontSizeDefault sans-serif;
+		text-anchor: middle;
 	}
 }

@@ -14,17 +14,12 @@ print $cgi->header();
 my $fdat = FlavorsUtils::Fdat($cgi);
 
 my $facet = $fdat->{FACET} || "rating";
-my %icons = (
-	rating => 'star',
-	mood => 'heart',
-	energy => 'fire',
-);
 
 FlavorsHTML::Header({
 	FDAT => $fdat,
 	TITLE => "Data",
 	BUTTONS => FlavorsHTML::ExportControl() . FlavorsHTML::SelectionControl(),
-	CSS => ['data.css'],
+	CSS => ['data.css', 'moody.css'],
 	JS => ['data.js', 'moody.js'],
 });
 

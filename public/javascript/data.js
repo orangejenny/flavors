@@ -53,12 +53,15 @@ function attachEventHandlers(selector) {
 	});
 
 	// Toggle .selected on click
-	var _handleClick = function(rect) {
-		var s = d3.select(rect);
+	var _handleClick = function(shape) {
+		var s = d3.select(shape);
 		s.classed("selected", !s.classed("selected"));
 		setClearVisibility();
 	};
 	d3.selectAll(selector + " rect").on("click", function() {
+		_handleClick(this);
+	});
+	d3.selectAll(selector + " circle").on("click", function() {
 		_handleClick(this);
 	});
 	d3.selectAll(selector + " text").on("click", function() {
@@ -66,8 +69,8 @@ function attachEventHandlers(selector) {
 	});
 
 	// Export on double click
-	var _handleDblClick = function(rect) {
-		var condition = d3.select(rect).data()[0].condition;
+	var _handleDblClick = function(shape) {
+		var condition = d3.select(shape).data()[0].condition;
 		ExportPlaylist({
 			FILENAME: condition,
 			FILTER: condition,
@@ -76,8 +79,11 @@ function attachEventHandlers(selector) {
 	d3.selectAll(selector + " rect").on("dblclick", function() {
 		_handleDblClick(associatedRect(this));
 	});
+	d3.selectAll(selector + " circle").on("dblclick", function() {
+		_handleDblClick(this);
+	});
 	d3.selectAll(selector + " text").on("dblclick", function() {
-		_handleDblClick(jQuery(this).closest("g").find("rect").get(0));
+		_handleDblClick(associatedRect(this));
 	});
 }
 

@@ -15,6 +15,8 @@ module.exports = function(grunt) {
 				"./css/collections.css": "./css/collections.less",
 				"./css/colors.css": "./css/colors.less",
 				"./css/data.css": "./css/data.less",
+				"./css/facet.css": "./css/facet.less",
+				"./css/moody.css": "./css/moody.less",
 				"./css/songs.css": "./css/songs.less",
 				"./css/tags.css": "./css/tags.less",
 			}

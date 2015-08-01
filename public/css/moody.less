@@ -1,0 +1,25 @@
+@import "imports.less";
+@import "data.less";
+
+@barColor: #31b0d5;	// bootstrap "info"
+
+.post-nav {
+	text-align: center;
+	padding: @spacingWide;
+	
+	.chart-container {
+		display: inline-block;
+		width: 50%;
+
+		svg {
+			circle {
+				.background-with-states(@barColor);
+			}
+
+			text {
+				fill: @white;
+				text-anchor: middle;
+			}
+		}
+	}
+}

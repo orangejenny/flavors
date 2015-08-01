@@ -167,9 +167,12 @@ function generateRatingChart(facet) {
 
 	CallRemote({
 		SUB: 'FlavorsData::SongStats',
-		ARGS: { FACET: facet },
+		ARGS: { GROUPBY: facet },
 		FINISH: function(data) {
-			data = _.map(data, function(d, i) { return { 'condition': facet + '=' + i, 'value': +d } });
+			data = _.map(data, function(d, i) { return {
+				condition: facet + '=' + i,
+				value: +d.COUNT,
+			} });
 			// Create unrated chart: quite janky
 			var unratedData = data.shift();
 			unratedData.condition = facet + ' is null';

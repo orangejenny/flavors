@@ -463,24 +463,32 @@ sub TagList {
 # Description: Get statistics, by song
 #
 # Args:
-#	FACET: one of qw(rating energy mood)
+#	GROUPBY: CSV of strings, each one of qw(rating energy mood)
 #
 # Return Value: array of counts, with each index representing
 #	the number of songs with that value. Zero maps to null.
 ################################################################
 sub SongStats {
 	my ($dbh, $args) = @_;
-	my $facet = FlavorsUtils::Sanitize($args->{FACET});
-	my $sql = "select coalesce($facet, 0), count(*) from song group by $facet;";
-	my @rows = _results($dbh, {
+	my @groupby = split(/\s*,\s*/, FlavorsUtils::Sanitize($args->{GROUPBY}));
+
+	my $sql = sprintf(qq{
+			select 
+				%s, 
+				count(*)
+			from
+				song
+			group by %s
+			order by %s;
+		},
+		join(", ", map { sprintf("coalesce(%s, 0)", $_) } @groupby),
+		join(", ", @groupby),
+		join(", ", @groupby),
+	);
+	return [_results($dbh, {
 		SQL => $sql,
-		COLUMNS => [qw(rating count)],
-	});
-	my @counts = (0, 0, 0, 0, 0, 0);
-	foreach my $row (@rows) {
-		$counts[$row->{RATING}] = $row->{COUNT};
-	}
-	return \@counts;
+		COLUMNS => [@groupby, 'count'],
+	})];
 }
 
 ################################################################

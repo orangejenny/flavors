@@ -11,49 +11,22 @@ my $dbh = FlavorsData::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
-FlavorsHTML::Header();
+my $fdat = FlavorsUtils::Fdat($cgi);
+
+FlavorsHTML::Header({
+	CSS => ['categories.css'],
+	JS => ['categories.js'],
+});
 
 my @artists = FlavorsData::ArtistGenreList($dbh);
-my $categorizedartists = FlavorsUtils::Categorize($dbh, {
+my $categorizeargs = FlavorsUtils::Categorize($dbh, {
 	ITEMS => \@artists,
 });
-my @sorted = sort @{ $categorizedartists->{UNCATEGORIZED} };
-$categorizedartists->{UNCATEGORIZED} = \@sorted;
+$categorizeargs->{TABLE} = 'artistgenre';
 
-print qq{
-	<script type="text/javascript">
-		jQuery(function() {
-			jQuery('.tag').css("cursor", "move").draggable();
-			jQuery('.category').droppable({
-				hoverClass: "ui-state-active",
-				drop: function(event, ui) {
-					var container = jQuery('.category-tags', this);
-					jQuery(ui.draggable).remove().css('position', 'static').appendTo(container);
-					var args = {
-						VALUE: ui.draggable.text(),
-						CATEGORY: jQuery(this).attr("category")
-					};
-					args.TABLE = "artistgenre";
-					args.VALUECOLUMN = "artist";
-					args.CATEGORYCOLUMN = "genre";
-					CallRemote({
-						SUB: 'FlavorsData::UpdateCategory',
-						ARGS: args,
-						FINISH: function(data) {
-							//alert(data.MESSAGE);
-						}
-					});
-				}
-			});
-		});
+print qq{ <div class="post-nav"> };
 
-		function ToggleCategory(obj) {
-			jQuery(obj).next('.category-tags').slideToggle();
-		}
-	</script>
-};
+print FlavorsHTML::Categorize($dbh, $categorizeargs);
 
-# Map artist to genres
-print "<div class='category-tab'>" . FlavorsHTML::Categorize($dbh, $categorizedartists) . "</div>";
-
+print qq{ </div> };
 print FlavorsHTML::Footer();

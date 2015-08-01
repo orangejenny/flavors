@@ -58,7 +58,9 @@ sub Rating {
 # Params:
 #		TITLE: (optional) page title
 #		INITIALPAGEDATA: (optional) hash to convert to JSON
-#		FDAT: (optional)
+#		CSS (optional): arrayref of strings
+#		JS (optional): arrayref of strings
+#		FDAT (optional)
 #
 # Return Value: HTML
 ################################################################
@@ -74,22 +76,20 @@ sub Header {
 
 	my $url = $0;
 	$url =~ s/.*\///;	# strip anything but foo.pl
-	my $title = $url;
-	$title =~ s/\..*//g;
 
 	printf(qq{
 		<html>
 			<head>
 				<link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 				<link href="/css/flavors.css" rel="stylesheet" type="text/css" />
-				<link href="/css/%s.css" rel="stylesheet" type="text/css" />
+				%s
 				<script type="text/javascript" src="/javascript/thirdparty/jquery-1.7.1.min.js"></script>
 				<script type="text/javascript" src="/javascript/thirdparty/jquery-ui.min.js"></script>
 				<script type="text/javascript" src="/javascript/thirdparty/underscore-min.js"></script>
 				<script type="text/javascript" src="/javascript/thirdparty/d3.min.js"></script>
 				<script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
 				<script type="text/javascript" src="/javascript/application.js"></script>
-				<script type="text/javascript" src="/javascript/%s.js"></script>
+				%s
 				<title>$args->{TITLE}</title>
 			</head>
 			<body>
@@ -98,7 +98,11 @@ sub Header {
 					<div></div>
 				</div>
 			</div>
-	}, $title, $title);
+		},
+		join("", map { sprintf(qq{ <link href="/css/%s" rel="stylesheet" type="text/css" /> }, $_) } @{ $args->{CSS} || [] }),
+		join("", map { sprintf(qq{ <script type="text/javascript" src="/javascript/%s"></script> }, $_) } @{ $args->{JS} || [] }),
+		$args->{TITLE},
+	);
 
 	if ($args->{INITIALPAGEDATA}) {
 		printf(qq{ <div id="initial-page-data">%s</div> }, JSON::to_json($args->{INITIALPAGEDATA}));
@@ -108,7 +112,6 @@ sub Header {
 		songs.pl
 		collections.pl
 		tags.pl
-		categories.pl
 	);
 
 	print qq{
@@ -124,6 +127,30 @@ sub Header {
 			printf("<li class='%s'><a href='%s'>%s</a></li>", $u eq $url ? 'active' : '', $u, ucfirst($1));
 		}
 	}
+
+	# Category dropdown
+	my @pages = qw(categories.pl genres.pl colors.pl);
+	my %pagetitles = (
+		'categories.pl' => 'Tags &rArr; Categories',
+		'genres.pl' => 'Artists &rArr; Genres',
+		'colors.pl' => 'Colors',
+	);
+	printf(qq{ <li class='dropdown %s'> }, (grep { $url eq $_ } @pages) ? "active" : "");
+	print qq{
+		<a class='dropdown-toggle' data-toggle='dropdown' role='label' href='#'>
+			Categories <span class="caret"></span>
+		</a>
+	};
+	print qq{ <ul class="dropdown-menu"> };
+	foreach my $page (@pages) {
+		printf(qq{ <li class='%s'><a href='%s'>%s</a></li> }, 
+			$url eq $page ? "active" : "",
+			$page,
+			$pagetitles{$page},
+		);
+	}
+	print qq{ </ul> };
+	print qq{ </li> };
 
 	# Data dropdown
 	my %icons = (
@@ -142,7 +169,7 @@ sub Header {
 	$args->{FDAT}->{FACET} = lc($args->{FDAT}->{FACET});
 	foreach my $facet (qw(rating energy mood)) {
 		printf(qq{ <li class='%s'><a href='data.pl?facet=%s'><i class='glyphicon glyphicon-%s'></i> %s</a></li> }, 
-			$args->{FDAT}->{FACET} eq $facet ? "active" : "",
+			$url eq 'data.pl' && $args->{FDAT}->{FACET} eq $facet ? "active" : "",
 			$facet,
 			$icons{$facet},
 			ucfirst($facet),
@@ -233,6 +260,7 @@ sub TagSongList {
 # Params:
 #		CATEGORIES: hashref of category name => items
 #		UNCATEGORIZED: arrayref of items with a category
+#		TABLE: one of qw(artistgenre tagcategory)
 #
 # Return Value: HTML
 ################################################################
@@ -248,15 +276,15 @@ sub Categorize {
 	foreach my $category (sort keys %categories) {
 		my @categorytags = @{ $categories{$category} };
 		$html .= sprintf(qq{
-			<div class='category' category='%s'>
+			<div class='category' category='%s' data-table='%s'>
 				<div class='header clickable'>
 					%s
 				</div>
-				<div class='category-tags'>
+				<div class='category-tags hide'>
 					%s
 				</div>
 			</div>
-		}, $category, $category, join("", map { FlavorsHTML::Tag({ TAG => $_ }) } @categorytags));
+		}, $category, $args->{TABLE}, $category, join("", map { FlavorsHTML::Tag({ TAG => $_ }) } @categorytags));
 	}
 	$html .= "</div>";
 

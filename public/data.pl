@@ -21,10 +21,16 @@ print $cgi->header();
 FlavorsHTML::Header({
 	TITLE => "Data",
 	BUTTONS => FlavorsHTML::ExportButton() . qq{
-		<button class="btn btn-info btn-xs hide clear-button">
-			<i class="glyphicon glyphicon-remove"></i>
-			Clear Selection
-		</button>
+		<span class="selection-buttons hide">
+			<button class="btn btn-info btn-xs clear-button">
+				<i class="glyphicon glyphicon-remove"></i>
+				Clear Selection
+			</button>
+			<button class="btn btn-info btn-xs songs-button">
+				<i class="glyphicon glyphicon-share-alt"></i>
+				View Songs
+			</button>
+		</span>
 	},
 });
 

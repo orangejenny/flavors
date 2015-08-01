@@ -1,4 +1,13 @@
 jQuery(document).ready(function() {
+	var _selectionCondition = function() {
+		var selected = d3.selectAll(".selected");
+		if (!selected.data().length) {
+			alert("Nothing selected");
+			return '';
+		}
+		return _.pluck(selected.data(), 'condition').join(" or ");
+	};
+
 	// Generate rating charts
 	// TODO: fix spinner so it diappears after all data is loaded
 	jQuery(".rating-container").each(function() {
@@ -20,18 +29,24 @@ jQuery(document).ready(function() {
 		setClearVisibility();
 	});
 
+	// Open selection in songs.pl
+	jQuery(".songs-button").click(function() {
+		var condition = _selectionCondition();
+		if (condition) {
+			window.open("songs.pl?FILTER=" + condition);
+		}
+	});
+
 	// Page-level export: all selected set of data
 	jQuery(".export-button").click(function() {
-		var selected = d3.selectAll(".selected");
-		if (!selected.data().length) {
-			alert("Nothing selected");
-			return;
+		var condition = _selectionCondition();
+		if (condition) {
+			ExportPlaylist({
+				FILTER: condition,
+			});
+			selected.classed("selected", false);
+			setClearVisibility();
 		}
-		ExportPlaylist({
-			FILTER: _.pluck(selected.data(), 'condition').join(" or "),
-		});
-		selected.classed("selected", false);
-		setClearVisibility();
 	});
 });
 
@@ -40,10 +55,10 @@ var barTextOffset = 4;
 
 function setClearVisibility() {
 	if (jQuery(".selected").length) {
-		jQuery(".clear-button").removeClass("hide");
+		jQuery(".selection-buttons").removeClass("hide");
 	}
 	else {
-		jQuery(".clear-button").addClass("hide");
+		jQuery(".selection-buttons").addClass("hide");
 	}
 }
 

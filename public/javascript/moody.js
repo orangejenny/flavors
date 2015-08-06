@@ -39,7 +39,7 @@ function generateBubbleChart() {
 										.enter().append("g")
 										.attr("transform", function(d, i) {
 											var x = bubbleSize * (d.energy - 1);
-											var y = bubbleSize * (d.mood - 1);
+											var y = bubbleSize * (5 - d.mood);
 											return "translate(" + x + ", " + y + ")";
 										});
 

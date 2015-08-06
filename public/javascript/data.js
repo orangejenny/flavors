@@ -59,10 +59,11 @@ function attachEventHandlers(selector) {
 
 	// Export on double click
 	d3.selectAll(selector + " g").on("dblclick", function() {
-		var condition = d3.select(this).data()[0].condition;
+		var data = d3.select(this).data()[0];
+		var condition = data.condition;
 		ExportPlaylist({
-			FILENAME: condition,
-			FILTER: condition,
+			FILENAME: data.filename || data.condition,
+			FILTER: data.condition,
 		});
 	});
 }

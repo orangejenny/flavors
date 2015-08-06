@@ -465,8 +465,8 @@ sub TagList {
 # Args:
 #	GROUPBY: CSV of strings, each one of qw(rating energy mood)
 #
-# Return Value: array of counts, with each index representing
-#	the number of songs with that value. Zero maps to null.
+# Return Value: arrayref of hashrefs, each with a count and
+#	a value for each grouped-by attribute
 ################################################################
 sub SongStats {
 	my ($dbh, $args) = @_;
@@ -488,6 +488,37 @@ sub SongStats {
 	return [_results($dbh, {
 		SQL => $sql,
 		COLUMNS => [@groupby, 'count'],
+	})];
+}
+
+################################################################
+# AcquisitionStats
+#
+# Description: Get stats related to song acquisition
+#
+# Args: None
+#
+# Return Value: arrayref of hashrefs:
+#	DATESTRING: YYYY-MM
+#	COUNT
+################################################################
+sub AcquisitionStats {
+	my ($dbh) = @_;
+
+	my $sql = qq{
+		select datestring, count(*)
+		from (
+			select song.id, date_format(min(dateacquired), '%Y-%m') datestring
+			from song, songcollection, collection
+			where song.id = songcollection.songid
+			and songcollection.collectionid = collection.id
+			group by song.id
+		) months
+		group by datestring;
+	};
+	return [_results($dbh, {
+		SQL => $sql,
+		COLUMNS => [qw(datestring count)],
 	})];
 }
 

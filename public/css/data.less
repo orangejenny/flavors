@@ -1,5 +1,7 @@
 @import "imports.less";
 
+@barColor: #31b0d5;	// bootstrap "info"
+
 .background-with-states(@color) {
 	fill: @color;
 	&.highlighted {
@@ -14,7 +16,11 @@ svg {
 	rect, circle, text {
 		cursor: pointer;
 	}
+	rect, circle {
+		.background-with-states(@barColor);
+	}
 	text {
+		fill: @white;
 		font: @fontSizeDefault sans-serif;
 		text-anchor: middle;
 	}

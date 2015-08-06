@@ -1,8 +1,6 @@
 @import "imports.less";
 @import "data.less";
 
-@barColor: #31b0d5;	// bootstrap "info"
-
 .post-nav {
 	text-align: center;
 	padding: @spacingWide;
@@ -28,12 +26,7 @@
 		svg {
 			margin-top: @spacingNormal;
 
-			rect {
-				.background-with-states(@barColor);
-			}
-	
 			text {
-				fill: @white;
 				font: @fontSizeDefault sans-serif;
 			}
 
@@ -42,14 +35,16 @@
 			}
 
 			&.unrated {
-				g:first-child {
+				g:first-child text {
 					text-anchor: start;
 				}
 				g:not(:first-child) {
 					rect {
 						.background-with-states(@greyLight);
 					}
-					text-anchor: end;
+					text {
+						text-anchor: end;
+					}
 				}
 			}
 		}
@@ -62,10 +57,6 @@
 		svg {
 			margin: @spacingNormal;
 
-			rect {
-				.background-with-states(@barColor);
-			}
-	
 			text {
 				fill: @black;
 			}

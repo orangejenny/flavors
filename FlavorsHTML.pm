@@ -158,7 +158,7 @@ sub Header {
 		energy => 'fire',
 		mood => 'heart',
 	);
-	printf(qq{ <li class='dropdown %s'> }, (grep { $url eq $_ } qw(facet.pl moody.pl)) ? "active" : "");
+	printf(qq{ <li class='dropdown %s'> }, (grep { $url eq $_ } qw(facet.pl moody.pl acquisitions.pl)) ? "active" : "");
 	print qq{
 		<a class='dropdown-toggle' data-toggle='dropdown' role='label' href='#'>
 			Data <span class="caret"></span>
@@ -178,6 +178,9 @@ sub Header {
 	printf(qq{ 
 		<li class='%s'><a href='moody.pl'>Matrix</a></li> 
 	}, $url eq 'moody.pl' ? 'active' : '');
+	printf(qq{ 
+		<li class='%s'><a href='acquisitions.pl'>Acquisitions</a></li> 
+	}, $url eq 'acquisitions.pl' ? 'active' : '');
 	print qq{ </ul> };
 	print qq{ </li> };
 	print qq{ </ul> };

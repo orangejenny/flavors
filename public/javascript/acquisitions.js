@@ -42,9 +42,9 @@ function generateBarChart() {
 									});
 
 			bars.append("rect")
-					.attr("y", function(d) { return scale(d.count); })
+					.attr("y", function(d) { return height - scale(d.count); })
 					.attr("width", barSize - margin)
-					.attr("height", function(d) { return height - scale(d.count); });
+					.attr("height", function(d) { return scale(d.count); });
 
 			attachEventHandlers(containerSelector);
 		}

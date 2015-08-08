@@ -5,10 +5,10 @@ jQuery(document).ready(function() {
 function generateBubbleChart() {
 	var containerSelector = ".chart-container";
 	var width = jQuery(containerSelector).width();
-	var margin = 10;
-	var bubbleSize = width / 5;
+	var bubbleSize = width / 6;
+	var margin = bubbleSize / 2;
 
-	var scale = d3.scale.linear().range([0, bubbleSize - margin]);
+	var scale = d3.scale.linear().range([0, bubbleSize * 2]);
 	var chart = d3.select(containerSelector + " svg")
 						.attr("width", width)
 						.attr("height", width);
@@ -32,14 +32,15 @@ function generateBubbleChart() {
 					});
 				}
 			}
+			bubbles = _.sortBy(bubbles, 'count').reverse();
 			scale.domain([0, _.max(_.pluck(bubbles, 'count'))]);
 
 			var bubbles = chart.selectAll("g")
 										.data(bubbles)
 										.enter().append("g")
 										.attr("transform", function(d, i) {
-											var x = bubbleSize * (d.energy - 1);
-											var y = bubbleSize * (5 - d.mood);
+											var x = bubbleSize * (d.energy - 1) + margin;
+											var y = bubbleSize * (5 - d.mood) + margin;
 											return "translate(" + x + ", " + y + ")";
 										});
 

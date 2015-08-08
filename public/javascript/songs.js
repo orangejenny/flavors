@@ -167,8 +167,8 @@ jQuery(document).ready(function() {
 
 			// Update tokens and letters; don't bother with letter counts
 			if (!$td.hasClass("rating")) {
-				var oldTokens = oldValue.split(/\s+/);
-				var newTokens = value.split(/\s+/);
+				var oldTokens = oldTokens ? oldValue.split(/\s+/) : [];
+				var newTokens = newTokens ? value.split(/\s+/) : [];
 				var commonTokens = _.intersection(oldTokens, newTokens);
 				oldTokens = _.difference(oldTokens, commonTokens);
 				newTokens = _.difference(newTokens, commonTokens);

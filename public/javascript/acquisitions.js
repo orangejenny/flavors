@@ -20,6 +20,16 @@ function generateBarChart() {
 			var maxDate = new Date(d3.max(_.pluck(data, 'DATESTRING')) + "-15");
 			var minMonthCount = minDate.getFullYear() * 12 + minDate.getMonth();
 			var maxMonthCount = maxDate.getFullYear() * 12 + maxDate.getMonth();
+
+			// Axis - basic, so just draw by hand
+			jQuery("#min-year").text(minDate.getFullYear());
+			jQuery("#max-year").text(maxDate.getFullYear());
+			chart.append("line")
+					.attr("x1", 0)
+					.attr("y1", height)
+					.attr("x2", width)
+					.attr("y2", height);
+
 			data = _.map(data, function(d) {
 				var date = new Date(d.DATESTRING + "-15");
 				return {

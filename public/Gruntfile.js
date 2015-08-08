@@ -11,6 +11,7 @@ module.exports = function(grunt) {
 			files: {
 				"./css/flavors.css": "./css/flavors.less",
 
+				"./css/acquisitions.css": "./css/acquisitions.less",
 				"./css/categories.css": "./css/categories.less",
 				"./css/collections.css": "./css/collections.less",
 				"./css/colors.css": "./css/colors.less",

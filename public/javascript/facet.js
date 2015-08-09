@@ -37,9 +37,6 @@ function generateCategoryCharts(args) {
 						.attr("width", width);
 
 	var xScale = d3.scale.linear().range([0, width]);
-	var color = d3.scale.ordinal()
-								.range(["#82a6b0", "#559aaf", "#31b0d5", "#18bbec", "#08c3fd"])
-								.domain([0, 1, 2, 3, 4]);
 
 	CallRemote({
 		SUB: 'FlavorsData::CategoryStats',
@@ -51,6 +48,8 @@ function generateCategoryCharts(args) {
 				description: _.map(d.VALUES, function(v, i) {
 					return v ? v + "\t" + StringMultiply("<span class='glyphicon " + icons[facet] + "'></span>", i+1) + "\n" : "";
 				}).reverse().join(""),
+				condition: "exists (select 1 from songtag where songid = songs.id and tag = '" + d.TAG + "')",
+				filename: '[' + d.TAG + ']',
 			}; });
 			xScale.domain([0, d3.max(_.map(data, function(d) {
 				return 2 * (d.values[2] / 2 + Math.max(d.values[1] + d.values[0], d.values[3] + d.values[4]));
@@ -94,15 +93,18 @@ function generateCategoryCharts(args) {
 							}
 							return x;
 						})
-						.attr("y", textHeight)
-						.style("fill", color(index));
+						.attr("y", textHeight);
 			});
 			bars.append("text")
 									.attr("x", width / 2)
 									.attr("y", barSize / 2)
 									.text(function(d) { return d.tag; });
 
-			attachEventHandlers(containerSelector);
+			attachTooltip(containerSelector);
+
+			attachSelectionHandlers(containerSelector + " g text", function(text) {
+				return d3.select(jQuery(text).closest("g").get(0));
+			});
 		},
 	});
 }
@@ -178,7 +180,7 @@ function generateRatingChart(facet) {
 									.attr("dy", "0.75em")	// center-align text
 									.text(function(d) { return d.value; });
 
-			attachEventHandlers(containerSelector);
+			attachSelectionHandlers(containerSelector + " g");
 		},
 	});
 }

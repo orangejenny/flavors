@@ -73,7 +73,8 @@ function generateBubbleChart() {
 						.attr("dy", "0.35em")
 						.text(function(d) { return d.count; });
 
-			attachEventHandlers(containerSelector);
+			attachSelectionHandlers(containerSelector + " g");
+			attachTooltip(containerSelector);
 		}
 	});
 }

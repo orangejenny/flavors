@@ -1,6 +1,5 @@
 jQuery(document).ready(function() {
 	jQuery("#loading").fadeOut('slow');
-	//jQuery(".dropdown-toggle").dropdown();
 });
 
 /*

@@ -59,7 +59,8 @@ function generateBarChart() {
 					.attr("width", barSize - margin)
 					.attr("height", function(d) { return scale(d.count); });
 
-			attachEventHandlers(containerSelector);
+			attachSelectionHandlers(containerSelector + " g");
+			attachTooltip(containerSelector);
 		}
 	});
 }

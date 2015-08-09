@@ -40,7 +40,7 @@ function setClearVisibility() {
 	}
 }
 
-function attachEventHandlers(selector) {
+function attachTooltip(selector) {
 	var positionTooltip = function() {
 		var $tooltip = jQuery("#tooltip");
 		if (!$tooltip.is(":visible")) {
@@ -60,9 +60,8 @@ function attachEventHandlers(selector) {
 		}
 	};
 
-	// Highlight on hover
+	console.log("adding listener to " + selector + " g with count " + jQuery(selector + " g").length);
 	d3.selectAll(selector + " g").on("mouseenter", function(e) {
-		d3.select(this).selectAll("rect, circle").classed("highlighted", true);
 		var data = d3.select(this).data()[0];
 		if (data.description) {
 			var $tooltip = jQuery("#tooltip");
@@ -72,24 +71,39 @@ function attachEventHandlers(selector) {
 		}
 	});
 	d3.selectAll(selector + " g").on("mouseleave", function() {
-		d3.select(this).selectAll(".highlighted").classed("highlighted", false);
 		jQuery("#tooltip").addClass("hide");
 	});
 	d3.selectAll(selector + " g").on("mousemove", function(e) {
 		positionTooltip();
 	});
+}
+
+function attachSelectionHandlers(selector, actsOn) {
+	if (!actsOn) {
+		actsOn = function(obj) {
+			return d3.select(obj);
+		};
+	}
+
+	// Highlight on hover
+	d3.selectAll(selector).on("mouseenter", function() {
+		actsOn(this).selectAll("rect, circle").classed("highlighted", true);
+	});
+	d3.selectAll(selector).on("mouseleave", function() {
+		actsOn(this).selectAll(".highlighted").classed("highlighted", false);
+	});
 
 	// Toggle .selected on click
-	d3.selectAll(selector + " g").on("click", function() {
-		var g = d3.select(this);
+	d3.selectAll(selector).on("click", function() {
+		var g = actsOn(this);
 		var isSelected = g.selectAll(".selected")[0].length;
 		g.selectAll("rect, circle").classed("selected", !isSelected);
 		setClearVisibility();
 	});
 
 	// Export on double click
-	d3.selectAll(selector + " g").on("dblclick", function() {
-		var data = d3.select(this).data()[0];
+	d3.selectAll(selector).on("dblclick", function() {
+		var data = actsOn(this).data()[0];
 		var condition = data.condition;
 		ExportPlaylist({
 			FILENAME: data.filename || data.condition,

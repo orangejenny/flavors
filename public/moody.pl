@@ -23,12 +23,21 @@ FlavorsHTML::Header({
 	JS => ['data.js', 'moody.js'],
 });
 
-print qq{
-	<div class="post-nav">
-		<div class="chart-container">
-			<svg></svg>
+printf(qq{
+		<div class="post-nav">
+			<div class="axis-label mood-high">%s</div>
+			<div class="axis-label energy-high">%s</div>
+			<div class="axis-label energy-low">%s</div>
+			<div class="chart-container">
+				<svg></svg>
+			</div>
+			<div class="axis-label mood-low">%s</div>
 		</div>
-	</div>
-};
+	},
+	FlavorsHTML::Rating(5, 'heart'),
+	FlavorsHTML::Rating(5, 'fire'),
+	FlavorsHTML::Rating(1, 'fire'),
+	FlavorsHTML::Rating(1, 'heart'),
+);
 
 print FlavorsHTML::Footer();

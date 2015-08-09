@@ -5,13 +5,26 @@ jQuery(document).ready(function() {
 function generateBubbleChart() {
 	var containerSelector = ".chart-container";
 	var width = jQuery(containerSelector).width();
+	var height = width;
 	var bubbleSize = width / 6;
 	var margin = bubbleSize / 2;
 
 	var scale = d3.scale.linear().range([0, bubbleSize * 2]);
 	var chart = d3.select(containerSelector + " svg")
 						.attr("width", width)
-						.attr("height", width);
+						.attr("height", height);
+	chart.append("line")
+			.attr("x1", 0)
+			.attr("y1", height / 2)
+			.attr("x2", width)
+			.attr("y2", height / 2)
+			.style("stroke-width", 1);
+	chart.append("line")
+			.attr("x1", width / 2)
+			.attr("y1", 0)
+			.attr("x2", width / 2)
+			.attr("y2", height)
+			.style("stroke-width", 1);
 
 	CallRemote({
 		SUB: 'FlavorsData::SongStats',

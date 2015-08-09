@@ -12,6 +12,7 @@ function generateBarChart() {
 						.attr("width", width)
 						.attr("height", height);
 	var scale = d3.scale.linear().range([0, height]);
+	var dateFormat = d3.time.format("%b %Y");
 
 	CallRemote({
 		SUB: 'FlavorsData::AcquisitionStats',
@@ -32,6 +33,7 @@ function generateBarChart() {
 
 			data = _.map(data, function(d) {
 				var date = new Date(d.DATESTRING + "-15");
+				var text = dateFormat(date);
 				return {
 					date: date,
 					month: date.getMonth() + 1,
@@ -39,7 +41,8 @@ function generateBarChart() {
 					monthCount: date.getFullYear() * 12 + date.getMonth() - minMonthCount,
 					count: +d.COUNT,
 					condition: "extract(month from mindateacquired) = " + (date.getMonth() + 1) + " and extract(year from mindateacquired) = " + date.getFullYear(),
-					filename: "acquired " + date.getFullYear() + "-" + (date.getMonth < 10 ? "0" : "") + (date.getMonth() + 1),
+					filename: "acquired " + text,
+					description: text + "\n" + d.COUNT + " " + Pluralize(+d.COUNT, "song"),
 				};
 			});
 			var barSize = width / (maxMonthCount - minMonthCount + 1) - margin;

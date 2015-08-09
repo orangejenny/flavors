@@ -22,9 +22,15 @@ function generateCategoryCharts(args) {
 	jQuery(".category-buttons button[data-category='" + category + "']").addClass("active");
 
 	var containerSelector = ".category-container[data-facet='" + facet + "']";
+	var icons = {
+		rating: 'glyphicon-star',
+		energy: 'glyphicon-fire',
+		mood: 'glyphicon-heart',
+	};
 	var chartSelector = containerSelector + " svg";
 	var width = jQuery(containerSelector).width();
 	var barSize = 20;
+	var textHeight = 13;
 
 	jQuery(chartSelector).html("");
 	var chart = d3.select(chartSelector)
@@ -38,31 +44,33 @@ function generateCategoryCharts(args) {
 	CallRemote({
 		SUB: 'FlavorsData::CategoryStats',
 		ARGS: args,
-		FINISH: function(data) {	// arry of objects, each with TAG (string) and VALUES (array with length 5)*/
+		FINISH: function(data) {	// arry of objects, each with TAG (string) and VALUES (array with length 5)
 			data = _.map(data, function(d) { return {
-				TAG: d.TAG,
-				VALUES: _.map(d.VALUES, function(v) { return +v; }),
-				SUM: _.reduce(d.VALUES, function(memo, v) { return +v + memo; }, 0),
+				tag: d.TAG,
+				values: _.map(d.VALUES, function(v) { return +v; }),
+				description: _.map(d.VALUES, function(v, i) {
+					return v ? v + "\t" + StringMultiply("<span class='glyphicon " + icons[facet] + "'></span>", i+1) + "\n" : "";
+				}).reverse().join(""),
 			}; });
 			xScale.domain([0, d3.max(_.map(data, function(d) {
-				return 2 * (d.VALUES[2] / 2 + Math.max(d.VALUES[1] + d.VALUES[0], d.VALUES[3] + d.VALUES[4]));
+				return 2 * (d.values[2] / 2 + Math.max(d.values[1] + d.values[0], d.values[3] + d.values[4]));
 			}))]);
 
-			chart.attr("height", data.length * barSize);
+			chart.attr("height", data.length * (barSize + textHeight));
 			var bars = chart.selectAll("g")
 									.data(data)
 									.enter().append("g")
-									.attr("transform", function(d, i) { return "translate(0, " + i * barSize + ")"; });
+									.attr("transform", function(d, i) { return "translate(0, " + i * (barSize + textHeight) + ")"; });
 
 			_.each(_.range(5), function(index) {
 				bars.append("rect")
 						.attr("height", barSize - 5)
-						.attr("width", function(d) { return xScale(d.VALUES[index]); })
+						.attr("width", function(d) { return xScale(d.values[index]); })
 						.attr("x", function(d) {
 							// Start at midpoint
 							var x = width / 2;
 							var direction = index > 2 ? 1 : -1;
-							x += direction * xScale(d.VALUES[2] / 2);
+							x += direction * xScale(d.values[2] / 2);
 							if (index == 2) {
 								// Center the 3-star rating
 								return x;
@@ -71,7 +79,7 @@ function generateCategoryCharts(args) {
 								// Push 1 and 2-star ratings left of center
 								_.each([0, 1], function(i) {
 									if (i >= index) {
-										x -= xScale(d.VALUES[i]);
+										x -= xScale(d.values[i]);
 									}
 								});
 							}
@@ -79,19 +87,20 @@ function generateCategoryCharts(args) {
 								// Push 4 and 5-star ratings right of center
 								_.each([3, 4], function(i) {
 									if (i <= index) {
-										x += xScale(d.VALUES[i]);
+										x += xScale(d.values[i]);
 									}
 								});
-								x -= xScale(d.VALUES[index]);
+								x -= xScale(d.values[index]);
 							}
 							return x;
 						})
+						.attr("y", textHeight)
 						.style("fill", color(index));
 			});
 			bars.append("text")
 									.attr("x", width / 2)
 									.attr("y", barSize / 2)
-									.text(function(d) { return d.TAG; });
+									.text(function(d) { return d.tag; });
 
 			attachEventHandlers(containerSelector);
 		},

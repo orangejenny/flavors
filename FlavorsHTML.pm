@@ -334,7 +334,10 @@ sub Categorize {
 # Return Value: HTML
 ################################################################
 sub Footer {
-	return "</body></html>";
+	return qq{
+		<div id="tooltip" class="hide"></div>
+		</body></html>
+	};
 }
 
 1;

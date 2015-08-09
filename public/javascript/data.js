@@ -41,12 +41,42 @@ function setClearVisibility() {
 }
 
 function attachEventHandlers(selector) {
+	var positionTooltip = function() {
+		var $tooltip = jQuery("#tooltip");
+		if (!$tooltip.is(":visible")) {
+			return;
+		}
+		if (d3.event.pageX + 10 + $tooltip.width() > jQuery("body").width()) {
+			$tooltip.css("left", d3.event.pageX - $tooltip.width() - 10);
+		}
+		else {
+			$tooltip.css("left", d3.event.pageX + 10);
+		}
+		if (d3.event.pageY + $tooltip.height() > jQuery("body").height() - jQuery(".post-nav").scrollTop()) {
+			$tooltip.css("top", d3.event.pageY - $tooltip.height());
+		}
+		else {
+			$tooltip.css("top", d3.event.pageY);
+		}
+	};
+
 	// Highlight on hover
-	d3.selectAll(selector + " g").on("mouseenter", function() {
+	d3.selectAll(selector + " g").on("mouseenter", function(e) {
 		d3.select(this).selectAll("rect, circle").classed("highlighted", true);
+		var data = d3.select(this).data()[0];
+		if (data.description) {
+			var $tooltip = jQuery("#tooltip");
+			$tooltip.html(data.description);
+			$tooltip.removeClass("hide");
+			positionTooltip();
+		}
 	});
 	d3.selectAll(selector + " g").on("mouseleave", function() {
 		d3.select(this).selectAll(".highlighted").classed("highlighted", false);
+		jQuery("#tooltip").addClass("hide");
+	});
+	d3.selectAll(selector + " g").on("mousemove", function(e) {
+		positionTooltip();
 	});
 
 	// Toggle .selected on click

@@ -124,3 +124,15 @@ function StringMultiply(string, factor) {
 	}
 	return returnValue;
 }
+
+/*
+ * Pluralize
+ *
+ * Description: Simple pluralization: just adds "s".
+ *
+ * Args
+ *	Word to pluralize and relevant item count.
+ */
+function Pluralize(count, stem) {
+	return +count === 1 ? stem : stem + "s";
+}

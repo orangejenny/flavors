@@ -26,6 +26,8 @@ function generateBubbleChart() {
 			.attr("y2", height)
 			.style("stroke-width", 1);
 
+	var moodDescriptions = ['very unhappy', 'unhappy', 'neutral', 'happy', 'very happy'];
+	var energyDescriptions = ['very slow', 'slow', 'medium tempo', 'energetic', 'very energetic'];
 	CallRemote({
 		SUB: 'FlavorsData::SongStats',
 		ARGS: { GROUPBY: "rating, energy, mood" },
@@ -33,7 +35,7 @@ function generateBubbleChart() {
 			var bubbles = [];
 			for (e = 1; e <= 5; e++) {
 				for (m = 1; m <= 5; m++) {
-					bubbles.push({
+					var bubble = {
 						energy: e,
 						mood: m,
 						count: _.reduce(_.filter(data, function(d) {
@@ -42,7 +44,10 @@ function generateBubbleChart() {
 							return memo + +d.COUNT;
 						}, 0),
 						condition: 'mood=' + m + ' and energy=' + e,
-					});
+						filename: [moodDescriptions[m - 1], energyDescriptions[e - 1]].join(" "),
+					};
+					bubble.description = bubble.count + " " + bubble.filename + " " + Pluralize(bubble.count, "song"),
+					bubbles.push(bubble);
 				}
 			}
 			bubbles = _.sortBy(bubbles, 'count').reverse();

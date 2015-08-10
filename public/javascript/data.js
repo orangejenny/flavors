@@ -16,9 +16,9 @@ jQuery(document).ready(function() {
 	// Controls: export selections
 	jQuery(".export-button").click(function() {
 		var condition = getSelectionCondition();
+		console.log(condition);
 		if (condition) {
 			ExportPlaylist({
-				//FILENAME: condition,	// TODO: store in data
 				FILTER: condition,
 			});
 			d3.selectAll('.selected').classed("selected", false);
@@ -60,7 +60,6 @@ function attachTooltip(selector) {
 		}
 	};
 
-	console.log("adding listener to " + selector + " g with count " + jQuery(selector + " g").length);
 	d3.selectAll(selector + " g").on("mouseenter", function(e) {
 		var data = d3.select(this).data()[0];
 		if (data.description) {
@@ -87,17 +86,20 @@ function attachSelectionHandlers(selector, actsOn) {
 
 	// Highlight on hover
 	d3.selectAll(selector).on("mouseenter", function() {
+		actsOn(this).classed("highlighted", true);
 		actsOn(this).selectAll("rect, circle").classed("highlighted", true);
 	});
 	d3.selectAll(selector).on("mouseleave", function() {
+		actsOn(this).classed("highlighted", false);
 		actsOn(this).selectAll(".highlighted").classed("highlighted", false);
 	});
 
 	// Toggle .selected on click
 	d3.selectAll(selector).on("click", function() {
-		var g = actsOn(this);
-		var isSelected = g.selectAll(".selected")[0].length;
-		g.selectAll("rect, circle").classed("selected", !isSelected);
+		var obj = actsOn(this);
+		var isSelected = obj.classed("selected") || obj.selectAll(".selected")[0].length;
+		obj.classed("selected", !isSelected);
+		obj.selectAll("rect, circle").classed("selected", !isSelected);
 		setClearVisibility();
 	});
 
@@ -113,10 +115,10 @@ function attachSelectionHandlers(selector, actsOn) {
 }
 
 function getSelectionCondition() {
-	var selected = d3.selectAll(".selected");
+	var selected = d3.selectAll("g.selected");
 	if (!selected.data().length) {
 		alert("Nothing selected");
 		return '';
 	}
-	return _.pluck(selected.data(), 'condition').join(" or ");
+	return _.map(_.pluck(selected.data(), 'condition'), function(c) { return "(" + c + ")"; }).join(" or ");
 };

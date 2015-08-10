@@ -105,6 +105,15 @@ function generateCategoryCharts(args) {
 			attachSelectionHandlers(containerSelector + " g text", function(text) {
 				return d3.select(jQuery(text).closest("g").get(0));
 			});
+
+			attachSelectionHandlers(containerSelector + " g  rect");
+
+			d3.selectAll(containerSelector + " g rect").on("dblclick", function() {
+				ExportPlaylist({
+					//FILENAME: data.tag + ", " + facet + " " + value,
+					FILTER: getTagValueCondition(this),
+				});
+			});
 		},
 	});
 }
@@ -183,4 +192,27 @@ function generateRatingChart(facet) {
 			attachSelectionHandlers(containerSelector + " g");
 		},
 	});
+}
+
+function getTagValueCondition(rect) {
+	var $group = jQuery(rect).closest("g");
+	var facet = $group.closest(".category-container").data("facet");
+	var data = d3.select($group.get(0)).data()[0];
+	var value = jQuery("rect", $group).index(rect) + 1;
+	return data.condition + " and " + facet + " = " + value;
+}
+
+// Override data.js's getSelectionCondition. This setup is...not the best.
+function getSelectionCondition() {
+	var selected = d3.selectAll("g.selected");
+	var conditions = _.pluck(d3.selectAll(".distribution-container g.selected").data(), 'condition');
+
+	_.each(jQuery(".category-container rect.selected"), function(rect) {
+		conditions.push(getTagValueCondition(rect));
+	});
+	if (!conditions.length) {
+		alert("Nothing selected");
+		return '';
+	}
+	return _.map(conditions, function(c) { return "(" + c + ")"; }).join(" or ");
 }

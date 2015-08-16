@@ -158,7 +158,7 @@ sub Header {
 		energy => 'fire',
 		mood => 'heart',
 	);
-	my @datapages = qw(moody acquisitions timeline);
+	my @datapages = qw(matrix acquisitions timeline);
 	printf(qq{ <li class='dropdown %s'> }, (grep { $url , ".pl" eq $_ } ('facet', @datapages)) ? "active" : "");
 	print qq{
 		<a class='dropdown-toggle' data-toggle='dropdown' role='label' href='#'>

@@ -19,8 +19,8 @@ FlavorsHTML::Header({
 	FDAT => $fdat,
 	TITLE => "Data",
 	BUTTONS => FlavorsHTML::ExportControl() . FlavorsHTML::SelectionControl(),
-	CSS => ['data.css', 'moody.css'],
-	JS => ['data.js', 'moody.js'],
+	CSS => ['data.css', 'matrix.css'],
+	JS => ['data.js', 'matrix.js'],
 });
 
 printf(qq{

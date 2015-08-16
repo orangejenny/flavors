@@ -19,6 +19,11 @@ svg {
 	rect, circle {
 		.background-with-states(@barColor);
 	}
+	path {
+		stroke-width: 2px;
+		fill: none;
+		stroke: @barColor;
+	}
 	text {
 		fill: @white;
 		font: @fontSizeDefault sans-serif;

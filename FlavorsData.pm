@@ -530,7 +530,8 @@ sub YearStats {
 		where song.id = songtag.songid
 		and songtag.tag = tagcategory.tag
 		and category = 'years'
-		group by tagcategory.tag;
+		group by tagcategory.tag
+		order by tagcategory.tag;
 	};
 
 	my %counts = map { $_->{TAG} => $_->{COUNT} } _results($dbh, {

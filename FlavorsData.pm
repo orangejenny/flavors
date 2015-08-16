@@ -492,6 +492,111 @@ sub SongStats {
 }
 
 ################################################################
+# TimelineStats
+#
+# Description: Get year-based and season-based counts
+#
+# Args:
+#	None
+#
+# Return Value: hashref with keys YEARS and SEASONS, values the
+#	return values of YearStats and SeasonStats, respectively
+################################################################
+sub TimelineStats {
+	my ($dbh) = @_;
+
+	return {
+		YEARS => YearStats($dbh),
+		SEASONS => SeasonStats($dbh),
+	};
+}
+
+################################################################
+# YearStats
+#
+# Description: Get year-based song counts
+#
+# Args:
+#	None
+#
+# Return Value: hashref with keys years, values counts
+################################################################
+sub YearStats {
+	my ($dbh) = @_;
+
+	my $sql = qq{
+		select tagcategory.tag, count(*) count
+		from song, songtag, tagcategory
+		where song.id = songtag.songid
+		and songtag.tag = tagcategory.tag
+		and category = 'years'
+		group by tagcategory.tag;
+	};
+
+	my %counts = map { $_->{TAG} => $_->{COUNT} } _results($dbh, {
+		SQL => $sql,
+		COLUMNS => [qw(TAG COUNT)],
+	});
+	return \%counts;
+}
+
+################################################################
+# SeasonStats
+#
+# Description: Get season-based song counts
+#
+# Args:
+#	None
+#
+# Return Value: hashref with keys years, values hashrefs of form
+#	{ 'winter' => number, 'spring' => number, ... }
+################################################################
+sub SeasonStats {
+	my ($dbh) = @_;
+
+	my $sql = qq{
+		select count(distinct id), year, season from (
+			select 
+				years.id, 
+				case
+					when seasons.tag = 'december' then years.year + 1
+					else years.year
+				end as year,
+				seasons.season from (
+					select song.id, tagcategory.tag as year
+					from song, songtag, tagcategory
+					where song.id = songtag.songid
+					and songtag.tag = tagcategory.tag
+					and category = 'years'
+				) years, (
+					select 
+						song.id, 
+						tagcategory.tag,
+						case
+							when tagcategory.tag in ('winter', 'december', 'january', 'february') then 0
+							when tagcategory.tag in ('spring', 'march', 'april', 'may') then 1
+							when tagcategory.tag in ('summer', 'june', 'july', 'august') then 2
+							when tagcategory.tag in ('autumn', 'september', 'october', 'november') then 3
+							else tagcategory.tag 
+						end as season
+					from song, songtag, tagcategory
+					where song.id = songtag.songid
+					and songtag.tag = tagcategory.tag
+					and category in ('seasons', 'months')
+				) seasons
+			where years.id = seasons.id
+		) stats
+		group by year, season
+		order by year, season;
+	};
+
+	return [_results($dbh, {
+		SQL => $sql,
+		COLUMNS => [qw(COUNT YEAR SEASON)],
+	})];
+}
+
+################################################################
 # AcquisitionStats
 #
 # Description: Get stats related to song acquisition

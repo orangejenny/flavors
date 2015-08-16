@@ -158,7 +158,8 @@ sub Header {
 		energy => 'fire',
 		mood => 'heart',
 	);
-	printf(qq{ <li class='dropdown %s'> }, (grep { $url eq $_ } qw(facet.pl moody.pl acquisitions.pl)) ? "active" : "");
+	my @datapages = qw(moody acquisitions timeline);
+	printf(qq{ <li class='dropdown %s'> }, (grep { $url , ".pl" eq $_ } ('facet', @datapages)) ? "active" : "");
 	print qq{
 		<a class='dropdown-toggle' data-toggle='dropdown' role='label' href='#'>
 			Data <span class="caret"></span>
@@ -175,12 +176,11 @@ sub Header {
 			ucfirst($facet),
 		);
 	}
-	printf(qq{ 
-		<li class='%s'><a href='moody.pl'>Matrix</a></li> 
-	}, $url eq 'moody.pl' ? 'active' : '');
-	printf(qq{ 
-		<li class='%s'><a href='acquisitions.pl'>Acquisitions</a></li> 
-	}, $url eq 'acquisitions.pl' ? 'active' : '');
+	foreach my $page (@datapages) {
+		printf(qq{ 
+			<li class='%s'><a href='%s.pl'>%s</a></li> 
+		}, ($url eq $page ? 'active' : ''), $page, ucfirst($page));
+	}
 	print qq{ </ul> };
 	print qq{ </li> };
 	print qq{ </ul> };

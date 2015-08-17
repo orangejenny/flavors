@@ -2,7 +2,7 @@ jQuery(document).ready(function() {
 	generateTimeline();
 });
 
-var seasons = ['winter', 'spring', 'summer', 'fall'];
+var seasons = ['winter', 'spring', 'summer', 'autumn'];
 var months = [
 	['december', 'january', 'february'],
 	['march', 'april', 'may'],
@@ -23,14 +23,13 @@ function generateTimeline() {
 	CallRemote({
 		SUB: 'FlavorsData::TimelineStats',
 		FINISH: function(data) {
-			var yearData = _.map(data.YEARS, function(count, year) { return {
+			data = _.map(data.YEARS, function(count, year) { return {
 				year: +year,
 				count: +count,
 				condition: "exists (select 1 from songtag where songtag.songid = songs.id and tag = '" + year + "')",
-				filename: year,
 				description: year + "\n" + count + " " + Pluralize(count, "song"),
-			}; });
-			var seasonData = _.map(data.SEASONS, function(d) { 
+				filename: year,
+			}; }).concat(_.map(data.SEASONS, function(d) { 
 				var text = seasons[d.SEASON] + ' ' + d.YEAR;
 				var seasonTagString = _.map(months[d.SEASON].concat(seasons[d.SEASON]), function(t) { return "'" + t + "'"; }).join(", ");
 				return {
@@ -49,37 +48,26 @@ function generateTimeline() {
 					description: text + "\n" + d.COUNT + " " + Pluralize(d.COUNT, "song"),
 					filename: text,
 				}; 
-			});
-			var minYear = _.reduce(yearData, function(memo, d) { return Math.min(memo, d.year); }, Infinity);
-			var maxYear = _.reduce(yearData, function(memo, d) { return Math.max(memo, d.year + 1); }, 0);
+			}));
+			var minYear = _.reduce(data, function(memo, d) { return Math.min(memo, d.year); }, Infinity);
+			var maxYear = _.reduce(data, function(memo, d) { return Math.max(memo, d.year + 1); }, 0);
 			xScale.domain([minYear, maxYear]);
-			yScale.domain([_.reduce(yearData, function(memo, d) { return Math.max(memo, d.count); }, 0), 0]);
+			yScale.domain([_.reduce(data, function(memo, d) { return Math.max(memo, d.count); }, 0), 0]);
 
 			var barSize = width / (maxYear - minYear + 1);
 
-			var yearBars = chart.selectAll("g")
-										.data(yearData)
+			var bars = chart.selectAll("g")
+										.data(data)
 										.enter().append("g")
 										.attr("transform", function(d, i) {
 											return "translate(" + xScale(d.year) + ", 0)";
 										});
-			yearBars.append("rect")
-						.attr("y", function(d) { return yScale(d.count); })
-						.attr("width", barSize - 1)
-						.attr("height", function(d) { return height - yScale(d.count); })
-						.style("opacity", 0.25);
-
-			/*var seasonBars = chart.selectAll("g")
-											.data(seasonData)
-											.enter().append("g")
-											.attr("transform", function(d, i) {
-												return "translate(" + xScale(d.year) + ", 0)";
-											});
-			seasonBars.append("rect")
-							.attr("x", function(d) { return d.season * (barSize / 4); })
-							.attr("y", function(d) { return yScale(d.count); })
-							.attr("width", (barSize - 4) / 4)
-							.attr("height", function(d) { return height - yScale(d.count); });*/
+			bars.append("rect")
+					.attr("x", function(d) { return d.season === undefined ? 0 : d.season * (barSize / 4); })
+					.attr("y", function(d) { return yScale(d.count); })
+					.attr("width", function(d) { return d.season === undefined ? barSize - 1 : (barSize - 4) / 4; })
+					.attr("height", function(d) { return height - yScale(d.count); })
+					.style("opacity", function(d) { return d.season === undefined ? 0.25 : 1; });
 
 			attachSelectionHandlers(containerSelector + " g");
 			attachTooltip(containerSelector);

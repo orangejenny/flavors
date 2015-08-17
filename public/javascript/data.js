@@ -60,7 +60,7 @@ function attachTooltip(selector) {
 		}
 	};
 
-	d3.selectAll(selector + " g").on("mouseenter", function(e) {
+	d3.selectAll(selector + " g").on("mouseenter.tooltip", function() {
 		var data = d3.select(this).data()[0];
 		if (data.description) {
 			var $tooltip = jQuery("#tooltip");
@@ -69,10 +69,10 @@ function attachTooltip(selector) {
 			positionTooltip();
 		}
 	});
-	d3.selectAll(selector + " g").on("mouseleave", function() {
+	d3.selectAll(selector + " g").on("mouseleave.tooltip", function() {
 		jQuery("#tooltip").addClass("hide");
 	});
-	d3.selectAll(selector + " g").on("mousemove", function(e) {
+	d3.selectAll(selector + " g").on("mousemove.tooltip", function() {
 		positionTooltip();
 	});
 }
@@ -85,11 +85,11 @@ function attachSelectionHandlers(selector, actsOn) {
 	}
 
 	// Highlight on hover
-	d3.selectAll(selector).on("mouseenter", function() {
+	d3.selectAll(selector).on("mouseenter.highlight", function() {
 		actsOn(this).classed("highlighted", true);
 		actsOn(this).selectAll("rect, circle").classed("highlighted", true);
 	});
-	d3.selectAll(selector).on("mouseleave", function() {
+	d3.selectAll(selector).on("mouseleave.highlight", function() {
 		actsOn(this).classed("highlighted", false);
 		actsOn(this).selectAll(".highlighted").classed("highlighted", false);
 	});

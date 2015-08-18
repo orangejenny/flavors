@@ -13,12 +13,16 @@ function generateTimeline() {
 	var containerSelector = ".timeline-container";
 	var width = jQuery(containerSelector).width();
 	var height = 300;
+	var xAxisMargin = 20;
 
 	var chart = d3.select(containerSelector + " svg")
 						.attr("width", width)
 						.attr("height", height);
 	var xScale = d3.scale.linear().range([0, width]);
-	var yScale = d3.scale.linear().range([0, height]);
+	var yScale = d3.scale.linear().range([0, height - xAxisMargin]);
+	var xAxis = d3.svg.axis()
+							.orient('bottom')
+							.tickFormat(function(y) { return parseInt(y); });
 
 	CallRemote({
 		SUB: 'FlavorsData::TimelineStats',
@@ -66,8 +70,16 @@ function generateTimeline() {
 					.attr("x", function(d) { return d.season === undefined ? 0 : d.season * (barSize / 4); })
 					.attr("y", function(d) { return yScale(d.count); })
 					.attr("width", function(d) { return d.season === undefined ? barSize - 1 : (barSize - 4) / 4; })
-					.attr("height", function(d) { return height - yScale(d.count); })
+					.attr("height", function(d) { return height - xAxisMargin - yScale(d.count); })
 					.style("opacity", function(d) { return d.season === undefined ? 0.25 : 1; });
+
+			xAxis.scale(xScale)
+					.tickValues(_.map(_.range(minYear, maxYear), function(y) { return y + .5; }));
+			chart.append("g")
+					.attr("class", "axis")
+					.attr("transform", "translate(0," + (height - xAxisMargin) + ")")
+					.call(xAxis);
+			chart.selectAll(".axis text").attr("y", 2);
 
 			attachSelectionHandlers(containerSelector + " g");
 			attachTooltip(containerSelector);

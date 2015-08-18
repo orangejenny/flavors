@@ -159,7 +159,7 @@ sub Header {
 		mood => 'heart',
 	);
 	my @datapages = qw(matrix acquisitions timeline);
-	printf(qq{ <li class='dropdown %s'> }, (grep { $url , ".pl" eq $_ } ('facet', @datapages)) ? "active" : "");
+	printf(qq{ <li class='dropdown %s'> }, (grep { $url eq $_ . ".pl" } ('facet', @datapages)) ? "active" : "");
 	print qq{
 		<a class='dropdown-toggle' data-toggle='dropdown' role='label' href='#'>
 			Data <span class="caret"></span>
@@ -179,7 +179,7 @@ sub Header {
 	foreach my $page (@datapages) {
 		printf(qq{ 
 			<li class='%s'><a href='%s.pl'>%s</a></li> 
-		}, ($url eq $page ? 'active' : ''), $page, ucfirst($page));
+		}, ($url eq $page . ".pl" ? 'active' : ''), $page, ucfirst($page));
 	}
 	print qq{ </ul> };
 	print qq{ </li> };

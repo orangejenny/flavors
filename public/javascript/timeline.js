@@ -82,7 +82,7 @@ function generateTimeline() {
 			chart.selectAll(".axis text").attr("y", 2);
 
 			attachSelectionHandlers(containerSelector + " g");
-			attachTooltip(containerSelector);
+			attachTooltip(containerSelector + " g:not(.axis)");
 		},
 	});
 }

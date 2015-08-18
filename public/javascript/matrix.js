@@ -14,17 +14,17 @@ function generateBubbleChart() {
 						.attr("width", width)
 						.attr("height", height);
 	chart.append("line")
+			.attr("class", "axis")
 			.attr("x1", 0)
 			.attr("y1", height / 2)
 			.attr("x2", width)
-			.attr("y2", height / 2)
-			.style("stroke-width", 1);
+			.attr("y2", height / 2);
 	chart.append("line")
+			.attr("class", "axis")
 			.attr("x1", width / 2)
 			.attr("y1", 0)
 			.attr("x2", width / 2)
-			.attr("y2", height)
-			.style("stroke-width", 1);
+			.attr("y2", height);
 
 	var moodDescriptions = ['very unhappy', 'unhappy', 'neutral', 'happy', 'very happy'];
 	var energyDescriptions = ['very slow', 'slow', 'medium tempo', 'energetic', 'very energetic'];
@@ -74,7 +74,7 @@ function generateBubbleChart() {
 						.text(function(d) { return d.count; });
 
 			attachSelectionHandlers(containerSelector + " g");
-			attachTooltip(containerSelector);
+			attachTooltip(containerSelector + " g");
 		}
 	});
 }

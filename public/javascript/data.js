@@ -60,7 +60,7 @@ function attachTooltip(selector) {
 		}
 	};
 
-	d3.selectAll(selector + " g").on("mouseenter.tooltip", function() {
+	d3.selectAll(selector).on("mouseenter.tooltip", function() {
 		var data = d3.select(this).data()[0];
 		if (data.description) {
 			var $tooltip = jQuery("#tooltip");
@@ -69,10 +69,10 @@ function attachTooltip(selector) {
 			positionTooltip();
 		}
 	});
-	d3.selectAll(selector + " g").on("mouseleave.tooltip", function() {
+	d3.selectAll(selector).on("mouseleave.tooltip", function() {
 		jQuery("#tooltip").addClass("hide");
 	});
-	d3.selectAll(selector + " g").on("mousemove.tooltip", function() {
+	d3.selectAll(selector).on("mousemove.tooltip", function() {
 		positionTooltip();
 	});
 }

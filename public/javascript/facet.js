@@ -100,7 +100,7 @@ function generateCategoryCharts(args) {
 									.attr("y", barSize / 2)
 									.text(function(d) { return d.tag; });
 
-			attachTooltip(containerSelector);
+			attachTooltip(containerSelector + " g");
 
 			attachSelectionHandlers(containerSelector + " g text", function(text) {
 				return d3.select(jQuery(text).closest("g").get(0));

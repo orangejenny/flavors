@@ -34,10 +34,14 @@ svg {
 		stroke: @grey;
 	}
 	.axis {
-		path, line {
+		stroke-width: 1px;	// hand-drawn
+
+		path, line {	// d3-generated paths and ticks
 			display: none;
 		}
+
 		text {
+			cursor: auto;
 			fill: @grey;
 		}
 	}

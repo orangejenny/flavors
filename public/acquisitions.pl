@@ -19,7 +19,7 @@ FlavorsHTML::Header({
 	FDAT => $fdat,
 	TITLE => "Data",
 	BUTTONS => FlavorsHTML::ExportControl() . FlavorsHTML::SelectionControl(),
-	CSS => ['data.css', 'acquisitions.css'],
+	CSS => ['data.css'],
 	JS => ['data.js', 'acquisitions.js'],
 });
 
@@ -27,8 +27,6 @@ print qq{
 	<div class="post-nav">
 		<div class="chart-container">
 			<svg></svg>
-			<div id="max-year" class="pull-right"></div>
-			<div id="min-year" class="pull-left"></div>
 		</div>
 	</div>
 };

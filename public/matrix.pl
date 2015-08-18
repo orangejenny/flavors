@@ -3,7 +3,6 @@
 use lib "..";
 use strict;
 
-use Data::Dumper;
 use FlavorsHTML;
 use FlavorsData;
 
@@ -25,13 +24,15 @@ FlavorsHTML::Header({
 
 printf(qq{
 		<div class="post-nav">
-			<div class="axis-label mood-high">%s</div>
-			<div class="axis-label energy-high">%s</div>
-			<div class="axis-label energy-low">%s</div>
-			<div class="chart-container">
-				<svg></svg>
+			<div class="post-nav-positioning">
+				<div class="axis-label mood-high">%s</div>
+				<div class="axis-label energy-high">%s</div>
+				<div class="axis-label energy-low">%s</div>
+				<div class="chart-container">
+					<svg></svg>
+				</div>
+				<div class="axis-label mood-low">%s</div>
 			</div>
-			<div class="axis-label mood-low">%s</div>
 		</div>
 	},
 	FlavorsHTML::Rating(5, 'heart'),

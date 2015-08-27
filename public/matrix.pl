@@ -12,8 +12,6 @@ my $cgi = CGI->new;
 print $cgi->header();
 my $fdat = FlavorsUtils::Fdat($cgi);
 
-my $facet = $fdat->{FACET} || "rating";
-
 FlavorsHTML::Header({
 	FDAT => $fdat,
 	TITLE => "Data",

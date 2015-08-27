@@ -475,6 +475,7 @@ sub SongStats {
 	my $sql = sprintf(qq{
 			select 
 				%s, 
+				group_concat(concat(song.name, ' (', song.artist, ')') order by rand() separator '\n') samples,
 				count(*)
 			from
 				song
@@ -487,7 +488,7 @@ sub SongStats {
 	);
 	return [_results($dbh, {
 		SQL => $sql,
-		COLUMNS => [@groupby, 'count'],
+		COLUMNS => [@groupby, 'samples', 'count'],
 	})];
 }
 

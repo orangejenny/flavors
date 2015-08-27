@@ -64,7 +64,13 @@ function attachTooltip(selector) {
 		var data = d3.select(this).data()[0];
 		if (data.description) {
 			var $tooltip = jQuery("#tooltip");
-			$tooltip.html(data.description);
+			var description = data.description;
+			if (data.samples) {
+				var displayMax = 5;
+				description += ", including...<br>";
+				description += _.sample(data.samples, displayMax).join("<br>");
+			}
+			$tooltip.html(description);
 			$tooltip.removeClass("hide");
 			positionTooltip();
 		}

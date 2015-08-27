@@ -35,18 +35,22 @@ function generateBubbleChart() {
 			var bubbles = [];
 			for (e = 1; e <= 5; e++) {
 				for (m = 1; m <= 5; m++) {
+					var relevant = _.filter(data, function(d) {
+						return d.ENERGY == e && d.MOOD == m;
+					});
 					var bubble = {
 						energy: e,
 						mood: m,
-						count: _.reduce(_.filter(data, function(d) {
-							return d.ENERGY == e && d.MOOD == m;
-						}), function(memo, d) {
+						count: _.reduce(relevant, function(memo, d) {
 							return memo + +d.COUNT;
 						}, 0),
 						condition: 'mood=' + m + ' and energy=' + e,
 						filename: [moodDescriptions[m - 1], energyDescriptions[e - 1]].join(" "),
 					};
 					bubble.description = bubble.count + " " + bubble.filename + " " + Pluralize(bubble.count, "song"),
+					bubble.samples = _.flatten(_.map(relevant, function(d) {
+						return _.initial(d.SAMPLES.split("\n"));
+					}));
 					bubbles.push(bubble);
 				}
 			}

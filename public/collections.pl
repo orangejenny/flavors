@@ -6,6 +6,7 @@ use strict;
 use Data::Dumper;
 use FlavorsData;
 use FlavorsHTML;
+use FlavorsData::Songs;
 use FlavorsUtils;
 use POSIX qw(strftime);
 
@@ -23,7 +24,7 @@ FlavorsHTML::Header({
 
 my @collections = FlavorsData::CollectionList($dbh);
 my %songs;
-my @songs = FlavorsData::SongList($dbh);
+my @songs = FlavorsData::Songs::SongList($dbh);
 foreach my $song (@songs) {
 	$songs{$song->{ID}} = $song;
 }

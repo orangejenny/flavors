@@ -5,6 +5,7 @@ use strict;
 
 use Data::Dumper;
 use FlavorsData;
+use FlavorsData::Songs;
 use FlavorsHTML;
 use FlavorsUtils;
 
@@ -38,7 +39,7 @@ elsif ($fdat->{COLLECTIONIDS}) {
 elsif ($fdat->{SONGIDLIST}) {
 	# Export a specific set of songs
 	$fdat->{SONGIDLIST} =~ s/\s+/,/g;
-	my @unsorted = FlavorsData::SongList($dbh, { 
+	my @unsorted = FlavorsData::Songs::SongList($dbh, { 
 		FILTER => "song.id in ($fdat->{SONGIDLIST})",
 	});
 	my %songsbyid = map { $_->{ID} => $_ } @unsorted;
@@ -48,7 +49,7 @@ elsif ($fdat->{SONGIDLIST}) {
 }
 else {
 	# Export a filtered set of songs
-	@songs = FlavorsData::SongList($dbh, $fdat);
+	@songs = FlavorsData::Songs::SongList($dbh, $fdat);
 }
 $updateexport{SONGIDS} = [map { $_->{ID} } @songs];
 FlavorsData::UpdateExport($dbh, \%updateexport);

@@ -7,6 +7,7 @@ use Data::Dumper;
 use FlavorsHTML;
 use FlavorsUtils;
 use FlavorsData;
+use FlavorsData::Songs;
 use JSON qw(to_json);
 
 my $dbh = FlavorsData::DBH();
@@ -17,7 +18,7 @@ print $cgi->header();
 
 my @songs = ();
 eval {
-	@songs = FlavorsData::SongList($dbh, {
+	@songs = FlavorsData::Songs::SongList($dbh, {
 		FILTER => $fdat->{FILTER},
 		ORDERBY => $fdat->{ORDERBY},
 	});

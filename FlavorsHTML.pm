@@ -3,6 +3,7 @@ package FlavorsHTML;
 use strict;
 use Data::Dumper;
 use FlavorsData;
+use FlavorsData::Songs;
 use JSON qw(to_json);
 
 ################################################################
@@ -269,7 +270,7 @@ sub TagDetails {
 sub TagSongList {
 	my ($dbh, $args) = @_;
 
-	my @songs = FlavorsData::SongList($dbh, {
+	my @songs = FlavorsData::Songs::SongList($dbh, {
 		FILTER => sprintf("exists (select 1 from songtag where id=songid and tag = '%s')", $args->{TAG}),
 	});
 	@songs = sort { $a->{ARTIST} cmp $b->{ARTIST} || $a->{NAME} cmp $b->{NAME} } @songs;

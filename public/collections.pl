@@ -3,14 +3,15 @@
 use lib "..";
 use strict;
 
-use Data::Dumper;
-use FlavorsData;
-use FlavorsHTML;
+use FlavorsData::Collections;
 use FlavorsData::Songs;
+use FlavorsData::Tags;
+use FlavorsData::Utils;
+use FlavorsHTML;
 use FlavorsUtils;
 use POSIX qw(strftime);
 
-my $dbh = FlavorsData::DBH();
+my $dbh = FlavorsData::Utils::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
@@ -22,13 +23,13 @@ FlavorsHTML::Header({
 	JS => ['collections.js'],
 });
 
-my @collections = FlavorsData::CollectionList($dbh);
+my @collections = FlavorsData::Collections::List($dbh);
 my %songs;
-my @songs = FlavorsData::Songs::SongList($dbh);
+my @songs = FlavorsData::Songs::List($dbh);
 foreach my $song (@songs) {
 	$songs{$song->{ID}} = $song;
 }
-my @tracks = FlavorsData::TrackList($dbh);
+my @tracks = FlavorsData::Collections::TrackList($dbh);
 my %tracks;
 foreach my $song (@tracks) {
 	if (!exists $tracks{$song->{COLLECTIONID}}) {
@@ -97,7 +98,7 @@ print sprintf(qq{
 print "<div class=\"collections clearfix\">";
 
 my %colors;
-foreach my $color (FlavorsData::ColorList($dbh)) {
+foreach my $color (FlavorsData::Tags::ColorList($dbh)) {
 	$colors{$color->{NAME}} = $color;
 }
 

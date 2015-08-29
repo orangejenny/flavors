@@ -3,11 +3,11 @@
 use lib "..";
 use strict;
 
-use Data::Dumper;
 use FlavorsHTML;
-use FlavorsData;
+use FlavorsData::Tags;
+use FlavorsData::Utils;
 
-my $dbh = FlavorsData::DBH();
+my $dbh = FlavorsData::Utils::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
@@ -18,7 +18,7 @@ FlavorsHTML::Header({
 	JS => ['colors.js', 'thirdparty/jquery.miniColors.js'],
 });
 
-my @colors = FlavorsData::ColorList($dbh);
+my @colors = FlavorsData::Tags::ColorList($dbh);
 
 print qq{ <div class="post-nav"> };
 

@@ -66,7 +66,7 @@ function BuildArgs(selector, args) {
  * Args
  *	COLLECTIONIDS: Get all tracks from this collection
  *	or
- *	(variety of filters that will be passed to SongList) 
+ *	(variety of filters that will be passed to Songs::List) 
  * and DISJUNCTION, which is truthy for "OR", falsy for "AND"
  */
 function ExportPlaylist(args) {

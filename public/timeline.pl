@@ -3,11 +3,7 @@
 use lib "..";
 use strict;
 
-use Data::Dumper;
 use FlavorsHTML;
-use FlavorsData;
-
-my $dbh = FlavorsData::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();

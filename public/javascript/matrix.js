@@ -29,7 +29,7 @@ function generateBubbleChart() {
 	var moodDescriptions = ['very unhappy', 'unhappy', 'neutral', 'happy', 'very happy'];
 	var energyDescriptions = ['very slow', 'slow', 'medium tempo', 'energetic', 'very energetic'];
 	CallRemote({
-		SUB: 'FlavorsData::SongStats',
+		SUB: 'FlavorsData::Songs::Stats',
 		ARGS: { GROUPBY: "rating, energy, mood" },
 		FINISH: function(data) {
 			var bubbles = [];

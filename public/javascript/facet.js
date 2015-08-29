@@ -39,7 +39,7 @@ function generateCategoryCharts(args) {
 	var xScale = d3.scale.linear().range([0, width]);
 
 	CallRemote({
-		SUB: 'FlavorsData::CategoryStats',
+		SUB: 'FlavorsData::Tags::CategoryStats',
 		ARGS: args,
 		FINISH: function(data) {	// arry of objects, each with TAG (string) and VALUES (array with length 5)
 			data = _.map(data, function(d) { return {
@@ -50,6 +50,7 @@ function generateCategoryCharts(args) {
 				}).reverse().join(""),
 				condition: "exists (select 1 from songtag where songid = songs.id and tag = '" + d.TAG + "')",
 				filename: '[' + d.TAG + ']',
+				//samples: _.initial(d.SAMPLES.split("\n")),
 			}; });
 			xScale.domain([0, d3.max(_.map(data, function(d) {
 				return 2 * (d.values[2] / 2 + Math.max(d.values[1] + d.values[0], d.values[3] + d.values[4]));
@@ -138,7 +139,7 @@ function generateRatingChart(facet) {
 							.attr("height", unratedBarSize);
 
 	CallRemote({
-		SUB: 'FlavorsData::SongStats',
+		SUB: 'FlavorsData::Songs::Stats',
 		ARGS: { GROUPBY: facet },
 		FINISH: function(data) {
 			data = _.map(data, function(d, i) { return {

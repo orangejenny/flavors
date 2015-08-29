@@ -3,11 +3,11 @@
 use lib "..";
 use strict;
 
-use Data::Dumper;
+use FlavorsData::Tags;
+use FlavorsData::Utils;
 use FlavorsHTML;
-use FlavorsData;
 
-my $dbh = FlavorsData::DBH();
+my $dbh = FlavorsData::Utils::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
@@ -43,7 +43,7 @@ print qq{ <svg class="unrated"></svg> };
 print qq{ </div> };
 
 # Toolbar
-my @categories = FlavorsData::CategoryList($dbh);
+my @categories = FlavorsData::Tags::CategoryList($dbh);
 push(@categories, "genres");
 print "<div class='btn-group category-buttons'>";
 foreach my $category (sort @categories) {

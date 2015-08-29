@@ -1,10 +1,10 @@
 package FlavorsData::Songs;
 
 use strict;
-use FlavorsData;
+use FlavorsData::Utils;
 
 ################################################################
-# SongList
+# List
 #
 # Description: Get a list of songs
 #
@@ -18,7 +18,7 @@ use FlavorsData;
 # Return Value: array of hashrefs UNLESS ID is passed, in which 
 #		case, return the single hashref
 ################################################################
-sub SongList {
+sub List {
 	my ($dbh, $args) = @_;
 
 	$args->{ORDERBY} = FlavorsUtils::Sanitize($args->{ORDERBY});
@@ -117,7 +117,7 @@ sub SongList {
 
 	$sql .= " order by " . ($args->{ORDERBY} ? $args->{ORDERBY} : "maxdateacquired desc, tracknumber");
 
-	my @results = FlavorsData::_results($dbh, {
+	my @results = FlavorsData::Utils::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => [@songcolumns, 'genre', 'tags', 'collections'],
 		BINDS => \@binds,
@@ -132,7 +132,7 @@ sub SongList {
 }
 
 ################################################################
-# SongStats
+# Stats
 #
 # Description: Get statistics, by song
 #
@@ -142,7 +142,7 @@ sub SongList {
 # Return Value: arrayref of hashrefs, each with a count and
 #	a value for each grouped-by attribute
 ################################################################
-sub SongStats {
+sub Stats {
 	my ($dbh, $args) = @_;
 	my @groupby = split(/\s*,\s*/, FlavorsUtils::Sanitize($args->{GROUPBY}));
 
@@ -160,10 +160,103 @@ sub SongStats {
 		join(", ", @groupby),
 		join(", ", @groupby),
 	);
-	return [FlavorsData::_results($dbh, {
+	return [FlavorsData::Utils::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => [@groupby, 'samples', 'count'],
 	})];
+}
+
+################################################################
+# Update
+#
+# Description: Update given song
+#
+# Parameters (optional except for ID)
+#		ID
+#		NAME, ARTIST, RATING, ENERGY, MOOD, ISSTARRED
+#		TAGS
+#
+# Return Value: array of hashrefs
+################################################################
+sub Update {
+	my ($dbh, $newsong) = @_;
+
+	my $id = delete $newsong->{ID};
+	my $oldsong = List($dbh, { ID => $id });
+
+	# song table
+	my @updatefields = qw(NAME ARTIST RATING ENERGY MOOD YEAR ISSTARRED);
+	my @updates;
+	my @binds;
+	foreach my $key (@updatefields) {
+		if (exists $newsong->{$key} && $newsong->{$key} != $oldsong->{$key}) {
+			push @updates, "$key = ?";
+			push @binds, $newsong->{$key};
+		}
+	}
+
+	if (@updates) {
+		my $sql = sprintf(qq{
+			update
+				song
+			set
+				%s
+			where
+				id = %s
+		}, join(", ", @updates), $id);
+		FlavorsData::Utils::Results($dbh, {
+			SQL => $sql,
+			BINDS => \@binds,
+			SKIPFETCH => 1,
+		});
+	}
+
+	# genre
+	if (exists $newsong->{GENRE} && $newsong->{GENRE} ne $oldsong->{GENRE}) {
+		my $sql = $oldsong->{GENRE}
+			? "update artistgenre set genre = ? where artist = ?"
+			: "insert into artistgenre (genre, artist) values (?, ?)"
+		;
+		FlavorsData::Utils::Results($dbh, {
+			SQL => $sql,
+			BINDS => [$newsong->{GENRE}, $oldsong->{ARTIST}],
+			SKIPFETCH => 1,
+		});
+	}
+
+	# tag table
+	if (exists $newsong->{TAGS}) {
+		my @oldtags = FlavorsData::Utils::Results($dbh, {
+			SQL => qq{ select tag from songtag where songid = $id },
+			COLUMNS => [qw(tag)],
+		});
+		@oldtags = map { $_->{TAG} } @oldtags;
+		my @newtags = split(/\s+/, $newsong->{TAGS});
+		my @tagstoadd = FlavorsUtils::ArrayDifference(\@newtags, \@oldtags);
+		my @tagstoremove = FlavorsUtils::ArrayDifference(\@oldtags, \@newtags);
+
+		foreach my $tag (@tagstoadd) {
+			FlavorsData::Utils::Results($dbh, {
+				SQL => qq{
+					insert into songtag (songid, tag) values (?, ?)
+				},
+				BINDS => [$id, $tag],
+				SKIPFETCH => 1,
+			});
+		}
+
+		if (@tagstoremove) {
+			FlavorsData::Utils::Results($dbh, {
+				SQL => sprintf(qq{
+					delete from songtag where songid = ? and tag in (%s)
+				}, join(", ", map { '?' } @tagstoremove)),
+				BINDS => [$id, @tagstoremove],
+				SKIPFETCH => 1,
+			});
+		}
+	}
+
+	return { ID => $id };
 }
 
 ################################################################
@@ -188,7 +281,7 @@ sub UpdateExport {
 				exportcount = exportcount + 1
 			where id in (%s)
 		}, join(", ", map { '?' } @{ $args->{SONGIDS} }));
-		FlavorsData::_results($dbh, {
+		FlavorsData::Utils::Results($dbh, {
 			SQL => $sql,
 			BINDS => $args->{SONGIDS},
 			SKIPFETCH => 1,
@@ -203,7 +296,7 @@ sub UpdateExport {
 				exportcount = exportcount + 1
 			where id in (%s)
 		}, join(", ", map { '?' } @{ $args->{COLLECTIONIDS} }));
-		FlavorsData::_results($dbh, {
+		FlavorsData::Utils::Results($dbh, {
 			SQL => $sql,
 			BINDS => $args->{COLLECTIONIDS},
 			SKIPFETCH => 1,
@@ -211,99 +304,6 @@ sub UpdateExport {
 	}
 
 	return;
-}
-
-################################################################
-# UpdateSong
-#
-# Description: Update given song
-#
-# Parameters (optional except for ID)
-#		ID
-#		NAME, ARTIST, RATING, ENERGY, MOOD, ISSTARRED
-#		TAGS
-#
-# Return Value: array of hashrefs
-################################################################
-sub UpdateSong {
-	my ($dbh, $newsong) = @_;
-
-	my $id = delete $newsong->{ID};
-	my $oldsong = SongList($dbh, { ID => $id });
-
-	# song table
-	my @updatefields = qw(NAME ARTIST RATING ENERGY MOOD YEAR ISSTARRED);
-	my @updates;
-	my @binds;
-	foreach my $key (@updatefields) {
-		if (exists $newsong->{$key} && $newsong->{$key} != $oldsong->{$key}) {
-			push @updates, "$key = ?";
-			push @binds, $newsong->{$key};
-		}
-	}
-
-	if (@updates) {
-		my $sql = sprintf(qq{
-			update
-				song
-			set
-				%s
-			where
-				id = %s
-		}, join(", ", @updates), $id);
-		FlavorsData::_results($dbh, {
-			SQL => $sql,
-			BINDS => \@binds,
-			SKIPFETCH => 1,
-		});
-	}
-
-	# genre
-	if (exists $newsong->{GENRE} && $newsong->{GENRE} ne $oldsong->{GENRE}) {
-		my $sql = $oldsong->{GENRE}
-			? "update artistgenre set genre = ? where artist = ?"
-			: "insert into artistgenre (genre, artist) values (?, ?)"
-		;
-		FlavorsData::_results($dbh, {
-			SQL => $sql,
-			BINDS => [$newsong->{GENRE}, $oldsong->{ARTIST}],
-			SKIPFETCH => 1,
-		});
-	}
-
-	# tag table
-	if (exists $newsong->{TAGS}) {
-		my @oldtags = FlavorsData::_results($dbh, {
-			SQL => qq{ select tag from songtag where songid = $id },
-			COLUMNS => [qw(tag)],
-		});
-		@oldtags = map { $_->{TAG} } @oldtags;
-		my @newtags = split(/\s+/, $newsong->{TAGS});
-		my @tagstoadd = FlavorsUtils::ArrayDifference(\@newtags, \@oldtags);
-		my @tagstoremove = FlavorsUtils::ArrayDifference(\@oldtags, \@newtags);
-
-		foreach my $tag (@tagstoadd) {
-			FlavorsData::_results($dbh, {
-				SQL => qq{
-					insert into songtag (songid, tag) values (?, ?)
-				},
-				BINDS => [$id, $tag],
-				SKIPFETCH => 1,
-			});
-		}
-
-		if (@tagstoremove) {
-			FlavorsData::_results($dbh, {
-				SQL => sprintf(qq{
-					delete from songtag where songid = ? and tag in (%s)
-				}, join(", ", map { '?' } @tagstoremove)),
-				BINDS => [$id, @tagstoremove],
-				SKIPFETCH => 1,
-			});
-		}
-	}
-
-	return { ID => $id };
 }
 
 1;

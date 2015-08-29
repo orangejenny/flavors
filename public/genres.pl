@@ -3,11 +3,11 @@
 use lib "..";
 use strict;
 
-use Data::Dumper;
 use FlavorsHTML;
-use FlavorsData;
+use FlavorsData::Tags;
+use FlavorsData::Utils;
 
-my $dbh = FlavorsData::DBH();
+my $dbh = FlavorsData::Utils::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
@@ -18,7 +18,7 @@ FlavorsHTML::Header({
 	JS => ['categories.js'],
 });
 
-my @artists = FlavorsData::ArtistGenreList($dbh);
+my @artists = FlavorsData::Tags::ArtistGenreList($dbh);
 my $categorizeargs = FlavorsUtils::Categorize($dbh, {
 	ITEMS => \@artists,
 });

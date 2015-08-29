@@ -3,14 +3,15 @@
 use lib "..";
 use strict;
 
-use Data::Dumper;
+use FlavorsData::Playlists;
+use FlavorsData::Songs;
+use FlavorsData::Tags;
+use FlavorsData::Utils;
 use FlavorsHTML;
 use FlavorsUtils;
-use FlavorsData;
-use FlavorsData::Songs;
 use JSON qw(to_json);
 
-my $dbh = FlavorsData::DBH();
+my $dbh = FlavorsData::Utils::DBH();
 my $fdat = FlavorsUtils::Fdat();
 
 my $cgi = CGI->new;
@@ -18,7 +19,7 @@ print $cgi->header();
 
 my @songs = ();
 eval {
-	@songs = FlavorsData::Songs::SongList($dbh, {
+	@songs = FlavorsData::Songs::List($dbh, {
 		FILTER => $fdat->{FILTER},
 		ORDERBY => $fdat->{ORDERBY},
 	});
@@ -32,7 +33,7 @@ if ($fdat->{FILTER} && $@) {
 	$sqlerror =~ s/\(select \* from \(\s*//s;
 }
 else {
-	FlavorsData::UpdatePlaylists($dbh, {
+	FlavorsData::Playlists::Update($dbh, {
 		FILTER => $fdat->{FILTER},
 	});
 }
@@ -82,7 +83,7 @@ FlavorsHTML::Header({
 	JS => ['songs.js'],
 });
 
-my @playlists = FlavorsData::PlaylistList($dbh);
+my @playlists = FlavorsData::Playlists::List($dbh);
 print sprintf(q{
 	<div id="complex-filter" class="modal">
 		<div class="modal-dialog">
@@ -160,7 +161,7 @@ print qq{ <div id="song-table-container"> };
 
 print qq{ <table><tbody> };
 
-my @colors = FlavorsData::ColorList($dbh);
+my @colors = FlavorsData::Tags::ColorList($dbh);
 my %colormap = ();
 foreach my $color (@colors) {
 	$colormap{$color->{NAME}} = $color;

@@ -14,7 +14,7 @@ jQuery(document).ready(function() {
 		jQuery("#complex-filter").modal();
 	}
 
-	jQuery('#filter').keyup(_.debounce(function() {
+	jQuery('#filter').keyup(_.throttle(function() {
 		var query = jQuery(this).val();
 		var rowselector = "#song-table-container tbody tr";
 
@@ -56,7 +56,7 @@ jQuery(document).ready(function() {
 		});
 
 		updateRowCount();
-	}, 100));
+	}, 100, { leading: false }));
 
 	jQuery("#complex-filter button").click(function() {
 		var $button = jQuery(this);

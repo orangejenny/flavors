@@ -4,6 +4,8 @@ use strict;
 use DBI;
 use FlavorsUtils;
 
+our $SEPARATOR = "\n";
+
 ################################################################
 # DBH
 #
@@ -32,6 +34,8 @@ sub DBH {
 #		COLUMNS: arrayref of names for the fetched elements
 #		BINDS (optional)
 #		SKIPFETCH: (optional) denotes a non-select query
+#		GROUPCONCAT: (optional) arrayref of column names coming from
+#			group_concat, should be split
 #
 # Return Value: array of hashrefs
 ################################################################
@@ -44,12 +48,18 @@ sub Results {
 	my $query = $dbh->prepare($sql) or die "PREPARE: $DBI::errstr ($sql)";
 	$query->execute(@binds) or die "EXECUTE: $DBI::errstr ($sql)";
 
+	my %groupconcat = map { uc $_ => 1 } (@{ $args->{GROUPCONCAT} || []});
+
 	my @results;
 	my @columns = $args->{COLUMNS} ? @{ $args->{COLUMNS} } : ();
 	while (!$args->{SKIPFETCH} && (my @row = $query->fetchrow())) {
 		my %labeledrow;
 		for (my $i = 0; $i < @columns; $i++) {
-			$labeledrow{uc($columns[$i])} = $row[$i];
+			my $value = $row[$i];
+			if (exists $groupconcat{uc $columns[$i]}) {
+				$value = $value ? [split(/$SEPARATOR/, $value)] : [];
+			}
+			$labeledrow{uc($columns[$i])} = $value;
 		}
 		push @results, \%labeledrow;
 	}

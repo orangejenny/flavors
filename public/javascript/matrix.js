@@ -49,7 +49,7 @@ function generateBubbleChart() {
 					};
 					bubble.description = bubble.count + " " + bubble.filename + " " + Pluralize(bubble.count, "song"),
 					bubble.samples = _.flatten(_.map(relevant, function(d) {
-						return _.initial(d.SAMPLES.split("\n"));
+						return _.initial(d.SAMPLES);
 					}));
 					bubbles.push(bubble);
 				}

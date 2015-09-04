@@ -50,7 +50,7 @@ function generateCategoryCharts(args) {
 				}).reverse().join(""),
 				condition: "exists (select 1 from songtag where songid = songs.id and tag = '" + d.TAG + "')",
 				filename: '[' + d.TAG + ']',
-				//samples: _.initial(d.SAMPLES.split("\n")),
+				//samples: _.initial(d.SAMPLES),
 			}; });
 			xScale.domain([0, d3.max(_.map(data, function(d) {
 				return 2 * (d.values[2] / 2 + Math.max(d.values[1] + d.values[0], d.values[3] + d.values[4]));

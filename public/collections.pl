@@ -123,7 +123,7 @@ foreach my $collection (@collections) {
 		$collection->{ID},
 		$collection->{ISMIX} ? 1 : 0,
 		$collection->{NAME},
-		FlavorsUtils::EscapeHTMLAttribute($collection->{TAGLIST}),
+		FlavorsUtils::EscapeHTMLAttribute(join(" ", @{ $collection->{TAGS} })),
 		$collection->{DATEACQUIRED},
 		lc($collection->{NAME}),
 		lc($collection->{ARTIST}),
@@ -140,8 +140,7 @@ foreach my $collection (@collections) {
 	}
 	else {
 		my $color = $colors{$collection->{COLOR}};
-		my @tags = split(/\s+/, $collection->{TAGLIST});
-		@tags = @tags[0..3];
+		my @tags = @{ $collection->{TAGS} }[0..3];
 		printf(qq{
 				<div class="mix" style="%s%s">
 					%s

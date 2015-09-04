@@ -39,12 +39,12 @@ sub List {
 	);
 
 	my $songcolumnstring = join(", ", map { "song.$_" } @songcolumns);
-	my $sql = qq{
+	my $sql = sprintf(qq{
 		select distinct
 			$songcolumnstring,
 			artistgenre.genre,
 			concat(' ', songtaglist.taglist, ' ') as taglist,
-			concat(' ', group_concat(collection.name order by dateacquired separator '; '), ' ') as collectionlist,
+			group_concat(collection.name order by dateacquired separator '%s') as collections,
 			songtaglist.tagcount,
 			years.minyear,
 			years.maxyear,
@@ -84,7 +84,7 @@ sub List {
 				and collection.id = collectionid
 			)
 		) tracks on tracks.songid = song.id
-	};
+	}, $FlavorsData::Utils::SEPARATOR);
 
 	if ($args->{ID}) {
 		$sql .= " where song.id = $args->{ID}";
@@ -102,8 +102,13 @@ sub List {
 				and (
 					name like concat('%', ?, '%')
 					or artist like concat('%', ?, '%')
-					or collectionlist like concat('%', ?, '%')
 					or taglist like concat('%', ?, '%')
+					or exists (
+						select 1 from collection, songcollection
+						where collection.id = songcollection.collection.id
+						and song.id = songcollection.songid
+						and concat(' ', collection.name, ' ') like concat(' %', ?, '% ')
+					)
 				)
 			};
 			push(@binds, $token, $token, $token, $token);
@@ -120,6 +125,7 @@ sub List {
 	my @results = FlavorsData::Utils::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => [@songcolumns, 'genre', 'tags', 'collections'],
+		GROUPCONCAT => ['collections'],
 		BINDS => \@binds,
 	});
 
@@ -149,7 +155,7 @@ sub Stats {
 	my $sql = sprintf(qq{
 			select 
 				%s, 
-				group_concat(concat(song.name, ' (', song.artist, ')') order by rand() separator '\n') samples,
+				group_concat(concat(song.name, ' (', song.artist, ')') order by rand() separator '%s') samples,
 				count(*)
 			from
 				song
@@ -157,12 +163,14 @@ sub Stats {
 			order by %s;
 		},
 		join(", ", map { sprintf("coalesce(%s, 0)", $_) } @groupby),
+		$FlavorsData::Utils::SEPARATOR,
 		join(", ", @groupby),
 		join(", ", @groupby),
 	);
 	return [FlavorsData::Utils::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => [@groupby, 'samples', 'count'],
+		GROUPCONCAT => ['samples'],
 	})];
 }
 

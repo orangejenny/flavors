@@ -40,7 +40,7 @@ else {
 
 my $tokens = {};	# token => [songid1, songid2, ... ]
 foreach my $song (@songs) {
-	my @songtokens = split(/\s+/, lc(join(" ", $song->{NAME}, $song->{ARTIST}, $song->{COLLECTIONS}, $song->{TAGS})));
+	my @songtokens = split(/\s+/, lc(join(" ", $song->{NAME}, $song->{ARTIST}, join(" ", @{ $song->{COLLECTIONS} }), $song->{TAGS})));
 	my $songtokenset = {};
 	foreach my $token (@songtokens) {
 		if ($token) {
@@ -187,7 +187,7 @@ foreach my $song (@songs) {
 		FlavorsHTML::Rating(1, $song->{ISSTARRED} ? 'star' : 'star-empty'),
 		$song->{NAME},
 		$song->{ARTIST},
-		$song->{COLLECTIONS},
+		join("<br>", @{ $song->{COLLECTIONS} }),
 		FlavorsHTML::Rating($song->{RATING}, 'star'),
 		FlavorsHTML::Rating($song->{ENERGY}, 'fire'),
 		FlavorsHTML::Rating($song->{MOOD}, 'heart'),

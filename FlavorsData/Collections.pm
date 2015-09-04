@@ -146,7 +146,7 @@ sub List {
 		artist
 		genre
 		color
-		taglist
+		tags
 		lastexport
 		exportcount
 	);
@@ -205,7 +205,7 @@ sub List {
 		left join (
 			select
 				collectionid,
-				group_concat(distinct tag order by rand() separator ' ') as taglist
+				group_concat(distinct tag order by rand() separator ' ') as tags
 			from
 				songcollection
 				inner join songtag on songcollection.songid = songtag.songid
@@ -262,6 +262,7 @@ sub List {
 	my @results = FlavorsData::Utils::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => \@collectioncolumns,
+		GROUPCONCAT => ['tags'],
 	});
 
 	if ($args->{ID}) {

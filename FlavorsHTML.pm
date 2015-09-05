@@ -157,6 +157,9 @@ sub Header {
 		rating => 'star',
 		energy => 'fire',
 		mood => 'heart',
+		matrix => 'th-large',
+		acquisitions => 'shopping-cart',
+		timeline => 'time',
 	);
 	my @datapages = qw(matrix acquisitions timeline);
 	printf(qq{ <li class='dropdown %s'> }, (grep { $url eq $_ . ".pl" } ('facet', @datapages)) ? "active" : "");
@@ -178,8 +181,13 @@ sub Header {
 	}
 	foreach my $page (@datapages) {
 		printf(qq{ 
-			<li class='%s'><a href='%s.pl'>%s</a></li> 
-		}, ($url eq $page . ".pl" ? 'active' : ''), $page, ucfirst($page));
+				<li class='%s'><a href='%s.pl'>%s%s</a></li> 
+			}, 
+			($url eq $page . ".pl" ? 'active' : ''), 
+			$page, 
+			exists $icons{$page} ? sprintf("<i class='glyphicon glyphicon-%s'></i> ", $icons{$page}) : "",
+			ucfirst($page),
+		);
 	}
 	print qq{ </ul> };
 	print qq{ </li> };

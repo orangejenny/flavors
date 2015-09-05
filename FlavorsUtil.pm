@@ -1,4 +1,4 @@
-package FlavorsUtils;
+package FlavorsUtil;
 
 use strict;
 use CGI;

@@ -4,22 +4,22 @@ use lib "..";
 use strict;
 
 use FlavorsHTML;
-use FlavorsData::Tags;
-use FlavorsData::Utils;
+use FlavorsData::Tag;
+use FlavorsData::Util;
 
-my $dbh = FlavorsData::Utils::DBH();
+my $dbh = FlavorsData::Util::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
-my $fdat = FlavorsUtils::Fdat($cgi);
+my $fdat = FlavorsUtil::Fdat($cgi);
 
 FlavorsHTML::Header({
 	CSS => ['categories.css'],
 	JS => ['categories.js'],
 });
 
-my @artists = FlavorsData::Tags::ArtistGenreList($dbh);
-my $categorizeargs = FlavorsUtils::Categorize($dbh, {
+my @artists = FlavorsData::Tag::ArtistGenreList($dbh);
+my $categorizeargs = FlavorsUtil::Categorize($dbh, {
 	ITEMS => \@artists,
 });
 $categorizeargs->{TABLE} = 'artistgenre';

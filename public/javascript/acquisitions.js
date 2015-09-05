@@ -16,7 +16,7 @@ function generateBarChart() {
 	var dateFormat = d3.time.format("%b %Y");
 
 	CallRemote({
-		SUB: 'FlavorsData::Collections::AcquisitionStats',
+		SUB: 'FlavorsData::Collection::AcquisitionStats',
 		FINISH: function(data) {
 			var minDate = new Date(d3.min(_.pluck(data, 'DATESTRING')) + "-15");
 			var maxDate = new Date(d3.max(_.pluck(data, 'DATESTRING')) + "-15");

@@ -39,7 +39,7 @@ function generateCategoryCharts(args) {
 	var xScale = d3.scale.linear().range([0, width]);
 
 	CallRemote({
-		SUB: 'FlavorsData::Tags::CategoryStats',
+		SUB: 'FlavorsData::Tag::CategoryStats',
 		ARGS: args,
 		FINISH: function(data) {	// arry of objects, each with TAG (string) and VALUES (array with length 5)
 			data = _.map(data, function(d) { return {
@@ -139,7 +139,7 @@ function generateRatingChart(facet) {
 							.attr("height", unratedBarSize);
 
 	CallRemote({
-		SUB: 'FlavorsData::Songs::Stats',
+		SUB: 'FlavorsData::Song::Stats',
 		ARGS: { GROUPBY: facet },
 		FINISH: function(data) {
 			data = _.map(data, function(d, i) { return {

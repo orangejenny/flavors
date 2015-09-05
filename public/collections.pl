@@ -3,19 +3,19 @@
 use lib "..";
 use strict;
 
-use FlavorsData::Collections;
-use FlavorsData::Songs;
-use FlavorsData::Tags;
-use FlavorsData::Utils;
+use FlavorsData::Collection;
+use FlavorsData::Song;
+use FlavorsData::Tag;
+use FlavorsData::Util;
 use FlavorsHTML;
-use FlavorsUtils;
+use FlavorsUtil;
 use POSIX qw(strftime);
 
-my $dbh = FlavorsData::Utils::DBH();
+my $dbh = FlavorsData::Util::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
-my $fdat = FlavorsUtils::Fdat($cgi);
+my $fdat = FlavorsUtil::Fdat($cgi);
 FlavorsHTML::Header({
 	TITLE => "Collections",
 	BUTTONS => FlavorsHTML::ExportControl(),
@@ -23,13 +23,13 @@ FlavorsHTML::Header({
 	JS => ['collections.js'],
 });
 
-my @collections = FlavorsData::Collections::List($dbh);
+my @collections = FlavorsData::Collection::List($dbh);
 my %songs;
-my @songs = FlavorsData::Songs::List($dbh);
+my @songs = FlavorsData::Song::List($dbh);
 foreach my $song (@songs) {
 	$songs{$song->{ID}} = $song;
 }
-my @tracks = FlavorsData::Collections::TrackList($dbh);
+my @tracks = FlavorsData::Collection::TrackList($dbh);
 my %tracks;
 foreach my $song (@tracks) {
 	if (!exists $tracks{$song->{COLLECTIONID}}) {
@@ -98,7 +98,7 @@ print sprintf(qq{
 print "<div class=\"collections clearfix\">";
 
 my %colors;
-foreach my $color (FlavorsData::Tags::ColorList($dbh)) {
+foreach my $color (FlavorsData::Tag::ColorList($dbh)) {
 	$colors{$color->{NAME}} = $color;
 }
 
@@ -123,7 +123,7 @@ foreach my $collection (@collections) {
 		$collection->{ID},
 		$collection->{ISMIX} ? 1 : 0,
 		$collection->{NAME},
-		FlavorsUtils::EscapeHTMLAttribute(join(" ", @{ $collection->{TAGS} })),
+		FlavorsUtil::EscapeHTMLAttribute(join(" ", @{ $collection->{TAGS} })),
 		$collection->{DATEACQUIRED},
 		lc($collection->{NAME}),
 		lc($collection->{ARTIST}),
@@ -189,7 +189,7 @@ foreach my $collection (@collections) {
 			}
 			$exporttext .= "<br>Last exported ";
 		}
-		$exporttext .= " " . FlavorsUtils::TrimDate($collection->{LASTEXPORT});
+		$exporttext .= " " . FlavorsUtil::TrimDate($collection->{LASTEXPORT});
 	}
 	printf(qq{
 			<div class="track-list clear">
@@ -199,7 +199,7 @@ foreach my $collection (@collections) {
 			</div>
 		},
 		$exporttext,
-		FlavorsUtils::TrimDate($collection->{DATEACQUIRED}),
+		FlavorsUtil::TrimDate($collection->{DATEACQUIRED}),
 		join("", map { "<li>" . $_->{NAME} . "</li>" } @{ $tracks{$collection->{ID}} }),
 	);
 	print "</div>";

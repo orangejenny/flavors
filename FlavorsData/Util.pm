@@ -1,8 +1,8 @@
-package FlavorsData::Utils;
+package FlavorsData::Util;
 
 use strict;
 use DBI;
-use FlavorsUtils;
+use FlavorsUtil;
 
 our $SEPARATOR = "\n";
 
@@ -14,7 +14,7 @@ our $SEPARATOR = "\n";
 # Return Value: $dbh
 ################################################################
 sub DBH {
-	my $config = FlavorsUtils::Config->{db};
+	my $config = FlavorsUtil::Config->{db};
 
 	my $host = $config->{host};
 	my $database = $config->{database};

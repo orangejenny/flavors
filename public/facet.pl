@@ -3,15 +3,15 @@
 use lib "..";
 use strict;
 
-use FlavorsData::Tags;
-use FlavorsData::Utils;
+use FlavorsData::Tag;
+use FlavorsData::Util;
 use FlavorsHTML;
 
-my $dbh = FlavorsData::Utils::DBH();
+my $dbh = FlavorsData::Util::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
-my $fdat = FlavorsUtils::Fdat($cgi);
+my $fdat = FlavorsUtil::Fdat($cgi);
 
 my $facet = $fdat->{FACET} || "rating";
 my %icons = (
@@ -43,7 +43,7 @@ print qq{ <svg class="unrated"></svg> };
 print qq{ </div> };
 
 # Toolbar
-my @categories = FlavorsData::Tags::CategoryList($dbh);
+my @categories = FlavorsData::Tag::CategoryList($dbh);
 push(@categories, "genres");
 print "<div class='btn-group category-buttons'>";
 foreach my $category (sort @categories) {

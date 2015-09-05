@@ -3,11 +3,11 @@
 use lib "..";
 use strict;
 
-use FlavorsData::Tags;
-use FlavorsData::Utils;
+use FlavorsData::Tag;
+use FlavorsData::Util;
 use FlavorsHTML;
 
-my $dbh = FlavorsData::Utils::DBH();
+my $dbh = FlavorsData::Util::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
@@ -17,7 +17,7 @@ FlavorsHTML::Header({
 	TITLE => "Tags",
 });
 
-my @tags = FlavorsData::Tags::List($dbh);
+my @tags = FlavorsData::Tag::List($dbh);
 
 # Print tags by frequency, click to pull up related tags
 print "<div class='post-nav category-tab'>" . join("", map { FlavorsHTML::Tag($_) } @tags) . "</div>";

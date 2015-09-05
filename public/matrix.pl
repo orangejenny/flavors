@@ -7,7 +7,7 @@ use FlavorsHTML;
 
 my $cgi = CGI->new;
 print $cgi->header();
-my $fdat = FlavorsUtils::Fdat($cgi);
+my $fdat = FlavorsUtil::Fdat($cgi);
 
 FlavorsHTML::Header({
 	FDAT => $fdat,

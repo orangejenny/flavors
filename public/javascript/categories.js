@@ -29,7 +29,7 @@ jQuery(document).ready(function() {
 				return;
 			}
 			CallRemote({
-				SUB: 'FlavorsData::Tags::UpdateCategory',
+				SUB: 'FlavorsData::Tag::UpdateCategory',
 				ARGS: args,
 			});
 		}

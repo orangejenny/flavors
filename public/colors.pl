@@ -4,21 +4,21 @@ use lib "..";
 use strict;
 
 use FlavorsHTML;
-use FlavorsData::Tags;
-use FlavorsData::Utils;
+use FlavorsData::Tag;
+use FlavorsData::Util;
 
-my $dbh = FlavorsData::Utils::DBH();
+my $dbh = FlavorsData::Util::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
-my $fdat = FlavorsUtils::Fdat($cgi);
+my $fdat = FlavorsUtil::Fdat($cgi);
 
 FlavorsHTML::Header({
 	CSS => ['colors.css', 'thirdparty/jquery.miniColors.css'],
 	JS => ['colors.js', 'thirdparty/jquery.miniColors.js'],
 });
 
-my @colors = FlavorsData::Tags::ColorList($dbh);
+my @colors = FlavorsData::Tag::ColorList($dbh);
 
 print qq{ <div class="post-nav"> };
 

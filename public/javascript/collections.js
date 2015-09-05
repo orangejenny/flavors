@@ -146,7 +146,7 @@ jQuery(document).ready(function() {
 		});
 		jQuery(this).attr("disabled", true);
 		CallRemote({
-			SUB: 'FlavorsData::Collections::Add',
+			SUB: 'FlavorsData::Collection::Add',
 			ARGS: args,
 			FINISH: function() {
 				location.reload();
@@ -211,7 +211,7 @@ jQuery(document).ready(function() {
 	// Car list trigger
 	jQuery('#suggestions-trigger').click(function() {
 		CallRemote({
-			SUB: 'FlavorsData::Collections::Suggestions',
+			SUB: 'FlavorsData::Collection::Suggestions',
 			FINISH: function(results) {
 				// TODO: clear any collections
 				_.each(results, function(collection) {

@@ -17,7 +17,7 @@ function UpdateColor(obj, args) {
 	args.NAME = $color.children(".name").text();
 	$color.addClass("update-in-progress");
 	CallRemote({
-		SUB: 'FlavorsData::Tags::UpdateColor',
+		SUB: 'FlavorsData::Tag::UpdateColor',
 		ARGS: args,
 		FINISH: function() {
 			$color.removeClass("update-in-progress");

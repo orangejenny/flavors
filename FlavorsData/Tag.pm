@@ -1,7 +1,7 @@
-package FlavorsData::Tags;
+package FlavorsData::Tag;
 
 use strict;
-use FlavorsData::Utils;
+use FlavorsData::Util;
 
 ################################################################
 # ArtistGenreList
@@ -24,7 +24,7 @@ sub ArtistGenreList {
 			artistgenre.artist
 	};
 
-	return FlavorsData::Utils::Results($dbh, {
+	return FlavorsData::Util::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => [qw(tag category)],
 	});
@@ -40,7 +40,7 @@ sub ArtistGenreList {
 sub CategoryList {
 	my ($dbh, $args) = @_;
 
-	return map { $_->{CATEGORY} } FlavorsData::Utils::Results($dbh, {
+	return map { $_->{CATEGORY} } FlavorsData::Util::Results($dbh, {
 		SQL => "select distinct category from tagcategory;",
 		COLUMNS => [qw(category)],
 	});
@@ -61,8 +61,8 @@ sub CategoryList {
 ################################################################
 sub CategoryStats {
 	my ($dbh, $args) = @_;
-	my $facet = FlavorsUtils::Sanitize($args->{FACET});
-	my $category = FlavorsUtils::Sanitize($args->{CATEGORY});
+	my $facet = FlavorsUtil::Sanitize($args->{FACET});
+	my $category = FlavorsUtil::Sanitize($args->{CATEGORY});
 	my $sql;
 	my @binds = ();
 	if ($category =~ m/genre/i) {
@@ -85,7 +85,7 @@ sub CategoryStats {
 		}, $args->{FACET}, $args->{FACET}, $args->{FACET});
 		push(@binds, $args->{CATEGORY});
 	}
-	my @rows = FlavorsData::Utils::Results($dbh, {
+	my @rows = FlavorsData::Util::Results($dbh, {
 		SQL => $sql,
 		BINDS => \@binds,
 		COLUMNS => [qw(tag rating count)],
@@ -149,7 +149,7 @@ sub ColorList {
 			hex desc
 	};
 
-	return FlavorsData::Utils::Results($dbh, {
+	return FlavorsData::Util::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => [qw(name hex whitetext)],
 	});
@@ -205,7 +205,7 @@ sub List {
 			tag
 	};
 
-	return FlavorsData::Utils::Results($dbh, {
+	return FlavorsData::Util::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => [qw(tag category metacategory count)],
 	});
@@ -261,7 +261,7 @@ sub SeasonStats {
 		order by year, season;
 	};
 
-	return [FlavorsData::Utils::Results($dbh, {
+	return [FlavorsData::Util::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => [qw(COUNT YEAR SEASON)],
 	})];
@@ -305,7 +305,7 @@ sub UpdateCategory {
 	my ($dbh, $args) = @_;
 
 	my $sql = "select $args->{CATEGORYCOLUMN} from $args->{TABLE} where $args->{VALUECOLUMN} = ?";
-	my $currentrow = FlavorsData::Utils::Results($dbh, {
+	my $currentrow = FlavorsData::Util::Results($dbh, {
 		SQL => $sql,
 		BINDS => [$args->{VALUE}],
 	});
@@ -321,7 +321,7 @@ sub UpdateCategory {
 	}
 	$message .= " $args->{VALUE} to $args->{CATEGORY}.";
 
-	FlavorsData::Utils::Results($dbh, {
+	FlavorsData::Util::Results($dbh, {
 		SQL => $sql,
 		BINDS => [$args->{CATEGORY}, $args->{VALUE}],
 		SKIPFETCH => 1,
@@ -347,7 +347,7 @@ sub UpdateCategory {
 sub UpdateColor {
 	my ($dbh, $args) = @_;
 
-	my @colors = FlavorsData::Utils::Results($dbh, {
+	my @colors = FlavorsData::Util::Results($dbh, {
 		SQL => qq{ select * from color where name = ? },
 		BINDS => [$args->{NAME}],
 		COLUMNS => [qw(name, hex, whitetext)],
@@ -372,7 +372,7 @@ sub UpdateColor {
 	}
 	push (@binds, $args->{NAME});
 
-	FlavorsData::Utils::Results($dbh, {
+	FlavorsData::Util::Results($dbh, {
 		SQL => $sql,
 		BINDS => \@binds,
 		SKIPFETCH => 1,
@@ -402,7 +402,7 @@ sub YearStats {
 		order by tagcategory.tag;
 	};
 
-	my %counts = map { $_->{TAG} => $_->{COUNT} } FlavorsData::Utils::Results($dbh, {
+	my %counts = map { $_->{TAG} => $_->{COUNT} } FlavorsData::Util::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => [qw(TAG COUNT)],
 	});

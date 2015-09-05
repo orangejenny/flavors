@@ -3,23 +3,23 @@
 use lib "..";
 use strict;
 
-use FlavorsData::Tags;
-use FlavorsData::Utils;
+use FlavorsData::Tag;
+use FlavorsData::Util;
 use FlavorsHTML;
 
-my $dbh = FlavorsData::Utils::DBH();
+my $dbh = FlavorsData::Util::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
-my $fdat = FlavorsUtils::Fdat($cgi);
+my $fdat = FlavorsUtil::Fdat($cgi);
 
 FlavorsHTML::Header({
 	CSS => ['categories.css'],
 	JS => ['categories.js'],
 });
 
-my @tags = FlavorsData::Tags::List($dbh);
-my $categorizeargs = FlavorsUtils::Categorize($dbh, {
+my @tags = FlavorsData::Tag::List($dbh);
+my $categorizeargs = FlavorsUtil::Categorize($dbh, {
 	ITEMS => \@tags,
 });
 $categorizeargs->{TABLE} = 'tagcategory';

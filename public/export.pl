@@ -3,15 +3,15 @@
 use lib "..";
 use strict;
 
-use FlavorsData::Collections;
-use FlavorsData::Songs;
-use FlavorsData::Utils;
+use FlavorsData::Collection;
+use FlavorsData::Song;
+use FlavorsData::Util;
 use FlavorsHTML;
-use FlavorsUtils;
+use FlavorsUtil;
 
 my $cgi = CGI->new;
-my $fdat = FlavorsUtils::Fdat($cgi);
-my $dbh = FlavorsData::Utils::DBH();
+my $fdat = FlavorsUtil::Fdat($cgi);
+my $dbh = FlavorsData::Util::DBH();
 
 my @songs;
 my %updateexport;
@@ -22,8 +22,8 @@ if ($fdat->{COLLECTIONID} =~ /^[^,]+$/) {
 if ($fdat->{COLLECTIONID}) {
 	# Export a single collection
 	my $collectionid = $fdat->{COLLECTIONID};
-	my $collection = FlavorsData::Collections::List($dbh, { ID => $collectionid });
-	@songs = FlavorsData::Collections::TrackList($dbh, { COLLECTIONIDS => $collectionid });
+	my $collection = FlavorsData::Collection::List($dbh, { ID => $collectionid });
+	@songs = FlavorsData::Collection::TrackList($dbh, { COLLECTIONIDS => $collectionid });
 	%updateexport = (
 		COLLECTIONIDS => [$collectionid],
 	);
@@ -31,7 +31,7 @@ if ($fdat->{COLLECTIONID}) {
 elsif ($fdat->{COLLECTIONIDS}) {
 	# Export a set of collections
 	$fdat->{COLLECTIONIDS} =~ s/[^0-9,]//;
-	@songs = FlavorsData::Collections::TrackList($dbh, { COLLECTIONIDS => $fdat->{COLLECTIONIDS}	});
+	@songs = FlavorsData::Collection::TrackList($dbh, { COLLECTIONIDS => $fdat->{COLLECTIONIDS}	});
 	%updateexport = (
 		COLLECTIONIDS => [split(",", $fdat->{COLLECTIONIDS})],
 	);
@@ -39,7 +39,7 @@ elsif ($fdat->{COLLECTIONIDS}) {
 elsif ($fdat->{SONGIDLIST}) {
 	# Export a specific set of songs
 	$fdat->{SONGIDLIST} =~ s/\s+/,/g;
-	my @unsorted = FlavorsData::Songs::List($dbh, { 
+	my @unsorted = FlavorsData::Song::List($dbh, { 
 		FILTER => "song.id in ($fdat->{SONGIDLIST})",
 	});
 	my %songsbyid = map { $_->{ID} => $_ } @unsorted;
@@ -49,10 +49,10 @@ elsif ($fdat->{SONGIDLIST}) {
 }
 else {
 	# Export a filtered set of songs
-	@songs = FlavorsData::Songs::List($dbh, $fdat);
+	@songs = FlavorsData::Song::List($dbh, $fdat);
 }
 $updateexport{SONGIDS} = [map { $_->{ID} } @songs];
-FlavorsData::Songs::UpdateExport($dbh, \%updateexport);
+FlavorsData::Song::UpdateExport($dbh, \%updateexport);
 
 my $filename = $fdat->{FILENAME};
 $filename =~ s/[^\w \-[\]]+//g;
@@ -63,7 +63,7 @@ my $os = lc $fdat->{OS};
 if ($os !~ /^(mac|pc)$/) {
 	$os = "mac";
 }
-my $directory = FlavorsUtils::Config->{path}->{$os};
+my $directory = FlavorsUtil::Config->{path}->{$os};
 
 foreach my $song (@songs) {
 	my $song = "$directory$song->{FILENAME}\n";

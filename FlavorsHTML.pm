@@ -1,8 +1,8 @@
 package FlavorsHTML;
 
 use strict;
-use FlavorsData::Songs;
-use FlavorsData::Tags;
+use FlavorsData::Song;
+use FlavorsData::Tag;
 use JSON qw(to_json);
 
 ################################################################
@@ -247,7 +247,7 @@ sub SelectionControl {
 sub TagDetails {
 	my ($dbh, $args) = @_;
 
-	my @tags = FlavorsData::Tags::List($dbh, { RELATED => $args->{TAG} });
+	my @tags = FlavorsData::Tag::List($dbh, { RELATED => $args->{TAG} });
 
 	return {
 		TITLE => "Related Tags: $args->{TAG}",
@@ -269,7 +269,7 @@ sub TagDetails {
 sub TagSongList {
 	my ($dbh, $args) = @_;
 
-	my @songs = FlavorsData::Songs::List($dbh, {
+	my @songs = FlavorsData::Song::List($dbh, {
 		FILTER => sprintf("exists (select 1 from songtag where id=songid and tag = '%s')", $args->{TAG}),
 	});
 	@songs = sort { $a->{ARTIST} cmp $b->{ARTIST} || $a->{NAME} cmp $b->{NAME} } @songs;

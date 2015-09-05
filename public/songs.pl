@@ -3,23 +3,23 @@
 use lib "..";
 use strict;
 
-use FlavorsData::Playlists;
-use FlavorsData::Songs;
-use FlavorsData::Tags;
-use FlavorsData::Utils;
+use FlavorsData::Playlist;
+use FlavorsData::Song;
+use FlavorsData::Tag;
+use FlavorsData::Util;
 use FlavorsHTML;
-use FlavorsUtils;
+use FlavorsUtil;
 use JSON qw(to_json);
 
-my $dbh = FlavorsData::Utils::DBH();
-my $fdat = FlavorsUtils::Fdat();
+my $dbh = FlavorsData::Util::DBH();
+my $fdat = FlavorsUtil::Fdat();
 
 my $cgi = CGI->new;
 print $cgi->header();
 
 my @songs = ();
 eval {
-	@songs = FlavorsData::Songs::List($dbh, {
+	@songs = FlavorsData::Song::List($dbh, {
 		FILTER => $fdat->{FILTER},
 		ORDERBY => $fdat->{ORDERBY},
 	});
@@ -33,7 +33,7 @@ if ($fdat->{FILTER} && $@) {
 	$sqlerror =~ s/\(select \* from \(\s*//s;
 }
 else {
-	FlavorsData::Playlists::Update($dbh, {
+	FlavorsData::Playlist::Update($dbh, {
 		FILTER => $fdat->{FILTER},
 	});
 }
@@ -83,7 +83,7 @@ FlavorsHTML::Header({
 	JS => ['songs.js'],
 });
 
-my @playlists = FlavorsData::Playlists::List($dbh);
+my @playlists = FlavorsData::Playlist::List($dbh);
 print sprintf(q{
 	<div id="complex-filter" class="modal">
 		<div class="modal-dialog">
@@ -161,7 +161,7 @@ print qq{ <div id="song-table-container"> };
 
 print qq{ <table><tbody> };
 
-my @colors = FlavorsData::Tags::ColorList($dbh);
+my @colors = FlavorsData::Tag::ColorList($dbh);
 my %colormap = ();
 foreach my $color (@colors) {
 	$colormap{$color->{NAME}} = $color;
@@ -181,7 +181,7 @@ foreach my $song (@songs) {
 		},
 		$song->{ID},
 		$song->{ID},
-		FlavorsUtils::EscapeHTMLAttribute(lc(JSON::to_json([
+		FlavorsUtil::EscapeHTMLAttribute(lc(JSON::to_json([
 			grep { $_->{HEX} } map { $colormap{$_} } grep { exists $colormap{$_} } split(/\s+/, $song->{TAGS})
 		]))),
 		FlavorsHTML::Rating(1, $song->{ISSTARRED} ? 'star' : 'star-empty'),

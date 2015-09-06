@@ -18,12 +18,15 @@ sub AcquisitionStats {
 	my ($dbh) = @_;
 
 	my $sql = sprintf(qq{
-		select
-			date_format(dateacquired, '%%Y-%%m') datestring,
-			count(*),
-			group_concat(name order by rand() separator '%s')
-		from collection
-		where dateacquired is not null
+		select date_format(dateacquired, '%%Y-%%m') datestring, count(*) count,
+		group_concat(concat(artist, ' - ', collection.name) order by rand() separator '%s') samples
+		from (
+			select collection.name, collection.dateacquired, case when count(distinct artist) = 1 then min(artist) else 'Various' end artist
+			from collection, songcollection, song
+			where songcollection.collectionid = collection.id
+			and songcollection.songid = song.id
+			group by collection.id, collection.dateacquired
+		) collection
 		group by date_format(dateacquired, '%%Y-%%m')
 	}, $Flavors::Data::Util::SEPARATOR);
 

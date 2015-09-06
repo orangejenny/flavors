@@ -11,7 +11,7 @@ my $fdat = Flavors::Util::Fdat($cgi);
 
 Flavors::HTML::Header({
 	FDAT => $fdat,
-	TITLE => "Data",
+	TITLE => "Matrix",
 	BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),
 	CSS => ['data.css', 'matrix.css'],
 	JS => ['data.js', 'matrix.js'],

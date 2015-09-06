@@ -13,7 +13,7 @@ my $facet = $fdat->{FACET} || "rating";
 
 Flavors::HTML::Header({
 	FDAT => $fdat,
-	TITLE => "Data",
+	TITLE => "Timeline",
 	BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),
 	CSS => ['data.css'],
 	JS => ['data.js', 'timeline.js'],

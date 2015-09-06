@@ -17,20 +17,20 @@ use Flavors::Data::Util;
 sub AcquisitionStats {
 	my ($dbh) = @_;
 
-	my $sql = qq{
-		select datestring, count(*)
-		from (
-			select song.id, date_format(min(dateacquired), '%Y-%m') datestring
-			from song, songcollection, collection
-			where song.id = songcollection.songid
-			and songcollection.collectionid = collection.id
-			group by song.id
-		) months
-		group by datestring;
-	};
+	my $sql = sprintf(qq{
+		select
+			date_format(dateacquired, '%%Y-%%m') datestring,
+			count(*),
+			group_concat(name order by rand() separator '%s')
+		from collection
+		where dateacquired is not null
+		group by date_format(dateacquired, '%%Y-%%m')
+	}, $Flavors::Data::Util::SEPARATOR);
+
 	return [Flavors::Data::Util::Results($dbh, {
 		SQL => $sql,
-		COLUMNS => [qw(datestring count)],
+		COLUMNS => [qw(datestring count samples)],
+		GROUPCONCAT => ['samples'],
 	})];
 }
 

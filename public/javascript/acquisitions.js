@@ -37,7 +37,8 @@ function generateBarChart() {
 					count: +d.COUNT,
 					condition: "extract(month from mindateacquired) = " + (date.getMonth() + 1) + " and extract(year from mindateacquired) = " + date.getFullYear(),
 					filename: "acquired " + text,
-					description: text + "\n" + d.COUNT + " " + Pluralize(+d.COUNT, "song"),
+					description: text + "\n" + d.COUNT + Pluralize(+d.COUNT, " collection"),
+					samples: d.SAMPLES,
 				};
 			});
 			var barSize = width / (maxMonthCount - minMonthCount + 1) - margin;

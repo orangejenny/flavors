@@ -71,6 +71,10 @@ function attachTooltip(selector) {
 			show = true;
 			var description = data.description;
 			$title.html(description);
+			$title.removeClass("hide");
+		}
+		else {
+			$title.addClass("hide");
 		}
 
 		var $list = $tooltip.find("ul");
@@ -82,6 +86,10 @@ function attachTooltip(selector) {
 			if (data.samples.length > displayMax) {
 				$list.append("<li>...</li>");
 			}
+			$list.removeClass("hide");
+		}
+		else {
+			$list.addClass("hide");
 		}
 
 		if (show) {

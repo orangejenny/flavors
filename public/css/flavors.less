@@ -210,5 +210,14 @@ ul.plain {
 	color: @white;
 	opacity: 0.8;
 	border-radius: @borderRadius;
-	white-space: pre;
+	> div {
+		font-weight: bold;
+	}
+	ul {
+		margin: 0 0 0 @spacingNormal;
+		padding: 0;
+		li {
+			list-style-type: none;
+		}
+	}
 }

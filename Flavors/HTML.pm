@@ -343,7 +343,10 @@ sub Categorize {
 ################################################################
 sub Footer {
 	return qq{
-		<div id="tooltip" class="hide"></div>
+		<div id="tooltip" class="hide">
+			<div></div>
+			<ul></ul>
+		</div>
 		</body></html>
 	};
 }

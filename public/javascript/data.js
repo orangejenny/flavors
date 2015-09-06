@@ -65,12 +65,16 @@ function attachTooltip(selector) {
 		if (data.description) {
 			var $tooltip = jQuery("#tooltip");
 			var description = data.description;
+			$tooltip.find("div").html(description);
+			var $list = $tooltip.find("ul");
+			$list.html("");
 			if (data.samples) {
 				var displayMax = 5;
-				description += ", including...<br>";
-				description += _.sample(data.samples, displayMax).join("<br>");
+				$list.html(_.map(_.sample(data.samples, displayMax), function(s) { return "<li>" + s + "</li>"; }).join(""));
+				if (data.samples.length > displayMax) {
+					$list.append("<li>...</li>");
+				}
 			}
-			$tooltip.html(description);
 			$tooltip.removeClass("hide");
 			positionTooltip();
 		}

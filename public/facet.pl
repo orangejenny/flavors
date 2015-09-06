@@ -22,7 +22,7 @@ my %icons = (
 
 Flavors::HTML::Header({
 	FDAT => $fdat,
-	TITLE => uc $facet,
+	TITLE => ucfirst $facet,
 	BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),
 	CSS => ['data.css', 'facet.css'],
 	JS => ['data.js', 'facet.js'],

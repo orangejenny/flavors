@@ -3,7 +3,7 @@ jQuery(document).ready(function() {
 		var tag = jQuery(this).text();
 		tag = tag.replace(/\(.*/, "");
 		CallRemote({
-			SUB: 'FlavorsHTML::TagDetails', 
+			SUB: 'Flavors::HTML::TagDetails', 
 			ARGS: { TAG: tag }, 
 			FINISH: function(data) {
 				var $modal = jQuery("#item-detail");

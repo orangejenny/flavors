@@ -1,7 +1,7 @@
-package FlavorsData::Song;
+package Flavors::Data::Song;
 
 use strict;
-use FlavorsData::Util;
+use Flavors::Data::Util;
 
 ################################################################
 # List
@@ -21,7 +21,7 @@ use FlavorsData::Util;
 sub List {
 	my ($dbh, $args) = @_;
 
-	$args->{ORDERBY} = FlavorsUtil::Sanitize($args->{ORDERBY});
+	$args->{ORDERBY} = Flavors::Util::Sanitize($args->{ORDERBY});
 
 	my @songcolumns = qw(
 		id
@@ -84,7 +84,7 @@ sub List {
 				and collection.id = collectionid
 			)
 		) tracks on tracks.songid = song.id
-	}, $FlavorsData::Util::SEPARATOR);
+	}, $Flavors::Data::Util::SEPARATOR);
 
 	if ($args->{ID}) {
 		$sql .= " where song.id = $args->{ID}";
@@ -115,14 +115,14 @@ sub List {
 		}
 	}
 
-	$args->{FILTER} = FlavorsUtil::Sanitize($args->{FILTER});
+	$args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
 	if ($args->{FILTER}) {
 		$sql .= " and (" . $args->{FILTER} . ")";
 	}
 
 	$sql .= " order by " . ($args->{ORDERBY} ? $args->{ORDERBY} : "maxdateacquired desc, tracknumber");
 
-	my @results = FlavorsData::Util::Results($dbh, {
+	my @results = Flavors::Data::Util::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => [@songcolumns, 'genre', 'tags', 'collections'],
 		GROUPCONCAT => ['collections'],
@@ -150,7 +150,7 @@ sub List {
 ################################################################
 sub Stats {
 	my ($dbh, $args) = @_;
-	my @groupby = split(/\s*,\s*/, FlavorsUtil::Sanitize($args->{GROUPBY}));
+	my @groupby = split(/\s*,\s*/, Flavors::Util::Sanitize($args->{GROUPBY}));
 
 	my $sql = sprintf(qq{
 			select 
@@ -163,11 +163,11 @@ sub Stats {
 			order by %s;
 		},
 		join(", ", map { sprintf("coalesce(%s, 0)", $_) } @groupby),
-		$FlavorsData::Util::SEPARATOR,
+		$Flavors::Data::Util::SEPARATOR,
 		join(", ", @groupby),
 		join(", ", @groupby),
 	);
-	return [FlavorsData::Util::Results($dbh, {
+	return [Flavors::Data::Util::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => [@groupby, 'samples', 'count'],
 		GROUPCONCAT => ['samples'],
@@ -212,7 +212,7 @@ sub Update {
 			where
 				id = %s
 		}, join(", ", @updates), $id);
-		FlavorsData::Util::Results($dbh, {
+		Flavors::Data::Util::Results($dbh, {
 			SQL => $sql,
 			BINDS => \@binds,
 			SKIPFETCH => 1,
@@ -225,7 +225,7 @@ sub Update {
 			? "update artistgenre set genre = ? where artist = ?"
 			: "insert into artistgenre (genre, artist) values (?, ?)"
 		;
-		FlavorsData::Util::Results($dbh, {
+		Flavors::Data::Util::Results($dbh, {
 			SQL => $sql,
 			BINDS => [$newsong->{GENRE}, $oldsong->{ARTIST}],
 			SKIPFETCH => 1,
@@ -234,17 +234,17 @@ sub Update {
 
 	# tag table
 	if (exists $newsong->{TAGS}) {
-		my @oldtags = FlavorsData::Util::Results($dbh, {
+		my @oldtags = Flavors::Data::Util::Results($dbh, {
 			SQL => qq{ select tag from songtag where songid = $id },
 			COLUMNS => [qw(tag)],
 		});
 		@oldtags = map { $_->{TAG} } @oldtags;
 		my @newtags = split(/\s+/, $newsong->{TAGS});
-		my @tagstoadd = FlavorsUtil::ArrayDifference(\@newtags, \@oldtags);
-		my @tagstoremove = FlavorsUtil::ArrayDifference(\@oldtags, \@newtags);
+		my @tagstoadd = Flavors::Util::ArrayDifference(\@newtags, \@oldtags);
+		my @tagstoremove = Flavors::Util::ArrayDifference(\@oldtags, \@newtags);
 
 		foreach my $tag (@tagstoadd) {
-			FlavorsData::Util::Results($dbh, {
+			Flavors::Data::Util::Results($dbh, {
 				SQL => qq{
 					insert into songtag (songid, tag) values (?, ?)
 				},
@@ -254,7 +254,7 @@ sub Update {
 		}
 
 		if (@tagstoremove) {
-			FlavorsData::Util::Results($dbh, {
+			Flavors::Data::Util::Results($dbh, {
 				SQL => sprintf(qq{
 					delete from songtag where songid = ? and tag in (%s)
 				}, join(", ", map { '?' } @tagstoremove)),
@@ -289,7 +289,7 @@ sub UpdateExport {
 				exportcount = exportcount + 1
 			where id in (%s)
 		}, join(", ", map { '?' } @{ $args->{SONGIDS} }));
-		FlavorsData::Util::Results($dbh, {
+		Flavors::Data::Util::Results($dbh, {
 			SQL => $sql,
 			BINDS => $args->{SONGIDS},
 			SKIPFETCH => 1,
@@ -304,7 +304,7 @@ sub UpdateExport {
 				exportcount = exportcount + 1
 			where id in (%s)
 		}, join(", ", map { '?' } @{ $args->{COLLECTIONIDS} }));
-		FlavorsData::Util::Results($dbh, {
+		Flavors::Data::Util::Results($dbh, {
 			SQL => $sql,
 			BINDS => $args->{COLLECTIONIDS},
 			SKIPFETCH => 1,

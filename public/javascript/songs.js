@@ -101,7 +101,7 @@ jQuery(document).ready(function() {
 
 	jQuery(".playlists .glyphicon").click(function() {
 		var $star = jQuery(this);
-		toggleStar($star, $star.closest("li").data("id"), 'FlavorsData::Playlist::Star');
+		toggleStar($star, $star.closest("li").data("id"), 'Flavors::Data::Playlist::Star');
 	});
 
 	// Column names hint for filter
@@ -196,7 +196,7 @@ jQuery(document).ready(function() {
 			// Update server
 			$td.addClass("update-in-progress");
 			CallRemote({
-				SUB: 'FlavorsData::Song::Update', 
+				SUB: 'Flavors::Data::Song::Update', 
 				ARGS: args, 
 				FINISH: function(data) {
 					$td.removeClass("update-in-progress");
@@ -207,7 +207,7 @@ jQuery(document).ready(function() {
 	});
 	$table.on("click", ".isstarred .glyphicon", function() {
 		var $star = jQuery(this);
-		toggleStar($star, $star.closest("tr").data("song-id"), 'FlavorsData::Song::Update');
+		toggleStar($star, $star.closest("tr").data("song-id"), 'Flavors::Data::Song::Update');
 	});
 
 	// Complex filter controls

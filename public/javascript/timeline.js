@@ -25,7 +25,7 @@ function generateTimeline() {
 							.tickFormat(function(y) { return parseInt(y); });
 
 	CallRemote({
-		SUB: 'FlavorsData::Tag::TimelineStats',
+		SUB: 'Flavors::Data::Tag::TimelineStats',
 		FINISH: function(data) {
 			data = _.map(data.YEARS, function(count, year) { return {
 				year: +year,

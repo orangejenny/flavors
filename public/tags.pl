@@ -3,24 +3,24 @@
 use lib "..";
 use strict;
 
-use FlavorsData::Tag;
-use FlavorsData::Util;
-use FlavorsHTML;
+use Flavors::Data::Tag;
+use Flavors::Data::Util;
+use Flavors::HTML;
 
-my $dbh = FlavorsData::Util::DBH();
+my $dbh = Flavors::Data::Util::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
-FlavorsHTML::Header({
+Flavors::HTML::Header({
 	CSS => ['tags.css'],
 	JS => ['tags.js'],
 	TITLE => "Tags",
 });
 
-my @tags = FlavorsData::Tag::List($dbh);
+my @tags = Flavors::Data::Tag::List($dbh);
 
 # Print tags by frequency, click to pull up related tags
-print "<div class='post-nav category-tab'>" . join("", map { FlavorsHTML::Tag($_) } @tags) . "</div>";
+print "<div class='post-nav category-tab'>" . join("", map { Flavors::HTML::Tag($_) } @tags) . "</div>";
 
 print q{
 	<div id="item-detail" class="modal">
@@ -39,4 +39,4 @@ print q{
 	</div>
 };
 
-print FlavorsHTML::Footer();
+print Flavors::HTML::Footer();

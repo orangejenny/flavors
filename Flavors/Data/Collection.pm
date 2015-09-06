@@ -1,7 +1,7 @@
-package FlavorsData::Collection;
+package Flavors::Data::Collection;
 
 use strict;
-use FlavorsData::Util;
+use Flavors::Data::Util;
 
 ################################################################
 # AcquisitionStats
@@ -28,7 +28,7 @@ sub AcquisitionStats {
 		) months
 		group by datestring;
 	};
-	return [FlavorsData::Util::Results($dbh, {
+	return [Flavors::Data::Util::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => [qw(datestring count)],
 	})];
@@ -71,7 +71,7 @@ sub Add {
 
 	# TODO: Everything within a transaction
 	# Add collection
-	my @ids = FlavorsData::Util::Results($dbh, {
+	my @ids = Flavors::Data::Util::Results($dbh, {
 		SQL => qq{ select max(id) id from collection },
 		COLUMNS => ['id'],
 	});
@@ -80,14 +80,14 @@ sub Add {
 		insert into collection (id, name, ismix, dateacquired, exportcount)
 		values (?, ?, ?, now(), 0)
 	};
-	FlavorsData::Util::Results($dbh, {
+	Flavors::Data::Util::Results($dbh, {
 		SQL => $sql,
 		BINDS => [$collectionid, $args->{NAME}, $args->{ISMIX} ? 1 : 0],
 		SKIPFETCH => 1,
 	});
 
 	# Add songs
-	my @songids = FlavorsData::Util::Results($dbh, {
+	my @songids = Flavors::Data::Util::Results($dbh, {
 		SQL => qq{ select max(id) id from song },
 		COLUMNS => ['id'],
 	});
@@ -98,7 +98,7 @@ sub Add {
 			insert into song (id, name, artist, time, ispurchased, filename)
 			values (?, ?, ?, ?, 1, concat(?, '/', ?, '.mp3'))
 		};
-		FlavorsData::Util::Results($dbh, {
+		Flavors::Data::Util::Results($dbh, {
 			SQL => $sql,
 			BINDS => [$lastid, $song->{NAME}, $song->{ARTIST}, $song->{TIME}, $song->{ARTIST}, $song->{NAME}],
 			SKIPFETCH => 1,
@@ -113,7 +113,7 @@ sub Add {
 		from song
 		where id >= ? and id <= ?
 	};
-	FlavorsData::Util::Results($dbh, {
+	Flavors::Data::Util::Results($dbh, {
 		SQL => $sql,
 		BINDS => [$collectionid, $firstid - 1, $firstid, $lastid],
 		SKIPFETCH => 1,
@@ -259,7 +259,7 @@ sub List {
 		order by dateacquired desc
 	};
 
-	my @results = FlavorsData::Util::Results($dbh, {
+	my @results = Flavors::Data::Util::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => \@collectioncolumns,
 		GROUPCONCAT => ['tags'],
@@ -350,7 +350,7 @@ sub Suggestions {
 			$maxcollections,
 		);
 
-		my @newcollections = FlavorsData::Util::Results($dbh, {
+		my @newcollections = Flavors::Data::Util::Results($dbh, {
 			SQL => $sql,
 			COLUMNS => [qw(id name)],
 		});
@@ -412,7 +412,7 @@ sub TrackList {
 			songcollection.tracknumber
 	};
 
-	return FlavorsData::Util::Results($dbh, {
+	return Flavors::Data::Util::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => [qw(collectionid id name artist tracknumber filename tags)],
 	});

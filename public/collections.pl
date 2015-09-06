@@ -3,33 +3,33 @@
 use lib "..";
 use strict;
 
-use FlavorsData::Collection;
-use FlavorsData::Song;
-use FlavorsData::Tag;
-use FlavorsData::Util;
-use FlavorsHTML;
-use FlavorsUtil;
+use Flavors::Data::Collection;
+use Flavors::Data::Song;
+use Flavors::Data::Tag;
+use Flavors::Data::Util;
+use Flavors::HTML;
+use Flavors::Util;
 use POSIX qw(strftime);
 
-my $dbh = FlavorsData::Util::DBH();
+my $dbh = Flavors::Data::Util::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
-my $fdat = FlavorsUtil::Fdat($cgi);
-FlavorsHTML::Header({
+my $fdat = Flavors::Util::Fdat($cgi);
+Flavors::HTML::Header({
 	TITLE => "Collections",
-	BUTTONS => FlavorsHTML::ExportControl(),
+	BUTTONS => Flavors::HTML::ExportControl(),
 	CSS => ['collections.css'],
 	JS => ['collections.js'],
 });
 
-my @collections = FlavorsData::Collection::List($dbh);
+my @collections = Flavors::Data::Collection::List($dbh);
 my %songs;
-my @songs = FlavorsData::Song::List($dbh);
+my @songs = Flavors::Data::Song::List($dbh);
 foreach my $song (@songs) {
 	$songs{$song->{ID}} = $song;
 }
-my @tracks = FlavorsData::Collection::TrackList($dbh);
+my @tracks = Flavors::Data::Collection::TrackList($dbh);
 my %tracks;
 foreach my $song (@tracks) {
 	if (!exists $tracks{$song->{COLLECTIONID}}) {
@@ -98,7 +98,7 @@ print sprintf(qq{
 print "<div class=\"collections clearfix\">";
 
 my %colors;
-foreach my $color (FlavorsData::Tag::ColorList($dbh)) {
+foreach my $color (Flavors::Data::Tag::ColorList($dbh)) {
 	$colors{$color->{NAME}} = $color;
 }
 
@@ -123,7 +123,7 @@ foreach my $collection (@collections) {
 		$collection->{ID},
 		$collection->{ISMIX} ? 1 : 0,
 		$collection->{NAME},
-		FlavorsUtil::EscapeHTMLAttribute(join(" ", @{ $collection->{TAGS} })),
+		Flavors::Util::EscapeHTMLAttribute(join(" ", @{ $collection->{TAGS} })),
 		$collection->{DATEACQUIRED},
 		lc($collection->{NAME}),
 		lc($collection->{ARTIST}),
@@ -166,9 +166,9 @@ foreach my $collection (@collections) {
 		},
 		$collection->{NAME},
 		$collection->{ARTIST},
-		FlavorsHTML::Rating($collection->{RATING}, 'star'),
-		FlavorsHTML::Rating($collection->{ENERGY}, 'fire'),
-		FlavorsHTML::Rating($collection->{MOOD}, 'heart'),
+		Flavors::HTML::Rating($collection->{RATING}, 'star'),
+		Flavors::HTML::Rating($collection->{ENERGY}, 'fire'),
+		Flavors::HTML::Rating($collection->{MOOD}, 'heart'),
 	);
 
 	my $exporttext = "";
@@ -189,7 +189,7 @@ foreach my $collection (@collections) {
 			}
 			$exporttext .= "<br>Last exported ";
 		}
-		$exporttext .= " " . FlavorsUtil::TrimDate($collection->{LASTEXPORT});
+		$exporttext .= " " . Flavors::Util::TrimDate($collection->{LASTEXPORT});
 	}
 	printf(qq{
 			<div class="track-list clear">
@@ -199,7 +199,7 @@ foreach my $collection (@collections) {
 			</div>
 		},
 		$exporttext,
-		FlavorsUtil::TrimDate($collection->{DATEACQUIRED}),
+		Flavors::Util::TrimDate($collection->{DATEACQUIRED}),
 		join("", map { "<li>" . $_->{NAME} . "</li>" } @{ $tracks{$collection->{ID}} }),
 	);
 	print "</div>";
@@ -252,4 +252,4 @@ print q{
 	</div>
 };
 
-print FlavorsHTML::Footer();
+print Flavors::HTML::Footer();

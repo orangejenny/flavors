@@ -1,7 +1,7 @@
-package FlavorsData::Playlist;
+package Flavors::Data::Playlist;
 
 use strict;
-use FlavorsData::Util;
+use Flavors::Data::Util;
 
 ################################################################
 # List
@@ -27,7 +27,7 @@ sub List {
 			lasttouched desc
 	});
 
-	return FlavorsData::Util::Results($dbh, {
+	return Flavors::Data::Util::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => [qw(id filter isstarred)],
 	});
@@ -47,7 +47,7 @@ sub List {
 sub Star {
 	my ($dbh, $args) = @_;
 
-	FlavorsData::Util::Results($dbh, {
+	Flavors::Data::Util::Results($dbh, {
 		SQL => "update playlist set isstarred = ? where id = ?",
 		BINDS => [$args->{ISSTARRED} ? 1 : 0, $args->{ID}],
 		SKIPFETCH => 1,
@@ -67,19 +67,19 @@ sub Star {
 sub Update {
 	my ($dbh, $args) = @_;
 
-	my $filter = FlavorsUtil::Sanitize($args->{FILTER});
+	my $filter = Flavors::Util::Sanitize($args->{FILTER});
 	if (!$filter) {
 		return;
 	}
 
-	my @results = FlavorsData::Util::Results($dbh, {
+	my @results = Flavors::Data::Util::Results($dbh, {
 		SQL => "select id from playlist where filter = ?",
 		BINDS => [$filter],
 		COLUMNS => ['id'],
 	});
 	if (@results) {
 		# touch playlist
-		FlavorsData::Util::Results($dbh, {
+		Flavors::Data::Util::Results($dbh, {
 			SQL => "update playlist set lasttouched = now() where id = ?",
 			BINDS => [$results[0]->{ID}],
 			SKIPFETCH => 1,
@@ -87,7 +87,7 @@ sub Update {
 	}
 	else {
 		# create playlist
-		@results = FlavorsData::Util::Results($dbh, {
+		@results = Flavors::Data::Util::Results($dbh, {
 			SQL => "select max(id) from playlist",
 			COLUMNS => ['id'],
 		});
@@ -97,7 +97,7 @@ sub Update {
 			values
 				(?, ?, now())
 		};
-		FlavorsData::Util::Results($dbh, {
+		Flavors::Data::Util::Results($dbh, {
 			SQL => $sql,
 			BINDS => [$results[0]->{ID} + 1, $filter],
 			SKIPFETCH => 1,
@@ -114,12 +114,12 @@ sub Update {
 			order by
 				lasttouched desc
 		};
-		@results = FlavorsData::Util::Results($dbh, {
+		@results = Flavors::Data::Util::Results($dbh, {
 			SQL => $sql,
 			COLUMNS => ['id'],
 		});
 		for (my $i = 5; $i < @results; $i++) {
-			FlavorsData::Util::Results($dbh, {
+			Flavors::Data::Util::Results($dbh, {
 				SQL => "delete from playlist where id = ?",
 				BINDS => [$results[$i]->{ID}],
 				SKIPFETCH => 1,

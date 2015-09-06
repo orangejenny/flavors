@@ -3,22 +3,22 @@
 use lib "..";
 use strict;
 
-use FlavorsHTML;
-use FlavorsData::Tag;
-use FlavorsData::Util;
+use Flavors::HTML;
+use Flavors::Data::Tag;
+use Flavors::Data::Util;
 
-my $dbh = FlavorsData::Util::DBH();
+my $dbh = Flavors::Data::Util::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
-my $fdat = FlavorsUtil::Fdat($cgi);
+my $fdat = Flavors::Util::Fdat($cgi);
 
-FlavorsHTML::Header({
+Flavors::HTML::Header({
 	CSS => ['colors.css', 'thirdparty/jquery.miniColors.css'],
 	JS => ['colors.js', 'thirdparty/jquery.miniColors.js'],
 });
 
-my @colors = FlavorsData::Tag::ColorList($dbh);
+my @colors = Flavors::Data::Tag::ColorList($dbh);
 
 print qq{ <div class="post-nav"> };
 
@@ -41,4 +41,4 @@ foreach my $color (@colors) {
 }
 
 print qq{ </div> };
-print FlavorsHTML::Footer();
+print Flavors::HTML::Footer();

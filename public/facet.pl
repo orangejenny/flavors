@@ -3,15 +3,15 @@
 use lib "..";
 use strict;
 
-use FlavorsData::Tag;
-use FlavorsData::Util;
-use FlavorsHTML;
+use Flavors::Data::Tag;
+use Flavors::Data::Util;
+use Flavors::HTML;
 
-my $dbh = FlavorsData::Util::DBH();
+my $dbh = Flavors::Data::Util::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
-my $fdat = FlavorsUtil::Fdat($cgi);
+my $fdat = Flavors::Util::Fdat($cgi);
 
 my $facet = $fdat->{FACET} || "rating";
 my %icons = (
@@ -20,10 +20,10 @@ my %icons = (
 	energy => 'fire',
 );
 
-FlavorsHTML::Header({
+Flavors::HTML::Header({
 	FDAT => $fdat,
 	TITLE => "Data",
-	BUTTONS => FlavorsHTML::ExportControl() . FlavorsHTML::SelectionControl(),
+	BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),
 	CSS => ['data.css', 'facet.css'],
 	JS => ['data.js', 'facet.js'],
 });
@@ -35,7 +35,7 @@ printf(qq{ <div class="distribution-container" data-facet="%s"> }, $facet);
 print qq{ <svg class="distribution"></svg> };
 print qq{ <div class='axis'> };
 foreach my $i (1..5) {
-	printf("<span class='axis-label'>%s</span>", FlavorsHTML::Rating($i, $icons{$facet}));
+	printf("<span class='axis-label'>%s</span>", Flavors::HTML::Rating($i, $icons{$facet}));
 }
 print qq{ </div> };
 
@@ -43,7 +43,7 @@ print qq{ <svg class="unrated"></svg> };
 print qq{ </div> };
 
 # Toolbar
-my @categories = FlavorsData::Tag::CategoryList($dbh);
+my @categories = Flavors::Data::Tag::CategoryList($dbh);
 push(@categories, "genres");
 print "<div class='btn-group category-buttons'>";
 foreach my $category (sort @categories) {
@@ -63,4 +63,4 @@ print qq{ </div> };
 print qq{ </div> };	# .post-nav
 
 
-print FlavorsHTML::Footer();
+print Flavors::HTML::Footer();

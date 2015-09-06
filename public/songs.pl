@@ -3,23 +3,23 @@
 use lib "..";
 use strict;
 
-use FlavorsData::Playlist;
-use FlavorsData::Song;
-use FlavorsData::Tag;
-use FlavorsData::Util;
-use FlavorsHTML;
-use FlavorsUtil;
+use Flavors::Data::Playlist;
+use Flavors::Data::Song;
+use Flavors::Data::Tag;
+use Flavors::Data::Util;
+use Flavors::HTML;
+use Flavors::Util;
 use JSON qw(to_json);
 
-my $dbh = FlavorsData::Util::DBH();
-my $fdat = FlavorsUtil::Fdat();
+my $dbh = Flavors::Data::Util::DBH();
+my $fdat = Flavors::Util::Fdat();
 
 my $cgi = CGI->new;
 print $cgi->header();
 
 my @songs = ();
 eval {
-	@songs = FlavorsData::Song::List($dbh, {
+	@songs = Flavors::Data::Song::List($dbh, {
 		FILTER => $fdat->{FILTER},
 		ORDERBY => $fdat->{ORDERBY},
 	});
@@ -33,7 +33,7 @@ if ($fdat->{FILTER} && $@) {
 	$sqlerror =~ s/\(select \* from \(\s*//s;
 }
 else {
-	FlavorsData::Playlist::Update($dbh, {
+	Flavors::Data::Playlist::Update($dbh, {
 		FILTER => $fdat->{FILTER},
 	});
 }
@@ -70,9 +70,9 @@ foreach my $letter (keys $letters) {
 	$lettercounts->{$letter} = scalar(@{ $letters->{$letter} });
 }
 
-FlavorsHTML::Header({
+Flavors::HTML::Header({
 	TITLE => "Songs",
-	BUTTONS => FlavorsHTML::ExportControl(),
+	BUTTONS => Flavors::HTML::ExportControl(),
 	INITIALPAGEDATA => {
 		TOKENS => $tokens,
 		LETTERS => $letters,
@@ -83,7 +83,7 @@ FlavorsHTML::Header({
 	JS => ['songs.js'],
 });
 
-my @playlists = FlavorsData::Playlist::List($dbh);
+my @playlists = Flavors::Data::Playlist::List($dbh);
 print sprintf(q{
 	<div id="complex-filter" class="modal">
 		<div class="modal-dialog">
@@ -131,7 +131,7 @@ print sprintf(q{
 		sprintf(
 			"<li data-id='%s'>%s <a href='#'>%s</a></li>",
 			$_->{ID}, 
-			FlavorsHTML::Rating(1, $_->{ISSTARRED} ? 'star' : 'star-empty'), 
+			Flavors::HTML::Rating(1, $_->{ISSTARRED} ? 'star' : 'star-empty'), 
 			$_->{FILTER},
 		)
 	} @playlists),
@@ -161,7 +161,7 @@ print qq{ <div id="song-table-container"> };
 
 print qq{ <table><tbody> };
 
-my @colors = FlavorsData::Tag::ColorList($dbh);
+my @colors = Flavors::Data::Tag::ColorList($dbh);
 my %colormap = ();
 foreach my $color (@colors) {
 	$colormap{$color->{NAME}} = $color;
@@ -181,16 +181,16 @@ foreach my $song (@songs) {
 		},
 		$song->{ID},
 		$song->{ID},
-		FlavorsUtil::EscapeHTMLAttribute(lc(JSON::to_json([
+		Flavors::Util::EscapeHTMLAttribute(lc(JSON::to_json([
 			grep { $_->{HEX} } map { $colormap{$_} } grep { exists $colormap{$_} } split(/\s+/, $song->{TAGS})
 		]))),
-		FlavorsHTML::Rating(1, $song->{ISSTARRED} ? 'star' : 'star-empty'),
+		Flavors::HTML::Rating(1, $song->{ISSTARRED} ? 'star' : 'star-empty'),
 		$song->{NAME},
 		$song->{ARTIST},
 		join("<br>", @{ $song->{COLLECTIONS} }),
-		FlavorsHTML::Rating($song->{RATING}, 'star'),
-		FlavorsHTML::Rating($song->{ENERGY}, 'fire'),
-		FlavorsHTML::Rating($song->{MOOD}, 'heart'),
+		Flavors::HTML::Rating($song->{RATING}, 'star'),
+		Flavors::HTML::Rating($song->{ENERGY}, 'fire'),
+		Flavors::HTML::Rating($song->{MOOD}, 'heart'),
 		$song->{TAGS},
 	);
 }
@@ -209,4 +209,4 @@ print qq{
 	</div>
 };
 
-print FlavorsHTML::Footer();
+print Flavors::HTML::Footer();

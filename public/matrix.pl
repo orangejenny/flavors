@@ -3,16 +3,16 @@
 use lib "..";
 use strict;
 
-use FlavorsHTML;
+use Flavors::HTML;
 
 my $cgi = CGI->new;
 print $cgi->header();
-my $fdat = FlavorsUtil::Fdat($cgi);
+my $fdat = Flavors::Util::Fdat($cgi);
 
-FlavorsHTML::Header({
+Flavors::HTML::Header({
 	FDAT => $fdat,
 	TITLE => "Data",
-	BUTTONS => FlavorsHTML::ExportControl() . FlavorsHTML::SelectionControl(),
+	BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),
 	CSS => ['data.css', 'matrix.css'],
 	JS => ['data.js', 'matrix.js'],
 });
@@ -30,10 +30,10 @@ printf(qq{
 			</div>
 		</div>
 	},
-	FlavorsHTML::Rating(5, 'heart'),
-	FlavorsHTML::Rating(5, 'fire'),
-	FlavorsHTML::Rating(1, 'fire'),
-	FlavorsHTML::Rating(1, 'heart'),
+	Flavors::HTML::Rating(5, 'heart'),
+	Flavors::HTML::Rating(5, 'fire'),
+	Flavors::HTML::Rating(1, 'fire'),
+	Flavors::HTML::Rating(1, 'heart'),
 );
 
-print FlavorsHTML::Footer();
+print Flavors::HTML::Footer();

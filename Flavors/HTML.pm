@@ -1,8 +1,8 @@
-package FlavorsHTML;
+package Flavors::HTML;
 
 use strict;
-use FlavorsData::Song;
-use FlavorsData::Tag;
+use Flavors::Data::Song;
+use Flavors::Data::Tag;
 use JSON qw(to_json);
 
 ################################################################
@@ -255,7 +255,7 @@ sub SelectionControl {
 sub TagDetails {
 	my ($dbh, $args) = @_;
 
-	my @tags = FlavorsData::Tag::List($dbh, { RELATED => $args->{TAG} });
+	my @tags = Flavors::Data::Tag::List($dbh, { RELATED => $args->{TAG} });
 
 	return {
 		TITLE => "Related Tags: $args->{TAG}",
@@ -277,7 +277,7 @@ sub TagDetails {
 sub TagSongList {
 	my ($dbh, $args) = @_;
 
-	my @songs = FlavorsData::Song::List($dbh, {
+	my @songs = Flavors::Data::Song::List($dbh, {
 		FILTER => sprintf("exists (select 1 from songtag where id=songid and tag = '%s')", $args->{TAG}),
 	});
 	@songs = sort { $a->{ARTIST} cmp $b->{ARTIST} || $a->{NAME} cmp $b->{NAME} } @songs;
@@ -320,14 +320,14 @@ sub Categorize {
 					%s
 				</div>
 			</div>
-		}, $category, $args->{TABLE}, $category, join("", map { FlavorsHTML::Tag({ TAG => $_ }) } @categorytags));
+		}, $category, $args->{TABLE}, $category, join("", map { Flavors::HTML::Tag({ TAG => $_ }) } @categorytags));
 	}
 	$html .= "</div>";
 
 	# Uncategorized items
 	$html .= "<div class=\"uncategorized\">";
 	foreach my $item (@uncategorized) {
-		$html .= FlavorsHTML::Tag({ TAG => $item });
+		$html .= Flavors::HTML::Tag({ TAG => $item });
 	}
 	$html .= "</div>";
 

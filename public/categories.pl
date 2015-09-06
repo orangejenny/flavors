@@ -3,30 +3,30 @@
 use lib "..";
 use strict;
 
-use FlavorsData::Tag;
-use FlavorsData::Util;
-use FlavorsHTML;
+use Flavors::Data::Tag;
+use Flavors::Data::Util;
+use Flavors::HTML;
 
-my $dbh = FlavorsData::Util::DBH();
+my $dbh = Flavors::Data::Util::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
-my $fdat = FlavorsUtil::Fdat($cgi);
+my $fdat = Flavors::Util::Fdat($cgi);
 
-FlavorsHTML::Header({
+Flavors::HTML::Header({
 	CSS => ['categories.css'],
 	JS => ['categories.js'],
 });
 
-my @tags = FlavorsData::Tag::List($dbh);
-my $categorizeargs = FlavorsUtil::Categorize($dbh, {
+my @tags = Flavors::Data::Tag::List($dbh);
+my $categorizeargs = Flavors::Util::Categorize($dbh, {
 	ITEMS => \@tags,
 });
 $categorizeargs->{TABLE} = 'tagcategory';
 
 print qq{ <div class="post-nav"> };
 
-print FlavorsHTML::Categorize($dbh, $categorizeargs);
+print Flavors::HTML::Categorize($dbh, $categorizeargs);
 
 print qq{ </div> };
-print FlavorsHTML::Footer();
+print Flavors::HTML::Footer();

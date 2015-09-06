@@ -14,6 +14,12 @@ jQuery(document).ready(function() {
 	});
 });
 
+var icons = {
+	rating: 'glyphicon-star',
+	energy: 'glyphicon-fire',
+	mood: 'glyphicon-heart',
+};
+
 function generateCategoryCharts(args) {
 	var category = args.CATEGORY;
 	var facet = args.FACET;
@@ -22,11 +28,6 @@ function generateCategoryCharts(args) {
 	jQuery(".category-buttons button[data-category='" + category + "']").addClass("active");
 
 	var containerSelector = ".category-container[data-facet='" + facet + "']";
-	var icons = {
-		rating: 'glyphicon-star',
-		energy: 'glyphicon-fire',
-		mood: 'glyphicon-heart',
-	};
 	var chartSelector = containerSelector + " svg";
 	var width = jQuery(containerSelector).width();
 	var barSize = 20;
@@ -46,11 +47,11 @@ function generateCategoryCharts(args) {
 				tag: d.TAG,
 				values: _.map(d.VALUES, function(v) { return +v; }),
 				description: _.map(d.VALUES, function(v, i) {
-					return v ? v + "\t" + StringMultiply("<span class='glyphicon " + icons[facet] + "'></span>", i+1) + "\n" : "";
+					return v ? v + "\t" + StringMultiply("<span class='glyphicon " + icons[facet] + "'></span>", i+1) + "<br>" : "";
 				}).reverse().join(""),
 				condition: "exists (select 1 from songtag where songid = songs.id and tag = '" + d.TAG + "')",
 				filename: '[' + d.TAG + ']',
-				//samples: _.initial(d.SAMPLES),
+				//samples: d.SAMPLES,
 			}; });
 			xScale.domain([0, d3.max(_.map(data, function(d) {
 				return 2 * (d.values[2] / 2 + Math.max(d.values[1] + d.values[0], d.values[3] + d.values[4]));
@@ -145,14 +146,19 @@ function generateRatingChart(facet) {
 			data = _.map(data, function(d, i) { return {
 				condition: facet + '=' + i,
 				value: +d.COUNT,
+				description: +d.COUNT + " " + StringMultiply("<span class='glyphicon " + icons[facet] + "'></span>", i),
+				samples: d.SAMPLES,
 			} });
 			// Create unrated chart: quite janky
 			var unratedData = data.shift();
 			unratedData.condition = facet + ' is null';
+			unratedData.description = unratedData.value + " unrated " + Pluralize(unratedData.value, "song");
 			var ratedData = {
 				value: _.reduce(data, function(memo, value) { return memo + value.value; }, 0),
 				condition: facet + ' is not null',
 			};
+			ratedData.description = ratedData.value + " rated " + Pluralize(ratedData.value, "song");
+			ratedData.samples = _.reduce(data, function(memo, value) { return memo.concat(value.samples); }, []);
 			unratedScale.domain([0, ratedData.value + unratedData.value]);
 			var unratedBars = unrated.selectAll("g")
 												.data([ratedData, unratedData])
@@ -191,6 +197,7 @@ function generateRatingChart(facet) {
 									.text(function(d) { return d.value; });
 
 			attachSelectionHandlers(containerSelector + " g");
+			attachTooltip(containerSelector + " g");
 		},
 	});
 }

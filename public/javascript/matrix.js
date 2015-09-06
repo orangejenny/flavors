@@ -48,9 +48,7 @@ function generateBubbleChart() {
 						filename: [moodDescriptions[m - 1], energyDescriptions[e - 1]].join(" "),
 					};
 					bubble.description = bubble.count + " " + bubble.filename + " " + Pluralize(bubble.count, "song"),
-					bubble.samples = _.flatten(_.map(relevant, function(d) {
-						return _.initial(d.SAMPLES);
-					}));
+					bubble.samples = _.flatten(_.pluck(relevant, 'SAMPLES'));
 					bubbles.push(bubble);
 				}
 			}

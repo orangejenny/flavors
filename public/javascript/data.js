@@ -62,19 +62,29 @@ function attachTooltip(selector) {
 
 	d3.selectAll(selector).on("mouseenter.tooltip", function() {
 		var data = d3.select(this).data()[0];
+		var $tooltip = jQuery("#tooltip");
+		var show = false;
+
+		var $title = $tooltip.children("div");
+		$title.html("");
 		if (data.description) {
-			var $tooltip = jQuery("#tooltip");
+			show = true;
 			var description = data.description;
-			$tooltip.find("div").html(description);
-			var $list = $tooltip.find("ul");
-			$list.html("");
-			if (data.samples) {
-				var displayMax = 5;
-				$list.html(_.map(_.sample(data.samples, displayMax), function(s) { return "<li>" + s + "</li>"; }).join(""));
-				if (data.samples.length > displayMax) {
-					$list.append("<li>...</li>");
-				}
+			$title.html(description);
+		}
+
+		var $list = $tooltip.find("ul");
+		$list.html("");
+		if (data.samples) {
+			show = true;
+			var displayMax = 5;
+			$list.html(_.map(_.sample(data.samples, displayMax), function(s) { return "<li>" + s + "</li>"; }).join(""));
+			if (data.samples.length > displayMax) {
+				$list.append("<li>...</li>");
 			}
+		}
+
+		if (show) {
 			$tooltip.removeClass("hide");
 			positionTooltip();
 		}

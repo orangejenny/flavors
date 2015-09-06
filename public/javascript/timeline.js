@@ -46,7 +46,7 @@ function generateTimeline() {
 					) : (
 						"exists (select 1 from songtag where songtag.songid = songs.id and tag = '" + d.YEAR + "')"
 						+ " and exists (select 1 from songtag where songtag.songid = songs.id and tag in ('january' 'february', 'winter'))"
-						+ " or exists (select 1 from songtag where songtag.songid = songs.id and tag = '" + (d.YEAR - 1) + "')"
+						+ " or exists (select 1 from songtag where songtag.songid = songs.id and tag = '" + (d.YEAR + 1) + "')"
 						+ " and exists (select 1 from songtag where songtag.songid = songs.id and tag = 'december')"
 					),
 					description: text + "\n" + d.COUNT + " " + Pluralize(d.COUNT, "song"),

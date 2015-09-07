@@ -19,7 +19,7 @@ sub AcquisitionStats {
 
 	my $sql = sprintf(qq{
 		select date_format(dateacquired, '%%Y-%%m') datestring, count(*) count,
-		group_concat(concat(artist, ' - ', collection.name) order by rand() separator '%s') samples
+		group_concat(concat(artist, ' - ', collection.name) separator '%s') samples
 		from (
 			select collection.name, collection.dateacquired, case when count(distinct artist) = 1 then min(artist) else 'Various' end artist
 			from collection, songcollection, song

@@ -155,7 +155,7 @@ sub Stats {
 	my $sql = sprintf(qq{
 			select 
 				%s, 
-				group_concat(concat(song.artist, ' - ', song.name) order by rand() separator '%s') samples,
+				group_concat(concat(song.artist, ' - ', song.name) separator '%s') samples,
 				count(*)
 			from
 				song

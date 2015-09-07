@@ -100,7 +100,7 @@ sub CategoryStats {
 		$tagcounts{$row->{TAG}}[$row->{RATING} - 1] = $row->{COUNT};
 	}
 
-	# Generate sorted lsit of tags, descending based on total count per tag
+	# Generate sorted list of tags, descending based on total count per tag
 	my @sortedtags = sort {
 		my $suma = 0;
 		foreach my $value (@{ $tagcounts{$a} }) {
@@ -118,7 +118,7 @@ sub CategoryStats {
 	foreach my $tag (@sortedtags) {
 		push(@data, {
 			TAG => $tag,
-			VALUES => $tagcounts{$tag},
+			VALUE => $tagcounts{$tag},
 		});
 	}
 
@@ -225,9 +225,10 @@ sub List {
 sub SeasonStats {
 	my ($dbh) = @_;
 
-	my $sql = qq{
-		select count(distinct id), year, season from (
+	my $sql = sprintf(qq{
+		select count(distinct id), year, season, group_concat(name separator'%s') from (
 			select 
+				seasons.name,
 				years.id, 
 				case
 					when seasons.tag = 'december' then years.year + 1
@@ -243,6 +244,7 @@ sub SeasonStats {
 					select 
 						song.id, 
 						tagcategory.tag,
+						concat(song.artist, ' - ', song.name) as name,
 						case
 							when tagcategory.tag in ('winter', 'december', 'january', 'february') then 0
 							when tagcategory.tag in ('spring', 'march', 'april', 'may') then 1
@@ -259,11 +261,12 @@ sub SeasonStats {
 		) stats
 		group by year, season
 		order by year, season;
-	};
+	}, $Flavors::Data::Util::SEPARATOR);
 
 	return [Flavors::Data::Util::Results($dbh, {
 		SQL => $sql,
-		COLUMNS => [qw(COUNT YEAR SEASON)],
+		COLUMNS => [qw(count year season samples)],
+		GROUPCONCAT => ['samples'],
 	})];
 }
 
@@ -392,21 +395,24 @@ sub UpdateColor {
 sub YearStats {
 	my ($dbh) = @_;
 
-	my $sql = qq{
-		select tagcategory.tag, count(*) count
+	my $sql = sprintf(qq{
+		select
+			tagcategory.tag,
+			count(*) count,
+			group_concat(concat(song.artist, ' - ', song.name) separator '%s')
 		from song, songtag, tagcategory
 		where song.id = songtag.songid
 		and songtag.tag = tagcategory.tag
 		and category = 'years'
 		group by tagcategory.tag
 		order by tagcategory.tag;
-	};
+	}, $Flavors::Data::Util::SEPARATOR);
 
-	my %counts = map { $_->{TAG} => $_->{COUNT} } Flavors::Data::Util::Results($dbh, {
+	return [Flavors::Data::Util::Results($dbh, {
 		SQL => $sql,
-		COLUMNS => [qw(TAG COUNT)],
-	});
-	return \%counts;
+		COLUMNS => [qw(year count samples)],
+		GROUPCONCAT => ['samples'],
+	})];
 }
 
 1;

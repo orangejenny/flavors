@@ -27,12 +27,13 @@ function generateTimeline() {
 	CallRemote({
 		SUB: 'Flavors::Data::Tag::TimelineStats',
 		FINISH: function(data) {
-			data = _.map(data.YEARS, function(count, year) { return {
-				year: +year,
-				count: +count,
-				condition: "exists (select 1 from songtag where songtag.songid = songs.id and tag = '" + year + "')",
-				description: year + "\n" + count + " " + Pluralize(count, "song"),
-				filename: year,
+			data = _.map(data.YEARS, function(d) { return {
+				year: +d.YEAR,
+				count: +d.COUNT,
+				condition: "exists (select 1 from songtag where songtag.songid = songs.id and tag = '" + d.YEAR + "')",
+				description: d.YEAR + "\n" + d.COUNT + " " + Pluralize(+d.COUNT, "song"),
+				filename: d.YEAR,
+				samples: d.SAMPLES,
 			}; }).concat(_.map(data.SEASONS, function(d) { 
 				var text = seasons[d.SEASON] + ' ' + d.YEAR;
 				var seasonTagString = _.map(months[d.SEASON].concat(seasons[d.SEASON]), function(t) { return "'" + t + "'"; }).join(", ");
@@ -51,6 +52,7 @@ function generateTimeline() {
 					),
 					description: text + "\n" + d.COUNT + " " + Pluralize(d.COUNT, "song"),
 					filename: text,
+					samples: d.SAMPLES,
 				}; 
 			}));
 			var minYear = _.reduce(data, function(memo, d) { return Math.min(memo, d.year); }, Infinity);

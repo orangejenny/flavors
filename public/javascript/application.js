@@ -1,5 +1,5 @@
 jQuery(document).ready(function() {
-	jQuery("#loading").fadeOut('slow');
+	jQuery(".loading").fadeOut('slow');
 });
 
 /*
@@ -16,12 +16,37 @@ function CallRemote(args) {
 		args.ARGS = {};
 	}
 	args.ARGS.SUB = args.SUB;
+	var $spinner;
+	var originalPosition;
+	var done = false;
+	if (args.SPINNER) {
+		$spinner = jQuery("body .loading").clone();
+		$spinner.removeClass("hide");
+		var $container = _.isString(args.SPINNER) ? jQuery(args.SPINNER) : args.SPINNER;
+		oldPosition = $container.css("position");
+		$container.css("position", "relative");
+		// Display if AJAX takes a perceptible amount of time
+		_.delay(function() {
+			if (!done) {
+				$container.append($spinner);
+			}
+		}, 100);
+	}
 	jQuery.ajax({
 		type: 'POST',
 		url: 'remote.pl',
 		dataType: 'json',
 		data: args.ARGS, 
-		success: args.FINISH,
+		success: function(data, status, xhr) {
+			if (args.FINISH) {
+				if ($spinner) {
+					$spinner.remove();
+					done = true;
+					$container.css("position", oldPosition);
+				}
+				args.FINISH.call(this, data, status, xhr);
+			}
+		},
 		error: function() {
 			alert("Error in CallRemote");
 		}

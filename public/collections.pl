@@ -21,6 +21,7 @@ Flavors::HTML::Header({
 	BUTTONS => Flavors::HTML::ExportControl(),
 	CSS => ['collections.css'],
 	JS => ['collections.js'],
+	SPINNER => 1,
 });
 
 my @collections = Flavors::Data::Collection::List($dbh);

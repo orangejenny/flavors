@@ -15,12 +15,19 @@ Flavors::HTML::Header({
 	CSS => ['tags.css'],
 	JS => ['tags.js'],
 	TITLE => "Tags",
+	SPINNER => 1,
 });
 
 my @tags = Flavors::Data::Tag::List($dbh);
 
 # Print tags by frequency, click to pull up related tags
-print "<div class='post-nav category-tab'>" . join("", map { Flavors::HTML::Tag($_) } @tags) . "</div>";
+printf(qq{
+	<div class='post-nav'>
+		<div class='tag-container'>
+			%s
+		</div>
+	</div>
+}, join("", map { Flavors::HTML::Tag($_) } @tags));
 
 print q{
 	<div id="item-detail" class="modal">

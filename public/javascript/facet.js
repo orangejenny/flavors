@@ -42,6 +42,7 @@ function generateCategoryCharts(args) {
 	CallRemote({
 		SUB: 'Flavors::Data::Tag::CategoryStats',
 		ARGS: args,
+		SPINNER: containerSelector,
 		FINISH: function(data) {
 			data = _.map(data, function(d) { return {
 				tag: d.TAG,
@@ -145,6 +146,7 @@ function generateRatingChart(facet) {
 	CallRemote({
 		SUB: 'Flavors::Data::Song::Stats',
 		ARGS: { GROUPBY: facet },
+		SPINNER: containerSelector,
 		FINISH: function(data) {
 			data = _.map(data, function(d, i) { return {
 				condition: facet + '=' + i,

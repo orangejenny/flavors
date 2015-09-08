@@ -16,6 +16,7 @@ my $fdat = Flavors::Util::Fdat($cgi);
 Flavors::HTML::Header({
 	CSS => ['colors.css', 'thirdparty/jquery.miniColors.css'],
 	JS => ['colors.js', 'thirdparty/jquery.miniColors.js'],
+	SPINNER => 1,
 });
 
 my @colors = Flavors::Data::Tag::ColorList($dbh);

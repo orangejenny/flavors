@@ -17,6 +17,7 @@ function generateBarChart() {
 
 	CallRemote({
 		SUB: 'Flavors::Data::Collection::AcquisitionStats',
+		SPINNER: containerSelector,
 		FINISH: function(data) {
 			var minDate = new Date(d3.min(_.pluck(data, 'DATESTRING')) + "-15");
 			var maxDate = new Date(d3.max(_.pluck(data, 'DATESTRING')) + "-15");

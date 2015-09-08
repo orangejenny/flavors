@@ -26,6 +26,7 @@ function generateTimeline() {
 
 	CallRemote({
 		SUB: 'Flavors::Data::Tag::TimelineStats',
+		SPINNER: containerSelector,
 		FINISH: function(data) {
 			data = _.map(data.YEARS, function(d) { return {
 				year: +d.YEAR,

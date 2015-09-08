@@ -5,6 +5,7 @@ jQuery(document).ready(function() {
 		CallRemote({
 			SUB: 'Flavors::HTML::TagDetails', 
 			ARGS: { TAG: tag }, 
+			SPINNER: ".post-nav",
 			FINISH: function(data) {
 				var $modal = jQuery("#item-detail");
 				$modal.find('.modal-header h4').html(data.TITLE);

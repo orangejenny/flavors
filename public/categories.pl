@@ -16,6 +16,7 @@ my $fdat = Flavors::Util::Fdat($cgi);
 Flavors::HTML::Header({
 	CSS => ['categories.css'],
 	JS => ['categories.js'],
+	SPINNER => 1,
 });
 
 my @tags = Flavors::Data::Tag::List($dbh);

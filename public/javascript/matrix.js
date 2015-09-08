@@ -31,6 +31,7 @@ function generateBubbleChart() {
 	CallRemote({
 		SUB: 'Flavors::Data::Song::Stats',
 		ARGS: { GROUPBY: "rating, energy, mood" },
+		SPINNER: containerSelector,
 		FINISH: function(data) {
 			var bubbles = [];
 			for (e = 1; e <= 5; e++) {

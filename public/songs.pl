@@ -22,6 +22,7 @@ eval {
 	@songs = Flavors::Data::Song::List($dbh, {
 		FILTER => $fdat->{FILTER},
 		ORDERBY => $fdat->{ORDERBY},
+		SPINNER => 1,
 	});
 };
 

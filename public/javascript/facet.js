@@ -42,80 +42,83 @@ function generateCategoryCharts(args) {
 	CallRemote({
 		SUB: 'Flavors::Data::Tag::CategoryStats',
 		ARGS: args,
-		FINISH: function(data) {	// arry of objects, each with TAG (string) and VALUES (array with length 5)
+		FINISH: function(data) {
 			data = _.map(data, function(d) { return {
 				tag: d.TAG,
-				values: _.map(d.VALUES, function(v) { return +v; }),
-				description: _.map(d.VALUES, function(v, i) {
-					return v ? v + "\t" + StringMultiply("<span class='glyphicon " + icons[facet] + "'></span>", i+1) + "<br>" : "";
-				}).reverse().join(""),
-				condition: "exists (select 1 from songtag where songid = songs.id and tag = '" + d.TAG + "')",
-				filename: '[' + d.TAG + ']',
-				//samples: d.SAMPLES,
+				rating: +d.RATING,
+				count: +d.COUNT,
+				description: d.COUNT + ' ' + StringMultiply("<span class='glyphicon " + icons[facet] + "'></span>", +d.RATING),
+				condition: "exists (select 1 from songtag where songid = songs.id and tag = '" + d.TAG + "') and " + facet + " = " + d.RATING,
+				filename: '[' + d.TAG + '] ' + facet + ' ' + d.RATING,
+				samples: d.SAMPLES,
 			}; });
-			xScale.domain([0, d3.max(_.map(data, function(d) {
-				return 2 * (d.values[2] / 2 + Math.max(d.values[1] + d.values[0], d.values[3] + d.values[4]));
+
+			var tagCounts = _.map(_.groupBy(data, function(d) { return d.tag; }), function(d, tag) {
+				var counts = [0, 0, 0, 0, 0];
+				_.each(d, function(x) { counts[x.rating - 1] = +x.count });
+				return { tag: tag, counts: counts };
+			});
+			xScale.domain([0, 2 * _.max(_.map(tagCounts, function(d) {
+				return d.counts[2] / 2 + Math.max(d.counts[0] + d.counts[1], d.counts[3] + d.counts[4]);
 			}))]);
 
-			chart.attr("height", data.length * (barSize + textHeight));
+			chart.attr("height", tagCounts.length * (barSize + textHeight));
 			var bars = chart.selectAll("g")
 									.data(data)
 									.enter().append("g")
-									.attr("transform", function(d, i) { return "translate(0, " + i * (barSize + textHeight) + ")"; });
+									.attr("transform", function(d) {
+										return "translate(0, " + _.findIndex(tagCounts, function(x) { return x.tag === d.tag; }) * (barSize + textHeight) + ")";
+									});
 
-			_.each(_.range(5), function(index) {
-				bars.append("rect")
-						.attr("height", barSize - 5)
-						.attr("width", function(d) { return xScale(d.values[index]); })
-						.attr("x", function(d) {
-							// Start at midpoint
-							var x = width / 2;
-							var direction = index > 2 ? 1 : -1;
-							x += direction * xScale(d.values[2] / 2);
-							if (index == 2) {
-								// Center the 3-star rating
-								return x;
-							}
-							if (index < 2) {
-								// Push 1 and 2-star ratings left of center
-								_.each([0, 1], function(i) {
-									if (i >= index) {
-										x -= xScale(d.values[i]);
-									}
-								});
-							}
-							else {
-								// Push 4 and 5-star ratings right of center
-								_.each([3, 4], function(i) {
-									if (i <= index) {
-										x += xScale(d.values[i]);
-									}
-								});
-								x -= xScale(d.values[index]);
-							}
+			bars.append("rect")
+					.attr("height", barSize - 5)
+					.attr("width", function(d) { return xScale(d.count); })
+					.attr("x", function(d) {
+						var counts = _.find(tagCounts, function(x) { return x.tag === d.tag; }).counts
+
+						// Start at midpoint
+						var x = width / 2;
+						var direction = d.rating > 3 ? 1 : -1;
+						x += direction * xScale(counts[2] / 2);
+						if (d.rating === 3) {
+							// Center the 3-star rating
 							return x;
-						})
-						.attr("y", textHeight);
+						}
+						if (d.rating < 3) {
+							// Push 1 and 2-star ratings left of center
+							_.each([0, 1], function(i) {
+								if (i >= d.rating - 1) {
+									x -= xScale(counts[i]);
+								}
+							});
+						}
+						else {
+							// Push 4 and 5-star ratings right of center
+							 _.each([3, 4], function(i) {
+								if (i <= d.rating - 1) {
+									x += xScale(counts[i]);
+								}
+							});
+							x -= xScale(d.count);
+						}
+						return x;
+					})
+					.attr("y", textHeight)
+					.attr("class", function(d) { return "rating-" + d.rating; });
+
+			texted = {};
+			bars.each(function(d, i) {
+				if (!texted[d.tag]) {
+					d3.select(this).append("text")
+										.attr("x", width / 2)
+										.attr("y", barSize / 2)
+										.text(function(d) { return d.tag; });
+					texted[d.tag] = 1;
+				}
 			});
-			bars.append("text")
-									.attr("x", width / 2)
-									.attr("y", barSize / 2)
-									.text(function(d) { return d.tag; });
 
-			attachTooltip(containerSelector + " g");
-
-			attachSelectionHandlers(containerSelector + " g text", function(text) {
-				return d3.select(jQuery(text).closest("g").get(0));
-			});
-
-			attachSelectionHandlers(containerSelector + " g  rect");
-
-			d3.selectAll(containerSelector + " g rect").on("dblclick", function() {
-				ExportPlaylist({
-					//FILENAME: data.tag + ", " + facet + " " + value,
-					FILTER: getTagValueCondition(this),
-				});
-			});
+			attachTooltip(containerSelector + " g rect");
+			attachSelectionHandlers(containerSelector + " g");
 		},
 	});
 }
@@ -200,27 +203,4 @@ function generateRatingChart(facet) {
 			attachTooltip(containerSelector + " g");
 		},
 	});
-}
-
-function getTagValueCondition(rect) {
-	var $group = jQuery(rect).closest("g");
-	var facet = $group.closest(".category-container").data("facet");
-	var data = d3.select($group.get(0)).data()[0];
-	var value = jQuery("rect", $group).index(rect) + 1;
-	return data.condition + " and " + facet + " = " + value;
-}
-
-// Override data.js's getSelectionCondition. This setup is...not the best.
-function getSelectionCondition() {
-	var selected = d3.selectAll("g.selected");
-	var conditions = _.pluck(d3.selectAll(".distribution-container g.selected").data(), 'condition');
-
-	_.each(jQuery(".category-container rect.selected"), function(rect) {
-		conditions.push(getTagValueCondition(rect));
-	});
-	if (!conditions.length) {
-		alert("Nothing selected");
-		return '';
-	}
-	return _.map(conditions, function(c) { return "(" + c + ")"; }).join(" or ");
 }

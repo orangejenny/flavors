@@ -132,8 +132,8 @@ sub Add {
 #		ID: only this collection
 #		SONGID: only collections that include this song
 #
-# Return Value: array of hashrefs UNLESS ID is passed, in which
-#		case, return that single hashref
+# Return Value: array/arrayref of hashrefs UNLESS ID is passed,
+#		in which case, return that single hashref
 ################################################################
 sub List {
 	my ($dbh, $args) = @_;
@@ -272,7 +272,7 @@ sub List {
 		return $results[0];
 	}
 	else {
-		return $args->{REF} ? \@results : @results;
+		return wantarray ? @results : \@results;
 	}
 }
 

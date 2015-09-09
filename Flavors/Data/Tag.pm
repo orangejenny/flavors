@@ -205,10 +205,11 @@ sub List {
 			tag
 	};
 
-	return Flavors::Data::Util::Results($dbh, {
+	my @results = Flavors::Data::Util::Results($dbh, {
 		SQL => $sql,
 		COLUMNS => [qw(tag category metacategory count)],
 	});
+	return wantarray ? @results : \@results;
 }
 
 ################################################################

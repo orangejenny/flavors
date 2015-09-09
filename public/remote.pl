@@ -17,7 +17,6 @@ print $cgi->header(-type => "application/json");
 my $fdat = Flavors::Util::Fdat($cgi);
 
 my $sub = delete $fdat->{SUB};
-$fdat->{REF} = 1;
 
 my $dbh = Flavors::Data::Util::DBH();
 #warn "DO THIS: $sub(\$dbh, \$fdat)";

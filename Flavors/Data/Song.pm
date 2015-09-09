@@ -15,8 +15,8 @@ use Flavors::Data::Util;
 #		SIMPLEFILTER: string to apply against name, artist, and 
 #			collection names (disjunctive)
 #
-# Return Value: array of hashrefs UNLESS ID is passed, in which 
-#		case, return the single hashref
+# Return Value: array/arrayref of hashrefs UNLESS ID is passed,
+#		in which case, return the single hashref
 ################################################################
 sub List {
 	my ($dbh, $args) = @_;
@@ -133,7 +133,7 @@ sub List {
 		return $results[0];
 	}
 	else {
-		return $args->{REF} ? \@results : @results;
+		return wantarray ? @results : \@results;
 	}
 }
 

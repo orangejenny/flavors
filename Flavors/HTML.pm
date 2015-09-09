@@ -244,27 +244,6 @@ sub SelectionControl {
 }
 
 ################################################################
-# TagDetails
-#
-# Description: Generates HTML for dialog to view related tags
-#
-# Params:
-#		TAG
-#
-# Return Value: HTML
-################################################################
-sub TagDetails {
-	my ($dbh, $args) = @_;
-
-	my @tags = Flavors::Data::Tag::List($dbh, { RELATED => $args->{TAG} });
-
-	return {
-		TITLE => "Related Tags: $args->{TAG}",
-		CONTENT => join("", map { Tag($_) } @tags),
-	};
-}
-
-################################################################
 # TagSongList
 #
 # Description: Generates HTML for dialog to view all songs with

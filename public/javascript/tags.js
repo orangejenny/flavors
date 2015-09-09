@@ -1,5 +1,5 @@
 jQuery(document).ready(function() {
-	jQuery('.tag').css("cursor", "pointer").click(function() {
+	jQuery(document).on('click', '.tag', function() {
 		var tag = jQuery(this).text();
 		tag = tag.replace(/\(.*/, "");
 		var $modal = jQuery("#item-detail");

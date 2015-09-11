@@ -105,7 +105,7 @@ sub List {
 					or taglist like concat('%', ?, '%')
 					or exists (
 						select 1 from collection, songcollection
-						where collection.id = songcollection.collection.id
+						where collection.id = songcollection.collectionid
 						and song.id = songcollection.songid
 						and concat(' ', collection.name, ' ') like concat(' %', ?, '% ')
 					)

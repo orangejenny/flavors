@@ -1,3 +1,5 @@
+@import "imports.less";
+
 .songs, .tags {
 	padding: 0;
 	margin: 0;
@@ -9,6 +11,12 @@
 .modal-body .songs, .modal-body .tags {
 	width: 50%;
 	float: left;
+}
+
+.songs {
+	td {
+		border-bottom: 1px solid @greyLightest;
+	}
 }
 
 .tags {

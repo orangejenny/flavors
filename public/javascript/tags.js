@@ -27,7 +27,16 @@ jQuery(document).ready(function() {
 			FINISH: function(data) {
 				console.log("done with songs, found " + data.length);
 				$modal.find('.modal-body .songs').html(_.map(data, function(d) {
-					return "<li>" + d.ARTIST + " - " + d.NAME + "</li>";
+					// TODO: template
+					return "<tr>" + _.map([
+						d.ARTIST,
+						d.NAME,
+						"<span class='rating'>" + StringMultiply("<span class='glyphicon glyphicon-star'></span>", d.RATING) + "</span>",
+						"<span class='rating'>" + StringMultiply("<span class='glyphicon glyphicon-fire'></span>", d.ENERGY) + "</span>",
+						"<span class='rating'>" + StringMultiply("<span class='glyphicon glyphicon-heart'></span>", d.MOOD) + "</span>",
+					], function(content) {
+						return "<td>" + content + "</td>";
+					}).join("") + "</tr>";
 				}).join(""));
 			}
 		});

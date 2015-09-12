@@ -37,7 +37,7 @@ printf(q{
 				</div>
 				<div class="modal-body clearfix">
 					<ul class="tags"></ul>
-					<ul class="songs"></ul>
+					<table class="songs"></table>
 				</div>
 			</div>
 		</div>

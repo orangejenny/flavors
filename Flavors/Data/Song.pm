@@ -106,7 +106,7 @@ sub List {
 					or exists (
 						select 1 from collection, songcollection
 						where collection.id = songcollection.collectionid
-						and song.id = songcollection.songid
+						and songs.id = songcollection.songid
 						and concat(' ', collection.name, ' ') like concat(' %', ?, '% ')
 					)
 				)

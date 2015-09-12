@@ -35,7 +35,7 @@ printf(q{
 					<div class="pull-right">%s</div>
 					<h4></h4>
 				</div>
-				<div class="modal-body">
+				<div class="modal-body clearfix">
 					<ul class="tags"></ul>
 					<ul class="songs"></ul>
 				</div>

@@ -1,7 +1,7 @@
 jQuery(document).ready(function() {
 	jQuery(document).on('click', '.tag', function() {
 		var tag = jQuery(this).text();
-		tag = tag.replace(/\(.*/, "");
+		tag = tag.replace(/\s*\(.*/, "");
 		var $modal = jQuery("#item-detail");
 		$modal.data("tag", tag);
 		$modal.find('.modal-header h4').html(tag);
@@ -9,7 +9,7 @@ jQuery(document).ready(function() {
 		CallRemote({
 			SUB: 'Flavors::Data::Tag::List', 
 			ARGS: { RELATED: tag }, 
-			SPINNER: ".tags",
+			SPINNER: ".modal-body .tags",
 			FINISH: function(data) {
 				$modal.find('.modal-body .tags').html(_.map(data, function(d) {
 					// TODO: template
@@ -23,8 +23,9 @@ jQuery(document).ready(function() {
 				FILTER: "taglist like concat('% ', '" + tag + "', ' %')",
 				ORDERBY: "artist, name",
 			}, 
-			SPINNER: ".songs",
+			SPINNER: ".modal-body .songs",
 			FINISH: function(data) {
+				console.log("done with songs, found " + data.length);
 				$modal.find('.modal-body .songs').html(_.map(data, function(d) {
 					return "<li>" + d.ARTIST + " - " + d.NAME + "</li>";
 				}).join(""));

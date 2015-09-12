@@ -21,7 +21,7 @@ function CallRemote(args) {
 	var done = false;
 	if (args.SPINNER) {
 		$spinner = jQuery("body .loading").clone();
-		$spinner.removeClass("hide");
+		$spinner.show();
 		var $container = _.isString(args.SPINNER) ? jQuery(args.SPINNER) : args.SPINNER;
 		oldPosition = $container.css("position");
 		$container.css("position", "relative");

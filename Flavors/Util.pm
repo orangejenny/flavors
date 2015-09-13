@@ -56,10 +56,15 @@ sub Fdat {
 	my $q = CGI->new;
 	my $fdat;
 
-	foreach my $key ($q->param(), $q->url_param()) {
-		my $value = $q->param($key) || $q->url_param($key);
-		#$value = s/^\s+//;
-		#$value = s/\s+$//;
+	# GET
+	foreach my $key ($q->url_param()) {
+		my $value = $q->url_param($key);
+		$fdat->{uc($key)} = $value;
+	}
+
+	# POST (will override GET in conflicts)
+	foreach my $key ($q->param()) {
+		my $value = $q->param($key);
 		$fdat->{uc($key)} = $value;
 	}
 

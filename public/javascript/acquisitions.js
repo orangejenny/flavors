@@ -1,23 +1,32 @@
 jQuery(document).ready(function() {
-	generateBarChart();
+	var chart = new AcquisitionsChart(".chart-container");
+	chart.draw();
 });
 
-function generateBarChart() {
-	var containerSelector = ".chart-container";
-	var width = jQuery(containerSelector).width();
-	var height = 400;
-	var xAxisMargin = 20;
-	var margin = 0;
+function AcquisitionsChart(containerSelector) {
+	var self = this;
+	self.containerSelector = containerSelector;
+	self.width = jQuery(containerSelector).width();
+	self.height = 400;
+	self.xAxisMargin = 20;
+	self.margin = 0;
+	self.svg = d3.select(self.containerSelector + " svg");
+	self.dateFormat = d3.time.format("%b %Y");
+};
 
-	var chart = d3.select(containerSelector + " svg")
-						.attr("width", width)
-						.attr("height", height);
-	var scale = d3.scale.linear().range([0, height - xAxisMargin]);
-	var dateFormat = d3.time.format("%b %Y");
+AcquisitionsChart.prototype.setDimensions = function() {
+	this.svg.attr("width", this.width)
+			  .attr("height", this.height);
+};
+
+AcquisitionsChart.prototype.draw = function() {
+	var self = this;
+	self.setDimensions();
+	var scale = d3.scale.linear().range([0, self.height - self.xAxisMargin]);
 
 	CallRemote({
 		SUB: 'Flavors::Data::Collection::AcquisitionStats',
-		SPINNER: containerSelector,
+		SPINNER: self.containerSelector,
 		FINISH: function(data) {
 			var minDate = new Date(d3.min(_.pluck(data, 'DATESTRING')) + "-15");
 			var maxDate = new Date(d3.max(_.pluck(data, 'DATESTRING')) + "-15");
@@ -29,7 +38,7 @@ function generateBarChart() {
 
 			data = _.map(data, function(d) {
 				var date = new Date(d.DATESTRING + "-15");
-				var text = dateFormat(date);
+				var text = self.dateFormat(date);
 				return {
 					date: date,
 					month: date.getMonth() + 1,
@@ -42,9 +51,9 @@ function generateBarChart() {
 					samples: d.SAMPLES,
 				};
 			});
-			var barSize = width / (maxMonthCount - minMonthCount + 1) - margin;
+			var barSize = self.width / (maxMonthCount - minMonthCount + 1) - self.margin;
 			scale.domain([0, d3.max(_.pluck(data, 'count'))]);
-			var bars = chart.selectAll("g")
+			var bars = self.svg.selectAll("g")
 									.data(data)
 									.enter().append("g")
 									.attr("transform", function(d, i) {
@@ -52,26 +61,26 @@ function generateBarChart() {
 									});
 
 			bars.append("rect")
-					.attr("y", function(d) { return height - xAxisMargin - scale(d.count); })
-					.attr("width", barSize - margin)
+					.attr("y", function(d) { return self.height - self.xAxisMargin - scale(d.count); })
+					.attr("width", barSize - self.margin)
 					.attr("height", function(d) { return scale(d.count); });
 
-			chart.append("line")
+			self.svg.append("line")
 					.attr("class", "axis")
 					.attr("x1", 0)
-					.attr("y1", height - xAxisMargin)
-					.attr("x2", width)
-					.attr("y2", height - xAxisMargin);
-			xAxis.tickValues(_.map(_.range(0, width, barSize * 12), function(x) { return x + barSize * 6; }))
+					.attr("y1", self.height - self.xAxisMargin)
+					.attr("x2", self.width)
+					.attr("y2", self.height - self.xAxisMargin);
+			xAxis.tickValues(_.map(_.range(0, self.width, barSize * 12), function(x) { return x + barSize * 6; }))
 					.tickFormat(function(t) { return Math.round((t - barSize * 6) / barSize) / 12 + minDate.getFullYear(); });
-			chart.append("g")
+			self.svg.append("g")
 					.attr("class", "axis")
-					.attr("transform", "translate(0," + (height - xAxisMargin) + ")")
+					.attr("transform", "translate(0," + (self.height - self.xAxisMargin) + ")")
 					.call(xAxis);
-			chart.selectAll(".axis text").attr("y", 2);
+			self.svg.selectAll(".axis text").attr("y", 2);
 
-			attachSelectionHandlers(containerSelector + " g");
-			attachTooltip(containerSelector + " g:not(.axis)");
+			attachSelectionHandlers(self.containerSelector + " g");
+			attachTooltip(self.containerSelector + " g:not(.axis)");
 		}
 	});
 }

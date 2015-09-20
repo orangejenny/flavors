@@ -126,6 +126,15 @@ function UpperCaseFirst(str) {
 	return first + rest;
 }
 
+/*
+ * InitialPageData
+ *
+ * Description: Fetch value from page's initial
+ * server-sent data dump.
+ * 
+ * Args
+ * Key to fetch
+ */
 function InitialPageData(key) {
 	key = key.toUpperCase();
 	var data = jQuery("#initial-page-data").html();

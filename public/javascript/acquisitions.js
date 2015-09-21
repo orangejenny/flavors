@@ -16,7 +16,7 @@ function AcquisitionsChart(selector) {
 	self.svg = d3.select(self.selector + " svg");
 	self.width = jQuery(selector).width();
 	self.height = 400;
-	self.xAxis = d3.svg.axis().orient('bottom');
+	self.xAxis = d3.svg.axis();
 	self.xAxisMargin = 20;
 };
 
@@ -35,6 +35,13 @@ AcquisitionsChart.prototype.draw = function(data) {
 	self.attachEvents();
 };
 
+AcquisitionsChart.prototype.drawAxes = function(dateStrings) {
+	var self = this;
+	self.formatXAxis(dateStrings);
+	self.drawXAxis();
+	self.drawXAxisLabels();
+};
+
 AcquisitionsChart.prototype.drawBars = function(data, dateStrings) {
 	var self = this;
 	var barData = self.getBarData(data, dateStrings);
@@ -46,18 +53,11 @@ AcquisitionsChart.prototype.drawBars = function(data, dateStrings) {
 								return "translate(" + d.monthCount * barSize + ", 0)";
 							});
 
-	var scale = self.getScale(barData);
+	var xScale = self.getXScale(barData);
 	bars.append("rect")
-			.attr("y", function(d) { return self.height - self.xAxisMargin - scale(d.count); })
+			.attr("y", function(d) { return self.height - self.xAxisMargin - xScale(d.count); })
 			.attr("width", barSize - self.barMargin)
-			.attr("height", function(d) { return scale(d.count); });
-};
-
-AcquisitionsChart.prototype.drawAxes = function(dateStrings) {
-	var self = this;
-	self.drawXAxis();
-	self.formatXAxis(dateStrings);
-	self.drawXAxisLabels();
+			.attr("height", function(d) { return xScale(d.count); });
 };
 
 AcquisitionsChart.prototype.drawXAxis = function(dateStrings) {
@@ -82,8 +82,9 @@ AcquisitionsChart.prototype.drawXAxisLabels = function(dateStrings) {
 AcquisitionsChart.prototype.formatXAxis = function(dateStrings) {
 	var self = this;
 	var barSize = self.getBarSize(self.getMinMonthCount(dateStrings), self.getMaxMonthCount(dateStrings));
-	self.xAxis.tickValues(_.map(_.range(0, self.width, barSize * 12), function(x) { return x + barSize * 6; }))
-			.tickFormat(function(t) { return Math.round((t - barSize * 6) / barSize) / 12 + self.getMinYear(dateStrings); });
+	self.xAxis.orient('bottom')
+					.tickValues(_.map(_.range(0, self.width, barSize * 12), function(x) { return x + barSize * 6; }))
+					.tickFormat(function(t) { return Math.round((t - barSize * 6) / barSize) / 12 + self.getMinYear(dateStrings); });
 };
 
 AcquisitionsChart.prototype.getBarData = function(data, dateStrings) {
@@ -126,7 +127,7 @@ AcquisitionsChart.prototype.getMinYear = function(dateStrings) {
 	return minDate.getFullYear();
 };
 
-AcquisitionsChart.prototype.getScale = function(data) {
+AcquisitionsChart.prototype.getXScale = function(data) {
 	var self = this;
 	var scale = d3.scale.linear().range([0, self.height - self.xAxisMargin]);
 	scale.domain([0, d3.max(_.pluck(data, 'count'))]);

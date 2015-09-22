@@ -31,16 +31,20 @@ Flavors::HTML::Header({
 print qq{ <div class="post-nav"> };
 
 # Distribution and rated/unrated chart
-printf(qq{ <div class="distribution-container" data-facet="%s"> }, $facet);
-print qq{ <svg class="distribution"></svg> };
-print qq{ <div class='axis'> };
-foreach my $i (1..5) {
-	printf("<span class='axis-label'>%s</span>", Flavors::HTML::Rating($i, $icons{$facet}));
-}
-print qq{ </div> };
-
-print qq{ <svg class="unrated"></svg> };
-print qq{ </div> };
+printf(qq{
+		<div class="facet-container" data-facet="%s">
+			<div class="histogram-container">
+				<svg></svg>
+			</div>
+			<div class='axis'>%s</div>
+			<div class="binary-container">
+				<svg></svg>
+			</div>
+		</div>
+	},
+	$facet,
+	join("", map { sprintf("<span class='axis-label'>%s</span>", Flavors::HTML::Rating($_, $icons{$facet})) } (1..5)),
+);
 
 # Toolbar
 my @categories = Flavors::Data::Tag::CategoryList($dbh);

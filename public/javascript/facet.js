@@ -1,12 +1,13 @@
 jQuery(document).ready(function() {
-	var facet = jQuery(".distribution-container").data("facet");
-	var selector = ".distribution-container[data-facet='" + facet + "']";
+	var selector = ".facet-container";
+	var facet = jQuery(selector).data("facet");
 	CallRemote({
 		SUB: 'Flavors::Data::Song::Stats',
 		ARGS: { GROUPBY: facet },
 		SPINNER: selector,
 		FINISH: function(data) {
-			(new Histogram(selector, 5)).draw(data);
+			(new Histogram(".histogram-container", facet, 5)).draw(data);
+			(new BinaryChart(".binary-container", facet)).draw(data);
 		},
 	});
 
@@ -130,14 +131,23 @@ function generateCategoryCharts(args) {
 	});
 }
 
-function Histogram(selector, range) {
+function Histogram(selector, facet, range) {
 	var self = this;
 	self.selector = selector;
+	self.facet = facet;
 	self.range = range;	// number of bars
-	self.facet = jQuery(selector).data("facet");
+	self.height = 150;
 	self.width = jQuery(self.selector).width();
 	self.barMargin = 10;
 	self.barSize = self.width / range;
+}
+
+function BinaryChart(selector, facet) {
+	var self = this;
+	self.selector = selector;
+	self.facet = facet;
+	self.width = jQuery(self.selector).width();
+	self.barMargin = 10;
 }
 
 Histogram.prototype.draw = function(data) {
@@ -145,13 +155,44 @@ Histogram.prototype.draw = function(data) {
 
 	var distributionHeight = 150;
 	var distributionScale = d3.scale.linear().range([distributionHeight, 0]);
-	var distribution = d3.select(self.selector + " svg.distribution")
+	var distribution = d3.select(self.selector + " svg")
 								.attr("width", self.width)
 								.attr("height", distributionHeight);
 
+			data.shift();	// pop off unrated data
+			data = _.map(data, function(d, i) { return {
+				condition: self.facet + '=' + i,
+				value: +d.COUNT,
+				description: +d.COUNT + " " + StringMultiply("<span class='glyphicon " + icons[self.facet] + "'></span>", i),
+				samples: d.SAMPLES,
+			} });
+
+			// Create distribution chart
+			distributionScale.domain([0, d3.max(_.pluck(data, 'value'))])
+			var distributionBars = distribution.selectAll("g")
+															.data(data)
+															.enter().append("g")
+															.attr("transform", function(d, i) { return "translate(" + i * self.barSize + ", 0)"; });
+			distributionBars.append("rect")
+									.attr("y", function(d) { return distributionScale(d.value); })
+									.attr("width", self.barSize - self.barMargin)
+									.attr("height", function(d) { return distributionHeight - distributionScale(d.value); });
+			distributionBars.append("text")
+									.attr("x", self.barSize / 2)
+									.attr("y",  function(d) { return distributionScale(d.value) + barTextOffset; })
+									.attr("dy", "0.75em")	// center-align text
+									.text(function(d) { return d.value; });
+
+			attachSelectionHandlers(self.selector + " g");
+			attachTooltip(self.selector + " g");
+}
+
+BinaryChart.prototype.draw = function(data) {
+	var self = this;
+
 	var unratedScale = d3.scale.linear().range([0, self.width - self.barMargin]);
 	var unratedBarSize = 50;
-	var unrated = d3.select(self.selector + " svg.unrated")
+	var unrated = d3.select(self.selector + " svg")
 							.attr("width", self.width)
 							.attr("height", unratedBarSize);
 
@@ -191,22 +232,6 @@ Histogram.prototype.draw = function(data) {
 							.attr("y", unratedBarSize / 4)
 							.attr("dy", "0.35em")
 							.text(function(d, i) { return i == 0 ? ratedData.value + " rated" : unratedData.value + " unrated"; });
-
-			// Create distribution chart
-			distributionScale.domain([0, d3.max(_.pluck(data, 'value'))])
-			var distributionBars = distribution.selectAll("g")
-															.data(data)
-															.enter().append("g")
-															.attr("transform", function(d, i) { return "translate(" + i * self.barSize + ", 0)"; });
-			distributionBars.append("rect")
-									.attr("y", function(d) { return distributionScale(d.value); })
-									.attr("width", self.barSize - self.barMargin)
-									.attr("height", function(d) { return distributionHeight - distributionScale(d.value); });
-			distributionBars.append("text")
-									.attr("x", self.barSize / 2)
-									.attr("y",  function(d) { return distributionScale(d.value) + barTextOffset; })
-									.attr("dy", "0.75em")	// center-align text
-									.text(function(d) { return d.value; });
 
 			attachSelectionHandlers(self.selector + " g");
 			attachTooltip(self.selector + " g");

@@ -131,6 +131,86 @@ function generateCategoryCharts(args) {
 	});
 }
 
+function BinaryChart(selector, facet) {
+	var self = this;
+	self.selector = selector;
+	self.facet = facet;
+	self.height = 50;
+	self.width = jQuery(self.selector).width();
+	self.barMargin = 10;
+	self.barTextOffset = 4;
+	self.svg = d3.select(self.selector + " svg");
+}
+
+BinaryChart.prototype.attachEvents = function() {
+	var self = this;
+	attachSelectionHandlers(self.selector + " g");
+	attachTooltip(self.selector + " g");
+}
+
+BinaryChart.prototype.draw = function(data) {
+	var self = this;
+	self.setDimensions();
+
+	data = _.map(data, function(d, i) { return {
+		condition: self.facet + '=' + i,
+		value: +d.COUNT,
+		description: +d.COUNT + " " + StringMultiply("<span class='glyphicon " + icons[self.facet] + "'></span>", i),
+		samples: d.SAMPLES,
+	} });
+	var unratedData = data[0];
+	unratedData.condition = self.facet + ' is null';
+	unratedData.description = unratedData.value + " unrated " + Pluralize(unratedData.value, "song");
+	var ratedData = {
+		value: _.reduce(_.rest(data), function(memo, value) { return memo + value.value; }, 0),
+		condition: self.facet + ' is not null',
+	};
+	ratedData.description = ratedData.value + " rated " + Pluralize(ratedData.value, "song");
+	ratedData.samples = _.reduce(_.rest(data), function(memo, value) { return memo.concat(value.samples); }, []);
+	var bars = self.drawBars(ratedData, unratedData);
+	self.drawBarLabels(ratedData, unratedData, bars);
+	self.attachEvents();
+};
+
+BinaryChart.prototype.drawBarLabels = function(ratedData, unratedData, bars) {
+	var self = this;
+	bars.append("text")
+			.attr("x", function(d, i) { return i == 0 ? self.barTextOffset : self.width - self.barTextOffset - self.barMargin; })
+			.attr("y", self.height / 4)
+			.attr("dy", "0.35em")
+			.text(function(d, i) { return i == 0 ? ratedData.value + " rated" : unratedData.value + " unrated"; });
+};
+
+BinaryChart.prototype.drawBars = function(ratedData, unratedData) {
+	var self = this;
+	var bars = self.svg.selectAll("g")
+								.data([ratedData, unratedData])
+								.enter().append("g");
+	var scale = self.getScale(ratedData.value + unratedData.value);
+	bars.filter(":nth-child(1)").append("rect")
+											.attr("x", 0)
+											.attr("width", scale(ratedData.value))
+											.attr("height", self.height / 2);
+	bars.filter(":nth-child(2)").append("rect")
+											.attr("x", scale(ratedData.value))
+											.attr("width", scale(unratedData.value))
+											.attr("height", self.height / 2);
+	return bars;
+};
+
+BinaryChart.prototype.getScale = function(total) {
+	var self = this;
+	var scale = d3.scale.linear();
+	scale.range([0, self.width - self.barMargin]);
+	scale.domain([0, total]);
+	return scale;
+};
+
+BinaryChart.prototype.setDimensions = function() {
+	this.svg.attr("width", this.width)
+			  .attr("height", this.height);
+};
+
 function Histogram(selector, facet, range) {
 	var self = this;
 	self.selector = selector;
@@ -140,99 +220,61 @@ function Histogram(selector, facet, range) {
 	self.width = jQuery(self.selector).width();
 	self.barMargin = 10;
 	self.barSize = self.width / range;
+	self.barTextOffset = 4;
+	self.svg = d3.select(self.selector + " svg");
 }
 
-function BinaryChart(selector, facet) {
+Histogram.prototype.attachEvents = function() {
 	var self = this;
-	self.selector = selector;
-	self.facet = facet;
-	self.width = jQuery(self.selector).width();
-	self.barMargin = 10;
-}
+	attachSelectionHandlers(self.selector + " g");
+	attachTooltip(self.selector + " g");
+};
 
 Histogram.prototype.draw = function(data) {
 	var self = this;
+	data = _.rest(_.map(data, function(d, i) { return {
+		condition: self.facet + '=' + i,
+		value: +d.COUNT,
+		description: +d.COUNT + " " + StringMultiply("<span class='glyphicon " + icons[self.facet] + "'></span>", i),
+		samples: d.SAMPLES,
+	} }));
+	self.setDimensions();
+	var bars = self.drawBars(data);
+	self.drawBarLabels(data, bars);
+	self.attachEvents();
+};
 
-	var distributionHeight = 150;
-	var distributionScale = d3.scale.linear().range([distributionHeight, 0]);
-	var distribution = d3.select(self.selector + " svg")
-								.attr("width", self.width)
-								.attr("height", distributionHeight);
-
-			data.shift();	// pop off unrated data
-			data = _.map(data, function(d, i) { return {
-				condition: self.facet + '=' + i,
-				value: +d.COUNT,
-				description: +d.COUNT + " " + StringMultiply("<span class='glyphicon " + icons[self.facet] + "'></span>", i),
-				samples: d.SAMPLES,
-			} });
-
-			// Create distribution chart
-			distributionScale.domain([0, d3.max(_.pluck(data, 'value'))])
-			var distributionBars = distribution.selectAll("g")
-															.data(data)
-															.enter().append("g")
-															.attr("transform", function(d, i) { return "translate(" + i * self.barSize + ", 0)"; });
-			distributionBars.append("rect")
-									.attr("y", function(d) { return distributionScale(d.value); })
-									.attr("width", self.barSize - self.barMargin)
-									.attr("height", function(d) { return distributionHeight - distributionScale(d.value); });
-			distributionBars.append("text")
-									.attr("x", self.barSize / 2)
-									.attr("y",  function(d) { return distributionScale(d.value) + barTextOffset; })
-									.attr("dy", "0.75em")	// center-align text
-									.text(function(d) { return d.value; });
-
-			attachSelectionHandlers(self.selector + " g");
-			attachTooltip(self.selector + " g");
-}
-
-BinaryChart.prototype.draw = function(data) {
+Histogram.prototype.drawBarLabels = function(data, bars) {
 	var self = this;
+	bars.append("text")
+			.attr("x", self.barSize / 2)
+			.attr("y",  function(d) { return self.getYScale(data).call(null, d.value) + self.barTextOffset; })
+			.attr("dy", "0.75em")	// center-align text
+			.text(function(d) { return d.value; });
+};
 
-	var unratedScale = d3.scale.linear().range([0, self.width - self.barMargin]);
-	var unratedBarSize = 50;
-	var unrated = d3.select(self.selector + " svg")
-							.attr("width", self.width)
-							.attr("height", unratedBarSize);
+Histogram.prototype.drawBars = function(data) {
+	var self = this;
+	var bars = self.svg.selectAll("g")
+								.data(data)
+								.enter().append("g")
+								.attr("transform", function(d, i) { return "translate(" + i * self.barSize + ", 0)"; });
+	var yScale = self.getYScale(data);
+	bars.append("rect")
+			.attr("y", function(d) { return yScale(d.value); })
+			.attr("width", self.barSize - self.barMargin)
+			.attr("height", function(d) { return self.height - yScale(d.value); });
+	return bars;
+};
 
-			data = _.map(data, function(d, i) { return {
-				condition: self.facet + '=' + i,
-				value: +d.COUNT,
-				description: +d.COUNT + " " + StringMultiply("<span class='glyphicon " + icons[self.facet] + "'></span>", i),
-				samples: d.SAMPLES,
-			} });
-			// Create unrated chart: quite janky
-			var unratedData = data.shift();
-			unratedData.condition = self.facet + ' is null';
-			unratedData.description = unratedData.value + " unrated " + Pluralize(unratedData.value, "song");
-			var ratedData = {
-				value: _.reduce(data, function(memo, value) { return memo + value.value; }, 0),
-				condition: self.facet + ' is not null',
-			};
-			ratedData.description = ratedData.value + " rated " + Pluralize(ratedData.value, "song");
-			ratedData.samples = _.reduce(data, function(memo, value) { return memo.concat(value.samples); }, []);
-			unratedScale.domain([0, ratedData.value + unratedData.value]);
-			var unratedBars = unrated.selectAll("g")
-												.data([ratedData, unratedData])
-												.enter().append("g");
-			// "rated" bar
-			unratedBars.filter(":nth-child(1)").append("rect")
-															.attr("x", 0)
-															.attr("width", unratedScale(ratedData.value))
-															.attr("height", unratedBarSize / 2);
-			// "unrated" bar
-			unratedBars.filter(":nth-child(2)").append("rect")
-															.attr("x", unratedScale(ratedData.value))
-															.attr("width", unratedScale(unratedData.value))
-															.attr("height", unratedBarSize / 2);
-			// text for both bars
-			unratedBars.append("text")
-							.attr("x", function(d, i) { return i == 0 ? barTextOffset : self.width - barTextOffset - self.barMargin; })
-							.attr("y", unratedBarSize / 4)
-							.attr("dy", "0.35em")
-							.text(function(d, i) { return i == 0 ? ratedData.value + " rated" : unratedData.value + " unrated"; });
+Histogram.prototype.getYScale = function(data) {
+	var self = this;
+	var scale = d3.scale.linear().range([self.height, 0]);
+	scale.domain([0, d3.max(_.pluck(data, 'value'))])
+	return scale;
+};
 
-			attachSelectionHandlers(self.selector + " g");
-			attachTooltip(self.selector + " g");
-}
+Histogram.prototype.setDimensions = function() {
+	this.svg.attr("width", this.width)
+			  .attr("height", this.height);
+};

@@ -27,10 +27,6 @@ jQuery(document).ready(function() {
 	});
 });
 
-// Global chart aesthetics
-// TODO: get out of global namespace
-var barTextOffset = 4;
-
 function setClearVisibility() {
 	if (jQuery(".selected").length) {
 		jQuery(".selection-buttons").removeClass("hide");

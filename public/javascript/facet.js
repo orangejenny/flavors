@@ -1,7 +1,13 @@
 jQuery(document).ready(function() {
-	// Generate rating charts
-	jQuery(".distribution-container").each(function() {
-		generateRatingChart(jQuery(this).data("facet"));
+	var facet = jQuery(".distribution-container").data("facet");
+	var selector = ".distribution-container[data-facet='" + facet + "']";
+	CallRemote({
+		SUB: 'Flavors::Data::Song::Stats',
+		ARGS: { GROUPBY: facet },
+		SPINNER: selector,
+		FINISH: function(data) {
+			(new Histogram(selector, 5)).draw(data);
+		},
 	});
 
 	// Handler for generating category charts
@@ -124,43 +130,44 @@ function generateCategoryCharts(args) {
 	});
 }
 
-// TODO: genericize (not 5 bars)
-function generateRatingChart(facet) {
-	var containerSelector = ".distribution-container[data-facet='" + facet + "']";
-	var width = jQuery(containerSelector).width();
-	var barSize = width / 5;	// 5 bars in each distribution
-	var barMargin = 10;
+function Histogram(selector, range) {
+	var self = this;
+	self.selector = selector;
+	self.range = range;	// number of bars
+	self.facet = jQuery(selector).data("facet");
+	self.width = jQuery(self.selector).width();
+	self.barMargin = 10;
+	self.barSize = self.width / range;
+}
+
+Histogram.prototype.draw = function(data) {
+	var self = this;
 
 	var distributionHeight = 150;
 	var distributionScale = d3.scale.linear().range([distributionHeight, 0]);
-	var distribution = d3.select(containerSelector + " svg.distribution")
-								.attr("width", width)
+	var distribution = d3.select(self.selector + " svg.distribution")
+								.attr("width", self.width)
 								.attr("height", distributionHeight);
 
-	var unratedScale = d3.scale.linear().range([0, width - barMargin]);
+	var unratedScale = d3.scale.linear().range([0, self.width - self.barMargin]);
 	var unratedBarSize = 50;
-	var unrated = d3.select(containerSelector + " svg.unrated")
-							.attr("width", width)
+	var unrated = d3.select(self.selector + " svg.unrated")
+							.attr("width", self.width)
 							.attr("height", unratedBarSize);
 
-	CallRemote({
-		SUB: 'Flavors::Data::Song::Stats',
-		ARGS: { GROUPBY: facet },
-		SPINNER: containerSelector,
-		FINISH: function(data) {
 			data = _.map(data, function(d, i) { return {
-				condition: facet + '=' + i,
+				condition: self.facet + '=' + i,
 				value: +d.COUNT,
-				description: +d.COUNT + " " + StringMultiply("<span class='glyphicon " + icons[facet] + "'></span>", i),
+				description: +d.COUNT + " " + StringMultiply("<span class='glyphicon " + icons[self.facet] + "'></span>", i),
 				samples: d.SAMPLES,
 			} });
 			// Create unrated chart: quite janky
 			var unratedData = data.shift();
-			unratedData.condition = facet + ' is null';
+			unratedData.condition = self.facet + ' is null';
 			unratedData.description = unratedData.value + " unrated " + Pluralize(unratedData.value, "song");
 			var ratedData = {
 				value: _.reduce(data, function(memo, value) { return memo + value.value; }, 0),
-				condition: facet + ' is not null',
+				condition: self.facet + ' is not null',
 			};
 			ratedData.description = ratedData.value + " rated " + Pluralize(ratedData.value, "song");
 			ratedData.samples = _.reduce(data, function(memo, value) { return memo.concat(value.samples); }, []);
@@ -180,7 +187,7 @@ function generateRatingChart(facet) {
 															.attr("height", unratedBarSize / 2);
 			// text for both bars
 			unratedBars.append("text")
-							.attr("x", function(d, i) { return i == 0 ? barTextOffset : width - barTextOffset - barMargin; })
+							.attr("x", function(d, i) { return i == 0 ? barTextOffset : self.width - barTextOffset - self.barMargin; })
 							.attr("y", unratedBarSize / 4)
 							.attr("dy", "0.35em")
 							.text(function(d, i) { return i == 0 ? ratedData.value + " rated" : unratedData.value + " unrated"; });
@@ -190,19 +197,17 @@ function generateRatingChart(facet) {
 			var distributionBars = distribution.selectAll("g")
 															.data(data)
 															.enter().append("g")
-															.attr("transform", function(d, i) { return "translate(" + i * barSize + ", 0)"; });
+															.attr("transform", function(d, i) { return "translate(" + i * self.barSize + ", 0)"; });
 			distributionBars.append("rect")
 									.attr("y", function(d) { return distributionScale(d.value); })
-									.attr("width", barSize - barMargin)
+									.attr("width", self.barSize - self.barMargin)
 									.attr("height", function(d) { return distributionHeight - distributionScale(d.value); });
 			distributionBars.append("text")
-									.attr("x", barSize / 2)
+									.attr("x", self.barSize / 2)
 									.attr("y",  function(d) { return distributionScale(d.value) + barTextOffset; })
 									.attr("dy", "0.75em")	// center-align text
 									.text(function(d) { return d.value; });
 
-			attachSelectionHandlers(containerSelector + " g");
-			attachTooltip(containerSelector + " g");
-		},
-	});
+			attachSelectionHandlers(self.selector + " g");
+			attachTooltip(self.selector + " g");
 }

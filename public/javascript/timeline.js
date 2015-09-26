@@ -4,40 +4,26 @@ jQuery(document).ready(function() {
 		SUB: 'Flavors::Data::Tag::TimelineStats',
 		SPINNER: selector,
 		FINISH: function(data) {
-			(new TimelineChart(selector)).draw(data);
+			var chart = new TimelineChart(selector);
+			chart.setDimensions(jQuery(selector).width(), 300);
+			chart.draw(data);
 		},
 	});
 });
 
 function TimelineChart(selector) {
 	var self = this;
-	self.selector = selector;
-	self.svg = d3.select(self.selector + " svg");
-	self.height = 300;
-	self.width = jQuery(self.selector).width();
+	Chart.call(self, selector);
 	self.maxYear = undefined;
 	self.minYear = undefined;
 	self.xAxis = d3.svg.axis();
 	self.xAxisMargin = 20;
 };
+TimelineChart.prototype = Object.create(Chart.prototype);
 
-TimelineChart.prototype.attachEvents = function() {
+TimelineChart.prototype.drawAxes = function() {
 	var self = this;
-	attachSelectionHandlers(self.selector + " g");
-	attachTooltip(self.selector + " g:not(.axis)");
-};
-
-TimelineChart.prototype.draw = function(data) {
-	var self = this;
-	self.setDimensions();
-	self.drawBars(data);
-	self.drawAxes(data);
-	self.attachEvents();
-};
-
-TimelineChart.prototype.drawAxes = function(data) {
-	var self = this;
-	self.formatXAxis(data);
+	self.formatXAxis(self.data);
 	self.drawXAxisLabels();
 };
 
@@ -58,45 +44,28 @@ TimelineChart.prototype.formatXAxis = function(data) {
 					.tickValues(_.map(_.range(self.getMinYear(data), self.getMaxYear(data)), function(y) { return y + .5; }));
 };
 
-TimelineChart.prototype.drawBars = function(data) {
+TimelineChart.prototype.drawData = function() {
 	var self = this;
-	data = self.getBarData(data);
-	var barSize = self.width / (self.getMaxYear(data) - self.getMinYear(data) + 1);
+	var barSize = self.width / (self.getMaxYear(self.data) - self.getMinYear(self.data) + 1);
 	var bars = self.svg.selectAll("g")
-								.data(data)
+								.data(self.data)
 								.enter().append("g")
 								.attr("transform", function(d, i) {
-									return "translate(" + self.getXScale(data).call(null, d.year) + ", 0)";
+									return "translate(" + self.getXScale(self.data).call(null, d.year) + ", 0)";
 								});
 	bars.append("rect")
 			.attr("x", function(d) { return d.season === undefined ? 0 : d.season * (barSize / 4); })
-			.attr("y", function(d) { return self.getYScale(data).call(null, d.count); })
+			.attr("y", function(d) { return self.getYScale(self.data).call(null, d.count); })
 			.attr("width", function(d) { return d.season === undefined ? barSize - 1 : (barSize - 4) / 4; })
-			.attr("height", function(d) { return self.height - self.xAxisMargin - self.getYScale(data).call(null, d.count); })
+			.attr("height", function(d) { return self.height - self.xAxisMargin - self.getYScale(self.data).call(null, d.count); })
 			.style("opacity", function(d) { return d.season === undefined ? 0.25 : 1; });
 };
 
-TimelineChart.prototype.getBarData = function(data) {
-	return this.getYearData(data).concat(this.getSeasonData(data));
+TimelineChart.prototype.formatData = function(data) {
+	return this.formatYearData(data).concat(this.formatSeasonData(data));
 };
 
-TimelineChart.prototype.getMaxYear = function(data) {
-	var self = this;
-	if (!self.maxYear) {
-		self.maxYear = _.reduce(data, function(memo, d) { return Math.max(memo, d.year + 1); }, 0);
-	}
-	return self.maxYear;
-}
-
-TimelineChart.prototype.getMinYear = function(data) {
-	var self = this;
-	if (!self.minYear) {
-		self.minYear = _.reduce(data, function(memo, d) { return Math.min(memo, d.year); }, Infinity);
-	}
-	return self.minYear;
-};
-
-TimelineChart.prototype.getSeasonData = function(data) {
+TimelineChart.prototype.formatSeasonData = function(data) {
 	var self = this;
 	var months = [
 		['december', 'january', 'february'],
@@ -128,14 +97,7 @@ TimelineChart.prototype.getSeasonData = function(data) {
 	});
 };
 
-TimelineChart.prototype.getXScale = function(data) {
-	var self = this;
-	var scale = d3.scale.linear().range([0, self.width]);
-	scale.domain([self.getMinYear(data), self.getMaxYear(data)]);
-	return scale;
-};
-
-TimelineChart.prototype.getYearData = function(data) {
+TimelineChart.prototype.formatYearData = function(data) {
 	return _.map(data.YEARS, function(d) { return {
 		year: +d.YEAR,
 		count: +d.COUNT,
@@ -146,14 +108,32 @@ TimelineChart.prototype.getYearData = function(data) {
 	}; });
 };
 
+TimelineChart.prototype.getMaxYear = function(data) {
+	var self = this;
+	if (!self.maxYear) {
+		self.maxYear = _.reduce(data, function(memo, d) { return Math.max(memo, d.year + 1); }, 0);
+	}
+	return self.maxYear;
+}
+
+TimelineChart.prototype.getMinYear = function(data) {
+	var self = this;
+	if (!self.minYear) {
+		self.minYear = _.reduce(data, function(memo, d) { return Math.min(memo, d.year); }, Infinity);
+	}
+	return self.minYear;
+};
+
+TimelineChart.prototype.getXScale = function(data) {
+	var self = this;
+	var scale = d3.scale.linear().range([0, self.width]);
+	scale.domain([self.getMinYear(data), self.getMaxYear(data)]);
+	return scale;
+};
+
 TimelineChart.prototype.getYScale = function(data) {
 	var self = this;
 	var scale = d3.scale.linear().range([0, self.height - self.xAxisMargin]);
 	scale.domain([_.reduce(data, function(memo, d) { return Math.max(memo, d.count); }, 0), 0]);
 	return scale;
-};
-
-TimelineChart.prototype.setDimensions = function() {
-	this.svg.attr("width", this.width)
-			  .attr("height", this.height);
 };

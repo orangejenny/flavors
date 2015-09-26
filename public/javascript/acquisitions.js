@@ -4,32 +4,25 @@ jQuery(document).ready(function() {
 		SUB: 'Flavors::Data::Collection::AcquisitionStats',
 		SPINNER: selector,
 		FINISH: function(data) {
-			(new AcquisitionsChart(selector)).draw(data);
+			var chart = new AcquisitionsChart(selector);
+			chart.setDimensions(jQuery(selector).width(), 400);
+			chart.draw(data);
 		},
 	});
 });
 
 function AcquisitionsChart(selector) {
 	var self = this;
+	Chart.call(self, selector);
 	self.barMargin = 0;
-	self.selector = selector;
-	self.svg = d3.select(self.selector + " svg");
-	self.width = jQuery(selector).width();
-	self.height = 400;
 	self.xAxis = d3.svg.axis();
 	self.xAxisMargin = 20;
 };
-
-AcquisitionsChart.prototype.attachEvents = function() {
-	var self = this;
-	attachSelectionHandlers(self.selector + " g");
-	attachTooltip(self.selector + " g:not(.axis)");
-};
+AcquisitionsChart.prototype = Object.create(Chart.prototype);
 
 AcquisitionsChart.prototype.draw = function(data) {
 	var self = this;
 	var dateStrings = _.pluck(data, 'DATESTRING');
-	self.setDimensions();
 	self.drawBars(data, dateStrings);
 	self.drawAxes(dateStrings);
 	self.attachEvents();
@@ -132,9 +125,4 @@ AcquisitionsChart.prototype.getXScale = function(data) {
 	var scale = d3.scale.linear().range([0, self.height - self.xAxisMargin]);
 	scale.domain([0, d3.max(_.pluck(data, 'count'))]);
 	return scale;
-};
-
-AcquisitionsChart.prototype.setDimensions = function() {
-	this.svg.attr("width", this.width)
-			  .attr("height", this.height);
-};
+}; 

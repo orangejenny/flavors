@@ -208,7 +208,7 @@ sub List {
 		left join (
 			select
 				collectionid,
-				group_concat(distinct tag order by rand() separator ' ') as tags
+				group_concat(distinct tag order by rand() separator '%s') as tags
 			from
 				songcollection
 				inner join songtag on songcollection.songid = songtag.songid
@@ -236,7 +236,7 @@ sub List {
 			) color
 			group by collectionid
 		) color on color.collectionid = collection.id
-	}, join(", ", @collectioncolumns));
+	}, join(", ", @collectioncolumns), $Flavors::Data::Util::SEPARATOR);
 
 	if ($args->{ID}) {
 		$sql .= qq{

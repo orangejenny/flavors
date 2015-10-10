@@ -1,16 +1,29 @@
 jQuery(document).ready(function() {
-	generateBubbleChart();
+	var selector = ".chart-container";
+	CallRemote({
+		SUB: 'Flavors::Data::Song::Stats',
+		ARGS: { GROUPBY: "rating, energy, mood" },
+		SPINNER: selector,
+		FINISH: function(data) {
+			(new BubbleMatrixChart(selector)).draw(data);
+		}
+	});
 });
 
-function generateBubbleChart() {
-	var containerSelector = ".chart-container";
-	var width = jQuery(containerSelector).width();
+function BubbleMatrixChart(selector) {
+	var self = this;
+	self.selector = selector;
+}
+
+BubbleMatrixChart.prototype.draw = function(data) {
+	var self = this;
+	var width = jQuery(self.selector).width();
 	var height = width;
 	var bubbleSize = width / 6;
 	var margin = bubbleSize / 2;
 
 	var scale = d3.scale.linear().range([0, bubbleSize * 2]);
-	var chart = d3.select(containerSelector + " svg")
+	var chart = d3.select(self.selector + " svg")
 						.attr("width", width)
 						.attr("height", height);
 	chart.append("line")
@@ -28,11 +41,6 @@ function generateBubbleChart() {
 
 	var moodDescriptions = ['very unhappy', 'unhappy', 'neutral', 'happy', 'very happy'];
 	var energyDescriptions = ['very slow', 'slow', 'medium tempo', 'energetic', 'very energetic'];
-	CallRemote({
-		SUB: 'Flavors::Data::Song::Stats',
-		ARGS: { GROUPBY: "rating, energy, mood" },
-		SPINNER: containerSelector,
-		FINISH: function(data) {
 			var bubbles = [];
 			for (e = 1; e <= 5; e++) {
 				for (m = 1; m <= 5; m++) {
@@ -76,8 +84,6 @@ function generateBubbleChart() {
 						.attr("dy", "0.35em")
 						.text(function(d) { return d.count; });
 
-			attachSelectionHandlers(containerSelector + " g");
-			attachTooltip(containerSelector + " g");
-		}
-	});
-}
+			attachSelectionHandlers(self.selector + " g");
+			attachTooltip(self.selector + " g");
+};

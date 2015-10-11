@@ -27,10 +27,6 @@ jQuery(document).ready(function() {
 	});
 });
 
-// Global chart aesthetics
-// TODO: get out of global namespace
-var barTextOffset = 4;
-
 function setClearVisibility() {
 	if (jQuery(".selected").length) {
 		jQuery(".selection-buttons").removeClass("hide");
@@ -112,7 +108,12 @@ function attachSelectionHandlers(selector, actsOn) {
 		};
 	}
 
-	// Highlight on hover
+	highlightOnHover(selector, actsOn);
+	selectOnClick(selector, actsOn);
+	exportOnDoubleClick(selector, actsOn);
+}
+
+function highlightOnHover(selector, actsOn) {
 	d3.selectAll(selector).on("mouseenter.highlight", function() {
 		actsOn(this).classed("highlighted", true);
 		actsOn(this).selectAll("rect, circle").classed("highlighted", true);
@@ -121,8 +122,9 @@ function attachSelectionHandlers(selector, actsOn) {
 		actsOn(this).classed("highlighted", false);
 		actsOn(this).selectAll(".highlighted").classed("highlighted", false);
 	});
+}
 
-	// Toggle .selected on click
+function selectOnClick(selector, actsOn) {
 	d3.selectAll(selector).on("click", function() {
 		var obj = actsOn(this);
 		var isSelected = obj.classed("selected") || obj.selectAll(".selected")[0].length;
@@ -130,8 +132,9 @@ function attachSelectionHandlers(selector, actsOn) {
 		obj.selectAll("rect, circle").classed("selected", !isSelected);
 		setClearVisibility();
 	});
+}
 
-	// Export on double click
+function exportOnDoubleClick(selector, actsOn) {
 	d3.selectAll(selector).on("dblclick", function() {
 		var data = actsOn(this).data()[0];
 		var condition = data.condition;

@@ -16,7 +16,7 @@ Flavors::HTML::Header({
 	TITLE => "Acquisitions",
 	BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),
 	CSS => ['data.css'],
-	JS => ['data.js', 'acquisitions.js'],
+	JS => ['data.js', 'chart.js', 'acquisitions.js'],
 });
 
 print qq{

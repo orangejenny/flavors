@@ -16,7 +16,7 @@ Flavors::HTML::Header({
 	TITLE => "Timeline",
 	BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),
 	CSS => ['data.css'],
-	JS => ['data.js', 'timeline.js'],
+	JS => ['data.js', 'chart.js', 'timeline.js'],
 });
 
 print qq{

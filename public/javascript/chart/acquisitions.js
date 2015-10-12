@@ -10,6 +10,7 @@ AcquisitionsChart.prototype = Object.create(Chart.prototype);
 AcquisitionsChart.prototype.draw = function(data) {
 	var self = this;
 	var dateStrings = _.pluck(data, 'DATESTRING');
+	data = self.reformatData(data, dateStrings);
 	self.drawBars(data, dateStrings);
 	self.drawAxes(dateStrings);
 	self.attachEvents();
@@ -24,16 +25,15 @@ AcquisitionsChart.prototype.drawAxes = function(dateStrings) {
 
 AcquisitionsChart.prototype.drawBars = function(data, dateStrings) {
 	var self = this;
-	var barData = self.getBarData(data, dateStrings);
 	var barSize = self.getBarSize(self.getMinMonthCount(dateStrings), self.getMaxMonthCount(dateStrings));
 	var bars = self.svg.selectAll("g")
-							.data(barData)
+							.data(data)
 							.enter().append("g")
 							.attr("transform", function(d, i) {
 								return "translate(" + d.monthCount * barSize + ", 0)";
 							});
 
-	var xScale = self.getXScale(barData);
+	var xScale = self.getXScale(data);
 	bars.append("rect")
 			.attr("y", function(d) { return self.height - self.xAxisMargin - xScale(d.count); })
 			.attr("width", barSize - self.barMargin)
@@ -67,7 +67,7 @@ AcquisitionsChart.prototype.formatXAxis = function(dateStrings) {
 					.tickFormat(function(t) { return Math.round((t - barSize * 6) / barSize) / 12 + self.getMinYear(dateStrings); });
 };
 
-AcquisitionsChart.prototype.getBarData = function(data, dateStrings) {
+AcquisitionsChart.prototype.reformatData = function(data, dateStrings) {
 	var self = this;
 	var dateFormat = d3.time.format("%b %Y");
 	return _.map(data, function(d) {

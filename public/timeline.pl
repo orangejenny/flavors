@@ -20,21 +20,6 @@ Flavors::HTML::Header({
 });
 
 print qq{
-	jQuery(document).ready(function() {
-		var selector = ".timeline-container";
-		CallRemote({
-			SUB: 'Flavors::Data::Tag::TimelineStats',
-			SPINNER: selector,
-			FINISH: function(data) {
-				var chart = new TimelineChart(selector);
-				chart.setDimensions(jQuery(selector).width(), 300);
-				chart.draw(data);
-			},
-		});
-	});
-};
-
-print qq{
 	<div class="post-nav">
 		<div class="timeline-container">
 			<svg></svg>

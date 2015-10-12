@@ -16,8 +16,23 @@ Flavors::HTML::Header({
 	TITLE => "Timeline",
 	BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),
 	CSS => ['data.css'],
-	JS => ['data.js', 'chart.js', 'timeline.js'],
+	JS => ['data.js', 'chart/chart.js', 'chart/timeline.js', 'timeline.js'],
 });
+
+print qq{
+	jQuery(document).ready(function() {
+		var selector = ".timeline-container";
+		CallRemote({
+			SUB: 'Flavors::Data::Tag::TimelineStats',
+			SPINNER: selector,
+			FINISH: function(data) {
+				var chart = new TimelineChart(selector);
+				chart.setDimensions(jQuery(selector).width(), 300);
+				chart.draw(data);
+			},
+		});
+	});
+};
 
 print qq{
 	<div class="post-nav">

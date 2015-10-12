@@ -14,7 +14,7 @@ Flavors::HTML::Header({
 	TITLE => "Matrix",
 	BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),
 	CSS => ['data.css', 'matrix.css'],
-	JS => ['data.js', 'matrix.js'],
+	JS => ['data.js', 'chart/matrix.js', 'matrix.js'],
 });
 
 printf(qq{

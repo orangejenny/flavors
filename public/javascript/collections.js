@@ -258,11 +258,11 @@ jQuery(document).ready(function() {
 
 	// Export single collection
 	jQuery(".export-icons span").click(function(event) {
-		var $icon = jQuery(this);
-		var $collectiondiv = $icon.closest(".collection");
+		var $collection = jQuery(this).closest(".collection");
+		var $details = $collection.find(".details");
 		ExportPlaylist({
-			COLLECTIONIDS: [$collectiondiv.data("id")],
-			FILENAME: $collectiondiv.find(".details .name").text(),
+			COLLECTIONIDS: [$collection.data("id")],
+			FILENAME: $details.find(".artist").text() + " - " + $details.find(".name").text(),
 		});
 		event.stopPropagation();
 	});

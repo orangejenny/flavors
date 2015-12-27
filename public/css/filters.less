@@ -44,3 +44,44 @@
 		}
 	}
 }
+
+#complex-filter {
+	display: none;
+	text-align: center;
+
+	#column-hints {
+		line-height: 1.5;
+	}
+
+	.playlists {
+		list-style-type: none;
+		line-height: 2;
+		.glyphicon {
+			color: @greyLight;
+			cursor: pointer;
+		}
+	}
+
+	textarea, input {
+		width: 100%;
+		margin-bottom: @spacingNormal;
+	}
+
+	textarea {
+		padding: @spacingNarrow;
+		border-radius: @borderRadius;
+		border-color: @greyLight;
+	}
+
+	.group:not(:last-child) {
+		margin-bottom: 25px;
+	}
+
+	button {
+		width: 155px;
+
+		&:not(:last-child) {
+			margin-right: 25px;
+		}
+	}
+}

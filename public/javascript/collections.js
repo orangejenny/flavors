@@ -228,34 +228,6 @@ jQuery(document).ready(function() {
 		zIndex: 2
 	});
 
-	// Drop collections onto target
-	jQuery("#export-list").droppable({
-		activeClass: "export-list-active",
-		hoverClass: "export-list-hover",
-		drop: function(event, ui) {
-			dropCollection(ui.draggable.attr("data-id"), ui.draggable.find(".name").text());
-		}
-	});
-
-	// Remove collections from export list
-	jQuery("#export-list").on("mouseenter", "li", function() {
-		if (!jQuery(this).find(".glyphicon").length) {
-			jQuery(this).append("<span class='glyphicon glyphicon-trash'></span>");
-		}
-	});
-	jQuery("#export-list").on("mouseleave", "li", function(event) {
-		jQuery(this).find(".glyphicon").remove();
-	});
-	jQuery("#export-list").on("click", ".glyphicon-trash", function() {
-		var $trash = jQuery(this);
-		if ($trash.closest("ul").children().length === 1) {
-			jQuery(".controls .subtle").removeClass("hide");
-		}
-		var $li = $trash.closest("li");
-		$(".collections .collection[data-id='" + $li.data("id") + "']").removeClass("selected");
-		$li.remove();
-	});
-
 	// Export single collection
 	jQuery(".export-icons span").click(function(event) {
 		var $collection = jQuery(this).closest(".collection");
@@ -271,11 +243,7 @@ jQuery(document).ready(function() {
 	jQuery(".export-button").click(function() {
 		var $button = jQuery(this);
 		var collectionids = [];
-		var collections = jQuery("#export-list li");
-		if (!collections.length) {
-			collections = jQuery(".collection:visible");
-		}
-		collections.each(function() {
+        jQuery(".collection:visible").each(function() {
 			collectionids.push(jQuery(this).data("id"));
 		});
 		if (!collectionids.length) {

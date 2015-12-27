@@ -81,18 +81,6 @@ print sprintf(qq{
 			<input type="checkbox" id="show-details" checked>
 			Show Details
 		</label>
-		<br><br>
-		<br><br>
-		<div class="well" id="export-list">
-			<div class="subtle">
-				drag collections here to export
-				<br><br>
-				<a href='#' id='suggestions-trigger'>
-					suggest some collections
-				</a>
-			</div>
-			<ul></ul>
-		</div>
 	</div>
 	},
 );

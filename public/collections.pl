@@ -18,7 +18,12 @@ print $cgi->header();
 my $fdat = Flavors::Util::Fdat($cgi);
 Flavors::HTML::Header({
 	TITLE => "Collections",
-	BUTTONS => Flavors::HTML::ExportControl(),
+	BUTTONS => Flavors::HTML::ExportControl() . qq{
+		<button type="button" class="btn btn-xs btn-info" id="add-collection">
+			<span class="glyphicon glyphicon-plus"></span>
+            New
+		</button>
+    },
 	CSS => ['collections.css'],
 	JS => ['collections.js'],
 	SPINNER => 1,
@@ -42,10 +47,6 @@ foreach my $song (@tracks) {
 print sprintf(qq{
 <div class="post-nav">
 	<div class="controls">
-		<button id='add-collection' class='btn btn-default btn-large'>
-			<span class='glyphicon glyphicon-plus'></span>
-			New
-		</button>
 		<input type="text" id="collection-filter" placeholder="name">
 		<input type="text" id="tag-filter" placeholder="tags">
 		<br /><br />

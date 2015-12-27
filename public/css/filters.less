@@ -1,0 +1,46 @@
+@import "imports.less";
+
+#sql-error {
+	font-family: monospace;
+}
+
+#filter-container {
+	text-align: center;
+	position: fixed;
+	width: 100%;
+	top: 80px;
+	z-index: 3;
+
+	#filter-input {
+		position: relative;
+		width: 50%;
+		margin: 0 25%;
+		#filter {
+			margin: @spacingNarrow;
+			width: 100%;
+			text-align: center;
+		}
+		.glyphicon-search {
+			position: absolute;
+			right: @spacingNarrow;
+			top: 10px + @spacingNarrow;
+		}
+	}
+
+	#complex-filter-trigger {
+		.glyphicon {
+			cursor: pointer;
+			color: @linkColor;
+			display: inline-block;
+			margin-left: @spacingNormal;
+		}
+
+		// center text, not text + icons
+		&.icon-count-1 {
+			padding-left: @fontSizeDefault + @spacingNormal;
+		}
+		&.icon-count-2 {
+			padding-left: (@fontSizeDefault + @spacingNormal) * 2;
+		}
+	}
+}

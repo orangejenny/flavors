@@ -24,7 +24,7 @@ Flavors::HTML::Header({
             New
 		</button>
     },
-	CSS => ['collections.css'],
+	CSS => ['collections.css', 'filters.css'],
 	JS => ['collections.js'],
 	SPINNER => 1,
 });
@@ -44,46 +44,12 @@ foreach my $song (@tracks) {
 	push(@{ $tracks{$song->{COLLECTIONID}} }, $song);
 }
 
-print sprintf(qq{
-<div class="post-nav">
-	<div class="controls">
-		<input type="text" id="collection-filter" placeholder="name">
-		<input type="text" id="tag-filter" placeholder="tags">
-		<br /><br />
-		<div class="dropdown sort-menu">
-			Sort by
-			<a class="dropdown-toggle" data-toggle="dropdown" role="label" href="#">
-				<span class="current">Date Acquired</span>
-				<b class="caret"></b>
-			</a>
-			<ul class="dropdown-menu">
-				<li><a href="#">Artist</a></li>
-				<li><a href="#">Energy</a></li>
-				<li><a href="#">Export Count</a></li>
-				<li><a href="#">Last Export</a></li>
-				<li><a href="#">Mood</a></li>
-				<li><a href="#">Name</a></li>
-				<li><a href="#">Rating</a></li>
-			</ul>
-		</div>
-		<br>
-		<div id="is-mix">
-			<label>
-				<input type="checkbox" value="0" checked>
-				Albums
-			</label>
-			<label>
-				<input type="checkbox" value="1" checked>
-				Mixes
-			</label>
-		</div>
-		<label>
-			<input type="checkbox" id="show-details" checked>
-			Show Details
-		</label>
-	</div>
-	},
-);
+print Flavors::HTML::FilterControl($dbh, {
+    FILTER => $fdat->{FILTER},
+    PLACEHOLDER => $fdat->{PLACEHOLDER},
+});
+
+print qq{ <div class="post-nav"> };
 
 print "<div class=\"collections clearfix\">";
 
@@ -196,6 +162,14 @@ foreach my $collection (@collections) {
 }
 print "</div></div>";
 
+# Modal for complex filtering
+print Flavors::HTML::FilterModal($dbh, {
+    #ERROR => $sqlerror, # TODO
+    FILTER => $fdat->{FILTER},
+    PLACEHOLDER => $fdat->{PLACEHOLDER},
+});
+
+# Modal for new collection
 print q{
 	<div id="new-collection" class="modal">
 		<div class="modal-dialog modal-lg">

@@ -3,16 +3,15 @@ var oldValue = undefined;
 var iconClasses = ['glyphicon-star', 'glyphicon-fire', 'glyphicon-heart'];
 
 jQuery(document).ready(function() {
+    var lastQuery = "";
 	var tokens = InitialPageData('tokens');
 	var letters = InitialPageData('letters');
 	var letterCounts = InitialPageData('lettercounts');
-	var lastQuery = "";
 	updateRowCount();
 
-	var sqlError = InitialPageData('sqlerror');
-	if (sqlError) {
-		jQuery("#complex-filter").modal();
-	}
+    if (jQuery("#sql-error").text().trim()) {
+        jQuery("#complex-filter").modal();
+    }
 
 	jQuery('#filter').keyup(_.throttle(function() {
 		var query = jQuery(this).val();
@@ -58,6 +57,7 @@ jQuery(document).ready(function() {
 		updateRowCount();
 	}, 100, { leading: false }));
 
+    // TODO: remove?
 	jQuery("#complex-filter button").click(function() {
 		var $button = jQuery(this);
 		var buttonText = $button.text();
@@ -243,7 +243,6 @@ function ratingHTML(iconClass, number) {
 
 function toggleStar($star, id, sub) {
 	var isstarred = !$star.hasClass("glyphicon-star");
-console.log("id="+id+", sub="+sub+",isstarred="+isstarred);
 
 	// Update markup
 	$star.toggleClass("glyphicon-star-empty");

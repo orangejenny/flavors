@@ -1,42 +1,3 @@
-function FilterCollections() {
-	var collectionfilter = jQuery("#collection-filter").val().toLowerCase();
-	var tagfilters = jQuery("#tag-filter").val().split(/\s+/);
-	var showalbums = jQuery("#is-mix input:checked[value=0]").length;
-	var showmixes = jQuery("#is-mix input:checked[value=1]").length;
-	jQuery(".collection").each(function() {
-		var $collection = jQuery(this);
-		var show = true;
-
-		// IsMix filter
-		if ($collection.attr("data-is-mix") == 1) {
-			show = showmixes;
-		}
-		else {
-			show = showalbums;
-		}
-
-		// Collection filter
-		if (show && ($collection.attr("data-name") + $collection.attr("data-artist")).indexOf(collectionfilter) == -1) {
-			show = false;
-		}
-
-		// Tag filter
-		var tags = $collection.attr("data-tag-list");
-		for (var i = 0; show && i < tagfilters.length; i++) {
-			if (tags.indexOf(tagfilters[i]) == -1) {
-				show = false;
-			}
-		}
-
-		if (show) {
-			$collection.show();
-		}
-		else {
-			$collection.hide();
-		}
-	});
-}
-
 function addSong(focus) {
 	var $modal = jQuery("#new-collection");
 	var lastArtist = $modal.find(".song [name='artist']:last").val();
@@ -74,6 +35,45 @@ jQuery(document).ready(function() {
 	jQuery(".collection").click(function() {
 		jQuery(this).find(".track-list").toggle('fast');
 	});
+
+	// Column names hint for filter
+	jQuery(".hint").tooltip({
+		html: true,
+		placement: "right"
+	});
+
+    // Show SQL error, if any
+    if (jQuery("#sql-error").text().trim()) {
+        jQuery("#complex-filter").modal();
+    }
+
+    // Simple filter
+    var lastQuery = "";
+	jQuery('#filter').keyup(_.throttle(function() {
+		var query = jQuery(this).val().toLowerCase();
+		var selector = ".collections .collection";
+
+		if (query === lastQuery) {
+			return;
+		}
+		lastQuery = query;
+
+		var queryTokens = _.without(query.split(/\s+/), "");
+		if (!queryTokens.length) {
+			jQuery(selector).show();
+			return;
+		}
+
+        jQuery(selector).show();
+		_.each(queryTokens, function(queryToken) {
+            jQuery(selector + ":visible").each(function() {
+                var $collection = jQuery(this);
+                if (($collection.attr("data-name") + $collection.attr("data-artist") + $collection.attr("data-tag-list")).toLowerCase().indexOf(queryToken) === -1) {
+                    $collection.hide();
+                }
+            });
+		});
+	}, 100, { leading: false }));
 
 	// Controls: Add collection
 	jQuery("#add-collection").click(function() {
@@ -154,6 +154,7 @@ jQuery(document).ready(function() {
 		});
 	});
 
+    // TODO: remove
 	// Controls: Toggle details
 	jQuery("#show-details").click(function() {
 		if (jQuery(this).is(":checked")) {
@@ -164,6 +165,7 @@ jQuery(document).ready(function() {
 		}
 	});
 
+    // TODO: remove
 	// Controls: Sort collections
 	jQuery(".sort-menu .dropdown-menu a").click(function() {
 		var $link = jQuery(this);
@@ -202,30 +204,6 @@ jQuery(document).ready(function() {
 		for (var i in links) {
 			$menu.append(links[i]);
 		}
-	});
-
-	// Controls: Filter collections
-	jQuery("#is-mix input:checkbox").click(FilterCollections);
-	jQuery("#collection-filter, #tag-filter").keyup(FilterCollections);
-
-	// Car list trigger
-	jQuery('#suggestions-trigger').click(function() {
-		CallRemote({
-			SUB: 'Flavors::Data::Collection::Suggestions',
-			FINISH: function(results) {
-				// TODO: clear any collections
-				_.each(results, function(collection) {
-					dropCollection(collection.ID, collection.NAME);
-				});
-			}
-		});
-	});
-
-	// Drag collections
-	jQuery(".collection").draggable({
-		helper: 'clone',
-		opacity: 0.5,
-		zIndex: 2
 	});
 
 	// Export single collection

@@ -138,21 +138,7 @@ sub Add {
 sub List {
 	my ($dbh, $args) = @_;
 
-	my @collectioncolumns = qw(
-		id
-		name
-		ismix
-		dateacquired
-		rating
-		energy
-		mood
-		artist
-		genre
-		color
-		tags
-		lastexport
-		exportcount
-	);
+	my @collectioncolumns = ListColumns();
 
 	my $sql = sprintf(qq{
 		select
@@ -256,7 +242,10 @@ sub List {
 						and songcollection.songid = $args->{SONGID}
 				)
 		};
-	}
+	} elsif ($args->{FILTER}) {
+	    $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
+		$sql .= " where (" . $args->{FILTER} . ")";
+    }
 
 	$sql .= qq{
 		order by dateacquired desc
@@ -274,6 +263,32 @@ sub List {
 	else {
 		return wantarray ? @results : \@results;
 	}
+}
+
+################################################################
+# ListColumns
+#
+# Description: Get the column list used by the List method.
+#
+# Return Value: array/arrayref of strings
+################################################################
+sub ListColumns {
+    my @columns = qw(
+		id
+		name
+		ismix
+		dateacquired
+		rating
+		energy
+		mood
+		artist
+		genre
+		color
+		tags
+		lastexport
+		exportcount
+    );
+    return wantarray ? @columns : \@columns;
 }
 
 ################################################################

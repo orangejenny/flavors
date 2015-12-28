@@ -1,42 +1,3 @@
-function FilterCollections() {
-	var collectionfilter = jQuery("#collection-filter").val().toLowerCase();
-	var tagfilters = jQuery("#tag-filter").val().split(/\s+/);
-	var showalbums = jQuery("#is-mix input:checked[value=0]").length;
-	var showmixes = jQuery("#is-mix input:checked[value=1]").length;
-	jQuery(".collection").each(function() {
-		var $collection = jQuery(this);
-		var show = true;
-
-		// IsMix filter
-		if ($collection.attr("data-is-mix") == 1) {
-			show = showmixes;
-		}
-		else {
-			show = showalbums;
-		}
-
-		// Collection filter
-		if (show && ($collection.attr("data-name") + $collection.attr("data-artist")).indexOf(collectionfilter) == -1) {
-			show = false;
-		}
-
-		// Tag filter
-		var tags = $collection.attr("data-tag-list");
-		for (var i = 0; show && i < tagfilters.length; i++) {
-			if (tags.indexOf(tagfilters[i]) == -1) {
-				show = false;
-			}
-		}
-
-		if (show) {
-			$collection.show();
-		}
-		else {
-			$collection.hide();
-		}
-	});
-}
-
 function addSong(focus) {
 	var $modal = jQuery("#new-collection");
 	var lastArtist = $modal.find(".song [name='artist']:last").val();
@@ -73,6 +34,62 @@ function numberSongs() {
 jQuery(document).ready(function() {
 	jQuery(".collection").click(function() {
 		jQuery(this).find(".track-list").toggle('fast');
+	});
+
+	// Column names hint for filter
+	jQuery(".hint").tooltip({
+		html: true,
+		placement: "right"
+	});
+
+    // Show SQL error, if any
+    if (jQuery("#sql-error").text().trim()) {
+        jQuery("#complex-filter").modal();
+    }
+
+    // Simple filter
+    var lastQuery = "";
+	jQuery('#filter').keyup(_.throttle(function() {
+		var query = jQuery(this).val().toLowerCase();
+		var selector = ".collections .collection";
+
+		if (query === lastQuery) {
+			return;
+		}
+		lastQuery = query;
+
+		var queryTokens = _.without(query.split(/\s+/), "");
+		if (!queryTokens.length) {
+			jQuery(selector).show();
+			return;
+		}
+
+        jQuery(selector).show();
+		_.each(queryTokens, function(queryToken) {
+            jQuery(selector + ":visible").each(function() {
+                var $collection = jQuery(this);
+                if (($collection.attr("data-name") + $collection.attr("data-artist") + $collection.attr("data-tag-list")).toLowerCase().indexOf(queryToken) === -1) {
+                    $collection.hide();
+                }
+            });
+		});
+	}, 100, { leading: false }));
+
+	// Complex filter controls
+    // TODO: DRY up with songs.js, these are duplicated there
+	jQuery("#complex-filter form input").click(function() {
+		jQuery(this).closest("form").submit();
+	});
+	jQuery("#complex-filter-trigger a").click(function() {
+		jQuery("#complex-filter").modal().find("textarea").focus();
+	});
+	jQuery("#complex-filter-trigger .glyphicon-refresh").click(function() {
+		jQuery("#complex-filter form").submit();
+	});
+	jQuery("#complex-filter-trigger .glyphicon-remove").click(function() {
+		var $form = jQuery("#complex-filter form");
+		$form.find("textarea").val("");
+		$form.submit();
 	});
 
 	// Controls: Add collection
@@ -154,6 +171,7 @@ jQuery(document).ready(function() {
 		});
 	});
 
+    // TODO: remove
 	// Controls: Toggle details
 	jQuery("#show-details").click(function() {
 		if (jQuery(this).is(":checked")) {
@@ -164,6 +182,7 @@ jQuery(document).ready(function() {
 		}
 	});
 
+    // TODO: remove
 	// Controls: Sort collections
 	jQuery(".sort-menu .dropdown-menu a").click(function() {
 		var $link = jQuery(this);
@@ -204,58 +223,6 @@ jQuery(document).ready(function() {
 		}
 	});
 
-	// Controls: Filter collections
-	jQuery("#is-mix input:checkbox").click(FilterCollections);
-	jQuery("#collection-filter, #tag-filter").keyup(FilterCollections);
-
-	// Car list trigger
-	jQuery('#suggestions-trigger').click(function() {
-		CallRemote({
-			SUB: 'Flavors::Data::Collection::Suggestions',
-			FINISH: function(results) {
-				// TODO: clear any collections
-				_.each(results, function(collection) {
-					dropCollection(collection.ID, collection.NAME);
-				});
-			}
-		});
-	});
-
-	// Drag collections
-	jQuery(".collection").draggable({
-		helper: 'clone',
-		opacity: 0.5,
-		zIndex: 2
-	});
-
-	// Drop collections onto target
-	jQuery("#export-list").droppable({
-		activeClass: "export-list-active",
-		hoverClass: "export-list-hover",
-		drop: function(event, ui) {
-			dropCollection(ui.draggable.attr("data-id"), ui.draggable.find(".name").text());
-		}
-	});
-
-	// Remove collections from export list
-	jQuery("#export-list").on("mouseenter", "li", function() {
-		if (!jQuery(this).find(".glyphicon").length) {
-			jQuery(this).append("<span class='glyphicon glyphicon-trash'></span>");
-		}
-	});
-	jQuery("#export-list").on("mouseleave", "li", function(event) {
-		jQuery(this).find(".glyphicon").remove();
-	});
-	jQuery("#export-list").on("click", ".glyphicon-trash", function() {
-		var $trash = jQuery(this);
-		if ($trash.closest("ul").children().length === 1) {
-			jQuery(".controls .subtle").removeClass("hide");
-		}
-		var $li = $trash.closest("li");
-		$(".collections .collection[data-id='" + $li.data("id") + "']").removeClass("selected");
-		$li.remove();
-	});
-
 	// Export single collection
 	jQuery(".export-icons span").click(function(event) {
 		var $collection = jQuery(this).closest(".collection");
@@ -271,11 +238,7 @@ jQuery(document).ready(function() {
 	jQuery(".export-button").click(function() {
 		var $button = jQuery(this);
 		var collectionids = [];
-		var collections = jQuery("#export-list li");
-		if (!collections.length) {
-			collections = jQuery(".collection:visible");
-		}
-		collections.each(function() {
+        jQuery(".collection:visible").each(function() {
 			collectionids.push(jQuery(this).data("id"));
 		});
 		if (!collectionids.length) {

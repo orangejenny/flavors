@@ -78,84 +78,41 @@ Flavors::HTML::Header({
 		TOKENS => $tokens,
 		LETTERS => $letters,
 		LETTERCOUNTS => $lettercounts,
-		SQLERROR => $sqlerror,
 	},
-	CSS => ['songs.css'],
+	CSS => ['filters.css', 'songs.css'],
 	JS => ['songs.js'],
 });
 
 my @playlists = Flavors::Data::Playlist::List($dbh);
-print sprintf(q{
-	<div id="complex-filter" class="modal">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-body">
+print Flavors::HTML::FilterModal($dbh, {
+    ADDITIONALMARKUP => sprintf(qq{
+			<ul class="playlists">
+				%s
+			</ul>
+        },
+    	join("", map {
+	    	sprintf(
+		    	"<li data-id='%s'>%s <a href='#'>%s</a></li>",
+			    $_->{ID}, 
+    			Flavors::HTML::Rating(1, $_->{ISSTARRED} ? 'star' : 'star-empty'), 
+	    		$_->{FILTER},
+		    )
+    	} @playlists),
+    ),
+    ERROR => $sqlerror,
+    FILTER => $fdat->{FILTER},
+    HINTS => [qw(
+        id name artist rating energy mood time filename ismix mindateacquired
+        maxdateacquired taglist tagcount collectionlist minyear maxyear isstarred
+    )],
+    PLACEHOLDER => $fdat->{PLACEHOLDER},
+});
 
-					<div class="alert alert-danger sql-error %s">%s</div>
-
-					<form method="POST">
-						<textarea name=filter rows=3 placeholder="%s">%s</textarea>
-						<input type="button" value="Filter" class="btn btn-default btn-lg"/>
-						<input type="hidden" name="orderBy" value="" />
-						<input type="hidden" name="placeholder" value="" />
-					</form>
-
-					<div id="column-hints">
-						id, name, artist, rating, energy, mood, time, filename,
-						<br>ismix, mindateacquired, maxdateacquired,
-						<br>taglist, tagcount, collectionlist, minyear, maxyear, isstarred
-					</div>
-
-					<ul class="playlists">
-						%s
-					</ul>
-
-					<div class="group" data-category="popular">
-						<button class="btn btn-default">Recently added</button>
-						<button class="btn btn-default">Recently exported</button>
-						<button class="btn btn-default">Frequently exported</button>
-					</div>
-					<div class="group" data-category="unpopular">
-						<button class="btn btn-default">Rarely exported</button>
-						<button class="btn btn-default">Exported long ago</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-},
-	$sqlerror ? "" : "hide",
-	$sqlerror,
-	$fdat->{PLACEHOLDER},
-	$fdat->{FILTER},
-	join("", map {
-		sprintf(
-			"<li data-id='%s'>%s <a href='#'>%s</a></li>",
-			$_->{ID}, 
-			Flavors::HTML::Rating(1, $_->{ISSTARRED} ? 'star' : 'star-empty'), 
-			$_->{FILTER},
-		)
-	} @playlists),
-);
-
-my $iconcount = $fdat->{FILTER} ? 2 : ($fdat->{PLACEHOLDER} ? 1 : 0);
-print sprintf(qq{
-		<div class="post-nav">
-			<div id="filter-container">
-				<div id="filter-input">
-					<span class='glyphicon glyphicon-search'></span>
-					<input id='filter' type='text'/>
-				</div>
-				<div id="complex-filter-trigger" class="icon-count-%i">
-					<a href='#'>%s</a> %s %s
-				</div>
-			</div>
-	},
-	$iconcount,
-	$fdat->{PLACEHOLDER} || $fdat->{FILTER} || "advanced search",
-	$iconcount == 2 ? "<span class='glyphicon glyphicon-refresh'></span>" : "",
-	$iconcount > 0 ? "<span class='glyphicon glyphicon-remove'></span>" : "",
-);
+print qq{ <div class="post-nav"> };
+print Flavors::HTML::FilterControl($dbh, {
+    FILTER => $fdat->{FILTER},
+    PLACEHOLDER => $fdat->{PLACEHOLDER},
+});
 
 print qq{ <div id="top-veil"></div> };
 print qq{ <div id="song-table-container"> };

@@ -1,0 +1,90 @@
+@import "imports.less";
+
+#sql-error {
+	font-family: monospace;
+}
+
+#filter-container {
+	text-align: center;
+	position: fixed;
+	width: 100%;
+	top: 80px;
+	z-index: 3;
+
+	#filter-input {
+		position: relative;
+		width: 50%;
+		margin: 0 25%;
+		#filter {
+			margin: @spacingNarrow;
+			width: 100%;
+			text-align: center;
+		}
+		.glyphicon-search {
+			position: absolute;
+			right: @spacingNarrow;
+			top: 10px + @spacingNarrow;
+		}
+	}
+
+	#complex-filter-trigger {
+		.glyphicon {
+			cursor: pointer;
+			color: @linkColor;
+			display: inline-block;
+			margin-left: @spacingNormal;
+		}
+
+		// center text, not text + icons
+		&.icon-count-1 {
+			padding-left: @fontSizeDefault + @spacingNormal;
+		}
+		&.icon-count-2 {
+			padding-left: (@fontSizeDefault + @spacingNormal) * 2;
+		}
+	}
+}
+
+#complex-filter {
+	display: none;
+	text-align: center;
+
+	#column-hints {
+        @width: 300px;
+		line-height: 1.5;
+        width: @width;
+        margin-left: calc(~'50% - ' @width / 2);
+	}
+
+	.playlists {
+		list-style-type: none;
+		line-height: 2;
+		.glyphicon {
+			color: @greyLight;
+			cursor: pointer;
+		}
+	}
+
+	textarea, input {
+		width: 100%;
+		margin-bottom: @spacingNormal;
+	}
+
+	textarea {
+		padding: @spacingNarrow;
+		border-radius: @borderRadius;
+		border-color: @greyLight;
+	}
+
+	.group:not(:last-child) {
+		margin-bottom: 25px;
+	}
+
+	button {
+		width: 155px;
+
+		&:not(:last-child) {
+			margin-right: 25px;
+		}
+	}
+}

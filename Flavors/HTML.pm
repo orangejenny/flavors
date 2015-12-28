@@ -244,6 +244,88 @@ sub SelectionControl {
 }
 
 ################################################################
+# FilterControl
+# 
+# Description: Generates HTML for simple and complex filter
+#   combination.
+#
+# Params:
+#   FILTER
+#   PLACEHOLDER
+#
+# Return Value: HTML
+################################################################
+sub FilterControl {
+    my ($dbh, $args) = @_;
+
+    my $iconcount = $args->{FILTER} ? 2 : ($args->{PLACEHOLDER} ? 1 : 0);
+    return sprintf(qq{
+    		<div id="filter-container">
+			    <div id="filter-input">
+			    	<span class='glyphicon glyphicon-search'></span>
+		    		<input id='filter' type='text'/>
+	    		</div>
+    			<div id="complex-filter-trigger" class="icon-count-%i">
+			    	<a href='#'>%s</a> %s %s
+		    	</div>
+	    	</div>
+        },
+    	$iconcount,
+    	$args->{PLACEHOLDER} || $args->{FILTER} || "advanced search",
+    	$iconcount == 2 ? "<span class='glyphicon glyphicon-refresh'></span>" : "",
+    	$iconcount > 0 ? "<span class='glyphicon glyphicon-remove'></span>" : "",
+    );
+}
+
+################################################################
+# FilterModal
+#
+# Description: Generates HTML for modal with advanced filter form
+#
+# Params:
+#   ERROR
+#   FILTER
+#   HINTS
+#   PLACEHOLDER
+#
+# Return Value: HTML
+################################################################
+sub FilterModal {
+    my ($dbh, $args) = @_;
+
+    return sprintf(qq{
+			<div id="complex-filter" class="modal">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-body">
+		
+							<div class="alert alert-danger %s" id="sql-error">%s</div>
+		
+							<form method="POST">
+								<textarea name=filter rows=3 placeholder="%s">%s</textarea>
+								<input type="button" value="Filter" class="btn btn-default btn-lg"/>
+								<input type="hidden" name="placeholder" value="" />
+							</form>
+		
+							<div id="column-hints">
+                                %s
+							</div>
+                            %s
+						</div>
+					</div>
+				</div>
+			</div>
+        },
+    	$args->{ERROR} ? "" : "hide",
+	    $args->{ERROR},
+    	$args->{PLACEHOLDER},
+	    $args->{FILTER},
+        join(", ", @{ $args->{HINTS} || [] }),
+        $args->{ADDITIONALMARKUP},
+    );
+}
+
+################################################################
 # TagSongList
 #
 # Description: Generates HTML for dialog to view all songs with

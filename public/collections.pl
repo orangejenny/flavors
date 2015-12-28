@@ -18,13 +18,34 @@ print $cgi->header();
 my $fdat = Flavors::Util::Fdat($cgi);
 Flavors::HTML::Header({
 	TITLE => "Collections",
-	BUTTONS => Flavors::HTML::ExportControl(),
-	CSS => ['collections.css'],
+	BUTTONS => Flavors::HTML::ExportControl() . qq{
+		<button type="button" class="btn btn-xs btn-info" id="add-collection">
+			<span class="glyphicon glyphicon-plus"></span>
+            New
+		</button>
+    },
+	CSS => ['collections.css', 'filters.css'],
 	JS => ['collections.js'],
 	SPINNER => 1,
 });
 
-my @collections = Flavors::Data::Collection::List($dbh);
+my @collections = ();
+eval {
+    @collections = Flavors::Data::Collection::List($dbh, {
+		FILTER => $fdat->{FILTER},
+		ORDERBY => $fdat->{ORDERBY},
+    });
+};
+
+# TODO: DRY up, this is duplicated in songs.pl
+my $sqlerror = "";
+if ($fdat->{FILTER} && $@) {
+	# assume this was an error in user's complex filter SQL
+	$sqlerror = $@;
+	$sqlerror =~ s/\n.*//s;
+	$sqlerror =~ s/\(select \* from \(\s*//s;
+}
+
 my %songs;
 my @songs = Flavors::Data::Song::List($dbh);
 foreach my $song (@songs) {
@@ -39,62 +60,12 @@ foreach my $song (@tracks) {
 	push(@{ $tracks{$song->{COLLECTIONID}} }, $song);
 }
 
-print sprintf(qq{
-<div class="post-nav">
-	<div class="controls">
-		<button id='add-collection' class='btn btn-default btn-large'>
-			<span class='glyphicon glyphicon-plus'></span>
-			New
-		</button>
-		<input type="text" id="collection-filter" placeholder="name">
-		<input type="text" id="tag-filter" placeholder="tags">
-		<br /><br />
-		<div class="dropdown sort-menu">
-			Sort by
-			<a class="dropdown-toggle" data-toggle="dropdown" role="label" href="#">
-				<span class="current">Date Acquired</span>
-				<b class="caret"></b>
-			</a>
-			<ul class="dropdown-menu">
-				<li><a href="#">Artist</a></li>
-				<li><a href="#">Energy</a></li>
-				<li><a href="#">Export Count</a></li>
-				<li><a href="#">Last Export</a></li>
-				<li><a href="#">Mood</a></li>
-				<li><a href="#">Name</a></li>
-				<li><a href="#">Rating</a></li>
-			</ul>
-		</div>
-		<br>
-		<div id="is-mix">
-			<label>
-				<input type="checkbox" value="0" checked>
-				Albums
-			</label>
-			<label>
-				<input type="checkbox" value="1" checked>
-				Mixes
-			</label>
-		</div>
-		<label>
-			<input type="checkbox" id="show-details" checked>
-			Show Details
-		</label>
-		<br><br>
-		<br><br>
-		<div class="well" id="export-list">
-			<div class="subtle">
-				drag collections here to export
-				<br><br>
-				<a href='#' id='suggestions-trigger'>
-					suggest some collections
-				</a>
-			</div>
-			<ul></ul>
-		</div>
-	</div>
-	},
-);
+print Flavors::HTML::FilterControl($dbh, {
+    FILTER => $fdat->{FILTER},
+    PLACEHOLDER => $fdat->{PLACEHOLDER},
+});
+
+print qq{ <div class="post-nav"> };
 
 print "<div class=\"collections clearfix\">";
 
@@ -207,6 +178,15 @@ foreach my $collection (@collections) {
 }
 print "</div></div>";
 
+# Modal for complex filtering
+print Flavors::HTML::FilterModal($dbh, {
+    ERROR => $sqlerror,
+    FILTER => $fdat->{FILTER},
+    HINTS => [ Flavors::Data::Collection::ListColumns() ],
+    PLACEHOLDER => $fdat->{PLACEHOLDER},
+});
+
+# Modal for new collection
 print q{
 	<div id="new-collection" class="modal">
 		<div class="modal-dialog modal-lg">

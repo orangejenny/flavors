@@ -1,7 +1,11 @@
 @import "imports.less";
 
+.post-nav {
+    top: 150px;
+    margin: 0 @spacingWide @spacingWide @spacingWide;
+}
+
 .collections {
-	margin-left: 250px;
 	.collection {
 		@albumSize: 75px;
 	
@@ -92,71 +96,6 @@
 			}
 		}
 	}
-}
-
-.controls {
-	@width: 225px;
-
-	margin: @spacingNormal;
-	position: fixed;
-	width: @width;
-	top: @navHeight + @spacingNormal;
-	bottom: 0;
-	overflow-x: visible;
-	overflow-y: scroll;
-
-	label {
-		display: block;
-	}
-
-	input[type="text"], button {
-		width: @width;
-		margin-bottom: 10px;
-	}
-
-	input[type="checkbox"] {
-		margin: 0 @spacingNarrow @spacingNarrow 0;
-	}
-
-	.sort-menu {
-		.dropdown-toggle, .dropdown-toggle:hover {
-			background-color: @white;
-			text-decoration: none;
-			color: @greyDarkest;
-		}
-	}
-}
-
-#export-list {
-	.subtle {
-		text-align: center;
-	}
-
-	ul {
-		list-style-type: none;
-		margin: 0;
-		padding: 0;
-
-		li {
-			margin: 0;
-			padding: 0 0 @spacingNormal 0;
-			line-height: 20px;
-
-			.glyphicon {
-				margin-left: 5px;
-				float: right;
-				.clickable();
-			}
-		}
-	}
-}
-
-.export-list-active {
-	background-color: @white;
-}
-
-.export-list-hover {
-	background-color: @greyLightest;
 }
 
 #new-collection {

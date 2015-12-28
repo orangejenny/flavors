@@ -37,16 +37,25 @@
 
         .details-background {
             background-color: @white;
-            opacity: 0.9;
+            opacity: 0.95;
         }
 
 		.details {
             padding: @spacingNarrow;
             opacity: 1;
 
-			.rating .blank {
-				display: none;
+			.rating {
+                width: 60px;
+                .blank {
+                    visibility: hidden;
+                }
 			}
+
+            .tags {
+                text-align: center;
+                margin-top: 5px;
+            }
+
 			.export-icons {
 				float: right;
 				span {
@@ -79,15 +88,11 @@
 			padding: @spacingNarrow;
 			div {
 				text-align: center;
-				font-size: 10px;
 				max-width: @albumSize - 2 * @spacingNarrow;
-				overflow-x: hidden;
-				text-overflow: ellipsis;
-				white-space: nowrap;
+                .ellipsis();
 				&:not(:last-child) {
-					margin-bottom: 1px;
+					margin-bottom: @spacingNarrow;
 				}
-				//line-height: 15px;
 			}
 		}
 	}

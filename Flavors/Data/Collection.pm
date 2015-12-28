@@ -148,9 +148,15 @@ sub List {
 		inner join (
 			select 
 				collectionid, 
-				avg(rating) rating, 
-				avg(energy) energy, 
-				avg(mood) mood
+				max(rating) maxrating, 
+				max(energy) maxenergy, 
+				max(mood) maxmood,
+				min(rating) minrating, 
+				min(energy) minenergy, 
+				min(mood) minmood,
+				avg(rating) avgrating, 
+				avg(energy) avgenergy, 
+				avg(mood) avgmood
 			from 
 				songcollection
 				inner join song on song.id = songcollection.songid
@@ -278,9 +284,15 @@ sub ListColumns {
 		name
 		ismix
 		dateacquired
-		rating
-		energy
-		mood
+		minrating
+		minenergy
+		minmood
+		maxrating
+		maxenergy
+		maxmood
+		avgrating
+		avgenergy
+		avgmood
 		artist
 		genre
 		color

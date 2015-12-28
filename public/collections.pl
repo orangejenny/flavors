@@ -78,32 +78,18 @@ foreach my $collection (@collections) {
 	printf(qq{
 			<div 
 				data-id="%s"
-				data-is-mix="%s"
 				data-original-title="%s"
 				data-tag-list="%s"
-				data-date-acquired="%s"
 				data-name="%s"
 				data-artist="%s"
-				data-rating="%s"
-				data-energy="%s"
-				data-mood="%s"
-				data-last-export="%s"
-				data-export-count="%s"
 				class="collection clearfix"
 			>
 		},
 		$collection->{ID},
-		$collection->{ISMIX} ? 1 : 0,
 		$collection->{NAME},
 		Flavors::Util::EscapeHTMLAttribute(join(" ", @{ $collection->{TAGS} })),
-		$collection->{DATEACQUIRED},
 		lc($collection->{NAME}),
 		lc($collection->{ARTIST}),
-		$collection->{RATING},
-		$collection->{ENERGY},
-		$collection->{MOOD},
-		$collection->{LASTEXPORT},
-		$collection->{EXPORTCOUNT},
 	);
 
 	my $image = sprintf("images/collections/%s.jpg", $collection->{ID});
@@ -112,7 +98,6 @@ foreach my $collection (@collections) {
 	}
 	else {
 		my $color = $colors{$collection->{COLOR}};
-		my @tags = @{ $collection->{TAGS} }[0..3];
 		printf(qq{
 				<div class="mix" style="%s%s">
 					%s
@@ -120,7 +105,7 @@ foreach my $collection (@collections) {
 			},
 			$color ? ("background-color: #" . $color->{HEX} . ";") : "",
 			$color->{WHITETEXT} ? " color: white; font-weight: bold;" : "",
-			join("", map { "<div>$_</div>" } @tags),
+			join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..8]),
 		);
 	}
     printf(qq{
@@ -159,19 +144,40 @@ foreach my $collection (@collections) {
 					<span class="glyphicon glyphicon-download"></span>
 				</div>
 				<div>Acquired %s</div>
-                %s<br>
-				<div class="rating">%s</div>
-				<br><div class="rating">%s</div>
-				<br><div class="rating">%s</div>
+                %s<br><br>
+				<div>
+                    <div class="rating">%s</div>
+				    <div class="rating">%s</div>
+				    <div class="rating">%s</div>
+                </div>
+				<div>
+                    <div class="rating">%s</div>
+				    <div class="rating">%s</div>
+				    <div class="rating">%s</div>
+                </div>
+				<div>
+                    <div class="rating">%s</div>
+				    <div class="rating">%s</div>
+				    <div class="rating">%s</div>
+                </div>
+                <br>
+                <div class="tags">%s</div>
 			</div>
             </div>
 			<ol class="track-list hide">%s</ol>
 		},
 		Flavors::Util::TrimDate($collection->{DATEACQUIRED}),
 		$exporttext,
-		Flavors::HTML::Rating($collection->{RATING}, 'star'),
-		Flavors::HTML::Rating($collection->{ENERGY}, 'fire'),
-		Flavors::HTML::Rating($collection->{MOOD}, 'heart'),
+		Flavors::HTML::Rating($collection->{MINRATING}, 'star'),
+		Flavors::HTML::Rating($collection->{MINENERGY}, 'fire'),
+		Flavors::HTML::Rating($collection->{MINMOOD}, 'heart'),
+		Flavors::HTML::Rating($collection->{AVGRATING}, 'star'),
+		Flavors::HTML::Rating($collection->{AVGENERGY}, 'fire'),
+		Flavors::HTML::Rating($collection->{AVGMOOD}, 'heart'),
+		Flavors::HTML::Rating($collection->{MAXRATING}, 'star'),
+		Flavors::HTML::Rating($collection->{MAXENERGY}, 'fire'),
+		Flavors::HTML::Rating($collection->{MAXMOOD}, 'heart'),
+		join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..3]),
 		join("", map { "<li>" . $_->{NAME} . "</li>" } @{ $tracks{$collection->{ID}} }),
 	);
 

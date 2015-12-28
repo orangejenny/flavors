@@ -182,7 +182,7 @@ print "</div></div>";
 print Flavors::HTML::FilterModal($dbh, {
     ERROR => $sqlerror,
     FILTER => $fdat->{FILTER},
-    HINTS => [qw(id name ismix dateacquired rating energy mood artist genre color tags lastexport exportcount)],
+    HINTS => [ Flavors::Data::Collection::ListColumns() ],
     PLACEHOLDER => $fdat->{PLACEHOLDER},
 });
 

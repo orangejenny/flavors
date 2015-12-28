@@ -89,7 +89,7 @@ foreach my $collection (@collections) {
 				data-mood="%s"
 				data-last-export="%s"
 				data-export-count="%s"
-				class="collection has-details clearfix"
+				class="collection clearfix"
 			>
 		},
 		$collection->{ID},
@@ -123,25 +123,6 @@ foreach my $collection (@collections) {
 			join("", map { "<div>$_</div>" } @tags),
 		);
 	}
-	printf(qq{
-			<div class="details">
-				<div class="name">%s</div>
-				<div class="artist">%s</div>
-				<div class="export-icons">
-					<br><br>
-					<span class="glyphicon glyphicon-download"></span>
-				</div>
-				<div class="rating">%s</div>
-				<br><div class="rating">%s</div>
-				<br><div class="rating">%s</div>
-			</div>
-		},
-		$collection->{NAME},
-		$collection->{ARTIST},
-		Flavors::HTML::Rating($collection->{RATING}, 'star'),
-		Flavors::HTML::Rating($collection->{ENERGY}, 'fire'),
-		Flavors::HTML::Rating($collection->{MOOD}, 'heart'),
-	);
 
 	my $exporttext = "";
 	if ($collection->{EXPORTCOUNT} == 0) {
@@ -163,17 +144,33 @@ foreach my $collection (@collections) {
 		}
 		$exporttext .= " " . Flavors::Util::TrimDate($collection->{LASTEXPORT});
 	}
+
 	printf(qq{
-			<div class="track-list clear">
-				%s
+			<div class="details">
+				<div class="name">%s</div>
+				<div class="artist">%s</div>
+				<div class="export-icons">
+					<br><br>
+					<span class="glyphicon glyphicon-download"></span>
+				</div>
+				<div class="rating">%s</div>
+				<br><div class="rating">%s</div>
+				<br><div class="rating">%s</div>
+                <br>%s
 				<div>Acquired %s</div>
-				<ol>%s</ol>
 			</div>
+			<ol class="track-list hide">%s</ol>
 		},
+		$collection->{NAME},
+		$collection->{ARTIST},
+		Flavors::HTML::Rating($collection->{RATING}, 'star'),
+		Flavors::HTML::Rating($collection->{ENERGY}, 'fire'),
+		Flavors::HTML::Rating($collection->{MOOD}, 'heart'),
 		$exporttext,
 		Flavors::Util::TrimDate($collection->{DATEACQUIRED}),
 		join("", map { "<li>" . $_->{NAME} . "</li>" } @{ $tracks{$collection->{ID}} }),
 	);
+
 	print "</div>";
 }
 print "</div></div>";
@@ -185,6 +182,20 @@ print Flavors::HTML::FilterModal($dbh, {
     HINTS => [ Flavors::Data::Collection::ListColumns() ],
     PLACEHOLDER => $fdat->{PLACEHOLDER},
 });
+
+# Modal for track list
+print qq{
+	<div id="track-list" class="modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title"></h3>
+                </div>
+				<div class="modal-body"></div>
+			</div>
+		</div>
+	</div>
+};
 
 # Modal for new collection
 print q{

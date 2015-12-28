@@ -7,7 +7,7 @@
 
 .collections {
 	.collection {
-		@albumSize: 75px;
+		@albumSize: 100px;
 	
 		float: left;
 		margin: 0 0 @spacingWide @spacingWide;
@@ -16,42 +16,26 @@
 		overflow: hidden;
 		background-color: @white;
 	
-		&:not(.has-details) {
-			.details, .track-list {
-				display: none !important;	// override effect of jQuery show/hide
-			}
-		}
-	
-		&.has-details {
 			border: 1px solid @greyLight;
-			width: 225px;
+			width: 275px;
 			padding: @spacingNormal @spacingNormal 0 @spacingNormal;
 	
-			.details {
-				color: @grey;
-				.name, .artist {
-					.ellipsis();
-				}
-				.name {
-					color: @defaultFontColor;
-				}
-				.rating .blank {
-					display: none;
-				}
-				.export-icons {
-					float: right;
-					span {
-						cursor: pointer;
-						margin-left: @spacingNarrow;
-					}
-				}
+		.details {
+			color: @grey;
+			.name, .artist {
+				.ellipsis();
 			}
-	
-			.track-list {
+			.name {
+				color: @defaultFontColor;
+			}
+			.rating .blank {
 				display: none;
-				ol {
-					margin: @spacingNormal 0 @spacingNormal 0;
-					padding-left: 23px;
+			}
+			.export-icons {
+				float: right;
+				span {
+					cursor: pointer;
+					margin-left: @spacingNarrow;
 				}
 			}
 		}

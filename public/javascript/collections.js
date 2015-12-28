@@ -33,7 +33,11 @@ function numberSongs() {
 
 jQuery(document).ready(function() {
 	jQuery(".collection").click(function() {
-		jQuery(this).find(".track-list").toggle('fast');
+        var $collection = jQuery(this);
+        var $modal = jQuery("#track-list");
+        $modal.find(".modal-title").html($collection.find(".name").text());
+        $modal.find(".modal-body").html($collection.find(".track-list").clone().removeClass("hide"));
+        $modal.modal();
 	});
 
 	// Column names hint for filter
@@ -169,17 +173,6 @@ jQuery(document).ready(function() {
 				location.reload();
 			}
 		});
-	});
-
-    // TODO: remove
-	// Controls: Toggle details
-	jQuery("#show-details").click(function() {
-		if (jQuery(this).is(":checked")) {
-			jQuery(".collection").addClass("has-details");
-		}
-		else {
-			jQuery(".collection").removeClass("has-details");
-		}
 	});
 
 	// Export single collection

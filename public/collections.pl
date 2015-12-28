@@ -123,6 +123,13 @@ foreach my $collection (@collections) {
 			join("", map { "<div>$_</div>" } @tags),
 		);
 	}
+    printf(qq{
+		    <div class="name">%s</div>
+		    <div class="artist">%s</div>
+        },
+		$collection->{NAME},
+		$collection->{ARTIST},
+    );
 
 	my $exporttext = "";
 	if ($collection->{EXPORTCOUNT} == 0) {
@@ -146,28 +153,25 @@ foreach my $collection (@collections) {
 	}
 
 	printf(qq{
+            <div class="details-background">
 			<div class="details">
-				<div class="name">%s</div>
-				<div class="artist">%s</div>
 				<div class="export-icons">
-					<br><br>
 					<span class="glyphicon glyphicon-download"></span>
 				</div>
+				<div>Acquired %s</div>
+                %s<br>
 				<div class="rating">%s</div>
 				<br><div class="rating">%s</div>
 				<br><div class="rating">%s</div>
-                <br>%s
-				<div>Acquired %s</div>
 			</div>
+            </div>
 			<ol class="track-list hide">%s</ol>
 		},
-		$collection->{NAME},
-		$collection->{ARTIST},
+		Flavors::Util::TrimDate($collection->{DATEACQUIRED}),
+		$exporttext,
 		Flavors::HTML::Rating($collection->{RATING}, 'star'),
 		Flavors::HTML::Rating($collection->{ENERGY}, 'fire'),
 		Flavors::HTML::Rating($collection->{MOOD}, 'heart'),
-		$exporttext,
-		Flavors::Util::TrimDate($collection->{DATEACQUIRED}),
 		join("", map { "<li>" . $_->{NAME} . "</li>" } @{ $tracks{$collection->{ID}} }),
 	);
 

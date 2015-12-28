@@ -29,7 +29,23 @@ Flavors::HTML::Header({
 	SPINNER => 1,
 });
 
-my @collections = Flavors::Data::Collection::List($dbh);
+my @collections = ();
+eval {
+    @collections = Flavors::Data::Collection::List($dbh, {
+		FILTER => $fdat->{FILTER},
+		ORDERBY => $fdat->{ORDERBY},
+    });
+};
+
+# TODO: DRY up, this is duplicated in songs.pl
+my $sqlerror = "";
+if ($fdat->{FILTER} && $@) {
+	# assume this was an error in user's complex filter SQL
+	$sqlerror = $@;
+	$sqlerror =~ s/\n.*//s;
+	$sqlerror =~ s/\(select \* from \(\s*//s;
+}
+
 my %songs;
 my @songs = Flavors::Data::Song::List($dbh);
 foreach my $song (@songs) {
@@ -164,9 +180,9 @@ print "</div></div>";
 
 # Modal for complex filtering
 print Flavors::HTML::FilterModal($dbh, {
-    #ERROR => $sqlerror, # TODO
+    ERROR => $sqlerror,
     FILTER => $fdat->{FILTER},
-    HINTS => [qw(name artist)],
+    HINTS => [qw(id name ismix dateacquired rating energy mood artist genre color tags lastexport exportcount)],
     PLACEHOLDER => $fdat->{PLACEHOLDER},
 });
 

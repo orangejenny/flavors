@@ -256,7 +256,10 @@ sub List {
 						and songcollection.songid = $args->{SONGID}
 				)
 		};
-	}
+	} elsif ($args->{FILTER}) {
+	    $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
+		$sql .= " where (" . $args->{FILTER} . ")";
+    }
 
 	$sql .= qq{
 		order by dateacquired desc

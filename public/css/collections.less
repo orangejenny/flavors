@@ -6,11 +6,13 @@
 }
 
 .collections {
+    text-align: center;
+
 	.collection {
 		@albumSize: 200px;
         position: relative;
 	
-		float: left;
+        display: inline-block;
 		margin: 0 0 @spacingWide @spacingWide;
 		border-radius: @borderRadius;
 		cursor: pointer;
@@ -20,7 +22,6 @@
 
 		.name, .artist {
 			.ellipsis();
-            text-align: center;
 		}
 
         .name {
@@ -43,6 +44,7 @@
 		.details {
             padding: @spacingNarrow;
             opacity: 1;
+            text-align: left;
 
 			.rating {
                 width: 60px;
@@ -58,6 +60,9 @@
 
 			.export-icons {
 				float: right;
+                font-size: @fontSizeLarge;
+                color: @grey;
+
 				span {
 					cursor: pointer;
 					margin-left: @spacingNarrow;
@@ -87,7 +92,6 @@
 			height: @albumSize;
 			padding: @spacingNarrow;
 			div {
-				text-align: center;
 				max-width: @albumSize - 2 * @spacingNarrow;
                 .ellipsis();
 				&:not(:last-child) {

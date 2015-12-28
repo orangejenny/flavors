@@ -156,7 +156,9 @@ sub List {
 				min(mood) minmood,
 				avg(rating) avgrating, 
 				avg(energy) avgenergy, 
-				avg(mood) avgmood
+				avg(mood) avgmood,
+                min(year) minyear,
+                max(year) maxyear
 			from 
 				songcollection
 				inner join song on song.id = songcollection.songid
@@ -282,6 +284,7 @@ sub ListColumns {
     my @columns = qw(
 		id
 		name
+		artist
 		ismix
 		dateacquired
 		minrating
@@ -293,7 +296,8 @@ sub ListColumns {
 		avgrating
 		avgenergy
 		avgmood
-		artist
+        minyear
+        maxyear
 		genre
 		color
 		tags

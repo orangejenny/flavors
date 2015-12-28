@@ -181,7 +181,7 @@ jQuery(document).ready(function() {
 		var $details = $collection.find(".details");
 		ExportPlaylist({
 			COLLECTIONIDS: [$collection.data("id")],
-			FILENAME: $details.find(".artist").text() + " - " + $details.find(".name").text(),
+			FILENAME: $collection.find(".artist").text() + " - " + $collection.find(".name").text(),
 		});
 		event.stopPropagation();
 	});

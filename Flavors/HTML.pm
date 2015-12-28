@@ -283,6 +283,10 @@ sub FilterControl {
 # Description: Generates HTML for modal with advanced filter form
 #
 # Params:
+#   ERROR
+#   FILTER
+#   HINTS
+#   PLACEHOLDER
 #
 # Return Value: HTML
 ################################################################
@@ -305,9 +309,7 @@ sub FilterModal {
 							</form>
 		
 							<div id="column-hints">
-								id, name, artist, rating, energy, mood, time, filename,
-								<br>ismix, mindateacquired, maxdateacquired,
-								<br>taglist, tagcount, collectionlist, minyear, maxyear, isstarred
+                                %s
 							</div>
                             %s
 						</div>
@@ -319,6 +321,7 @@ sub FilterModal {
 	    $args->{ERROR},
     	$args->{PLACEHOLDER},
 	    $args->{FILTER},
+        join(", ", @{ $args->{HINTS} || [] }),
         $args->{ADDITIONALMARKUP},
     );
 }

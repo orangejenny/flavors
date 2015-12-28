@@ -111,6 +111,10 @@ print Flavors::HTML::FilterModal($dbh, {
     ),
     ERROR => $sqlerror,
     FILTER => $fdat->{FILTER},
+    HINTS => [qw(
+        id name artist rating energy mood time filename ismix mindateacquired
+        maxdateacquired taglist tagcount collectionlist minyear maxyear isstarred
+    )],
     PLACEHOLDER => $fdat->{PLACEHOLDER},
 });
 

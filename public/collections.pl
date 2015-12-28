@@ -166,6 +166,7 @@ print "</div></div>";
 print Flavors::HTML::FilterModal($dbh, {
     #ERROR => $sqlerror, # TODO
     FILTER => $fdat->{FILTER},
+    HINTS => [qw(name artist)],
     PLACEHOLDER => $fdat->{PLACEHOLDER},
 });
 

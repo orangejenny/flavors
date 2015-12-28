@@ -182,47 +182,6 @@ jQuery(document).ready(function() {
 		}
 	});
 
-    // TODO: remove
-	// Controls: Sort collections
-	jQuery(".sort-menu .dropdown-menu a").click(function() {
-		var $link = jQuery(this);
-		var $container = jQuery(".collections");
-		var attribute = "data-" + $link.text().toLowerCase().replace(" ", "-");
-
-		var collections = [];
-		$container.find(".collection").each(function() { collections.push(jQuery(this).detach()); });
-
-		var ascendingSort = function(a, b) {
-			a = a.attr(attribute).toLowerCase();
-			b = b.attr(attribute).toLowerCase();
-			return a > b ? 1 : (a < b ? -1 : 0);
-		}
-		var descendingSort = function(a, b) {
-			a = a.attr(attribute).toLowerCase();
-			b = b.attr(attribute).toLowerCase();
-			return b > a ? 1 : (b < a ? -1 : 0);
-		}
-
-		collections = collections.sort(attribute.match(/name|artist/) ? ascendingSort : descendingSort);
-		for (var i in collections) {
-			$container.append(jQuery(collections[i]));
-		}
-
-		// Change status of dropdown and re-sort links
-		var $dropdown = $link.closest(".sort-menu");
-		var $current = $dropdown.find(".dropdown-toggle .current");
-		var temp = $current.text();
-		$current.text($link.text());
-		$link.text(temp);
-		var $menu = $dropdown.find(".dropdown-menu");
-		var links = [];
-		$menu.find("li").each(function() { links.push(jQuery(this)); });
-		links = links.sort(function(a, b) { return a.text() > b.text() ? 1 : (a.text() < b.text() ? -1 : 0); });
-		for (var i in links) {
-			$menu.append(links[i]);
-		}
-	});
-
 	// Export single collection
 	jQuery(".export-icons span").click(function(event) {
 		var $collection = jQuery(this).closest(".collection");

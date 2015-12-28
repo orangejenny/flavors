@@ -304,7 +304,6 @@ sub FilterModal {
 							<form method="POST">
 								<textarea name=filter rows=3 placeholder="%s">%s</textarea>
 								<input type="button" value="Filter" class="btn btn-default btn-lg"/>
-								<input type="hidden" name="orderBy" value="" />
 								<input type="hidden" name="placeholder" value="" />
 							</form>
 		

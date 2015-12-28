@@ -89,16 +89,6 @@ print Flavors::HTML::FilterModal($dbh, {
 			<ul class="playlists">
 				%s
 			</ul>
-
-			<div class="group" data-category="popular">
-				<button class="btn btn-default">Recently added</button>
-				<button class="btn btn-default">Recently exported</button>
-				<button class="btn btn-default">Frequently exported</button>
-			</div>
-			<div class="group" data-category="unpopular">
-				<button class="btn btn-default">Rarely exported</button>
-				<button class="btn btn-default">Exported long ago</button>
-			</div>
         },
     	join("", map {
 	    	sprintf(

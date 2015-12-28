@@ -57,41 +57,6 @@ jQuery(document).ready(function() {
 		updateRowCount();
 	}, 100, { leading: false }));
 
-    // TODO: remove?
-	jQuery("#complex-filter button").click(function() {
-		var $button = jQuery(this);
-		var buttonText = $button.text();
-		var $form = jQuery("#complex-filter form");
-		var filter = "";
-		var orderBy = $form.find('input[name="orderBy"]');
-		switch ($button.closest(".group").data("category")) {
-			case "popular":
-				if (buttonText.match(/frequent/i)) {
-					orderBy.val("exportcount desc");
-				}
-				else if (buttonText.match(/export/i)) {
-					orderBy.val("lastexport desc");
-				}
-				else if (buttonText.match(/add/i)) {
-					orderBy.val("dateacquired desc");
-				}
-				break;
-			case "unpopular":
-				if (buttonText.match(/rare/i)) {
-					orderBy.val("exportcount");
-				}
-				else if (buttonText.match(/ago/i)) {
-					orderBy.val("lastexport");
-				}
-				break;
-		}
-		if (!filter) {
-			$form.find('input[name="placeholder"]').val("(" + buttonText.toLowerCase() + ")");
-		}
-		$form.find("textarea").val(filter);
-		$form.submit();
-	});
-
 	jQuery(".playlists a").click(function() {
 		var $link = jQuery(this);
 		var $form = jQuery("#complex-filter form");

@@ -169,6 +169,7 @@ sub List {
 		inner join (
 			select 
 				collectionid,
+				group_concat(distinct artist separator ' ') as artistlist,
 				case 
 					when count(distinct artist) = 1 then max(artist)
 					else 'Various Artists'
@@ -285,6 +286,7 @@ sub ListColumns {
 		id
 		name
 		artist
+		artistlist
 		ismix
 		dateacquired
 		minrating

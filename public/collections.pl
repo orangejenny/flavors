@@ -82,6 +82,7 @@ foreach my $collection (@collections) {
 				data-tag-list="%s"
 				data-name="%s"
 				data-artist="%s"
+				data-artist-list="%s"
 				class="collection clearfix"
 			>
 		},
@@ -90,6 +91,7 @@ foreach my $collection (@collections) {
 		Flavors::Util::EscapeHTMLAttribute(join(" ", @{ $collection->{TAGS} })),
 		lc($collection->{NAME}),
 		lc($collection->{ARTIST}),
+		lc($collection->{ARTISTLIST}),
 	);
 
 	my $image = sprintf("images/collections/%s.jpg", $collection->{ID});

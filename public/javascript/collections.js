@@ -72,7 +72,10 @@ jQuery(document).ready(function() {
 		_.each(queryTokens, function(queryToken) {
             jQuery(selector + ":visible").each(function() {
                 var $collection = jQuery(this);
-                if (($collection.attr("data-name") + $collection.attr("data-artist") + $collection.attr("data-tag-list")).toLowerCase().indexOf(queryToken) === -1) {
+                var haystack = _.map(["name", "artist", "artist-list", "tag-list"], function(a) {
+                    return $collection.attr("data-" + a);
+                }).join(" ").toLowerCase();
+                if (haystack.indexOf(queryToken) === -1) {
                     $collection.hide();
                 }
             });

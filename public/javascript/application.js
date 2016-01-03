@@ -1,5 +1,28 @@
 jQuery(document).ready(function() {
 	jQuery(".loading").fadeOut('slow');
+
+    // Complex filter events
+    if (jQuery("#complex-filter").length) {
+        // Show SQL error, if any
+        if (jQuery("#sql-error").text().trim()) {
+            jQuery("#complex-filter").modal();
+        }
+
+    	jQuery("#complex-filter form input").click(function() {
+	    	jQuery(this).closest("form").submit();
+	    });
+	    jQuery("#complex-filter-trigger a").click(function() {
+		    jQuery("#complex-filter").modal().find("textarea").focus();
+	    });
+    	jQuery("#complex-filter-trigger .glyphicon-refresh").click(function() {
+	    	jQuery("#complex-filter form").submit();
+	    });
+    	jQuery("#complex-filter-trigger .glyphicon-remove").click(function() {
+	    	var $form = jQuery("#complex-filter form");
+		    $form.find("textarea").val("");
+		    $form.submit();
+	    });
+    }
 });
 
 /*

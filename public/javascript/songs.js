@@ -9,10 +9,6 @@ jQuery(document).ready(function() {
 	var letterCounts = InitialPageData('lettercounts');
 	updateRowCount();
 
-    if (jQuery("#sql-error").text().trim()) {
-        jQuery("#complex-filter").modal();
-    }
-
 	jQuery('#filter').keyup(_.throttle(function() {
 		var query = jQuery(this).val();
 		var rowselector = "#song-table-container tbody tr";
@@ -173,22 +169,6 @@ jQuery(document).ready(function() {
 	$table.on("click", ".isstarred .glyphicon", function() {
 		var $star = jQuery(this);
 		toggleStar($star, $star.closest("tr").data("song-id"), 'Flavors::Data::Song::Update');
-	});
-
-	// Complex filter controls
-	jQuery("#complex-filter form input").click(function() {
-		jQuery(this).closest("form").submit();
-	});
-	jQuery("#complex-filter-trigger a").click(function() {
-		jQuery("#complex-filter").modal().find("textarea").focus();
-	});
-	jQuery("#complex-filter-trigger .glyphicon-refresh").click(function() {
-		jQuery("#complex-filter form").submit();
-	});
-	jQuery("#complex-filter-trigger .glyphicon-remove").click(function() {
-		var $form = jQuery("#complex-filter form");
-		$form.find("textarea").val("");
-		$form.submit();
 	});
 
 	// Export buttons

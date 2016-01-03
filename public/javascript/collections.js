@@ -46,11 +46,6 @@ jQuery(document).ready(function() {
 		placement: "right"
 	});
 
-    // Show SQL error, if any
-    if (jQuery("#sql-error").text().trim()) {
-        jQuery("#complex-filter").modal();
-    }
-
     // Simple filter
     var lastQuery = "";
 	jQuery('#filter').keyup(_.throttle(function() {
@@ -81,23 +76,6 @@ jQuery(document).ready(function() {
             });
 		});
 	}, 100, { leading: false }));
-
-	// Complex filter controls
-    // TODO: DRY up with songs.js, these are duplicated there
-	jQuery("#complex-filter form input").click(function() {
-		jQuery(this).closest("form").submit();
-	});
-	jQuery("#complex-filter-trigger a").click(function() {
-		jQuery("#complex-filter").modal().find("textarea").focus();
-	});
-	jQuery("#complex-filter-trigger .glyphicon-refresh").click(function() {
-		jQuery("#complex-filter form").submit();
-	});
-	jQuery("#complex-filter-trigger .glyphicon-remove").click(function() {
-		var $form = jQuery("#complex-filter form");
-		$form.find("textarea").val("");
-		$form.submit();
-	});
 
 	// Controls: Add collection
 	jQuery("#add-collection").click(function() {

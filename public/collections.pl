@@ -9,7 +9,7 @@ use Flavors::Data::Tag;
 use Flavors::Data::Util;
 use Flavors::HTML;
 use Flavors::Util;
-use POSIX qw(strftime);
+use POSIX qw(floor);
 
 my $dbh = Flavors::Data::Util::DBH();
 
@@ -147,26 +147,29 @@ foreach my $collection (@collections) {
 				</div>
 				<div>Acquired %s</div>
                 %s<br><br>
-				<div>
-                    <div class="rating">%s</div>
-				    <div class="rating">%s</div>
-				    <div class="rating">%s</div>
+                <div class="ratings">
+    				<div>
+                        <div class="rating">%s</div>
+			    	    <div class="rating">%s</div>
+		    		    <div class="rating">%s</div>
+                    </div>
+    				<div>
+                        <div class="rating">%s</div>
+			    	    <div class="rating">%s</div>
+		    		    <div class="rating">%s</div>
+                    </div>
+    				<div>
+                        <div class="rating">%s</div>
+				        <div class="rating">%s</div>
+			    	    <div class="rating">%s</div>
+                    </div>
+                    <div>%s</div>
                 </div>
-				<div>
-                    <div class="rating">%s</div>
-				    <div class="rating">%s</div>
-				    <div class="rating">%s</div>
-                </div>
-				<div>
-                    <div class="rating">%s</div>
-				    <div class="rating">%s</div>
-				    <div class="rating">%s</div>
-                </div>
-                <br>
                 <div class="tags">%s</div>
 			</div>
             </div>
 			<ol class="track-list hide">%s</ol>
+            MINRATING=%s
 		},
 		Flavors::Util::TrimDate($collection->{DATEACQUIRED}),
 		$exporttext,
@@ -179,7 +182,8 @@ foreach my $collection (@collections) {
 		Flavors::HTML::Rating($collection->{MAXRATING}, 'star'),
 		Flavors::HTML::Rating($collection->{MAXENERGY}, 'fire'),
 		Flavors::HTML::Rating($collection->{MAXMOOD}, 'heart'),
-		join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..3]),
+        $collection->{COMPLETION} == 1 ? "&nbsp;" : sprintf("(%s%% complete)", floor($collection->{COMPLETION} * 100)),
+		join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..2]),
 		join("", map { "<li>" . $_->{NAME} . "</li>" } @{ $tracks{$collection->{ID}} }),
 	);
 

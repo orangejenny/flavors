@@ -15,35 +15,35 @@ my $fdat = Flavors::Util::Fdat($cgi);
 
 my $facet = $fdat->{FACET} || "rating";
 my %icons = (
-	rating => 'star',
-	mood => 'heart',
-	energy => 'fire',
+    rating => 'star',
+    mood => 'heart',
+    energy => 'fire',
 );
 
 Flavors::HTML::Header({
-	FDAT => $fdat,
-	TITLE => ucfirst $facet,
-	BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),
-	CSS => ['data.css', 'facet.css'],
-	JS => ['data.js', 'facet.js'],
+    FDAT => $fdat,
+    TITLE => ucfirst $facet,
+    BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),
+    CSS => ['data.css', 'facet.css'],
+    JS => ['data.js', 'facet.js'],
 });
 
 print qq{ <div class="post-nav"> };
 
 # Distribution and rated/unrated chart
 printf(qq{
-		<div class="facet-container" data-facet="%s">
-			<div class="histogram-container">
-				<svg></svg>
-			</div>
-			<div class='axis'>%s</div>
-			<div class="binary-container">
-				<svg></svg>
-			</div>
-		</div>
-	},
-	$facet,
-	join("", map { sprintf("<span class='axis-label'>%s</span>", Flavors::HTML::Rating($_, $icons{$facet})) } (1..5)),
+        <div class="facet-container" data-facet="%s">
+            <div class="histogram-container">
+                <svg></svg>
+            </div>
+            <div class='axis'>%s</div>
+            <div class="binary-container">
+                <svg></svg>
+            </div>
+        </div>
+    },
+    $facet,
+    join("", map { sprintf("<span class='axis-label'>%s</span>", Flavors::HTML::Rating($_, $icons{$facet})) } (1..5)),
 );
 
 # Toolbar
@@ -51,20 +51,20 @@ my @categories = Flavors::Data::Tag::CategoryList($dbh);
 push(@categories, "genres");
 print "<div class='btn-group category-buttons'>";
 foreach my $category (sort @categories) {
-	printf("<button class='btn btn-default' data-category='%s'>%s</button>", $category, $category);
+    printf("<button class='btn btn-default' data-category='%s'>%s</button>", $category, $category);
 }
 print "</div>";
 
 # Category charts
 print qq{ <div> };
 print sprintf(qq{
-	<div class="category-container" data-facet="%s">
-		<svg></svg>
-	</div>
+    <div class="category-container" data-facet="%s">
+        <svg></svg>
+    </div>
 }, $facet, $icons{$facet});
 print qq{ </div> };
 
-print qq{ </div> };	# .post-nav
+print qq{ </div> };    # .post-nav
 
 
 print Flavors::HTML::Footer();

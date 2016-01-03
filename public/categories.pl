@@ -14,14 +14,14 @@ print $cgi->header();
 my $fdat = Flavors::Util::Fdat($cgi);
 
 Flavors::HTML::Header({
-	CSS => ['categories.css'],
-	JS => ['categories.js'],
-	SPINNER => 1,
+    CSS => ['categories.css'],
+    JS => ['categories.js'],
+    SPINNER => 1,
 });
 
 my @tags = Flavors::Data::Tag::List($dbh);
 my $categorizeargs = Flavors::Util::Categorize($dbh, {
-	ITEMS => \@tags,
+    ITEMS => \@tags,
 });
 $categorizeargs->{TABLE} = 'tagcategory';
 

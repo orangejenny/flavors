@@ -17,23 +17,18 @@ my $fdat = Flavors::Util::Fdat();
 my $cgi = CGI->new;
 print $cgi->header();
 
-my @songs = ();
-eval {
-    @songs = Flavors::Data::Song::List($dbh, {
+my $results = Flavors::Data::Util::TrySQL($dbh, {
+    SUB => 'Flavors::Data::Song::List',
+    ARGS => {
         FILTER => $fdat->{FILTER},
         ORDERBY => $fdat->{ORDERBY},
         SPINNER => 1,
-    });
-};
+    },
+});
+my $sqlerror = $results->{ERROR} || "";
+my @songs = @{ $results->{RESULTS} };
 
-my $sqlerror = "";
-if ($fdat->{FILTER} && $@) {
-    # assume this was an error in user's complex filter SQL
-    $sqlerror = $@;
-    $sqlerror =~ s/\n.*//s;
-    $sqlerror =~ s/\(select \* from \(\s*//s;
-}
-else {
+if (!$sqlerror) {
     Flavors::Data::Playlist::Update($dbh, {
         FILTER => $fdat->{FILTER},
     });

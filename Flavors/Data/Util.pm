@@ -68,4 +68,42 @@ sub Results {
     return @results;
 }
 
+################################################################
+# TrySQL
+#
+# Description: Attempt SQL query and result both results and
+#   error message, if any
+#
+# Parameters
+#        SUB: String; sub to execute
+#        ARGS: Hashref of args to pass to sub
+#
+# Return Value: hashref containing
+#        ERROR: String; error message
+#        RESULTS: Arrayref of hashrefs, each a row of data
+################################################################
+sub TrySQL {
+    my ($dbh, $args) = @_;
+    my @results = ();
+    my $error = "";
+
+    eval {
+        no strict 'refs';
+        @results = $args->{SUB}($dbh, $args->{ARGS});
+    };
+
+    if ($@) {
+        # assume this was an error in user's complex filter SQL
+        $error = $@;
+        $error =~ s/\n.*//s;
+        $error =~ s/\(select \* from \(\s*//s;
+    }
+
+    return {
+        RESULTS => \@results,
+        ERROR => $error,
+    };
+}
+
+
 1;

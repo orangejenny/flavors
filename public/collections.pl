@@ -29,22 +29,15 @@ Flavors::HTML::Header({
     SPINNER => 1,
 });
 
-my @collections = ();
-eval {
-    @collections = Flavors::Data::Collection::List($dbh, {
+my $results = Flavors::Data::Util::TrySQL($dbh, {
+    SUB => 'Flavors::Data::Collection::List',
+    ARGS => {
         FILTER => $fdat->{FILTER},
         ORDERBY => $fdat->{ORDERBY},
-    });
-};
-
-# TODO: DRY up, this is duplicated in songs.pl
-my $sqlerror = "";
-if ($fdat->{FILTER} && $@) {
-    # assume this was an error in user's complex filter SQL
-    $sqlerror = $@;
-    $sqlerror =~ s/\n.*//s;
-    $sqlerror =~ s/\(select \* from \(\s*//s;
-}
+    },
+});
+my $sqlerror = $results->{ERROR} || "";
+my @collections = @{ $results->{RESULTS} };
 
 my %songs;
 my @songs = Flavors::Data::Song::List($dbh);

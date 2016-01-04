@@ -11,20 +11,21 @@
 	top: 80px;
 	z-index: 3;
 
-	#filter-input {
+	#simple-filter {
 		position: relative;
-		width: 50%;
-		margin: 0 25%;
+		margin: 0 35%;
+        height: 50px;
+        text-align: center;
+
 		#filter {
 			margin: @spacingNarrow;
 			width: 100%;
-			text-align: center;
 		}
-		.glyphicon-search {
-			position: absolute;
-			right: @spacingNarrow;
-			top: 10px + @spacingNarrow;
-		}
+        #last-query {
+            position: absolute;
+            right: 5px;
+            top: 15px;
+        }
 	}
 
 	#complex-filter-trigger {

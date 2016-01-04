@@ -261,9 +261,12 @@ sub FilterControl {
     my $iconcount = $args->{FILTER} ? 2 : ($args->{PLACEHOLDER} ? 1 : 0);
     return sprintf(qq{
     		<div id="filter-container">
-			    <div id="filter-input">
-			    	<span class='glyphicon glyphicon-search'></span>
-		    		<input id='filter' type='text'/>
+                <div id="simple-filter">
+                    <div id="last-query">
+    			        <span class='glyphicon glyphicon-search'></span>
+                        <span id="last-query-text"></span>
+                    </div>
+		    	    <input id='filter' type='text'/>
 	    		</div>
     			<div id="complex-filter-trigger" class="icon-count-%i">
 			    	<a href='#'>%s</a> %s %s

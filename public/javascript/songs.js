@@ -173,14 +173,20 @@ function updateRowCount() {
 	jQuery("#song-count").text(jQuery("#song-table-container tbody tr:visible").length);
 }
 
-function simpleFilter() {
+function simpleFilter(event) {
 	var query = jQuery("#filter").val();
 	var rowselector = "#song-table-container tbody tr";
 
 	if (query === lastQuery) {
 		return;
 	}
+
+    if (event && event.keyCode != 13 && query.length < 4) {
+        return;
+    }
+
 	lastQuery = query;
+    jQuery("#last-query-text").text(lastQuery);
 
 	var queryTokens = _.without(query.split(/\s+/), "");
 	if (!queryTokens.length) {

@@ -1,57 +1,19 @@
 // Globals
 var oldValue = undefined;
 var iconClasses = ['glyphicon-star', 'glyphicon-fire', 'glyphicon-heart'];
+var lastQuery = "";
+var tokens;
+var letters;
+var letterCounts;
 
 jQuery(document).ready(function() {
-    var lastQuery = "";
-	var tokens = InitialPageData('tokens');
-	var letters = InitialPageData('letters');
-	var letterCounts = InitialPageData('lettercounts');
+    tokens = InitialPageData('tokens');
+    letters = InitialPageData('letters');
+    letterCounts = InitialPageData('lettercounts');
 	updateRowCount();
 
-	jQuery('#filter').keyup(_.throttle(function() {
-		var query = jQuery(this).val();
-		var rowselector = "#song-table-container tbody tr";
-
-		if (query === lastQuery) {
-			return;
-		}
-		lastQuery = query;
-
-		var queryTokens = _.without(query.split(/\s+/), "");
-		if (!queryTokens.length) {
-			jQuery(rowselector).show();
-			updateRowCount();
-			return;
-		}
-
-		var matches = {};	// song id => { queryToken1 => 1, queryToken2 => 1, ... }
-		_.each(queryTokens, function(queryToken) {
-			var leastCommonLetter = _.min(queryToken.split(""), function(letter) {
-				return letterCounts[letter];
-			});
-
-			_.each(letters[leastCommonLetter], function(searchToken) {
-				if (searchToken.indexOf(queryToken) != -1) {
-					_.each(tokens[searchToken], function(songID) {
-						if (!matches[songID]) {
-							matches[songID] = {};
-						}
-						matches[songID][queryToken] = 1;
-					});
-				}
-			});
-		});
-
-		jQuery(rowselector).hide();
-		_.each(matches, function(matchTriggers, songID) {
-			if (_.values(matchTriggers).length === queryTokens.length) {
-				jQuery("#song-" + songID).show();
-			}
-		});
-
-		updateRowCount();
-	}, 100, { leading: false }));
+    simpleFilter();
+	jQuery('#filter').keyup(_.throttle(simpleFilter, 100, { leading: false }));
 
 	jQuery(".playlists a").click(function() {
 		var $link = jQuery(this);
@@ -209,4 +171,48 @@ function toggleStar($star, id, sub) {
 
 function updateRowCount() {
 	jQuery("#song-count").text(jQuery("#song-table-container tbody tr:visible").length);
+}
+
+function simpleFilter() {
+	var query = jQuery("#filter").val();
+	var rowselector = "#song-table-container tbody tr";
+
+	if (query === lastQuery) {
+		return;
+	}
+	lastQuery = query;
+
+	var queryTokens = _.without(query.split(/\s+/), "");
+	if (!queryTokens.length) {
+		jQuery(rowselector).show();
+		updateRowCount();
+		return;
+	}
+
+	var matches = {};	// song id => { queryToken1 => 1, queryToken2 => 1, ... }
+	_.each(queryTokens, function(queryToken) {
+		var leastCommonLetter = _.min(queryToken.split(""), function(letter) {
+			return letterCounts[letter];
+		});
+
+		_.each(letters[leastCommonLetter], function(searchToken) {
+			if (searchToken.indexOf(queryToken) != -1) {
+				_.each(tokens[searchToken], function(songID) {
+					if (!matches[songID]) {
+						matches[songID] = {};
+					}
+					matches[songID][queryToken] = 1;
+				});
+			}
+		});
+	});
+
+	jQuery(rowselector).hide();
+	_.each(matches, function(matchTriggers, songID) {
+		if (_.values(matchTriggers).length === queryTokens.length) {
+			jQuery("#song-" + songID).show();
+		}
+	});
+
+	updateRowCount();
 }

@@ -162,7 +162,6 @@ foreach my $collection (@collections) {
             </div>
             </div>
             <ol class="track-list hide">%s</ol>
-            MINRATING=%s
         },
         Flavors::Util::TrimDate($collection->{DATEACQUIRED}),
         $exporttext,

@@ -316,11 +316,11 @@ sub UpdateCategory {
 
     my $message;
     if ($currentrow) {
-        $sql = "update $args->{TABLE} set $args->{CATEGORYCOLUMN} = ? where $args->{VALUECOLUMN} = ?";
+        $sql = "update $args->{TABLE} set $args->{CATEGORYCOLUMN} = ?, updated = now() where $args->{VALUECOLUMN} = ?";
         $message = "Moved";
     }
     else {
-        $sql = "insert into $args->{TABLE} ($args->{CATEGORYCOLUMN}, $args->{VALUECOLUMN}) values (?, ?)";
+        $sql = "insert into $args->{TABLE} ($args->{CATEGORYCOLUMN}, $args->{VALUECOLUMN}, created, updated) values (?, ?, now(), now())";
         $message = "Added";
     }
     $message .= " $args->{VALUE} to $args->{CATEGORY}.";

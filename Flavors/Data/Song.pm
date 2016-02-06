@@ -222,8 +222,8 @@ sub Update {
     # genre
     if (exists $newsong->{GENRE} && $newsong->{GENRE} ne $oldsong->{GENRE}) {
         my $sql = $oldsong->{GENRE}
-            ? "update artistgenre set genre = ? where artist = ?"
-            : "insert into artistgenre (genre, artist) values (?, ?)"
+            ? "update artistgenre set genre = ?, created = now() where artist = ?"
+            : "insert into artistgenre (genre, artist, created) values (?, ?, now())"
         ;
         Flavors::Data::Util::Results($dbh, {
             SQL => $sql,

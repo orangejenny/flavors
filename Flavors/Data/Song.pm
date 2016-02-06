@@ -44,7 +44,7 @@ sub List {
             $songcolumnstring,
             artistgenre.genre,
             concat(' ', songtaglist.taglist, ' ') as taglist,
-            group_concat(collection.name order by created separator '%s') as collections,
+            group_concat(collection.name order by collection.created separator '%s') as collections,
             songtaglist.tagcount,
             years.minyear,
             years.maxyear,
@@ -78,7 +78,7 @@ sub List {
             from songcollection outersongcollection, collection 
             where outersongcollection.collectionid = collection.id 
             and collection.created = (
-                select max(created) 
+                select max(collection.created) 
                 from collection, songcollection innersongcollection 
                 where innersongcollection.songid = outersongcollection.songid
                 and collection.id = collectionid

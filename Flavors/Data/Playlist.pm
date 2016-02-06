@@ -24,7 +24,7 @@ sub List {
             playlist
         order by
             isstarred,
-            lasttouched desc
+            updated desc
     });
 
     return Flavors::Data::Util::Results($dbh, {
@@ -48,7 +48,7 @@ sub Star {
     my ($dbh, $args) = @_;
 
     Flavors::Data::Util::Results($dbh, {
-        SQL => "update playlist set isstarred = ? where id = ?",
+        SQL => "update playlist set isstarred = ?, updated = now() where id = ?",
         BINDS => [$args->{ISSTARRED} ? 1 : 0, $args->{ID}],
         SKIPFETCH => 1,
     });
@@ -80,7 +80,7 @@ sub Update {
     if (@results) {
         # touch playlist
         Flavors::Data::Util::Results($dbh, {
-            SQL => "update playlist set lasttouched = now() where id = ?",
+            SQL => "update playlist set updated = now() where id = ?",
             BINDS => [$results[0]->{ID}],
             SKIPFETCH => 1,
         });
@@ -93,9 +93,9 @@ sub Update {
         });
         my $sql = qq{
             insert into playlist
-                (id, filter, lasttouched)
+                (id, filter, created, updated)
             values
-                (?, ?, now())
+                (?, ?, now(), now())
         };
         Flavors::Data::Util::Results($dbh, {
             SQL => $sql,
@@ -112,7 +112,7 @@ sub Update {
             where
                 isstarred = 0
             order by
-                lasttouched desc
+                updated desc
         };
         @results = Flavors::Data::Util::Results($dbh, {
             SQL => $sql,

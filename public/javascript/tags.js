@@ -4,7 +4,7 @@ jQuery(document).ready(function() {
 		tag = tag.replace(/\s*\(.*/, "");
 		var $modal = jQuery("#item-detail");
 		$modal.data("tag", tag);
-		$modal.find('.modal-header h4').html(tag);
+		$modal.find('.modal-header h4 .modal-title').html(tag);
 		$modal.modal();
 		CallRemote({
 			SUB: 'Flavors::Data::Tag::List', 

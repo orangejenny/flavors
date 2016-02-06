@@ -32,8 +32,10 @@ printf(q{
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="pull-right">%s</div>
-                    <h4></h4>
+                    <h4>
+                        <span class="modal-title"></span>
+                        <div class="pull-right">%s</div>
+                    </h4>
                 </div>
                 <div class="modal-body clearfix">
                     <ul class="tags"></ul>

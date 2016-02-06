@@ -163,7 +163,7 @@ foreach my $collection (@collections) {
             </div>
             <ol class="track-list hide">%s</ol>
         },
-        Flavors::Util::TrimDate($collection->{DATEACQUIRED}),
+        Flavors::Util::TrimDate($collection->{CREATED}),
         $exporttext,
         Flavors::HTML::Rating($collection->{MINRATING}, 'star'),
         Flavors::HTML::Rating($collection->{MINENERGY}, 'fire'),
@@ -192,18 +192,21 @@ print Flavors::HTML::FilterModal($dbh, {
 });
 
 # Modal for track list
-print qq{
+printf(qq{
     <div id="track-list" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title"></h3>
+                    <h4>
+                        <div class="pull-right">%s</div>
+                        <span class="modal-title"></span>
+                    </h4>
                 </div>
                 <div class="modal-body"></div>
             </div>
         </div>
     </div>
-};
+}, Flavors::HTML::ExportControl());
 
 # Modal for new collection
 print q{

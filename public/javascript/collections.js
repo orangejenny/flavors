@@ -34,7 +34,7 @@ function numberSongs() {
 jQuery(document).ready(function() {
 	jQuery(".collection").click(function() {
         var $collection = jQuery(this);
-        var $modal = jQuery("#track-list");
+        var $modal = jQuery("#track-list").data("id", $collection.data("id"));
         $modal.find(".modal-title").html($collection.find(".name").text());
         $modal.find(".modal-body").html($collection.find(".track-list").clone().removeClass("hide"));
         $modal.modal();
@@ -156,7 +156,7 @@ jQuery(document).ready(function() {
 		});
 	});
 
-	// Export single collection
+	// Export single collection, from icon
 	jQuery(".export-icons span").click(function(event) {
 		var $collection = jQuery(this).closest(".collection");
 		var $details = $collection.find(".details");
@@ -167,8 +167,18 @@ jQuery(document).ready(function() {
 		event.stopPropagation();
 	});
 
-	// Export set of collections
-	jQuery(".export-button").click(function() {
+	// Export single collection, from modal
+	jQuery("#track-list .export-button").click(function(event) {
+		var $collection = jQuery(".collection[data-id='" + jQuery(this).closest("#track-list").data("id") + "']");
+		var $details = $collection.find(".details");
+		ExportPlaylist({
+			COLLECTIONIDS: [$collection.data("id")],
+			FILENAME: $collection.find(".artist").text() + " - " + $collection.find(".name").text(),
+		});
+	});
+
+	// Page-level export set of collections
+	jQuery("nav .export-button").click(function() {
 		var $button = jQuery(this);
 		var collectionids = [];
         jQuery(".collection:visible").each(function() {

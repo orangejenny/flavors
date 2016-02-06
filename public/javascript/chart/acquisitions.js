@@ -78,7 +78,8 @@ AcquisitionsChart.prototype.reformatData = function(data) {
 			month: date.getMonth() + 1,
 			year: date.getFullYear(),
 			count: +d.COUNT,
-			condition: "extract(month from mindateacquired) = " + (date.getMonth() + 1) + " and extract(year from mindateacquired) = " + date.getFullYear(),
+			condition: "extract(month from mincollectioncreated) = " + (date.getMonth() + 1)
+                        + " and extract(year from mincollectioncreated) = " + date.getFullYear(),
 			filename: "acquired " + text,
 			description: text + "\n" + d.COUNT + Pluralize(+d.COUNT, " collection"),
 			samples: d.SAMPLES,

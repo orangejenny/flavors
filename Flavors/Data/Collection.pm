@@ -18,16 +18,16 @@ sub AcquisitionStats {
     my ($dbh) = @_;
 
     my $sql = sprintf(qq{
-        select date_format(dateacquired, '%%Y-%%m') datestring, count(*) count,
+        select date_format(created, '%%Y-%%m') datestring, count(*) count,
         group_concat(concat(artist, ' - ', collection.name) separator '%s') samples
         from (
-            select collection.name, collection.dateacquired, case when count(distinct artist) = 1 then min(artist) else 'Various' end artist
+            select collection.name, collection.created, case when count(distinct artist) = 1 then min(artist) else 'Various' end artist
             from collection, songcollection, song
             where songcollection.collectionid = collection.id
             and songcollection.songid = song.id
-            group by collection.id, collection.dateacquired
+            group by collection.id, collection.created
         ) collection
-        group by date_format(dateacquired, '%%Y-%%m')
+        group by date_format(created, '%%Y-%%m')
     }, $Flavors::Data::Util::SEPARATOR);
 
     return [Flavors::Data::Util::Results($dbh, {
@@ -80,7 +80,7 @@ sub Add {
     });
     my $collectionid = $ids[0]->{ID} + 1;
     my $sql = qq{
-        insert into collection (id, name, ismix, dateacquired, exportcount)
+        insert into collection (id, name, ismix, created, exportcount)
         values (?, ?, ?, now(), 0)
     };
     Flavors::Data::Util::Results($dbh, {
@@ -258,7 +258,7 @@ sub List {
     }
 
     $sql .= qq{
-        order by dateacquired desc
+        order by created desc
     };
 
     my @results = Flavors::Data::Util::Results($dbh, {
@@ -289,7 +289,7 @@ sub ListColumns {
         artist
         artistlist
         ismix
-        dateacquired
+        created
         minrating
         minenergy
         minmood
@@ -381,7 +381,7 @@ sub Suggestions {
                 collection
             where
                 %s
-            order by dateacquired desc
+            order by created desc
             limit %s
             },
             pop(@clauses),

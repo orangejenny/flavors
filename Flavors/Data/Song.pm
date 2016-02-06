@@ -44,12 +44,12 @@ sub List {
             $songcolumnstring,
             artistgenre.genre,
             concat(' ', songtaglist.taglist, ' ') as taglist,
-            group_concat(collection.name order by dateacquired separator '%s') as collections,
+            group_concat(collection.name order by created separator '%s') as collections,
             songtaglist.tagcount,
             years.minyear,
             years.maxyear,
-            min(collection.dateacquired) as mindateacquired,
-            max(collection.dateacquired) as maxdateacquired,
+            min(collection.created) as mincollectioncreated,
+            max(collection.created) as maxcollectioncreated,
             tracks.tracknumber,
             song.exportcount,
             song.lastexport
@@ -77,8 +77,8 @@ sub List {
             select songid, tracknumber 
             from songcollection outersongcollection, collection 
             where outersongcollection.collectionid = collection.id 
-            and collection.dateacquired = (
-                select max(dateacquired) 
+            and collection.created = (
+                select max(created) 
                 from collection, songcollection innersongcollection 
                 where innersongcollection.songid = outersongcollection.songid
                 and collection.id = collectionid
@@ -120,7 +120,7 @@ sub List {
         $sql .= " and (" . $args->{FILTER} . ")";
     }
 
-    $sql .= " order by " . ($args->{ORDERBY} ? $args->{ORDERBY} : "maxdateacquired desc, tracknumber");
+    $sql .= " order by " . ($args->{ORDERBY} ? $args->{ORDERBY} : "maxcollectioncreated desc, tracknumber");
 
     my @results = Flavors::Data::Util::Results($dbh, {
         SQL => $sql,

@@ -13,7 +13,13 @@ jQuery(document).ready(function() {
 	updateRowCount();
 
     simpleFilter();
-	jQuery('#filter').on("keyup blur", _.throttle(simpleFilter, 100, { leading: false }));
+	jQuery('#filter').on("keyup blur", _.throttle(function(event) {
+        simpleFilter(event && event.keyCode === 13);
+    }, 100, { leading: false }));
+    jQuery("#simple-filter .glyphicon-remove").click(function() {
+        jQuery("#filter").val("");
+        simpleFilter(true);
+    });
 
 	jQuery(".playlists a").click(function() {
 		var $link = jQuery(this);
@@ -173,7 +179,7 @@ function updateRowCount() {
 	jQuery("#song-count").text(jQuery("#song-table-container tbody tr:visible").length);
 }
 
-function simpleFilter(event) {
+function simpleFilter(force) {
 	var query = jQuery("#filter").val();
 	var rowselector = "#song-table-container tbody tr";
 
@@ -181,12 +187,17 @@ function simpleFilter(event) {
 		return;
 	}
 
-    if (event && event.keyCode != 13 && query.length < 4) {
+    if (query.length < 4 && !force) {
         return;
     }
 
 	lastQuery = query;
     jQuery("#last-query-text").text(lastQuery);
+    if (lastQuery) {
+        jQuery("#simple-filter .glyphicon-remove").removeClass("hide");
+    } else {
+        jQuery("#simple-filter .glyphicon-remove").addClass("hide");
+    }
 
 	var queryTokens = _.without(query.split(/\s+/), "");
 	if (!queryTokens.length) {

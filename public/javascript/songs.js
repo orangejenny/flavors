@@ -13,7 +13,7 @@ jQuery(document).ready(function() {
 	updateRowCount();
 
     simpleFilter();
-	jQuery('#filter').keyup(_.throttle(simpleFilter, 100, { leading: false }));
+	jQuery('#filter').on("keyup blur", _.throttle(simpleFilter, 100, { leading: false }));
 
 	jQuery(".playlists a").click(function() {
 		var $link = jQuery(this);

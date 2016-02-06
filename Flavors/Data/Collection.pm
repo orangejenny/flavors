@@ -80,8 +80,8 @@ sub Add {
     });
     my $collectionid = $ids[0]->{ID} + 1;
     my $sql = qq{
-        insert into collection (id, name, ismix, created, exportcount)
-        values (?, ?, ?, now(), 0)
+        insert into collection (id, name, ismix, created, exportcount, updated)
+        values (?, ?, ?, now(), 0, now())
     };
     Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
@@ -98,8 +98,8 @@ sub Add {
     my $firstid = $lastid;
     foreach my $song (@songs) {
         my $sql = qq{
-            insert into song (id, name, artist, time, ispurchased, filename)
-            values (?, ?, ?, ?, 1, concat(?, '/', ?, '.mp3'))
+            insert into song (id, name, artist, time, ispurchased, filename, created, updated)
+            values (?, ?, ?, ?, 1, concat(?, '/', ?, '.mp3'), now(), now())
         };
         Flavors::Data::Util::Results($dbh, {
             SQL => $sql,
@@ -111,8 +111,8 @@ sub Add {
 
     # Add tracks
     my $sql = qq{
-        insert into songcollection (songid, collectionid, tracknumber)
-        select id, ?, id - ?
+        insert into songcollection (songid, collectionid, tracknumber, created, updated)
+        select id, ?, id - ?, now(), now()
         from song
         where id >= ? and id <= ?
     };

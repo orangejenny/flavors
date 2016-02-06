@@ -208,7 +208,7 @@ sub Update {
             update
                 song
             set
-                %s
+                %s, updated = now()
             where
                 id = %s
         }, join(", ", @updates), $id);
@@ -222,7 +222,7 @@ sub Update {
     # genre
     if (exists $newsong->{GENRE} && $newsong->{GENRE} ne $oldsong->{GENRE}) {
         my $sql = $oldsong->{GENRE}
-            ? "update artistgenre set genre = ?, created = now() where artist = ?"
+            ? "update artistgenre set genre = ?, updated = now() where artist = ?"
             : "insert into artistgenre (genre, artist, created) values (?, ?, now())"
         ;
         Flavors::Data::Util::Results($dbh, {
@@ -246,7 +246,7 @@ sub Update {
         foreach my $tag (@tagstoadd) {
             Flavors::Data::Util::Results($dbh, {
                 SQL => qq{
-                    insert into songtag (songid, tag) values (?, ?)
+                    insert into songtag (songid, tag, created, updated) values (?, ?, now(), now())
                 },
                 BINDS => [$id, $tag],
                 SKIPFETCH => 1,
@@ -286,7 +286,8 @@ sub UpdateExport {
             update song
             set
                 lastexport = now(),
-                exportcount = exportcount + 1
+                exportcount = exportcount + 1,
+                updated = now()
             where id in (%s)
         }, join(", ", map { '?' } @{ $args->{SONGIDS} }));
         Flavors::Data::Util::Results($dbh, {
@@ -301,7 +302,8 @@ sub UpdateExport {
             update collection
             set
                 lastexport = now(),
-                exportcount = exportcount + 1
+                exportcount = exportcount + 1,
+                updated = now()
             where id in (%s)
         }, join(", ", map { '?' } @{ $args->{COLLECTIONIDS} }));
         Flavors::Data::Util::Results($dbh, {

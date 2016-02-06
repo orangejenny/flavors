@@ -367,12 +367,12 @@ sub UpdateColor {
                 push(@binds, $args->{$column});
             }
         }
-        $sql .= "update color set " . join(", ", @clauses) . " where name = ?";
+        $sql .= "update color set " . join(", ", @clauses) . ", updated = now() where name = ?";
     }
     else {
         push(@binds, $args->{HEX} || "000000");
         push(@binds, $args->{WHITETEXT} || 0);
-        $sql .= "insert into color (hex, whitetext, name) values (?, ?, ?);";
+        $sql .= "insert into color (hex, whitetext, name, created, updated) values (?, ?, ?, now(), now());";
     }
     push (@binds, $args->{NAME});
 

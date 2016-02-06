@@ -109,7 +109,6 @@ print Flavors::HTML::FilterControl($dbh, {
     PLACEHOLDER => $fdat->{PLACEHOLDER},
 });
 
-print qq{ <div id="top-veil"></div> };
 print qq{ <div id="song-table-container"> };
 
 print qq{ <table><tbody> };
@@ -155,7 +154,6 @@ print qq{ </div> };
 
 print qq{
     <div id="song-count-container">
-        <div id="bottom-veil"></div>
         <span id="song-count-span">
             <span id="song-count"></span> songs
         </span>

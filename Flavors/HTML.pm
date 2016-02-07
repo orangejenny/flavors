@@ -252,14 +252,13 @@ sub SelectionControl {
 #
 # Params:
 #   FILTER
-#   PLACEHOLDER
 #
 # Return Value: HTML
 ################################################################
 sub FilterControl {
     my ($dbh, $args) = @_;
 
-    my $iconcount = $args->{FILTER} ? 2 : ($args->{PLACEHOLDER} ? 1 : 0);
+    my $iconcount = $args->{FILTER} ? 2 : 0;
     return sprintf(qq{
     		<div id="filter-container">
                 <div id="simple-filter">
@@ -276,7 +275,7 @@ sub FilterControl {
 	    	</div>
         },
     	$iconcount,
-    	$args->{PLACEHOLDER} || $args->{FILTER} || "advanced search",
+    	$args->{FILTER} || "advanced search",
     	$iconcount == 2 ? "<span class='glyphicon glyphicon-refresh'></span>" : "",
     	$iconcount > 0 ? "<span class='glyphicon glyphicon-remove'></span>" : "",
     );
@@ -291,7 +290,6 @@ sub FilterControl {
 #   ERROR
 #   FILTER
 #   HINTS
-#   PLACEHOLDER
 #
 # Return Value: HTML
 ################################################################
@@ -307,8 +305,7 @@ sub FilterModal {
 							<div class="alert alert-danger %s" id="sql-error">%s</div>
 		
 							<form method="POST">
-							    <div class="help-block">type "#" to see available columns</div>
-								<textarea name=filter rows=3 placeholder="%s">%s</textarea>
+								<textarea name=filter rows=3 placeholder="type &quot;#&quot; to see available columns">%s</textarea>
 								<input type="button" value="Filter" class="btn btn-default btn-lg"/>
 								<input type="hidden" name="placeholder" value="" />
 							</form>
@@ -321,7 +318,6 @@ sub FilterModal {
         Flavors::Util::EscapeHTMLAttribute(JSON::to_json($args->{HINTS} || [])),
     	$args->{ERROR} ? "" : "hide",
 	    $args->{ERROR},
-    	$args->{PLACEHOLDER},
 	    $args->{FILTER},
         $args->{ADDITIONALMARKUP},
     );

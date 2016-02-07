@@ -55,7 +55,6 @@ foreach my $song (@tracks) {
 
 print Flavors::HTML::FilterControl($dbh, {
     FILTER => $fdat->{FILTER},
-    PLACEHOLDER => $fdat->{PLACEHOLDER},
 });
 
 print qq{ <div class="post-nav"> };
@@ -188,7 +187,6 @@ print Flavors::HTML::FilterModal($dbh, {
     ERROR => $sqlerror,
     FILTER => $fdat->{FILTER},
     HINTS => [ Flavors::Data::Collection::ListColumns() ],
-    PLACEHOLDER => $fdat->{PLACEHOLDER},
 });
 
 # Modal for track list

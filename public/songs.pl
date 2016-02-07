@@ -100,13 +100,11 @@ print Flavors::HTML::FilterModal($dbh, {
         id name artist rating energy mood time filename ismix mincollectioncreated
         maxcollectioncreated taglist tagcount collectionlist minyear maxyear isstarred
     )],
-    PLACEHOLDER => $fdat->{PLACEHOLDER},
 });
 
 print qq{ <div class="post-nav"> };
 print Flavors::HTML::FilterControl($dbh, {
     FILTER => $fdat->{FILTER},
-    PLACEHOLDER => $fdat->{PLACEHOLDER},
 });
 
 print qq{ <div id="song-table-container"> };

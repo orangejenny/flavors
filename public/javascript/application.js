@@ -2,26 +2,35 @@ jQuery(document).ready(function() {
 	jQuery(".loading").fadeOut('slow');
 
     // Complex filter events
-    if (jQuery("#complex-filter").length) {
+    var $complexFilter = jQuery("#complex-filter");
+    if ($complexFilter.length) {
         // Show SQL error, if any
         if (jQuery("#sql-error").text().trim()) {
-            jQuery("#complex-filter").modal();
+            $complexFilter.modal();
         }
 
-    	jQuery("#complex-filter form input").click(function() {
+    	$complexFilter.find("form input").click(function() {
 	    	jQuery(this).closest("form").submit();
 	    });
 	    jQuery("#complex-filter-trigger a").click(function() {
-		    jQuery("#complex-filter").modal().find("textarea").focus();
+		    $complexFilter.modal().find("textarea").focus();
 	    });
     	jQuery("#complex-filter-trigger .glyphicon-refresh").click(function() {
-	    	jQuery("#complex-filter form").submit();
+	    	$complexFilter.find("form").submit();
 	    });
     	jQuery("#complex-filter-trigger .glyphicon-remove").click(function() {
-	    	var $form = jQuery("#complex-filter form");
+	    	var $form = $complexFilter.find("form");
 		    $form.find("textarea").val("");
 		    $form.submit();
 	    });
+
+        // Complex filter autocomplete
+        var hints = $complexFilter.data("hints");
+        $complexFilter.find("textarea").atwho({
+            at: "#",
+            insertTpl: "${name}",
+            data: hints,
+        });
     }
 });
 

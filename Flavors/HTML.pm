@@ -247,7 +247,8 @@ sub SelectionControl {
 # FilterControl
 # 
 # Description: Generates HTML for simple and complex filter
-#   combination.
+#   combination. Depends on jquery.atwho.min.css, 
+#   jquery.caret.min.js, and jquery.atwho.min.js.
 #
 # Params:
 #   FILTER
@@ -298,7 +299,7 @@ sub FilterModal {
     my ($dbh, $args) = @_;
 
     return sprintf(qq{
-			<div id="complex-filter" class="modal">
+			<div id="complex-filter" class="modal" data-hints="%s">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-body">
@@ -306,25 +307,22 @@ sub FilterModal {
 							<div class="alert alert-danger %s" id="sql-error">%s</div>
 		
 							<form method="POST">
+							    <div class="help-block">type "#" to see available columns</div>
 								<textarea name=filter rows=3 placeholder="%s">%s</textarea>
 								<input type="button" value="Filter" class="btn btn-default btn-lg"/>
 								<input type="hidden" name="placeholder" value="" />
 							</form>
-		
-							<div id="column-hints">
-                                %s
-							</div>
                             %s
 						</div>
 					</div>
 				</div>
 			</div>
         },
+        Flavors::Util::EscapeHTMLAttribute(JSON::to_json($args->{HINTS} || [])),
     	$args->{ERROR} ? "" : "hide",
 	    $args->{ERROR},
     	$args->{PLACEHOLDER},
 	    $args->{FILTER},
-        join(", ", @{ $args->{HINTS} || [] }),
         $args->{ADDITIONALMARKUP},
     );
 }

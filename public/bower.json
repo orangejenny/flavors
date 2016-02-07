@@ -1,0 +1,30 @@
+{
+  "name": "flavors",
+  "homepage": "https://github.com/orangejenny/flavors",
+  "authors": [
+    "Jenny Schweers <orange.jenny@gmail.com>"
+  ],
+  "description": "Music manager based on personal metadata",
+  "main": "application.js",
+  "moduleType": [],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^2.2.0",
+    "At.js": "jquery.atwho#^1.4.1",
+    "jquery-minicolors": "^2.2.3",
+    "jquery-ui": "^1.11.4",
+    "d3": "^3.5.14",
+    "underscore": "^1.8.3",
+    "Caret.js": "^0.2.2",
+    "datatables": "DataTables#^1.10.10",
+    "bootstrap": "^3.3.6"
+  }
+}

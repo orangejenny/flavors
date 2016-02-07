@@ -80,15 +80,20 @@ sub Header {
 	printf(qq{
 		<html>
 			<head>
-				<link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+				<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+                <link href="bower_components/jquery-minicolors/jquery.minicolors.css" rel="stylesheet" type="text/css" />
+                <link href="bower_components/At.js/dist/css/jquery.atwho.min.css" rel="stylesheet" type="text/css" />
 				<link href="/css/flavors.css" rel="stylesheet" type="text/css" />
 				%s
-				<script type="text/javascript" src="/javascript/thirdparty/jquery-1.7.1.min.js"></script>
-				<script type="text/javascript" src="/javascript/thirdparty/jquery-ui.min.js"></script>
-				<script type="text/javascript" src="/javascript/thirdparty/underscore-min.js"></script>
-				<script type="text/javascript" src="/javascript/thirdparty/d3.min.js"></script>
-				<script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
-				<script type="text/javascript" src="/javascript/application.js"></script>
+				<script src="bower_components/jquery/dist/jquery.min.js"></script>
+				<script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+				<script src="bower_components/underscore/underscore-min.js"></script>
+				<script src="bower_components/d3/d3.min.js"></script>
+				<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+				<script src="bower_components/jquery-minicolors/jquery.minicolors.min.js"></script>
+                <script src="bower_components/Caret.js/dist/jquery.caret.min.js"></script>
+                <script src="bower_components/At.js/dist/js/jquery.atwho.min.js"></script>
+				<script src="/javascript/application.js"></script>
 				%s
 				<title>$args->{TITLE}</title>
 			</head>

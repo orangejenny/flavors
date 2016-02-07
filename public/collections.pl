@@ -24,8 +24,8 @@ Flavors::HTML::Header({
             New
         </button>
     },
-    CSS => ['collections.css', 'filters.css', 'thirdparty/jquery.atwho.min.css'],
-    JS => ['collections.js', 'thirdparty/jquery.caret.min.js', 'thirdparty/jquery.atwho.min.js'],
+    CSS => ['collections.css', 'filters.css'],
+    JS => ['collections.js'],
     SPINNER => 1,
 });
 

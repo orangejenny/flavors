@@ -74,8 +74,8 @@ Flavors::HTML::Header({
         LETTERS => $letters,
         LETTERCOUNTS => $lettercounts,
     },
-    CSS => ['filters.css', 'songs.css', 'thirdparty/jquery.atwho.min.css'],
-    JS => ['songs.js', 'thirdparty/jquery.caret.min.js', 'thirdparty/jquery.atwho.min.js'],
+    CSS => ['filters.css', 'songs.css'],
+    JS => ['songs.js'],
 });
 
 my @playlists = Flavors::Data::Playlist::List($dbh);

@@ -6,7 +6,13 @@ jQuery(document).ready(function() {
 		$button.addClass("active");
 	});
 
-	jQuery("input[type=minicolors]").change(function() {
+    jQuery(".minicolors-input").minicolors({
+        control: 'wheel',
+        position: 'bottom left',
+        theme: 'bootstrap',
+    });
+
+	jQuery(".minicolors-input").change(function() {
 		UpdateColor(this, { HEX: jQuery(this).val().replace("#", "") });
 	});
 });

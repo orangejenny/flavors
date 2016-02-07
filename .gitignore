@@ -13,3 +13,4 @@ public/css/*.css
 *DS_Store
 public/flavors
 public/bootstrap/dist/
+bower_components/

@@ -186,6 +186,7 @@ print qq{
         <tr class="clickable disambiguation" data-id="<%= id %>">
             <td><%= artist_name %></td>
             <td><%= title %></td>
+            <td><%= id %></td>
         </tr>
     </script>
     <script type="text/template" id="echo-nest-summary-row">

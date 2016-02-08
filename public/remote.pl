@@ -23,5 +23,4 @@ my $dbh = Flavors::Data::Util::DBH();
 my $results = eval("$sub(\$dbh, \$fdat)");
 warn $@ if $@;
 
-print JSON::to_json($results) if $results;
-
+print JSON::to_json($results || {});

@@ -27,12 +27,10 @@ foreach my $color (@colors) {
     printf(qq{
             <div class="color">
                 <div class="name">%s</div>
-                <div class="minicolors">
-                    <input class="minicolors-input form-control" value="#%s" />
-                </div>
+                <input class="minicolors-input form-control" value="#%s" />
                 <div class="btn-group white-text" data-toggle="buttons-radio">
-                    <button class="btn btn-xs btn-default%s" value="0">black text</button>
-                    <button class="btn btn-xs btn-default%s" value="1">white text</button>
+                    <button class="btn btn-default%s" value="0">black text</button>
+                    <button class="btn btn-default%s" value="1">white text</button>
                 </div>
             </div>
         },

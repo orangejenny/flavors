@@ -79,8 +79,8 @@ function CallRemote(args) {
 				args.FINISH.call(this, data, status, xhr);
 			}
 		},
-		error: function(a, b, c) {
-			alert("Error in CallRemote");
+		error: function(xhr, textStatus) {
+			alert("Error in CallRemote: " + textStatus);
 		}
 	});
 }

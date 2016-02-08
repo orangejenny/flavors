@@ -75,7 +75,7 @@ Flavors::HTML::Header({
         LETTERCOUNTS => $lettercounts,
     },
     CSS => ['filters.css', 'songs.css'],
-    JS => ['songs.js'],
+    JS => ['songs.js', 'echo_nest.js'],
 });
 
 my @playlists = Flavors::Data::Playlist::List($dbh);

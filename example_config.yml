@@ -3,6 +3,8 @@ db:
   database: database_name
   user: username
   password: password
+  port: 3306
+echo_nest_api_key: key
 path:
   mac: /path/to/music/
   pc: C:\different\path\to\music

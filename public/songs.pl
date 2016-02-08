@@ -120,9 +120,9 @@ foreach my $song (@songs) {
     print sprintf(qq {
         <tr id="song-%s" data-song-id="%s" data-colors="%s">
             <td class='isstarred'>%s</td>
-            <td>%s</td>
-            <td>%s</td>
-            <td>%s</td>
+            <td class='name echo-nest-trigger clickable'>%s</td>
+            <td class='artist echo-nest-trigger clickable'>%s</td>
+            <td class='echo-nest-trigger clickable'>%s</td>
             <td contenteditable='true' class='rating'>%s</td>
             <td contenteditable='true' class='rating'>%s</td>
             <td contenteditable='true' class='rating'>%s</td>
@@ -157,5 +157,40 @@ print qq{
         </span>
     </div>
 };
+
+printf(qq{
+    <div id="echo-nest" class="modal" data-api-key="%s">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="pull-right">TODO: add EN logo</div>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger hide"></div>
+                    <table class="table table-striped table-hover disambiguation">
+                        <tbody></tbody>
+                    </table>
+                    <!-- TODO: use one table -->
+                    <table class="table table-striped table-hover summary">
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/template" id="echo-nest-disambiguation-row">
+        <tr class="clickable" data-id="<%= id %>">
+            <td><%= artist_name %></td>
+            <td><%= title %></td>
+        </tr>
+    </script>
+    <script type="text/template" id="echo-nest-summary-row">
+        <tr>
+            <td><%= key %></td>
+            <td><%= value %></td>
+        </tr>
+    </script>
+}, Flavors::Util::Config->{echo_nest_api_key});
 
 print Flavors::HTML::Footer();

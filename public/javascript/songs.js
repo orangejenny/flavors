@@ -101,7 +101,7 @@ jQuery(document).ready(function() {
                         $alert.addClass("hide");
                     } else {
                         $disambiguation.addClass("hide");
-                        alert("No songs found").removeClass("hide");
+                        $alert.text("No songs found").removeClass("hide");
                     }
                 } else {
                     $disambiguation.addClass("hide");

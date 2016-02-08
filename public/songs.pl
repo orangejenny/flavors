@@ -163,7 +163,11 @@ printf(qq{
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="pull-right">TODO: add EN logo</div>
+                    <div class="pull-right">
+                        <a href="http://the.echonest.com/" class="img-link" target="_blank">
+                            <img src="images/echo_nest.png" />
+                        </a>
+                    </div>
                     <h4 class="modal-title"></h4>
                 </div>
                 <div class="modal-body">

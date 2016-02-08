@@ -68,8 +68,7 @@ jQuery(document).ready(function() {
     // TODO: move to separate file
     // Click for EchoNest stats
     var $modal = jQuery("#echo-nest");
-    var $disambiguation = $modal.find("table.disambiguation");
-    var $summary = $modal.find("table.summary");
+    var $modalTable = $modal.find("table");
     var api_key = $modal.data("api-key");
     var disambiguationTemplate = _.template(jQuery("#echo-nest-disambiguation-row").text());
     var summaryTemplate = _.template(jQuery("#echo-nest-summary-row").text());
@@ -87,11 +86,10 @@ jQuery(document).ready(function() {
             // TODO: do this server-side with CallRemote (and add a spinner)
             url: 'http://developer.echonest.com/api/v4/song/search?api_key=' + api_key + '&format=json&artist=' + artist + '&title=' + name,
             success: function(data) {
-                var $tbody = $disambiguation.find("tbody");
-                $summary.addClass("hide");
+                var $tbody = $modalTable.find("tbody");
                 if (data.response && data.response.songs) {
                     if (data.response.songs.length) {
-                        $disambiguation.removeClass("hide");
+                        $modalTable.removeClass("hide");
                         $tbody.html('');
                         _.each(_.sortBy(data.response.songs, function(song) {
                             return song.artist_name + "   " + song.title;
@@ -100,11 +98,11 @@ jQuery(document).ready(function() {
                         });
                         $alert.addClass("hide");
                     } else {
-                        $disambiguation.addClass("hide");
+                        $modalTable.addClass("hide");
                         $alert.text("No songs found").removeClass("hide");
                     }
                 } else {
-                    $disambiguation.addClass("hide");
+                    $modalTable.addClass("hide");
                     $alert.text("Error in EchoNest API").removeClass("hide");
                 }
             },
@@ -114,16 +112,15 @@ jQuery(document).ready(function() {
         });
     });
 
-    jQuery("#echo-nest .disambiguation").on("click", "tr", function() {
+    jQuery("#echo-nest").on("click", "tr.disambiguation", function() {
         var id = jQuery(this).data("id");
-        $disambiguation.addClass("hide");
         $.ajax({
             method: 'GET',
             url: 'http://developer.echonest.com/api/v4/song/profile?api_key=' + api_key + '&format=json&bucket=audio_summary&id=' + id,
             success: function(data) {
                 if (data.response && data.response.songs.length && data.response.songs[0].audio_summary) {
-                    $summary.removeClass("hide");
-                    var $tbody = $summary.find("tbody");
+                    $modalTable.removeClass("hide");
+                    var $tbody = $modalTable.find("tbody");
                     $tbody.html("");
                     // TODO: display data in a more intelligent manner
                     _.each(_.pairs(_.omit(data.response.songs[0].audio_summary, ['audio_md5', 'analysis_url'])), function(pair) {
@@ -134,11 +131,11 @@ jQuery(document).ready(function() {
                     });
                 } else {
                     $alert.text("Error in EchoNest API").removeClass("hide");
-                    $summary.addClass("hide");
+                    $modalTable.addClass("hide");
                 }
             },
             error: function(data) {
-                $summary.addClass("hide");
+                $modalTable.addClass("hide");
                 $alert.text("Error in EchoNest API").removeClass("hide");
             },
         });

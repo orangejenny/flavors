@@ -172,11 +172,7 @@ printf(qq{
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger hide"></div>
-                    <table class="table table-striped table-hover disambiguation">
-                        <tbody></tbody>
-                    </table>
-                    <!-- TODO: use one table -->
-                    <table class="table table-striped table-hover summary">
+                    <table class="table table-striped table-hover">
                         <tbody></tbody>
                     </table>
                 </div>
@@ -184,7 +180,7 @@ printf(qq{
         </div>
     </div>
     <script type="text/template" id="echo-nest-disambiguation-row">
-        <tr class="clickable" data-id="<%= id %>">
+        <tr class="clickable disambiguation" data-id="<%= id %>">
             <td><%= artist_name %></td>
             <td><%= title %></td>
         </tr>

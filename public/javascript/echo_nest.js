@@ -14,11 +14,17 @@ jQuery(document).ready(function() {
 
         $modal.find(".modal-title").html(name + " (" + artist + ")");
         $modal.modal();
-        $.ajax({
-            method: 'GET',
-            // TODO: do this server-side with CallRemote (and add a spinner)
-            url: 'http://developer.echonest.com/api/v4/song/search?api_key=' + api_key + '&format=json&artist=' + artist + '&title=' + name,
-            success: function(data) {
+        CallRemote({
+            URL: 'http://developer.echonest.com/api/v4/song/search',
+            METHOD: 'GET',
+            SPINNER: $modal.find(".modal-body"),
+            ARGS: {
+                api_key: api_key,
+                format: 'json',
+                artist: artist,
+                title: name,
+            },
+            FINISH: function(data) {
                 var $tbody = $table.find("tbody");
                 if (data.response && data.response.songs) {
                     if (data.response.songs.length) {
@@ -33,12 +39,7 @@ jQuery(document).ready(function() {
                     } else {
                         showError("No songs found");
                     }
-                } else {
-                    showError("Error in EchoNest API");
                 }
-            },
-            error: function() {
-                showError("Error in EchoNest API");
             },
         });
     });
@@ -47,10 +48,17 @@ jQuery(document).ready(function() {
     var keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
     jQuery("#echo-nest").on("click", "tr.disambiguation", function() {
         var id = jQuery(this).data("id");
-        $.ajax({
-            method: 'GET',
-            url: 'http://developer.echonest.com/api/v4/song/profile?api_key=' + api_key + '&format=json&bucket=audio_summary&id=' + id,
-            success: function(data) {
+        CallRemote({
+            METHOD: 'GET',
+            URL: 'http://developer.echonest.com/api/v4/song/profile',
+            SPINNER: $modal.find(".modal-body"),
+            ARGS: {
+                api_key: api_key,
+                format: 'json',
+                bucket: 'audio_summary',
+                id: id,
+            },
+            FINISH: function(data) {
                 if (data.response && data.response.songs.length && data.response.songs[0].audio_summary) {
                     hideError();
                     var summary = data.response.songs[0].audio_summary;

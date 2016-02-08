@@ -47,7 +47,9 @@ function CallRemote(args) {
 	if (!args.ARGS) {
 		args.ARGS = {};
 	}
-	args.ARGS.SUB = args.SUB;
+    if (args.SUB) {
+	    args.ARGS.SUB = args.SUB;
+    }
 	var $spinner;
 	var originalPosition;
 	var done = false;
@@ -65,8 +67,8 @@ function CallRemote(args) {
 		}, 100);
 	}
 	jQuery.ajax({
-		type: 'POST',
-		url: 'remote.pl',
+		type: args.METHOD || 'POST',
+		url: args.URL || 'remote.pl',
 		dataType: 'json',
 		data: args.ARGS, 
 		success: function(data, status, xhr) {

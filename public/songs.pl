@@ -179,6 +179,9 @@ printf(qq{
             </div>
         </div>
     </div>
+}, Flavors::Util::Config->{echo_nest_api_key});
+
+print qq{
     <script type="text/template" id="echo-nest-disambiguation-row">
         <tr class="clickable disambiguation" data-id="<%= id %>">
             <td><%= artist_name %></td>
@@ -186,11 +189,13 @@ printf(qq{
         </tr>
     </script>
     <script type="text/template" id="echo-nest-summary-row">
-        <tr>
-            <td><%= key %></td>
-            <td><%= value %></td>
-        </tr>
+        <% for (var i in pairs) { %>
+            <tr>
+                <td><%= pairs[i].key %></td>
+                <td><%= pairs[i].value %></td>
+            </tr>
+        <% } %>
     </script>
-}, Flavors::Util::Config->{echo_nest_api_key});
+};
 
 print Flavors::HTML::Footer();

@@ -134,31 +134,7 @@ sub Header {
 		}
 	}
 
-	# Category dropdown
-	my @pages = qw(categories.pl genres.pl colors.pl);
-	my %pagetitles = (
-		'categories.pl' => 'Tags &rArr; Categories',
-		'genres.pl' => 'Artists &rArr; Genres',
-		'colors.pl' => 'Colors',
-	);
-	printf(qq{ <li class='dropdown %s'> }, (grep { $url eq $_ } @pages) ? "active" : "");
-	print qq{
-		<a class='dropdown-toggle' data-toggle='dropdown' role='label' href='#'>
-			Categories <span class="caret"></span>
-		</a>
-	};
-	print qq{ <ul class="dropdown-menu"> };
-	foreach my $page (@pages) {
-		printf(qq{ <li class='%s'><a href='%s'>%s</a></li> }, 
-			$url eq $page ? "active" : "",
-			$page,
-			$pagetitles{$page},
-		);
-	}
-	print qq{ </ul> };
-	print qq{ </li> };
-
-	# Data dropdown
+    # Visualization dropdown
 	my %icons = (
 		rating => 'star',
 		energy => 'fire',
@@ -171,7 +147,7 @@ sub Header {
 	printf(qq{ <li class='dropdown %s'> }, (grep { $url eq $_ . ".pl" } ('facet', @datapages)) ? "active" : "");
 	print qq{
 		<a class='dropdown-toggle' data-toggle='dropdown' role='label' href='#'>
-			Data <span class="caret"></span>
+			Visualizations <span class="caret"></span>
 		</a>
 	};
 	print qq{ <ul class="dropdown-menu"> };
@@ -197,6 +173,32 @@ sub Header {
 	}
 	print qq{ </ul> };
 	print qq{ </li> };
+
+	# Category dropdown
+	my @pages = qw(genres.pl colors.pl profiles.pl categories.pl);
+	my %pagetitles = (
+		'categories.pl' => 'Tags &rArr; Categories',
+		'genres.pl' => 'Artists &rArr; Genres',
+		'colors.pl' => 'Colors',
+        'profiles.pl' => 'Profiles',
+	);
+	printf(qq{ <li class='dropdown %s'> }, (grep { $url eq $_ } @pages) ? "active" : "");
+	print qq{
+		<a class='dropdown-toggle' data-toggle='dropdown' role='label' href='#'>
+			Data <span class="caret"></span>
+		</a>
+	};
+	print qq{ <ul class="dropdown-menu"> };
+	foreach my $page (@pages) {
+		printf(qq{ <li class='%s'><a href='%s'>%s</a></li> }, 
+			$url eq $page ? "active" : "",
+			$page,
+			$pagetitles{$page},
+		);
+	}
+	print qq{ </ul> };
+	print qq{ </li> };
+
 	print qq{ </ul> };
 
 	print $args->{BUTTONS};

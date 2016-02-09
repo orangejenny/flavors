@@ -9,27 +9,31 @@ use Flavors::Data::Util;
 # Description: Get a list of playlists
 #
 # Args:
-#        None
+#   None
+#
 # Return Value: array of hashrefs
 ################################################################
 sub List {
     my ($dbh, $args) = @_;
 
-    my $sql = sprintf(qq{
+    my $sql = qq{
         select
             id,
             filter,
-            isstarred
+            isdefault,
+            isstarred,
+            refreshed
         from
             playlist
         order by
+            isdefault desc,
             isstarred,
             updated desc
-    });
+    };
 
     return Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
-        COLUMNS => [qw(id filter isstarred)],
+        COLUMNS => [qw(id filter isdefault isstarred refreshed)],
     });
 }
 

@@ -19,14 +19,22 @@ Flavors::HTML::Header({
     SPINNER => 1,
 });
 
-my @playlists = Flavors::Data::Playlist::List($dbh, {
-});
+my @playlists = Flavors::Data::Playlist::List($dbh);
 
 print qq{ <div class="post-nav"> };
 
-print qq{
-    melancholia
-};
+print qq{ <table class="table table-striped table-hover"> };
+foreach my $playlist (@playlists) {
+    if ($playlist->{ISSTARRED} || $playlist->{ISDEFAULT}) {
+        printf(qq{
+            <tr>
+                <td>%s</td>
+                <td>TODO</td>
+            </tr>
+        }, $playlist->{FILTER});
+    }
+}
+print qq{ </table> };
 
 print qq{ </div> };
 print Flavors::HTML::Footer();

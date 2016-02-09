@@ -78,7 +78,7 @@ Flavors::HTML::Header({
     JS => ['songs.js', 'echo_nest.js'],
 });
 
-my @playlists = Flavors::Data::Playlist::List($dbh);
+my @playlists = grep { !$_->{ISDEFAULT} } Flavors::Data::Playlist::List($dbh);
 print Flavors::HTML::FilterModal($dbh, {
     ADDITIONALMARKUP => sprintf(qq{
             <ul class="playlists">

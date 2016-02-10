@@ -13,6 +13,7 @@ jQuery(document).ready(function() {
         var artist = $row.find(".artist").text();
 
         $modal.find(".modal-title").html(name + " (" + artist + ")");
+        $modal.data("id", $row.data("song-id"));
         $modal.modal();
         CallRemote({
             URL: 'http://developer.echonest.com/api/v4/song/search',
@@ -47,7 +48,19 @@ jQuery(document).ready(function() {
     // Click EchoNest result to get audio summary
     var keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
     jQuery("#echo-nest").on("click", "tr.disambiguation", function() {
-        var id = jQuery(this).data("id");
+        var echoNestID = jQuery(this).data("id"),
+            songID = jQuery(this).closest(".modal").data("id");
+
+        // Store EchoNest id to database
+        CallRemote({
+            SUB: 'Flavors::Data::Song::Update',
+            ARGS: {
+                ID: songID,
+                ECHONESTID: echoNestID,
+            },
+        });
+
+        // Fetch EchoNest audio attributes
         CallRemote({
             METHOD: 'GET',
             URL: 'http://developer.echonest.com/api/v4/song/profile',
@@ -56,7 +69,7 @@ jQuery(document).ready(function() {
                 api_key: api_key,
                 format: 'json',
                 bucket: 'audio_summary',
-                id: id,
+                id: echoNestID,
             },
             FINISH: function(data) {
                 if (data.response && data.response.songs.length && data.response.songs[0].audio_summary) {

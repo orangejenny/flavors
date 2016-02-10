@@ -36,6 +36,7 @@ sub List {
         ispurchased
         isstarred
         filename
+        echonestid
     );
 
     my $songcolumnstring = join(", ", map { "song.$_" } @songcolumns);
@@ -181,7 +182,7 @@ sub Stats {
 #
 # Parameters (optional except for ID)
 #        ID
-#        NAME, ARTIST, RATING, ENERGY, MOOD, ISSTARRED
+#        NAME, ARTIST, RATING, ENERGY, MOOD, ISSTARRED, ECHONESTID
 #        TAGS
 #
 # Return Value: array of hashrefs
@@ -193,11 +194,11 @@ sub Update {
     my $oldsong = List($dbh, { ID => $id });
 
     # song table
-    my @updatefields = qw(NAME ARTIST RATING ENERGY MOOD YEAR ISSTARRED);
+    my @updatefields = qw(NAME ARTIST RATING ENERGY MOOD YEAR ISSTARRED ECHONESTID);
     my @updates;
     my @binds;
     foreach my $key (@updatefields) {
-        if (exists $newsong->{$key} && $newsong->{$key} != $oldsong->{$key}) {
+        if (exists $newsong->{$key}) {
             push @updates, "$key = ?";
             push @binds, $newsong->{$key};
         }

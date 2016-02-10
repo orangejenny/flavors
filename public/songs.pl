@@ -118,7 +118,7 @@ foreach my $color (@colors) {
 }
 foreach my $song (@songs) {
     print sprintf(qq {
-        <tr id="song-%s" data-song-id="%s" data-colors="%s">
+        <tr id="song-%s" data-song-id="%s" data-echo-nest-id="%s" data-colors="%s">
             <td class='isstarred'>%s</td>
             <td class='name echo-nest-trigger clickable'>%s</td>
             <td class='artist echo-nest-trigger clickable'>%s</td>
@@ -131,6 +131,7 @@ foreach my $song (@songs) {
         },
         $song->{ID},
         $song->{ID},
+        $song->{ECHONESTID},
         Flavors::Util::EscapeHTMLAttribute(lc(JSON::to_json([
             grep { $_->{HEX} } map { $colormap{$_} } grep { exists $colormap{$_} } split(/\s+/, $song->{TAGS})
         ]))),

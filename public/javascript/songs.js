@@ -167,9 +167,9 @@ function toggleStar($star, id, sub) {
 		ARGS: {
 			ID: id,
 			ISSTARRED: isstarred ? 1 : 0,
-			FINISH: function(data) {
-				$star.removeClass("update-in-progress");
-			}
+        },
+	    FINISH: function(data) {
+			$star.removeClass("update-in-progress");
 		}
 	});
 }

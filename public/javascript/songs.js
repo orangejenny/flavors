@@ -147,6 +147,30 @@ jQuery(document).ready(function() {
 		options.FILENAME = options.FILTER || "[" + options.SIMPLEFILTER.trim().replace(/\s+/g, "][") + "]";
 		ExportPlaylist(options);
 	});
+
+    // Click on song table to pop up modal of EchoNest song results
+    jQuery(".echo-nest-trigger").on("click", function() {
+        var $row = jQuery(this).closest("tr"),
+            songID = $row.data("song-id"),
+            echoNestID = $row.data("echo-nest-id"),
+            name = $row.find(".name").text(),
+            artist = $row.find(".artist").text();
+        showModal(songID, name, artist);
+        if (echoNestID) {
+            getAudioSummary(echoNestID);
+        } else {
+            songSearch(songID, name, artist);
+        }
+    });
+
+    // Click EchoNest result to get audio summary
+    jQuery("#echo-nest").on("click", "tr.disambiguation", function() {
+        var echoNestID = jQuery(this).data("id"),
+            songID = jQuery(this).closest(".modal").data("id");
+
+        saveEchoNestID(songID, echoNestID);
+        getAudioSummary(echoNestID);
+    });
 });
 
 function ratingHTML(iconClass, number) {

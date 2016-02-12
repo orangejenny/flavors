@@ -1,29 +1,3 @@
-jQuery(document).ready(function() {
-    // Click on song table to pop up modal of EchoNest song results
-    jQuery(".echo-nest-trigger").on("click", function() {
-        var $row = jQuery(this).closest("tr"),
-            songID = $row.data("song-id"),
-            echoNestID = $row.data("echo-nest-id"),
-            name = $row.find(".name").text(),
-            artist = $row.find(".artist").text();
-        showModal(songID, name, artist);
-        if (echoNestID) {
-            getAudioSummary(echoNestID);
-        } else {
-            songSearch(songID, name, artist);
-        }
-    });
-
-    // Click EchoNest result to get audio summary
-    jQuery("#echo-nest").on("click", "tr.disambiguation", function() {
-        var echoNestID = jQuery(this).data("id"),
-            songID = jQuery(this).closest(".modal").data("id");
-
-        saveEchoNestID(songID, echoNestID);
-        getAudioSummary(echoNestID);
-    });
-});
-
 function showModal(songID, name, artist) {
     var $modal = jQuery("#echo-nest");
     $modal.find(".modal-title").html(name + " (" + artist + ")");
@@ -44,6 +18,7 @@ function hideError() {
 }
 
 function songSearch(songID, name, artist) {
+    console.log("searching for " + name + " by " + artist);
     var $modal = jQuery("#echo-nest"),
         $table = $modal.find("table"),
         api_key = $modal.data("api-key"),
@@ -62,6 +37,10 @@ function songSearch(songID, name, artist) {
         FINISH: function(data) {
             var $tbody = $table.find("tbody");
             if (data.response && data.response.songs) {
+                data.response.songs = _.filter(data.response.songs, function(song) {
+                    return song.title === name && song.artist_name === artist;
+                });
+                console.log("Found " + data.response.songs.length + " results");
                 if (data.response.songs.length === 1) {
                     var echoNestID = data.response.songs[0].id;
                     saveEchoNestID(songID, echoNestID);

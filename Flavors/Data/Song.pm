@@ -4,6 +4,35 @@ use strict;
 use Flavors::Data::Util;
 
 ################################################################
+# Count
+#
+# Description: Count a set of songs.
+#
+# Parameters (optional)
+#        FILTER: where clause (limited to song table)
+#
+# Return Value: array/arrayref of hashrefs UNLESS ID is passed,
+#        in which case, return the single hashref
+################################################################
+sub Count {
+    my ($dbh, $args) = @_;
+
+    my $sql = "select count(*) from song";
+
+    $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
+    if ($args->{FILTER}) {
+        $sql .= " where (" . $args->{FILTER} . ")";
+    }
+
+    my @rows = Flavors::Data::Util::Results($dbh, {
+        SQL => $sql,
+        COLUMNS => ['COUNT'],
+    });
+
+    return $rows[0]->{COUNT};
+}
+
+################################################################
 # List
 #
 # Description: Get a list of songs

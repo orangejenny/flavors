@@ -19,7 +19,7 @@ jQuery(document).ready(function() {
         var echoNestID = jQuery(this).data("id"),
             songID = jQuery(this).closest(".modal").data("id");
 
-        storeEchoNestID(songID, echoNestID);
+        saveEchoNestID(songID, echoNestID);
         getAudioSummary(echoNestID);
     });
 });
@@ -62,7 +62,12 @@ function songSearch(songID, name, artist) {
         FINISH: function(data) {
             var $tbody = $table.find("tbody");
             if (data.response && data.response.songs) {
-                if (data.response.songs.length) {
+                if (data.response.songs.length === 1) {
+                    var echoNestID = data.response.songs[0].id;
+                    saveEchoNestID(songID, echoNestID);
+                    getAudioSummary(echoNestID);
+                }
+                else if (data.response.songs.length) {
                     hideError();
                     $table.removeClass("hide");
                     $tbody.html('');
@@ -81,7 +86,7 @@ function songSearch(songID, name, artist) {
     });
 }
 
-function storeEchoNestID(songID, echoNestID) {
+function saveEchoNestID(songID, echoNestID) {
     CallRemote({
         SUB: 'Flavors::Data::Song::Update',
         ARGS: {

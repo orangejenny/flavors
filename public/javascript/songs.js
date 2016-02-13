@@ -157,7 +157,7 @@ jQuery(document).ready(function() {
             artist = $row.find(".artist").text();
         showModal(songID, name, artist);
         if (echoNestID) {
-            getAudioSummary(echoNestID);
+            getAudioSummary(songID, echoNestID);
         } else {
             songSearch(songID, name, artist);
         }
@@ -169,7 +169,7 @@ jQuery(document).ready(function() {
             songID = jQuery(this).closest(".modal").data("id");
 
         saveEchoNestID(songID, echoNestID);
-        getAudioSummary(echoNestID);
+        getAudioSummary(songID, echoNestID);
     });
 });
 

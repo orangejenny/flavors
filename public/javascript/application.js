@@ -56,11 +56,16 @@ jQuery(document).ready(function() {
             FINISH: function(data) {
                 var count = data.length - 1;
                 intervalID = setInterval(function() {
+                    if (jQuery("#echo-nest").is(":visible")) {
+                        return;
+                    }
+
                     songSearch(data[count].ID, data[count].NAME, data[count].ARTIST);
                     count--;
                     $button.find(".count").html(count);
                     if (!count) {
                         clearInterval(intervalID);
+                        $button.addClass("hide");
                     }
                 }, 3000);
             },

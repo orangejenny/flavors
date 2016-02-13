@@ -1,8 +1,15 @@
+// TODO: needs namespace desperately
+
 function showModal(songID, name, artist) {
     var $modal = jQuery("#echo-nest");
     $modal.find(".modal-title").html(name + " (" + artist + ")");
     $modal.data("id", songID);
     $modal.modal();
+}
+
+function hideModal() {
+    var $modal = jQuery("#echo-nest");
+    $modal.modal('hide');
 }
 
 function showError(text) {
@@ -35,6 +42,7 @@ function songSearch(songID, name, artist) {
             title: name,
         },
         FINISH: function(data) {
+            showModal(songID, name, artist);
             var $tbody = $table.find("tbody");
             if (data.response && data.response.songs) {
                 data.response.songs = _.filter(data.response.songs, function(song) {
@@ -44,7 +52,7 @@ function songSearch(songID, name, artist) {
                 if (data.response.songs.length === 1) {
                     var echoNestID = data.response.songs[0].id;
                     saveEchoNestID(songID, echoNestID);
-                    getAudioSummary(echoNestID);
+                    getAudioSummary(songID, echoNestID);
                 }
                 else if (data.response.songs.length) {
                     hideError();
@@ -78,7 +86,7 @@ function saveEchoNestID(songID, echoNestID) {
     });
 }
 
-function getAudioSummary(echoNestID) {
+function getAudioSummary(songID, echoNestID) {
     var keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'],
         $modal = jQuery("#echo-nest"),
         $table = $modal.find("table"),
@@ -98,6 +106,7 @@ function getAudioSummary(echoNestID) {
         FINISH: function(data) {
             if (data.response && data.response.songs.length && data.response.songs[0].audio_summary) {
                 hideError();
+                showModal(songID, data.response.songs[0].title, data.response.songs[0].artist_name);
                 var summary = data.response.songs[0].audio_summary;
                 summary.key = keys[summary.key] + " " + (summary.mode ? "major" : "minor");
                 summary.loudness += " dB";

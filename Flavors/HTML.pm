@@ -446,9 +446,15 @@ sub Footer {
     }, Flavors::Util::Config->{echo_nest_api_key}) . qq{
         <script type="text/template" id="echo-nest-disambiguation-row">
             <tr class="clickable disambiguation" data-id="<%= id %>">
-                <td><%= artist_name %></td>
-                <td><%= title %></td>
-                <td><%= id %></td>
+                <td class="col-sm-4"><%= artist_name %></td>
+                <td class="col-sm-4"><%= title %></td>
+                <td class="col-sm-4">
+                    <ul class="list-unstyled">
+                        <% _.each(albums, function(album) { %>
+                            <li><%= album %></li>
+                        <% }) %>
+                    </ul>
+                </td>
             </tr>
         </script>
         <script type="text/template" id="echo-nest-summary-row">

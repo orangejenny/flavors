@@ -32,7 +32,7 @@ function songSearch(songID, name, artist) {
         template = _.template(jQuery("#echo-nest-disambiguation-row").text());
 
     CallRemote({
-        URL: 'http://developer.echonest.com/api/v4/song/search',
+        URL: 'http://developer.echonest.com/api/v4/song/search?bucket=tracks&bucket=id:spotify',
         METHOD: 'GET',
         SPINNER: $modal.find(".modal-body"),
         ARGS: {
@@ -45,9 +45,6 @@ function songSearch(songID, name, artist) {
             showModal(songID, name, artist);
             var $tbody = $table.find("tbody");
             if (data.response && data.response.songs) {
-                data.response.songs = _.filter(data.response.songs, function(song) {
-                    return song.title === name && song.artist_name === artist;
-                });
                 console.log("Found " + data.response.songs.length + " results");
                 if (data.response.songs.length === 1) {
                     var echoNestID = data.response.songs[0].id;
@@ -55,13 +52,32 @@ function songSearch(songID, name, artist) {
                     getAudioSummary(songID, echoNestID);
                 }
                 else if (data.response.songs.length) {
-                    hideError();
-                    $table.removeClass("hide");
-                    $tbody.html('');
-                    _.each(_.sortBy(data.response.songs, function(song) {
-                        return song.artist_name + "   " + song.title;
-                    }), function(song) {
-                        $tbody.append(template(song));
+                    // Grab album names from Spotify to help distinguish between similar tracks
+                    // TODO: get Spotify API key?
+                    var indexToTrackIDs = _.map(data.response.songs, function(song) { return _.pluck(song.tracks, 'id'); });
+                    CallRemote({
+                        URL: 'https://api.spotify.com/v1/search',
+                        METHOD: 'GET',
+                        SPINNER: $modal.find(".modal-body"),
+                        ARGS: {
+                            query: 'track:' + name + ' artist:' + artist,
+                            type: 'track',
+                        },
+                        FINISH: function(spotifyData) {
+                            var tracksToAlbums = _.object(_.map(spotifyData.tracks.items, function(item) { return [item.id, item.album.name]; }));
+                            hideError();
+                            $table.removeClass("hide");
+                            $tbody.html('');
+                            _.each(_.sortBy(data.response.songs, function(song) {
+                                return song.artist_name + "   " + song.title;
+                            }), function(song) {
+                                // EchoNest's foreign_id look like "spotify:track:foo"
+                                var albums = _.map(_.pluck(song.tracks, 'foreign_id'), function(id) { return tracksToAlbums[id.replace(/.*:/, "")]; });
+                                $tbody.append(template(_.extend({}, song, {
+                                    albums: _.sortBy(_.compact(_.flatten(albums))),
+                                })));
+                            });
+                        },
                     });
                 } else {
                     showError("No songs found");

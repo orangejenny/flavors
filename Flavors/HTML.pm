@@ -208,12 +208,12 @@ sub Header {
         FILTER => "echonestid is null",
     });
     if ($count) {
-        printf(qq{
-            <button id="echo-nest-populate" type="button" class="btn btn-xs btn-warning">
+        print qq{
+            <button id="echo-nest-populate" type="button" class="btn btn-xs btn-default">
                 <i class="glyphicon glyphicon-refresh"></i>
-                Get %s EchoNest song IDs
+                EchoNest
             </button>
-        }, $count);
+        };
     }
 
 	print qq{

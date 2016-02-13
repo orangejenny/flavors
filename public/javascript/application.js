@@ -34,8 +34,19 @@ jQuery(document).ready(function() {
     }
 
     // EchoNest events
-    var $button = jQuery("#echo-nest-populate");
+    var $button = jQuery("#echo-nest-populate"),
+        intervalID = undefined;
+
     $button.on("click", function() {
+        $button.find(".glyphicon").toggleClass("glyphicon-stop").toggleClass("glpyhicon-refresh");
+        $button.toggleClass("btn-warning").toggleClass("btn-default");
+
+        if (intervalID) {
+            clearInterval(intervalID);
+            intervalID = undefined;
+            return;
+        }
+
         CallRemote({
             SUB: 'Flavors::Data::Song::List',
             ARGS: {
@@ -44,12 +55,12 @@ jQuery(document).ready(function() {
             SPINNER: $button,
             FINISH: function(data) {
                 var count = data.length - 1;
-                setInterval(function() {
+                intervalID = setInterval(function() {
                     songSearch(data[count].ID, data[count].NAME, data[count].ARTIST);
                     count--;
                     $button.find(".count").html(count);
                     if (!count) {
-                        clearInterval();
+                        clearInterval(intervalID);
                     }
                 }, 3000);
             },

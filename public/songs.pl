@@ -7,7 +7,6 @@ use Flavors::Data::Playlist;
 use Flavors::Data::Song;
 use Flavors::Data::Tag;
 use Flavors::Data::Util;
-use Flavors::EchoNest;
 use Flavors::HTML;
 use Flavors::Util;
 use JSON qw(to_json);
@@ -159,7 +158,5 @@ print qq{
         </span>
     </div>
 };
-
-print Flavors::EchoNest::ModalHTML();
 
 print Flavors::HTML::Footer();

@@ -3,7 +3,6 @@
 use lib "..";
 use strict;
 
-use Flavors::EchoNest;
 use Flavors::HTML;
 use Flavors::Data::Playlist;
 use Flavors::Data::Song;
@@ -59,7 +58,5 @@ foreach my $playlist (@playlists) {
 print qq{ </table> };
 
 print qq{ </div> };
-
-print Flavors::EchoNest::ModalHTML();
 
 print Flavors::HTML::Footer();

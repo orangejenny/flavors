@@ -1,3 +1,5 @@
+/* Calling out to the EchoNest and Spotify APIs */
+
 // TODO: needs namespace desperately
 
 function showModal(songID, name, artist) {

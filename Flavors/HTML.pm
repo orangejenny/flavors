@@ -94,7 +94,7 @@ sub Header {
                 <script src="bower_components/Caret.js/dist/jquery.caret.min.js"></script>
                 <script src="bower_components/At.js/dist/js/jquery.atwho.min.js"></script>
 				<script src="/javascript/application.js"></script>
-				<script src="/javascript/echo_nest.js"></script>
+				<script src="/javascript/api.js"></script>
 				%s
 				<title>$args->{TITLE}</title>
 			</head>

@@ -32,6 +32,29 @@ jQuery(document).ready(function() {
             data: hints,
         });
     }
+
+    // EchoNest events
+    var $button = jQuery("#echo-nest-populate");
+    $button.on("click", function() {
+        CallRemote({
+            SUB: 'Flavors::Data::Song::List',
+            ARGS: {
+                FILTER: "echonestid is null",
+            },
+            SPINNER: $button,
+            FINISH: function(data) {
+                var count = data.length - 1;
+                setInterval(function() {
+                    songSearch(data[count].ID, data[count].NAME, data[count].ARTIST);
+                    count--;
+                    $button.find(".count").html(count);
+                    if (!count) {
+                        clearInterval();
+                    }
+                }, 3000);
+            },
+        });
+    });
 });
 
 /*

@@ -16,7 +16,7 @@ my $dbh = Flavors::Data::Util::DBH();
 my $cgi = CGI->new;
 print $cgi->header();
 my $fdat = Flavors::Util::Fdat($cgi);
-Flavors::HTML::Header({
+Flavors::HTML::Header($dbh, {
     TITLE => "Collections",
     BUTTONS => Flavors::HTML::ExportControl() . qq{
         <button type="button" class="btn btn-xs btn-info" id="add-collection">

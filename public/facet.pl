@@ -20,7 +20,7 @@ my %icons = (
     energy => 'fire',
 );
 
-Flavors::HTML::Header({
+Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => ucfirst $facet,
     BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),

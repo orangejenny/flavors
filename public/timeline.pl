@@ -3,15 +3,18 @@
 use lib "..";
 use strict;
 
+use Flavors::Data::Util;
 use Flavors::HTML;
 
 my $cgi = CGI->new;
 print $cgi->header();
 my $fdat = Flavors::Util::Fdat($cgi);
 
+my $dbh = Flavors::Data::Util::DBH();
+
 my $facet = $fdat->{FACET} || "rating";
 
-Flavors::HTML::Header({
+Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => "Timeline",
     BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),

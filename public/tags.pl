@@ -11,7 +11,7 @@ my $dbh = Flavors::Data::Util::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
-Flavors::HTML::Header({
+Flavors::HTML::Header($dbh, {
     CSS => ['tags.css'],
     JS => ['tags.js'],
     TITLE => "Tags",

@@ -11,7 +11,7 @@ my $fdat = Flavors::Util::Fdat($cgi);
 
 my $facet = $fdat->{FACET} || "rating";
 
-Flavors::HTML::Header({
+Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => "Acquisitions",
     BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),

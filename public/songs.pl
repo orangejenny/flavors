@@ -66,7 +66,7 @@ foreach my $letter (keys $letters) {
     $lettercounts->{$letter} = scalar(@{ $letters->{$letter} });
 }
 
-Flavors::HTML::Header({
+Flavors::HTML::Header($dbh, {
     TITLE => "Songs",
     BUTTONS => Flavors::HTML::ExportControl(),
     INITIALPAGEDATA => {
@@ -75,7 +75,7 @@ Flavors::HTML::Header({
         LETTERCOUNTS => $lettercounts,
     },
     CSS => ['filters.css', 'songs.css'],
-    JS => ['songs.js', 'echo_nest.js'],
+    JS => ['songs.js'],
 });
 
 my @playlists = grep { !$_->{ISDEFAULT} } Flavors::Data::Playlist::List($dbh);

@@ -3,13 +3,16 @@
 use lib "..";
 use strict;
 
+use Flavors::Data::Util;
 use Flavors::HTML;
 
 my $cgi = CGI->new;
 print $cgi->header();
 my $fdat = Flavors::Util::Fdat($cgi);
 
-Flavors::HTML::Header({
+my $dbh = Flavors::Data::Util::DBH();
+
+Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => "Matrix",
     BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),

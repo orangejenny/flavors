@@ -65,7 +65,7 @@ sub Rating {
 # Return Value: HTML
 ################################################################
 sub Header {
-	my ($args) = @_;
+	my ($dbh, $args) = @_;
 
 	if ($args->{TITLE}) {
 		$args->{TITLE} = "Flavors: " . $args->{TITLE};
@@ -94,6 +94,7 @@ sub Header {
                 <script src="bower_components/Caret.js/dist/jquery.caret.min.js"></script>
                 <script src="bower_components/At.js/dist/js/jquery.atwho.min.js"></script>
 				<script src="/javascript/application.js"></script>
+				<script src="/javascript/echo_nest.js"></script>
 				%s
 				<title>$args->{TITLE}</title>
 			</head>
@@ -202,6 +203,18 @@ sub Header {
 	print qq{ </ul> };
 
 	print $args->{BUTTONS};
+
+    my $count = Flavors::Data::Song::Count($dbh, {
+        FILTER => "echonestid is null",
+    });
+    if ($count) {
+        printf(qq{
+            <button id="echo-nest-populate" type="button" class="btn btn-xs btn-warning">
+                <i class="glyphicon glyphicon-refresh"></i>
+                Get %s EchoNest song IDs
+            </button>
+        }, $count);
+    }
 
 	print qq{
 							</nav>

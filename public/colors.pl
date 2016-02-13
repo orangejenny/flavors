@@ -13,7 +13,7 @@ my $cgi = CGI->new;
 print $cgi->header();
 my $fdat = Flavors::Util::Fdat($cgi);
 
-Flavors::HTML::Header({
+Flavors::HTML::Header($dbh, {
     CSS => ['colors.css'],
     JS => ['colors.js'],
     SPINNER => 1,

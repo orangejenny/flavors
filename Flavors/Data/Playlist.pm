@@ -97,9 +97,9 @@ sub Update {
         });
         my $sql = qq{
             insert into playlist
-                (id, filter, created, updated)
+                (id, filter, isdefault, created, updated)
             values
-                (?, ?, now(), now())
+                (?, ?, 0, now(), now())
         };
         Flavors::Data::Util::Results($dbh, {
             SQL => $sql,

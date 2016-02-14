@@ -26,7 +26,7 @@ function hideError() {
     $modal.find(".alert").addClass("hide");
 }
 
-function songSearch(songID, name, artist) {
+function songSearch(songID, name, artist, onSelect) {
     console.log("searching for " + name + " by " + artist);
     var $modal = jQuery("#echo-nest"),
         $table = $modal.find("table"),
@@ -44,18 +44,20 @@ function songSearch(songID, name, artist) {
             title: name,
         },
         FINISH: function(data) {
-            showModal(songID, name, artist);
             var $tbody = $table.find("tbody");
             if (data.response && data.response.songs) {
                 console.log("Found " + data.response.songs.length + " results");
                 if (data.response.songs.length === 1) {
                     var echoNestID = data.response.songs[0].id;
                     saveEchoNestID(songID, echoNestID);
-                    getAudioSummary(songID, echoNestID);
+                    if (onSelect) {
+                        onSelect.call(null, echoNestID);
+                    }
                 }
                 else if (data.response.songs.length) {
                     // Grab album names from Spotify to help distinguish between similar tracks
                     // TODO: get Spotify API key?
+                    showModal(songID, name, artist);
                     var indexToTrackIDs = _.map(data.response.songs, function(song) { return _.pluck(song.tracks, 'id'); });
                     CallRemote({
                         URL: 'https://api.spotify.com/v1/search',
@@ -79,12 +81,22 @@ function songSearch(songID, name, artist) {
                                     albums: _.sortBy(_.compact(_.flatten(albums))),
                                 })));
                             });
+                            $tbody.find("tr").on("click", function() {
+                                var echoNestID = jQuery(this).data("id");
+                                saveEchoNestID(songID, echoNestID);
+                                hideModal();
+                                if (onSelect) {
+                                    onSelect.call(null, echoNestID);
+                                }
+                            });
                         },
                     });
                 } else {
+                    showModal(songID, name, artist);
                     showError("No songs found");
                 }
             } else {
+                showModal(songID, name, artist);
                 showError("No songs found");
             }
         },

@@ -159,17 +159,10 @@ jQuery(document).ready(function() {
         if (echoNestID) {
             getAudioSummary(songID, echoNestID);
         } else {
-            songSearch(songID, name, artist);
+            songSearch(songID, name, artist, function(echoNestID) {
+                getAudioSummary(songID, echoNestID);
+            });
         }
-    });
-
-    // Click EchoNest result to get audio summary
-    jQuery("#echo-nest").on("click", "tr.disambiguation", function() {
-        var echoNestID = jQuery(this).data("id"),
-            songID = jQuery(this).closest(".modal").data("id");
-
-        saveEchoNestID(songID, echoNestID);
-        getAudioSummary(songID, echoNestID);
     });
 });
 

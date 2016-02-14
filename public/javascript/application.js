@@ -55,6 +55,10 @@ jQuery(document).ready(function() {
             },
             SPINNER: $button,
             FINISH: function(data) {
+                console.log("Found " + data.length + " songs needing an EchoNest id");
+                if (!data.length) {
+                    return;
+                }
                 var count = data.length - 1;
                 intervalID = setInterval(function() {
                     if (jQuery("#echo-nest").is(":visible")) {

@@ -65,6 +65,7 @@ jQuery(document).ready(function() {
                         SONG_ID: data[count].ID,
                         NAME: data[count].NAME,
                         ARTIST: data[count].ARTIST,
+                        BACKGROUND: 1,
                     });
                     count--;
                     $button.find(".count").html(count);

@@ -2,32 +2,33 @@
 
 // TODO: needs namespace desperately
 
-function showModal(songID, name, artist) {
+function _showModal(args) {
+    AssertArgs(args, ['ARTIST', 'NAME', 'SONG_ID']);
     var $modal = jQuery("#echo-nest");
-    $modal.find(".modal-title").html(name + " (" + artist + ")");
-    $modal.data("id", songID);
+    $modal.find(".modal-title").html(args.NAME + " (" + args.ARTIST + ")");
+    $modal.data("id", args.SONG_ID);
     $modal.modal();
 }
 
-function hideModal() {
+function _hideModal() {
     var $modal = jQuery("#echo-nest");
     $modal.modal('hide');
 }
 
-function showError(text) {
+function _showError(text) {
     var $modal = jQuery("#echo-nest");
     $modal.find("table").addClass("hide");
     $modal.find(".alert").html(text).removeClass("hide");
 }
 
-function hideError() {
+function _hideError() {
     var $modal = jQuery("#echo-nest");
     $modal.find("table").removeClass("hide");
     $modal.find(".alert").addClass("hide");
 }
 
 function songSearch(args) {
-    AssertArgs(args, ['ARTIST', 'NAME', 'SONG_ID'], ['ON_SELECT']);
+    AssertArgs(args, ['ARTIST', 'NAME', 'SONG_ID'], ['BACKGROUND']);
     var artist = args.ARTIST,
         name = args.NAME,
         songID = args.SONG_ID,
@@ -57,14 +58,20 @@ function songSearch(args) {
                         SONG_ID: songID,
                         ECHO_NEST_ID: echoNestID,
                     });
-                    if (args.ON_SELECT) {
-                        args.ON_SELECT.call(null, echoNestID);
+                    if (!args.BACKGROUND) {
+                        getAudioSummary({
+                            SONG_ID: songID,
+                            ECHO_NEST_ID: echoNestID,
+                        });
                     }
                 }
                 else if (data.response.songs.length) {
                     // Grab album names from Spotify to help distinguish between similar tracks
-                    // TODO: get Spotify API key?
-                    showModal(songID, name, artist);
+                    _showModal({
+                        SONG_ID: songID,
+                        NAME: name,
+                        ARTIST: artist,
+                    });
                     var indexToTrackIDs = _.map(data.response.songs, function(song) { return _.pluck(song.tracks, 'id'); });
                     CallRemote({
                         URL: 'https://api.spotify.com/v1/search',
@@ -76,7 +83,7 @@ function songSearch(args) {
                         },
                         FINISH: function(spotifyData) {
                             var tracksToAlbums = _.object(_.map(spotifyData.tracks.items, function(item) { return [item.id, item.album.name]; }));
-                            hideError();
+                            _hideError();
                             $table.removeClass("hide");
                             $tbody.html('');
                             _.each(_.sortBy(data.response.songs, function(song) {
@@ -94,20 +101,35 @@ function songSearch(args) {
                                     SONG_ID: songID,
                                     ECHO_NEST_ID: echoNestID,
                                 });
-                                hideModal();
-                                if (args.ON_SELECT) {
-                                    args.ON_SELECT.call(null, echoNestID);
+                                _hideModal();
+                                if (!args.BACKGROUND) {
+                                    getAudioSummary({
+                                        SONG_ID: songID,
+                                        ECHO_NEST_ID: echoNestID,
+                                    });
                                 }
                             });
                         },
                     });
                 } else {
-                    showModal(songID, name, artist);
-                    showError("No songs found");
+                    if (!args.BACKGROUND) {
+                        _showModal({
+                            SONG_ID: songID,
+                            NAME: name,
+                            ARTIST: artist,
+                        });
+                        _showError("No songs found");
+                    }
                 }
             } else {
-                showModal(songID, name, artist);
-                showError("No songs found");
+                if (!args.BACKGROUND) {
+                    _showModal({
+                        SONG_ID: songID,
+                        NAME: name,
+                        ARTIST: artist,
+                    });
+                    _showError("No songs found");
+                }
             }
         },
     });
@@ -151,8 +173,12 @@ function getAudioSummary(args) {
         },
         FINISH: function(data) {
             if (data.response && data.response.songs.length && data.response.songs[0].audio_summary) {
-                hideError();
-                showModal(songID, data.response.songs[0].title, data.response.songs[0].artist_name);
+                _hideError();
+                _showModal({
+                    SONG_ID: songID,
+                    NAME: data.response.songs[0].title,
+                    ARTIST: data.response.songs[0].artist_name,
+                });
                 var summary = data.response.songs[0].audio_summary;
                 summary.key = keys[summary.key] + " " + (summary.mode ? "major" : "minor");
                 summary.loudness += " dB";
@@ -166,11 +192,11 @@ function getAudioSummary(args) {
                     }}), function(pair) { return pair.key; }),
                 }));
             } else {
-                showError("Error in EchoNest API");
+                _showError("Error in EchoNest API");
             }
         },
         error: function(data) {
-            showError("Error in EchoNest API");
+            _showError("Error in EchoNest API");
         },
     });
 }

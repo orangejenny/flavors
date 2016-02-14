@@ -155,7 +155,6 @@ jQuery(document).ready(function() {
             echoNestID = $row.data("echo-nest-id"),
             name = $row.find(".name").text(),
             artist = $row.find(".artist").text();
-        showModal(songID, name, artist);
         if (echoNestID) {
             getAudioSummary({
                 SONG_ID: songID,
@@ -166,12 +165,6 @@ jQuery(document).ready(function() {
                 SONG_ID: songID,
                 NAME: name,
                 ARTIST: artist,
-                ON_SELECT: function(echoNestID) {
-                    getAudioSummary({
-                        SONG_ID: songID,
-                        ECHO_NEST_ID: echoNestID,
-                    });
-                },
             });
         }
     });

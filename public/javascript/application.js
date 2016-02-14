@@ -61,7 +61,11 @@ jQuery(document).ready(function() {
                         return;
                     }
 
-                    songSearch(data[count].ID, data[count].NAME, data[count].ARTIST);
+                    songSearch({
+                        SONG_ID: data[count].ID,
+                        NAME: data[count].NAME,
+                        ARTIST: data[count].ARTIST,
+                    });
                     count--;
                     $button.find(".count").html(count);
                     if (!count) {
@@ -125,6 +129,30 @@ function CallRemote(args) {
 			alert("Error in CallRemote: " + textStatus);
 		}
 	});
+}
+
+/*
+ * AssertArgs
+ *
+ * Description: Verify the presence of given properties in given object.
+ * Parameters
+ *	args: An object to check
+ *	required: An array of strings that must be truthy properties of the object
+ *  optional: An array of strings that may be falsy or not present
+ */
+function AssertArgs(args, required, optional) {
+	if (!args) {
+		args = {};
+	}
+    _.each(required, function(r) {
+        if (!args[r]) {
+            throw("Missing argument in AssertArgs: " + r);
+        }
+    });
+    var unexpected = _.keys(_.omit(args, required.concat(optional)));
+    if (unexpected.length) {
+        throw("Unexpected arguments in AssertArgs: " + unexpected.join(", "));
+    }
 }
 
 /*

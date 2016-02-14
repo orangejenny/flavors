@@ -26,12 +26,16 @@ function hideError() {
     $modal.find(".alert").addClass("hide");
 }
 
-function songSearch(songID, name, artist, onSelect) {
-    console.log("searching for " + name + " by " + artist);
-    var $modal = jQuery("#echo-nest"),
+function songSearch(args) {
+    AssertArgs(args, ['ARTIST', 'NAME', 'SONG_ID'], ['ON_SELECT']);
+    var artist = args.ARTIST,
+        name = args.NAME,
+        songID = args.SONG_ID,
+        $modal = jQuery("#echo-nest"),
         $table = $modal.find("table"),
         api_key = $modal.data("api-key"),
         template = _.template(jQuery("#echo-nest-disambiguation-row").text());
+    console.log("searching for " + name + " by " + artist);
 
     CallRemote({
         URL: 'http://developer.echonest.com/api/v4/song/search?bucket=tracks&bucket=id:spotify',
@@ -49,9 +53,12 @@ function songSearch(songID, name, artist, onSelect) {
                 console.log("Found " + data.response.songs.length + " results");
                 if (data.response.songs.length === 1) {
                     var echoNestID = data.response.songs[0].id;
-                    saveEchoNestID(songID, echoNestID);
-                    if (onSelect) {
-                        onSelect.call(null, echoNestID);
+                    saveEchoNestID({
+                        SONG_ID: songID,
+                        ECHO_NEST_ID: echoNestID,
+                    });
+                    if (args.ON_SELECT) {
+                        args.ON_SELECT.call(null, echoNestID);
                     }
                 }
                 else if (data.response.songs.length) {
@@ -83,10 +90,13 @@ function songSearch(songID, name, artist, onSelect) {
                             });
                             $tbody.find("tr").on("click", function() {
                                 var echoNestID = jQuery(this).data("id");
-                                saveEchoNestID(songID, echoNestID);
+                                saveEchoNestID({
+                                    SONG_ID: songID,
+                                    ECHO_NEST_ID: echoNestID,
+                                });
                                 hideModal();
-                                if (onSelect) {
-                                    onSelect.call(null, echoNestID);
+                                if (args.ON_SELECT) {
+                                    args.ON_SELECT.call(null, echoNestID);
                                 }
                             });
                         },
@@ -103,7 +113,10 @@ function songSearch(songID, name, artist, onSelect) {
     });
 }
 
-function saveEchoNestID(songID, echoNestID) {
+function saveEchoNestID(args) {
+    AssertArgs(args, ['ECHO_NEST_ID', 'SONG_ID']);
+    var songID = args.SONG_ID,
+        echoNestID = args.ECHO_NEST_ID;
     CallRemote({
         SUB: 'Flavors::Data::Song::Update',
         ARGS: {
@@ -116,8 +129,11 @@ function saveEchoNestID(songID, echoNestID) {
     });
 }
 
-function getAudioSummary(songID, echoNestID) {
+function getAudioSummary(args) {
+    AssertArgs(args, ['ECHO_NEST_ID', 'SONG_ID']);
     var keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'],
+        echoNestID = args.ECHO_NEST_ID,
+        songID = args.SONG_ID,
         $modal = jQuery("#echo-nest"),
         $table = $modal.find("table"),
         api_key = $modal.data("api-key"),

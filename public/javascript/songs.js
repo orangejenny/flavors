@@ -157,10 +157,21 @@ jQuery(document).ready(function() {
             artist = $row.find(".artist").text();
         showModal(songID, name, artist);
         if (echoNestID) {
-            getAudioSummary(songID, echoNestID);
+            getAudioSummary({
+                SONG_ID: songID,
+                ECHO_NEST_ID: echoNestID,
+            });
         } else {
-            songSearch(songID, name, artist, function(echoNestID) {
-                getAudioSummary(songID, echoNestID);
+            songSearch({
+                SONG_ID: songID,
+                NAME: name,
+                ARTIST: artist,
+                ON_SELECT: function(echoNestID) {
+                    getAudioSummary({
+                        SONG_ID: songID,
+                        ECHO_NEST_ID: echoNestID,
+                    });
+                },
             });
         }
     });

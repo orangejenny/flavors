@@ -51,7 +51,7 @@ jQuery(document).ready(function() {
             SUB: 'Flavors::Data::Song::List',
             ARGS: {
                 FILTER: "echonestid is null",
-                ORDERBY: "rand()",
+                ORDERBY: "artist, collections",
             },
             SPINNER: $button,
             FINISH: function(data) {

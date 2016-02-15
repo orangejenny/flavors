@@ -165,6 +165,7 @@ jQuery(document).ready(function() {
                 SONG_ID: songID,
                 NAME: name,
                 ARTIST: artist,
+                COLLECTIONS: _.map($row.find(".collections").children(), function(div) { return jQuery(div).text(); }),
             });
         }
     });

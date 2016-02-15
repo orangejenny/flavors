@@ -122,7 +122,7 @@ foreach my $song (@songs) {
             <td class='isstarred'>%s</td>
             <td class='name echo-nest-trigger clickable'>%s</td>
             <td class='artist echo-nest-trigger clickable'>%s</td>
-            <td class='echo-nest-trigger clickable'>%s</td>
+            <td class='collections echo-nest-trigger clickable'>%s</td>
             <td contenteditable='true' class='rating'>%s</td>
             <td contenteditable='true' class='rating'>%s</td>
             <td contenteditable='true' class='rating'>%s</td>
@@ -138,7 +138,7 @@ foreach my $song (@songs) {
         Flavors::HTML::Rating(1, $song->{ISSTARRED} ? 'star' : 'star-empty'),
         $song->{NAME},
         $song->{ARTIST},
-        join("<br>", @{ $song->{COLLECTIONS} }),
+        join("", map { sprintf("<div>%s</div>", $_) } @{ $song->{COLLECTIONS} }),
         Flavors::HTML::Rating($song->{RATING}, 'star'),
         Flavors::HTML::Rating($song->{ENERGY}, 'fire'),
         Flavors::HTML::Rating($song->{MOOD}, 'heart'),

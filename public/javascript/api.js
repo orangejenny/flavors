@@ -28,10 +28,11 @@ function _hideError() {
 }
 
 function songSearch(args) {
-    AssertArgs(args, ['ARTIST', 'NAME', 'SONG_ID'], ['BACKGROUND']);
+    AssertArgs(args, ['ARTIST', 'NAME', 'SONG_ID', 'COLLECTIONS'], ['BACKGROUND']);
     var artist = args.ARTIST,
         name = args.NAME,
         songID = args.SONG_ID,
+        collections = args.COLLECTIONS,
         $modal = jQuery("#echo-nest"),
         $table = $modal.find("table"),
         api_key = $modal.data("api-key"),
@@ -91,8 +92,15 @@ function songSearch(args) {
                             }), function(song) {
                                 // EchoNest's foreign_id look like "spotify:track:foo"
                                 var albums = _.map(_.pluck(song.tracks, 'foreign_id'), function(id) { return tracksToAlbums[id.replace(/.*:/, "")]; });
+                                albums = _.sortBy(_.compact(_.flatten(albums))),
+                                albums = _.map(albums, function(a) {
+                                    _.each(collections, function(c) {
+                                        a = a.replace(c, "<span class='highlight'>" + c + "</span>");
+                                    });
+                                    return a;
+                                });
                                 $tbody.append(template(_.extend({}, song, {
-                                    albums: _.sortBy(_.compact(_.flatten(albums))),
+                                    albums: albums,
                                 })));
                             });
                             $tbody.find("tr").on("click", function() {

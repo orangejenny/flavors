@@ -51,7 +51,7 @@ jQuery(document).ready(function() {
             SUB: 'Flavors::Data::Song::List',
             ARGS: {
                 FILTER: "echonestid is null",
-                ORDERBY: "artist, collections",
+                ORDERBY: "artist",
             },
             SPINNER: $button,
             FINISH: function(data) {
@@ -69,6 +69,7 @@ jQuery(document).ready(function() {
                         SONG_ID: data[count].ID,
                         NAME: data[count].NAME,
                         ARTIST: data[count].ARTIST,
+                        COLLECTIONS: data[count].COLLECTIONS,
                         BACKGROUND: 1,
                     });
                     count--;

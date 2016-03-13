@@ -127,6 +127,7 @@ function songSearch(args) {
                                 }
                             });
                             if (highlighted.length === 1) {
+                                console.log("Selecting " + $(highlighted[0]).find(".highlight:first").text());
                                 $(highlighted[0]).click();
                             }
                         },

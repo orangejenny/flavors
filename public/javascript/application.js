@@ -47,41 +47,30 @@ jQuery(document).ready(function() {
             return;
         }
 
-        CallRemote({
-            SUB: 'Flavors::Data::Song::List',
-            ARGS: {
-                FILTER: "echonestid is null",
-                ORDERBY: "artist",
-            },
-            SPINNER: $button,
-            FINISH: function(data) {
-                console.log("Found " + data.length + " songs needing an EchoNest id");
-                if (!data.length) {
-                    return;
-                }
-                var count = data.length - 1;
-                intervalID = setInterval(function() {
-                    if (jQuery("#echo-nest").is(":visible")) {
-                        return;
-                    }
+        intervalID = setInterval(function() {
+            var $row = $("[data-echo-nest-id='']:visible:first");
 
-                    songSearch({
-                        SONG_ID: data[count].ID,
-                        NAME: data[count].NAME,
-                        ARTIST: data[count].ARTIST,
-                        COLLECTIONS: data[count].COLLECTIONS,
-                        BACKGROUND: 1,
-                    });
-                    count--;
-                    $button.find(".count").html(count);
-                    if (!count) {
-                        clearInterval(intervalID);
-                        $button.addClass("hide");
-                    }
-                }, 3000);
-            },
-        });
-    });
+            if (!$row.length) {
+                console.log("Nothing to do");
+                clearInterval(intervalID);
+                $button.click();
+                return;
+            }
+
+            if (jQuery("#echo-nest").is(":visible")) {
+                return;
+            }
+
+            songSearch({
+                SONG_ID: $row.data("song-id"),
+                NAME: $row.find("td.name").text(),
+                ARTIST: $row.find("td.artist").text(),
+                COLLECTIONS: _.map($row.find("td.collections").children(), function(td) { return td.innerHTML }),
+                BACKGROUND: 1,
+                ELEMENT: $row,
+            });
+       }, 3000);
+   });
 });
 
 /*
@@ -151,7 +140,7 @@ function AssertArgs(args, required, optional) {
 		args = {};
 	}
     _.each(required, function(r) {
-        if (!args[r]) {
+        if (_.isUndefined(args[r])) {
             throw("Missing argument in AssertArgs: " + r);
         }
     });

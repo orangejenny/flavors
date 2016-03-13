@@ -28,7 +28,7 @@ function _hideError() {
 }
 
 function songSearch(args) {
-    AssertArgs(args, ['ARTIST', 'NAME', 'SONG_ID', 'COLLECTIONS'], ['BACKGROUND']);
+    AssertArgs(args, ['ARTIST', 'NAME', 'SONG_ID', 'COLLECTIONS'], ['BACKGROUND', 'ELEMENT']);
     var artist = args.ARTIST,
         name = args.NAME,
         songID = args.SONG_ID,
@@ -58,6 +58,7 @@ function songSearch(args) {
                     saveEchoNestID({
                         SONG_ID: songID,
                         ECHO_NEST_ID: echoNestID,
+                        ELEMENT: args.ELEMENT,
                     });
                     if (!args.BACKGROUND) {
                         getAudioSummary({
@@ -108,6 +109,7 @@ function songSearch(args) {
                                 saveEchoNestID({
                                     SONG_ID: songID,
                                     ECHO_NEST_ID: echoNestID,
+                                    ELEMENT: args.ELEMENT,
                                 });
                                 _hideModal();
                                 if (!args.BACKGROUND) {
@@ -120,14 +122,17 @@ function songSearch(args) {
                         },
                     });
                 } else {
-                    if (!args.BACKGROUND) {
-                        _showModal({
-                            SONG_ID: songID,
-                            NAME: name,
-                            ARTIST: artist,
-                        });
-                        _showError("No songs found");
-                    }
+                    saveEchoNestID({
+                        SONG_ID: songID,
+                        ECHO_NEST_ID: 0,
+                        ELEMENT: args.ELEMENT,
+                    });
+                    _showModal({
+                        SONG_ID: songID,
+                        NAME: name,
+                        ARTIST: artist,
+                    });
+                    _showError("No songs found");
                 }
             } else {
                 if (!args.BACKGROUND) {
@@ -144,9 +149,13 @@ function songSearch(args) {
 }
 
 function saveEchoNestID(args) {
-    AssertArgs(args, ['ECHO_NEST_ID', 'SONG_ID']);
+    AssertArgs(args, ['ECHO_NEST_ID', 'SONG_ID', 'ELEMENT']);
     var songID = args.SONG_ID,
         echoNestID = args.ECHO_NEST_ID;
+    if (args.ELEMENT.length) {
+        // Set in markup so CSS recognizes
+        args.ELEMENT.attr("data-echo-nest-id", args.ECHO_NEST_ID);
+    }
     CallRemote({
         SUB: 'Flavors::Data::Song::Update',
         ARGS: {

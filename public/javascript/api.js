@@ -127,12 +127,14 @@ function songSearch(args) {
                         ECHO_NEST_ID: 0,
                         ELEMENT: args.ELEMENT,
                     });
-                    _showModal({
-                        SONG_ID: songID,
-                        NAME: name,
-                        ARTIST: artist,
-                    });
-                    _showError("No songs found");
+                    if (!args.BACKGROUND) {
+               	     _showModal({
+            	            SONG_ID: songID,
+         	               NAME: name,
+      	                  ARTIST: artist,
+   	                 });
+	                    _showError("No songs found");
+						}
                 }
             } else {
                 if (!args.BACKGROUND) {

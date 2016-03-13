@@ -91,11 +91,12 @@ function songSearch(args) {
                             _.each(_.sortBy(data.response.songs, function(song) {
                                 return song.artist_name + "   " + song.title;
                             }), function(song) {
-                                // EchoNest's foreign_id look like "spotify:track:foo"
+                                // EchoNest's foreign_ids look like "spotify:track:foo"
                                 var albums = _.map(_.pluck(song.tracks, 'foreign_id'), function(id) { return tracksToAlbums[id.replace(/.*:/, "")]; });
                                 albums = _.sortBy(_.compact(_.flatten(albums))),
                                 albums = _.map(albums, function(a) {
                                     _.each(collections, function(c) {
+                                        c = c.replace(/\w+[([][^\]\)]*[\]\)]/, "").trim();
                                         a = a.replace(new RegExp(c, "i"), "<span class='highlight'>" + c + "</span>");
                                     });
                                     return a;
@@ -119,6 +120,15 @@ function songSearch(args) {
                                     });
                                 }
                             });
+                            var highlighted = [];
+                            _.each($("#echo-nest .disambiguation"), function(row) {
+                                if ($(row).find(".highlight").length) {
+                                    highlighted.push(row);
+                                }
+                            });
+                            if (highlighted.length === 1) {
+                                $(highlighted[0]).click();
+                            }
                         },
                     });
                 } else {
@@ -154,7 +164,7 @@ function saveEchoNestID(args) {
     AssertArgs(args, ['ECHO_NEST_ID', 'SONG_ID'], ['ELEMENT']);
     var songID = args.SONG_ID,
         echoNestID = args.ECHO_NEST_ID;
-    if (args.ELEMENT.length) {
+    if (args.ELEMENT && args.ELEMENT.length) {
         // Set in markup so CSS recognizes
         args.ELEMENT.attr("data-echo-nest-id", args.ECHO_NEST_ID);
     }

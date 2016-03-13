@@ -70,7 +70,7 @@ jQuery(document).ready(function() {
                 BACKGROUND: 1,
                 ELEMENT: $row,
             });
-       }, 3000);
+       }, 2000);
    });
 });
 

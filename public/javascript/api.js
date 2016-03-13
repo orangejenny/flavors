@@ -151,7 +151,7 @@ function songSearch(args) {
 }
 
 function saveEchoNestID(args) {
-    AssertArgs(args, ['ECHO_NEST_ID', 'SONG_ID', 'ELEMENT']);
+    AssertArgs(args, ['ECHO_NEST_ID', 'SONG_ID'], ['ELEMENT']);
     var songID = args.SONG_ID,
         echoNestID = args.ECHO_NEST_ID;
     if (args.ELEMENT.length) {

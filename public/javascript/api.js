@@ -96,7 +96,7 @@ function songSearch(args) {
                                 albums = _.sortBy(_.compact(_.flatten(albums))),
                                 albums = _.map(albums, function(a) {
                                     _.each(collections, function(c) {
-                                        a = a.replace(c, "<span class='highlight'>" + c + "</span>");
+                                        a = a.replace(new RegExp(c, "i"), "<span class='highlight'>" + c + "</span>");
                                     });
                                     return a;
                                 });

@@ -48,7 +48,8 @@ jQuery(document).ready(function() {
         }
 
         intervalID = setInterval(function() {
-            var $row = $("[data-echo-nest-id='']:visible:first");
+            var $rows = $("[data-echo-nest-id='']:visible");
+				var $row = $($rows.get(parseInt(Math.random() * $rows.length)));
 
             if (!$row.length) {
                 console.log("Nothing to do");

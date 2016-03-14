@@ -204,18 +204,6 @@ sub Header {
 
 	print $args->{BUTTONS};
 
-    my $count = Flavors::Data::Song::Count($dbh, {
-        FILTER => "echonestid is null",
-    });
-    if ($count) {
-        print qq{
-            <button id="echo-nest-populate" type="button" class="btn btn-xs btn-default">
-                <i class="glyphicon glyphicon-refresh"></i>
-                EchoNest
-            </button>
-        };
-    }
-
 	print qq{
 							</nav>
 						</div>

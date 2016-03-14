@@ -32,46 +32,6 @@ jQuery(document).ready(function() {
             data: hints,
         });
     }
-
-    // EchoNest events
-    var $button = jQuery("#echo-nest-populate"),
-        intervalID = undefined;
-
-    $button.on("click", function() {
-        $button.find(".glyphicon").toggleClass("glyphicon-stop").toggleClass("glpyhicon-refresh");
-        $button.toggleClass("btn-warning").toggleClass("btn-default");
-
-        if (intervalID) {
-            clearInterval(intervalID);
-            intervalID = undefined;
-            return;
-        }
-
-        intervalID = setInterval(function() {
-            var $rows = $("[data-echo-nest-id='']:visible");
-				var $row = $($rows.get(parseInt(Math.random() * $rows.length)));
-
-            if (!$row.length) {
-                console.log("Nothing to do");
-                clearInterval(intervalID);
-                $button.click();
-                return;
-            }
-
-            if (jQuery("#echo-nest").is(":visible")) {
-                return;
-            }
-
-            songSearch({
-                SONG_ID: $row.data("song-id"),
-                NAME: $row.find("td.name").text(),
-                ARTIST: $row.find("td.artist").text(),
-                COLLECTIONS: _.map($row.find("td.collections").children(), function(td) { return td.innerHTML }),
-                BACKGROUND: 1,
-                ELEMENT: $row,
-            });
-       }, 2000);
-   });
 });
 
 /*

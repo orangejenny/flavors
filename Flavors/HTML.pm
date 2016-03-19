@@ -202,7 +202,7 @@ sub Header {
 
 	print qq{ </ul> };
 
-	print $args->{BUTTONS};
+	print "<div class='controls'>" . $args->{BUTTONS} . "</div>";
 
 	print qq{
 							</nav>
@@ -222,9 +222,9 @@ sub Header {
 ################################################################
 sub ExportControl {
 	return qq{
-		<button type="button" class="export-button btn btn-xs btn-info">
-			<span class="glyphicon glyphicon-download"></span>
-			Export
+    	<button type="button" class="export-button btn btn-xs btn-info">
+	    	<span class="glyphicon glyphicon-download"></span>
+		   	Export
 		</button>
 	};
 }

@@ -59,11 +59,7 @@ $filename =~ s/[^\w \-[\]]+//g;
 #$filename .= " (" . @songs . ")";
 print $cgi->header(-type => 'text/text', -attachment => "$filename.m3u");
 
-my $os = lc $fdat->{OS};
-if ($os !~ /^(mac|pc)$/) {
-    $os = "mac";
-}
-my $directory = Flavors::Util::Config->{path}->{$os};
+my $directory = Flavors::Util::Config->{path};
 
 foreach my $song (@songs) {
     my $song = "$directory$song->{FILENAME}\n";

@@ -412,7 +412,7 @@ sub Categorize {
 sub Footer {
     return sprintf(qq{
         <div id="echo-nest" class="modal" data-api-key="%s">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <div class="pull-right">
@@ -432,19 +432,6 @@ sub Footer {
             </div>
         </div>
     }, Flavors::Util::Config->{echo_nest_api_key}) . qq{
-        <script type="text/template" id="echo-nest-disambiguation-row">
-            <tr class="clickable disambiguation" data-id="<%= id %>">
-                <td class="col-sm-4"><%= artist_name %></td>
-                <td class="col-sm-4"><%= title %></td>
-                <td class="col-sm-4">
-                    <ul class="list-unstyled">
-                        <% _.each(albums, function(album) { %>
-                            <li><%= album %></li>
-                        <% }) %>
-                    </ul>
-                </td>
-            </tr>
-        </script>
         <script type="text/template" id="echo-nest-summary-row">
             <% for (var i in pairs) { %>
                 <tr>

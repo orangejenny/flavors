@@ -127,7 +127,7 @@ foreach my $song (@songs) {
             <td contenteditable='true' class='rating'>%s</td>
             <td contenteditable='true' class='rating'>%s</td>
             <td contenteditable='true'>%s</td>
-            <td class='icon-cell see-more'><i class='glyphicon glyphicon-option-horizontal'></i></td>
+            <td class='icon-cell see-more'>%s</td>
         </tr>
         },
         $song->{ID},
@@ -144,6 +144,7 @@ foreach my $song (@songs) {
         Flavors::HTML::Rating($song->{ENERGY}, 'fire'),
         Flavors::HTML::Rating($song->{MOOD}, 'heart'),
         $song->{TAGS},
+        $song->{ECHONESTID} ? "<i class='glyphicon glyphicon-option-horizontal'></i>" : "",
     );
 }
 

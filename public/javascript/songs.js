@@ -149,7 +149,7 @@ jQuery(document).ready(function() {
 	});
 
     // Click on song table to pop up modal of EchoNest song results
-    jQuery(".see-more").on("click", function() {
+    jQuery(".see-more .glyphicon").on("click", function() {
         var $row = jQuery(this).closest("tr"),
             songID = $row.data("song-id"),
             echoNestID = $row.data("echo-nest-id"),
@@ -159,13 +159,6 @@ jQuery(document).ready(function() {
             getAudioSummary({
                 SONG_ID: songID,
                 ECHO_NEST_ID: echoNestID,
-            });
-        } else {
-            songSearch({
-                SONG_ID: songID,
-                NAME: name,
-                ARTIST: artist,
-                COLLECTIONS: _.map($row.find(".collections").children(), function(div) { return jQuery(div).text(); }),
             });
         }
     });

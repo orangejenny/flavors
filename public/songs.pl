@@ -119,14 +119,15 @@ foreach my $color (@colors) {
 foreach my $song (@songs) {
     print sprintf(qq {
         <tr id="song-%s" data-song-id="%s" data-echo-nest-id="%s" data-colors="%s">
-            <td class='isstarred'>%s</td>
-            <td class='name echo-nest-trigger clickable'>%s</td>
-            <td class='artist echo-nest-trigger clickable'>%s</td>
-            <td class='collections echo-nest-trigger clickable'>%s</td>
+            <td class='icon-cell isstarred'>%s</td>
+            <td class='name clickable'>%s</td>
+            <td class='artist clickable'>%s</td>
+            <td class='collections clickable'>%s</td>
             <td contenteditable='true' class='rating'>%s</td>
             <td contenteditable='true' class='rating'>%s</td>
             <td contenteditable='true' class='rating'>%s</td>
             <td contenteditable='true'>%s</td>
+            <td class='icon-cell see-more'><i class='glyphicon glyphicon-option-horizontal'></i></td>
         </tr>
         },
         $song->{ID},

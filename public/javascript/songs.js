@@ -149,7 +149,7 @@ jQuery(document).ready(function() {
 	});
 
     // Click on song table to pop up modal of EchoNest song results
-    jQuery(".echo-nest-trigger").on("click", function() {
+    jQuery(".see-more").on("click", function() {
         var $row = jQuery(this).closest("tr"),
             songID = $row.data("song-id"),
             echoNestID = $row.data("echo-nest-id"),

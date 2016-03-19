@@ -44,17 +44,25 @@
 				cursor: pointer;
 			}
 
-			&.isstarred {
+            &.icon-cell {
 				width: @fontSizeDefault + @spacingNarrow * 2;
 				color: @greyLight;
 				background-color: @backgroundColor;
 				border: none;
-				text-align: right;
+
 				.glyphicon {
 					cursor: pointer;
+                }
+            }
+
+			&.isstarred {
+				text-align: right;
+
+				.glyphicon {
 					&.glyphicon-star {
 						color: @grey;
 					}
+
 					&.update-in-progress {
 						background-color: @white;
 						color: @updateInProgressColor;

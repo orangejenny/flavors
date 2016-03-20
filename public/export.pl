@@ -59,8 +59,18 @@ $filename =~ s/[^\w \-[\]]+//g;
 #$filename .= " (" . @songs . ")";
 print $cgi->header(-type => 'text/text', -attachment => "$filename.m3u");
 
-my $directory = Flavors::Util::Config->{path};
+my $directory;
+foreach my $path (@{ Flavors::Util::Config->{paths} }) {
+    warn $path->{name} . ", " . $fdat->{PATH};
+    if (!$directory || lc $path->{name} eq lc $fdat->{PATH}) {
+        $directory = $path->{path};
+    }
+}
 
+my $os = lc $fdat->{OS};
+if ($os !~ /^(mac|pc)$/) {
+    $os = "mac";
+}
 foreach my $song (@songs) {
     my $song = "$directory$song->{FILENAME}\n";
     if ($os eq "pc") {

@@ -139,9 +139,9 @@ jQuery(document).ready(function() {
 	});
 
 	// Export buttons
-	jQuery(".export-button").click(function() {
+	jQuery(".export-dropdown a").click(function() {
 		var options = {};
-		options.OS = jQuery(this).data("os");
+		options.PATH = jQuery(this).text();
 		options.SIMPLEFILTER = jQuery("#filter").val();
 		options.FILTER = jQuery('#complex-filter textarea').val();
 		options.FILENAME = options.FILTER || "[" + options.SIMPLEFILTER.trim().replace(/\s+/g, "][") + "]";

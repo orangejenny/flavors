@@ -134,9 +134,6 @@ foreach my $collection (@collections) {
     printf(qq{
             <div class="details-background">
             <div class="details">
-                <div class="export-icons">
-                    <span class="glyphicon glyphicon-download"></span>
-                </div>
                 <div>Acquired %s</div>
                 %s<br><br>
                 <div class="ratings">

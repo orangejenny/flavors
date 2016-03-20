@@ -42,9 +42,10 @@ jQuery(document).ready(function() {
 		});
 	});
 
-	jQuery(".export-button").click(function() {
+	jQuery(".export-dropdown a").click(function() {
 		var tag = jQuery("#item-detail").data("tag");
 		ExportPlaylist({
+		    PATH: jQuery(this).text(),
 			FILENAME: tag,
 			FILTER: "taglist like concat('% ', '" + tag + "', ' %')",
 		});

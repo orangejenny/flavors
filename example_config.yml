@@ -5,4 +5,8 @@ db:
   password: password
   port: 3306
 echo_nest_api_key: key
-path: /path/to/music/
+paths:
+  - name: home
+    path: /path/to/music
+  - name: work
+    path: C:\alternate\path\to\music

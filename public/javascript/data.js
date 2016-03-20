@@ -14,11 +14,12 @@ jQuery(document).ready(function() {
 	});
 
 	// Controls: export selections
-	jQuery(".export-button").click(function() {
+	jQuery(".export-dropdown a").click(function() {
 		var condition = getSelectionCondition();
 		console.log(condition);
 		if (condition) {
 			ExportPlaylist({
+		        PATH: jQuery(this).text(),
 				FILTER: condition,
 			});
 			d3.selectAll('.selected').classed("selected", false);

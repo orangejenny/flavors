@@ -48,6 +48,24 @@ label {
 			color: @white;
 		}
 	}
+
+    .controls {
+        @spacing: 14px;
+
+	    float: right;
+	    padding-top: @spacing;
+
+        .export-dropdown {
+            .dropdown-menu {
+                left: auto;
+                right: @spacing;
+            }
+        }
+
+        button {
+	        margin-right: @spacing;
+        }
+    }
 }
 
 .post-nav {
@@ -137,15 +155,6 @@ a:hover:not(.img-link) { color: @white; background-color: @linkColor; }
 .tag-count {
 	font-size: 10px;
 	margin-left: 8px;
-}
-
-.navbar .controls {
-	float: right;
-	padding-top: 14px;
-
-    button {
-	    margin-right: 14px;
-    }
 }
 
 .page {

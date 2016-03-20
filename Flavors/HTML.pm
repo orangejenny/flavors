@@ -221,12 +221,17 @@ sub Header {
 # Return Value: HTML
 ################################################################
 sub ExportControl {
-	return qq{
-    	<button type="button" class="export-button btn btn-xs btn-info">
-	    	<span class="glyphicon glyphicon-download"></span>
-		   	Export
-		</button>
-	};
+    my $paths = Flavors::Util::Config->{paths};
+	return sprintf(qq{
+        <div class="dropdown export-dropdown pull-right">
+            <button class="btn btn-info btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+	    	    <!--span class="glyphicon glyphicon-download"></span-->
+                Export
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">%s</ul>
+        </div>
+	}, join("", map { sprintf("<li><a href='#'>%s</a></li>", ucfirst($_->{name})) } @{ $paths }));
 }
 
 ################################################################

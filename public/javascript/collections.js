@@ -156,29 +156,19 @@ jQuery(document).ready(function() {
 		});
 	});
 
-	// Export single collection, from icon
-	jQuery(".export-icons span").click(function(event) {
-		var $collection = jQuery(this).closest(".collection");
-		var $details = $collection.find(".details");
-		ExportPlaylist({
-			COLLECTIONIDS: [$collection.data("id")],
-			FILENAME: $collection.find(".artist").text() + " - " + $collection.find(".name").text(),
-		});
-		event.stopPropagation();
-	});
-
 	// Export single collection, from modal
-	jQuery("#track-list .export-button").click(function(event) {
+	jQuery("#track-list .export-dropdown a").click(function(event) {
 		var $collection = jQuery(".collection[data-id='" + jQuery(this).closest("#track-list").data("id") + "']");
 		var $details = $collection.find(".details");
 		ExportPlaylist({
+            PATH: jQuery(this).text(),
 			COLLECTIONIDS: [$collection.data("id")],
 			FILENAME: $collection.find(".artist").text() + " - " + $collection.find(".name").text(),
 		});
 	});
 
 	// Page-level export set of collections
-	jQuery("nav .export-button").click(function() {
+	jQuery("nav .export-dropdown a").click(function() {
 		var $button = jQuery(this);
 		var collectionids = [];
         jQuery(".collection:visible").each(function() {
@@ -189,8 +179,8 @@ jQuery(document).ready(function() {
 			return;
 		}
 		ExportPlaylist({
+            PATH: jQuery(this).text(),
 			COLLECTIONIDS: collectionids,
-			OS: $button.data("os"),
 		});
 	});
 });

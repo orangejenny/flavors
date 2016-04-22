@@ -174,7 +174,13 @@ ul.plain {
 }
 
 .update-in-progress, .highlight {
-	background-color: @updateInProgressColor !important;
+    &.glyphicon {
+	    color: @updateInProgressColor !important;
+    }
+
+    &:not(.glyphicon) {
+	    background-color: @updateInProgressColor !important;
+    }
 }
 
 .modal-dialog .close {

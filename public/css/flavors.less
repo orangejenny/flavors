@@ -114,8 +114,12 @@ th {
 	font-family: courier;
 	font-size: @fontSizeLarge;
 	white-space: nowrap;
-	display: inline-block;
 	vertical-align: middle;
+
+    &:not(td) {
+	    display: inline-block;
+    }
+
 	.glyphicon {
 		color: @grey;
 		font-size: @fontSizeDefault;

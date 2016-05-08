@@ -8,6 +8,7 @@ use Flavors::HTML;
 my $cgi = CGI->new;
 print $cgi->header();
 my $fdat = Flavors::Util::Fdat($cgi);
+my $dbh = Flavors::Data::Util::DBH();
 
 my $facet = $fdat->{FACET} || "rating";
 

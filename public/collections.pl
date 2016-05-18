@@ -75,6 +75,7 @@ foreach my $collection (@collections) {
                 data-name="%s"
                 data-artist="%s"
                 data-artist-list="%s"
+                data-starred="%s",
                 class="collection clearfix"
             >
         },
@@ -84,6 +85,7 @@ foreach my $collection (@collections) {
         lc($collection->{NAME}),
         lc($collection->{ARTIST}),
         lc($collection->{ARTISTLIST}),
+        $collection->{ISSTARRED} ? 1 : 0,
     );
 
     my $image = sprintf("images/collections/%s.jpg", $collection->{ID});

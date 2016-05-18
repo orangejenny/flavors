@@ -159,7 +159,8 @@ sub List {
                 avg(mood) avgmood,
                 min(year) minyear,
                 max(year) maxyear,
-                (count(rating) + count(energy) + count(mood)) / (count(*) * 3) completion
+                (count(rating) + count(energy) + count(mood)) / (count(*) * 3) completion,
+                max(isstarred) isstarred
             from 
                 songcollection
                 inner join song on song.id = songcollection.songid
@@ -302,6 +303,7 @@ sub ListColumns {
         minyear
         maxyear
         completion
+        isstarred
         genre
         color
         tags

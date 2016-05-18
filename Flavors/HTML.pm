@@ -277,6 +277,7 @@ sub FilterControl {
                 <div id="simple-filter">
                     <div id="last-query">
     			        <span class='glyphicon glyphicon-search'></span>
+    			        <span class='glyphicon glyphicon-star-empty'></span>
     			        <span class='glyphicon glyphicon-remove hide'></span>
                         <span id="last-query-text"></span>
                     </div>

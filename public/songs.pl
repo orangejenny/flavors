@@ -61,6 +61,8 @@ foreach my $token (keys $tokens) {
     }
 }
 
+my $starred = [map { $_->{ID} } grep { $_->{ISSTARRED} } @songs];
+
 my $lettercounts = {};
 foreach my $letter (keys $letters) {
     $lettercounts->{$letter} = scalar(@{ $letters->{$letter} });
@@ -73,6 +75,7 @@ Flavors::HTML::Header($dbh, {
         TOKENS => $tokens,
         LETTERS => $letters,
         LETTERCOUNTS => $lettercounts,
+        STARRED => $starred,
     },
     CSS => ['filters.css', 'songs.css'],
     JS => ['songs.js'],

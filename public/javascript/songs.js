@@ -5,11 +5,13 @@ var lastQuery = "";
 var tokens;
 var letters;
 var letterCounts;
+var starred;
 
 jQuery(document).ready(function() {
     tokens = InitialPageData('tokens');
     letters = InitialPageData('letters');
     letterCounts = InitialPageData('lettercounts');
+    starred = InitialPageData('starred');
 	updateRowCount();
 
     simpleFilter();
@@ -179,6 +181,14 @@ function toggleStar($star, id, sub) {
 	$star.toggleClass("glyphicon-star-empty");
 	$star.toggleClass("glyphicon-star");
 
+    // Update client data
+    if (isstarred) {
+        starred.push(id);
+    }
+    else {
+        starred = _.reject(starred, function(i) { return id == i; });
+    }
+
 	// Update server data
 	$star.addClass("update-in-progress");
 	CallRemote({
@@ -214,40 +224,46 @@ function simpleFilter(force) {
     }
 
 	var queryTokens = _.without(query.split(/\s+/), "");
-	if (!queryTokens.length) {
-		jQuery(rowselector).show();
-	}
-    else {
-    	var matches = {};	// song id => { queryToken1 => 1, queryToken2 => 1, ... }
-    	_.each(queryTokens, function(queryToken) {
-    		var leastCommonLetter = _.min(queryToken.split(""), function(letter) {
-    			return letterCounts[letter];
-    		});
-    
-    		_.each(letters[leastCommonLetter], function(searchToken) {
-    			if (searchToken.indexOf(queryToken) != -1) {
-    				_.each(tokens[searchToken], function(songID) {
-    					if (!matches[songID]) {
-    						matches[songID] = {};
-    					}
-    					matches[songID][queryToken] = 1;
-    				});
-    			}
-    		});
-    	});
-    
-    	jQuery(rowselector).hide();
-    	_.each(matches, function(matchTriggers, songID) {
-    		if (_.values(matchTriggers).length === queryTokens.length) {
-    			jQuery("#song-" + songID).show();
-    		}
-    	});
-    }
+    var onlyStarred = !jQuery("#simple-filter .glyphicon-star-empty").length;
 
-    // Account for starring
-    if (!jQuery("#simple-filter .glyphicon-star-empty").length) {
-           jQuery(rowselector + " .glyphicon-star-empty").closest("tr").hide();
-    }
+    // If there's no text in the filter; just check the star filter
+	if (!queryTokens.length) {
+        if (onlyStarred) {
+            jQuery(rowselector + " .glyphicon-star-empty").closest("tr").hide();
+            _.each(starred, function(songID) {
+    			jQuery("#song-" + songID).show();
+            });
+        }
+        else {
+		    jQuery(rowselector).show();
+        }
+        return;
+	}
+
+	var matches = {};	// song id => { queryToken1 => 1, queryToken2 => 1, ... }
+	_.each(queryTokens, function(queryToken) {
+		var leastCommonLetter = _.min(queryToken.split(""), function(letter) {
+			return letterCounts[letter];
+		});
+
+		_.each(letters[leastCommonLetter], function(searchToken) {
+			if (searchToken.indexOf(queryToken) != -1) {
+				_.each(tokens[searchToken], function(songID) {
+					if (!matches[songID]) {
+						matches[songID] = {};
+					}
+					matches[songID][queryToken] = 1;
+				});
+			}
+		});
+	});
+
+	jQuery(rowselector).hide();
+	_.each(matches, function(matchTriggers, songID) {
+		if (_.values(matchTriggers).length === queryTokens.length && !onlyStarred || _.contains(starred, songID)) {
+			jQuery("#song-" + songID).show();
+		}
+	});
 
 	updateRowCount();
 }

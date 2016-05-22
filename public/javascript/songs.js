@@ -229,14 +229,15 @@ function simpleFilter(force) {
     // If there's no text in the filter; just check the star filter
 	if (!queryTokens.length) {
         if (onlyStarred) {
-            jQuery(rowselector + " .glyphicon-star-empty").closest("tr").hide();
-            _.each(starred, function(songID) {
+            jQuery(rowselector).hide();
+            _.each(_.keys(starred), function(songID) {
     			jQuery("#song-" + songID).show();
             });
         }
         else {
 		    jQuery(rowselector).show();
         }
+	    updateRowCount();
         return;
 	}
 
@@ -260,7 +261,7 @@ function simpleFilter(force) {
 
 	jQuery(rowselector).hide();
 	_.each(matches, function(matchTriggers, songID) {
-		if (_.values(matchTriggers).length === queryTokens.length && !onlyStarred || _.contains(starred, songID)) {
+		if (_.values(matchTriggers).length === queryTokens.length && !onlyStarred || starred[songID]) {
 			jQuery("#song-" + songID).show();
 		}
 	});

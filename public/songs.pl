@@ -61,7 +61,7 @@ foreach my $token (keys $tokens) {
     }
 }
 
-my $starred = [map { $_->{ID} } grep { $_->{ISSTARRED} } @songs];
+my $starred = {map { $_->{ID} => 1 } grep { $_->{ISSTARRED} } @songs};
 
 my $lettercounts = {};
 foreach my $letter (keys $letters) {

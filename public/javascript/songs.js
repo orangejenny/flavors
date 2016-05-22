@@ -223,22 +223,22 @@ function simpleFilter(force) {
         jQuery("#simple-filter .glyphicon-remove").addClass("hide");
     }
 
-	var queryTokens = _.without(query.split(/\s+/), "");
+    var queryTokens = _.without(query.split(/\s+/), "");
     var onlyStarred = !jQuery("#simple-filter .glyphicon-star-empty").length;
 
     // If there's no text in the filter; just check the star filter
-	if (!queryTokens.length) {
+    if (!queryTokens.length) {
         if (onlyStarred) {
             jQuery(rowselector + " .glyphicon-star-empty").closest("tr").hide();
             _.each(starred, function(songID) {
-    			jQuery("#song-" + songID).show();
+                jQuery("#song-" + songID).show();
             });
         }
         else {
-		    jQuery(rowselector).show();
+            jQuery(rowselector).show();
         }
         return;
-	}
+    }
 
 	var matches = {};	// song id => { queryToken1 => 1, queryToken2 => 1, ... }
 	_.each(queryTokens, function(queryToken) {
@@ -260,7 +260,7 @@ function simpleFilter(force) {
 
 	jQuery(rowselector).hide();
 	_.each(matches, function(matchTriggers, songID) {
-		if (_.values(matchTriggers).length === queryTokens.length && !onlyStarred || _.contains(starred, songID)) {
+		if (_.values(matchTriggers).length === queryTokens.length && (!onlyStarred || _.contains(starred, songID))) {
 			jQuery("#song-" + songID).show();
 		}
 	});

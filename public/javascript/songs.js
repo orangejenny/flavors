@@ -223,11 +223,11 @@ function simpleFilter(force) {
         jQuery("#simple-filter .glyphicon-remove").addClass("hide");
     }
 
-	var queryTokens = _.without(query.split(/\s+/), "");
+    var queryTokens = _.without(query.split(/\s+/), "");
     var onlyStarred = !jQuery("#simple-filter .glyphicon-star-empty").length;
 
     // If there's no text in the filter; just check the star filter
-	if (!queryTokens.length) {
+    if (!queryTokens.length) {
         if (onlyStarred) {
             jQuery(rowselector).hide();
             _.each(_.keys(starred), function(songID) {
@@ -235,11 +235,11 @@ function simpleFilter(force) {
             });
         }
         else {
-		    jQuery(rowselector).show();
+            jQuery(rowselector).show();
         }
 	    updateRowCount();
         return;
-	}
+    }
 
 	var matches = {};	// song id => { queryToken1 => 1, queryToken2 => 1, ... }
 	_.each(queryTokens, function(queryToken) {
@@ -261,7 +261,7 @@ function simpleFilter(force) {
 
 	jQuery(rowselector).hide();
 	_.each(matches, function(matchTriggers, songID) {
-		if (_.values(matchTriggers).length === queryTokens.length && !onlyStarred || starred[songID]) {
+		if (_.values(matchTriggers).length === queryTokens.length && (!onlyStarred || starred[songID])) {
 			jQuery("#song-" + songID).show();
 		}
 	});

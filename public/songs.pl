@@ -105,7 +105,6 @@ print Flavors::HTML::FilterModal($dbh, {
     )],
 });
 
-print qq{ <div class="post-nav"> };
 print Flavors::HTML::FilterControl($dbh, {
     FILTER => $fdat->{FILTER},
 });
@@ -153,7 +152,6 @@ foreach my $song (@songs) {
 
 print qq{ </tbody></table> };
 
-print qq{</div> };
 print qq{ </div> };
 
 print qq{

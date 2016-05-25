@@ -182,12 +182,7 @@ function toggleStar($star, id, sub) {
 	$star.toggleClass("glyphicon-star");
 
     // Update client data
-    if (isstarred) {
-        starred.push(id);
-    }
-    else {
-        starred = _.reject(starred, function(i) { return id == i; });
-    }
+    starred[id] = starred;
 
 	// Update server data
 	$star.addClass("update-in-progress");

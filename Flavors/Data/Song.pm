@@ -43,6 +43,7 @@ sub Count {
 #        ORDERBY: order by this column (may include "desc")
 #        SIMPLEFILTER: string to apply against name, artist, and 
 #            collection names (disjunctive)
+#       STARRED: limit to starred songs
 #
 # Return Value: array/arrayref of hashrefs UNLESS ID is passed,
 #        in which case, return the single hashref
@@ -148,6 +149,10 @@ sub List {
     $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
     if ($args->{FILTER}) {
         $sql .= " and (" . $args->{FILTER} . ")";
+    }
+
+    if ($args->{STARRED}) {
+        $sql .= " and isstarred = 1";
     }
 
     $sql .= " order by " . ($args->{ORDERBY} ? $args->{ORDERBY} : "maxcollectioncreated desc, tracknumber");

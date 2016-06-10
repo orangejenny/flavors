@@ -150,7 +150,8 @@ jQuery(document).ready(function() {
 		options.PATH = jQuery(this).text();
 		options.SIMPLEFILTER = jQuery("#filter").val();
 		options.FILTER = jQuery('#complex-filter textarea').val();
-		options.FILENAME = options.FILTER || "[" + options.SIMPLEFILTER.trim().replace(/\s+/g, "][") + "]";
+        options.STARRED = !jQuery("#simple-filter .glyphicon-star-empty").length;
+		options.FILENAME = options.FILTER || (options.SIMPLEFILTER ? "[" + options.SIMPLEFILTER.trim().replace(/\s+/g, "][") + "]" : "flavors");
 		ExportPlaylist(options);
 	});
 

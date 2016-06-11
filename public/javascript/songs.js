@@ -183,7 +183,7 @@ function toggleStar($star, id, sub) {
 	$star.toggleClass("glyphicon-star");
 
     // Update client data
-    starred[id] = starred;
+    starred[id] = isstarred;
 
 	// Update server data
 	$star.addClass("update-in-progress");

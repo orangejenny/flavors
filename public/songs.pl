@@ -121,7 +121,7 @@ foreach my $color (@colors) {
 foreach my $song (@songs) {
     print sprintf(qq {
         <tr id="song-%s" data-song-id="%s" data-echo-nest-id="%s" data-colors="%s">
-            <td class='icon-cell isstarred'>%s</td>
+            <td class='icon-cell is-starred'>%s</td>
             <td class='name clickable'>%s</td>
             <td class='artist clickable'>%s</td>
             <td class='collections clickable'>%s</td>
@@ -129,6 +129,9 @@ foreach my $song (@songs) {
             <td contenteditable='true' class='rating'>%s</td>
             <td contenteditable='true' class='rating'>%s</td>
             <td contenteditable='true'>%s</td>
+            <td class='icon-cell %s'>
+                <i class='glyphicon glyphicon-font'></i>
+            </td>
             <td class='icon-cell see-more'>%s</td>
         </tr>
         },
@@ -146,6 +149,7 @@ foreach my $song (@songs) {
         Flavors::HTML::Rating($song->{ENERGY}, 'fire'),
         Flavors::HTML::Rating($song->{MOOD}, 'heart'),
         $song->{TAGS},
+        $song->{HASLYRICS} ? "has-lyrics" : "no-lyrics",
         $song->{ECHONESTID} ? "<i class='glyphicon glyphicon-option-horizontal'></i>" : "",
     );
 }
@@ -159,6 +163,27 @@ print qq{
         <span id="song-count-span">
             <span id="song-count"></span> songs
         </span>
+    </div>
+};
+
+print qq{
+    <div id="lyrics-detail" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>
+                        <span class="modal-title"></span>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <textarea></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary">Save</button>
+                    <button class="btn btn-default">Cancel</button>
+                </div>
+            </div>
+        </div>
     </div>
 };
 

@@ -155,6 +155,37 @@ jQuery(document).ready(function() {
 		ExportPlaylist(options);
 	});
 
+    // View/edit lyrics
+    jQuery(".has-lyrics, .no-lyrics").on("click", function() {
+        var id = jQuery(this).closest("tr").data("song-id");
+    	CallRemote({
+    		SUB: 'Flavors::Data::Song::Lyrics',
+    		ARGS: {
+    			ID: id,
+            },
+    	    FINISH: function(data) {
+                var $modal = jQuery("#lyrics-detail");
+                $modal.data("song-id", id);
+                $modal.find("textarea").val(data.LYRICS);
+                $modal.modal();
+    		}
+    	});
+    });
+
+    jQuery("#lyrics-detail .btn-primary").on("click", function() {
+        var $modal = jQuery("#lyrics-detail");
+        CallRemote({
+            SUB: 'Flavors::Data::Song::UpdateLyrics',
+            ARGS: {
+                ID: $modal.data("song-id"),
+                LYRICS: $modal.find("textarea").val(),
+            },
+            FINISH: function() {
+                jQuery("#lyrics-modal").modal('close');
+            },
+        });
+    });
+
     // Click on song table to pop up modal of EchoNest song results
     jQuery(".see-more .glyphicon").on("click", function() {
         var $row = jQuery(this).closest("tr"),

@@ -55,7 +55,7 @@
                 }
             }
 
-			&.isstarred {
+			&.is-starred {
 				text-align: right;
 
 				.glyphicon {
@@ -70,6 +70,10 @@
 				}
 			}
 
+			&.has-lyrics .glyphicon {
+                color: @grey;
+            }
+
 			&.rating {
 				width: @fontSizeDefault * 5 + @spacingNarrow * 2;
 				.glyphicon {
@@ -78,4 +82,11 @@
 			}
 		}
 	}
+}
+
+#lyrics-detail {
+    textarea {
+        width: 100%;
+        height: 50%;
+    }
 }

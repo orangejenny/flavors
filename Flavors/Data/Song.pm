@@ -74,6 +74,7 @@ sub List {
         select distinct
             $songcolumnstring,
             artistgenre.genre,
+            case when songlyrics.lyrics is null then 0 else 1 end as haslyrics,
             concat(' ', songtaglist.taglist, ' ') as taglist,
             group_concat(collection.name order by collection.created separator '%s') as collections,
             songtaglist.tagcount,
@@ -90,6 +91,7 @@ sub List {
         left join collection on songcollection.collectionid = collection.id
         left join songtaglist on song.id = songtaglist.songid
         left join artistgenre on artistgenre.artist = song.artist
+        left join songlyrics on songlyrics.songid = song.id
         left join (
             select
                 songtag.songid,
@@ -159,7 +161,7 @@ sub List {
 
     my @results = Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
-        COLUMNS => [@songcolumns, 'genre', 'tags', 'collections'],
+        COLUMNS => [@songcolumns, 'genre', 'haslyrics', 'tags', 'collections'],
         GROUPCONCAT => ['collections'],
         BINDS => \@binds,
     });
@@ -349,6 +351,63 @@ sub UpdateExport {
     }
 
     return;
+}
+
+################################################################
+# Lyrics
+#
+# Description: Get song's lyrics
+#
+# Parameters:
+#    ID: int
+#
+# Return Value: none
+################################################################
+sub Lyrics {
+    my ($dbh, $args) = @_;
+
+    my @rows = Flavors::Data::Util::Results($dbh, {
+        SQL => "select lyrics from songlyrics where songid = ?",
+        BINDS => [$args->{ID}],
+        COLUMNS => ['LYRICS'],
+    });
+    return { LYRICS => scalar(@rows) ? $rows[0]->{LYRICS} : "" };
+}
+
+################################################################
+# UpdateLyrics
+#
+# Description: Update song's lyrics
+#
+# Parameters:
+#    ID: int
+#    LYRICS: string
+#
+# Return Value: none
+################################################################
+sub UpdateLyrics {
+    my ($dbh, $args) = @_;
+    $args->{LYRICS} = Flavors::Util::Sanitize($args->{LYRICS});
+
+    my @rows  = Flavors::Data::Util::Results($dbh, {
+        SQL => "select count(*) as count from songlyrics where songid = ?",
+        BINDS => [$args->{ID}],
+        COLUMNS => ['COUNT'],
+    });
+    my $count = $rows[0]->{COUNT};
+
+    my $sql = $count
+        ? "update songlyrics set lyrics = ? where songid = ?"
+        : "insert into songlyrics (lyrics, songid) values (?, ?)"
+    ;
+
+    Flavors::Data::Util::Results($dbh, {
+        SQL => $sql,
+        BINDS => [$args->{LYRICS}, $args->{ID}],
+        SKIPFETCH => 1,
+    });
+
+    return {};
 }
 
 1;

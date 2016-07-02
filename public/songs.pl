@@ -101,7 +101,8 @@ print Flavors::HTML::FilterModal($dbh, {
     FILTER => $fdat->{FILTER},
     HINTS => [qw(
         id name artist rating energy mood time filename ismix mincollectioncreated
-        maxcollectioncreated taglist tagcount collectionlist minyear maxyear isstarred haslyrics
+        maxcollectioncreated taglist tagcount collectionlist minyear maxyear isstarred
+        lyrics haslyrics
     )],
 });
 
@@ -171,9 +172,7 @@ print qq{
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4>
-                        <span class="modal-title"></span>
-                    </h4>
+                    <h4 class="modal-title"></h4>
                 </div>
                 <div class="modal-body">
                     <textarea></textarea>

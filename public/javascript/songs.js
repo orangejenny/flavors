@@ -177,14 +177,24 @@ jQuery(document).ready(function() {
     });
 
     jQuery("#lyrics-detail .btn-primary").on("click", function() {
-        var $modal = jQuery("#lyrics-detail");
+        var $modal = jQuery("#lyrics-detail"),
+            id = $modal.data("song-id"),
+            lyrics = $modal.find("textarea").val();
         CallRemote({
             SUB: 'Flavors::Data::Song::UpdateLyrics',
             ARGS: {
-                ID: $modal.data("song-id"),
-                LYRICS: $modal.find("textarea").val(),
+                ID: id,
+                LYRICS: lyrics,
             },
             FINISH: function() {
+                var $cell = jQuery("tr[data-song-id='" + id + "']").find(".no-lyrics, .has-lyrics");
+                if (lyrics) {
+                    $cell.addClass("has-lyrics");
+                    $cell.removeClass("no-lyrics");
+                } else {
+                    $cell.addClass("no-lyrics");
+                    $cell.removeClass("has-lyrics");
+                }
                 closeLyricsModal();
             },
         });

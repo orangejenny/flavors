@@ -74,6 +74,7 @@ sub List {
         select distinct
             $songcolumnstring,
             artistgenre.genre,
+            songlyrics.lyrics,
             case when songlyrics.lyrics is null then 0 else 1 end as haslyrics,
             concat(' ', songtaglist.taglist, ' ') as taglist,
             group_concat(collection.name order by collection.created separator '%s') as collections,
@@ -161,7 +162,7 @@ sub List {
 
     my @results = Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
-        COLUMNS => [@songcolumns, 'genre', 'haslyrics', 'tags', 'collections'],
+        COLUMNS => [@songcolumns, 'genre', 'lyrics', 'haslyrics', 'tags', 'collections'],
         GROUPCONCAT => ['collections'],
         BINDS => \@binds,
     });

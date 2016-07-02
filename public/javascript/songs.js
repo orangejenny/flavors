@@ -139,7 +139,7 @@ jQuery(document).ready(function() {
 		}
 		oldValue = undefined;
 	});
-	$table.on("click", ".isstarred .glyphicon", function() {
+	$table.on("click", ".is-starred .glyphicon", function() {
 		var $star = jQuery(this);
 		toggleStar($star, $star.closest("tr").data("song-id"), 'Flavors::Data::Song::Update');
 	});

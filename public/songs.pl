@@ -101,7 +101,7 @@ print Flavors::HTML::FilterModal($dbh, {
     FILTER => $fdat->{FILTER},
     HINTS => [qw(
         id name artist rating energy mood time filename ismix mincollectioncreated
-        maxcollectioncreated taglist tagcount collectionlist minyear maxyear isstarred
+        maxcollectioncreated taglist tagcount collectionlist minyear maxyear isstarred haslyrics
     )],
 });
 

@@ -157,7 +157,10 @@ jQuery(document).ready(function() {
 
     // View/edit lyrics
     jQuery(".has-lyrics, .no-lyrics").on("click", function() {
-        var id = jQuery(this).closest("tr").data("song-id");
+        var $row = jQuery(this).closest("tr"),
+            id = $row.data("song-id"),
+            name = $row.find(".name").text(),
+            artist = $row.find(".artist").text();
     	CallRemote({
     		SUB: 'Flavors::Data::Song::Lyrics',
     		ARGS: {
@@ -167,6 +170,7 @@ jQuery(document).ready(function() {
                 var $modal = jQuery("#lyrics-detail");
                 $modal.data("song-id", id);
                 $modal.find("textarea").val(data.LYRICS);
+                $modal.find(".modal-title").html(name + " (" + artist + ")");
                 $modal.modal();
     		}
     	});
@@ -181,9 +185,13 @@ jQuery(document).ready(function() {
                 LYRICS: $modal.find("textarea").val(),
             },
             FINISH: function() {
-                jQuery("#lyrics-modal").modal('close');
+                closeLyricsModal();
             },
         });
+    });
+
+    jQuery("#lyrics-detail .btn-default").on("click", function() {
+        closeLyricsModal();
     });
 
     // Click on song table to pop up modal of EchoNest song results
@@ -294,4 +302,11 @@ function simpleFilter(force) {
 	});
 
 	updateRowCount();
+}
+
+function closeLyricsModal() {
+    var $modal = jQuery("#lyrics-detail");
+    $modal.find(".modal-title").html("");
+    $modal.find("textarea").val("");
+    $modal.modal('hide');
 }

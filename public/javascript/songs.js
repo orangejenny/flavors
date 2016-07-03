@@ -167,11 +167,15 @@ jQuery(document).ready(function() {
     			ID: id,
             },
     	    FINISH: function(data) {
-                var $modal = jQuery("#lyrics-detail");
+                var $modal = jQuery("#lyrics-detail"),
+                    textarea = $modal.find("textarea");
                 $modal.data("song-id", id);
-                $modal.find("textarea").val(data.LYRICS);
                 $modal.find(".modal-title").html(name + " (" + artist + ")");
                 $modal.modal();
+                textarea.val(data.LYRICS);
+                if (!data.LYRICS) {
+                    textarea.focus();
+                }
     		}
     	});
     });

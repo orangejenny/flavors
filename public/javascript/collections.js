@@ -239,7 +239,7 @@ jQuery(document).ready(function() {
                 FINISH: function(data) {
                     var $img = jQuery("<img />");
                     $img.addClass("album");
-                    $img.attr("src", "images/collections/" + id + ".png");
+                    $img.attr("src", "images/collections/" + id + ".png?" + (new Date()).getTime());
                     $collection.find(".mix, img").replaceWith($img);
                 },
                 UPLOAD: true,

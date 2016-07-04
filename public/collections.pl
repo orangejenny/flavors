@@ -90,12 +90,12 @@ foreach my $collection (@collections) {
 
     my $image = sprintf("images/collections/%s.jpg", $collection->{ID});
     if (-e $image) {
-        printf(qq{<img src="%s" class="album" />}, $image);
+        printf(qq{<img src="%s" class="cover-art" />}, $image);
     }
     else {
         my $color = $colors{$collection->{COLOR}};
         printf(qq{
-                <div class="mix" style="%s%s">
+                <div class="cover-art-missing" style="%s%s">
                     %s
                 </div>
             },

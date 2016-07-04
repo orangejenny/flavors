@@ -198,7 +198,7 @@ jQuery(document).ready(function() {
         });
     });
 
-    // Upload album art
+    // Upload cover art
     var div = document.createElement('div');
     if ((('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window) {
         var $targets = jQuery(".collection");
@@ -238,9 +238,9 @@ jQuery(document).ready(function() {
                 ARGS: data,
                 FINISH: function(data) {
                     var $img = jQuery("<img />");
-                    $img.addClass("album");
+                    $img.addClass("cover-art");
                     $img.attr("src", "images/collections/" + id + ".png?" + (new Date()).getTime());
-                    $collection.find(".mix, img").replaceWith($img);
+                    $collection.find(".cover-art-missing, img").replaceWith($img);
                 },
                 UPLOAD: true,
             });

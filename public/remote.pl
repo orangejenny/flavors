@@ -13,7 +13,7 @@ use Flavors::Data::Util;
 use JSON qw(to_json);
 
 my $cgi = CGI->new;
-my $fh = $cgi->param('jls');
+my $fh = $cgi->param('file');
 warn "fh=" . $fh;
 #warn "START CGI";
 #warn $cgi->param('id');
@@ -36,9 +36,9 @@ while ( read($fh, $buffer, 16384)) {
 #end
 
 use Data::Dumper;
-#warn "ID=" . $fdat->{ID};
-#warn "SUB=" . $fdat->{SUB};
-warn Dumper(keys %$fdat);
+warn "ID=" . $fdat->{ID};
+warn "SUB=" . $fdat->{SUB};
+#warn Dumper(keys %$fdat);
 
 
 my $sub = delete $fdat->{SUB};

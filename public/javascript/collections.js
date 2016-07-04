@@ -198,7 +198,7 @@ jQuery(document).ready(function() {
         });
     });
 
-    // Upload album cover
+    // Upload album art
     var div = document.createElement('div');
     if ((('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window) {
         var $targets = jQuery(".collection");
@@ -214,18 +214,24 @@ jQuery(document).ready(function() {
         });
         $targets.on('drop', function(e) {
             var $collection = jQuery(this),
-                $form = jQuery("#album-cover-upload"),
-                $input = $form.find("input[type='file']"),
                 id = $collection.data("id"),
-                data = new FormData($form.get(0));
+                data = new FormData();
+
+            if (!confirm("Upload new art for " + $collection.data("originalTitle") + "?")) {
+                return;
+            }
+            if (e.originalEvent.dataTransfer.files.length !== 1) {
+                alert("Please drag a single file.");
+                return;
+            }
+            var file = e.originalEvent.dataTransfer.files[0];
+            if (file.type !== "image/png") {
+                alert("File must be a PNG.");
+                return;
+            }
+            data.append('file', file);
             data.append('id', id);
             data.append('sub', 'Flavors::Data::Collection::UpdateCover');
-
-            $.each(e.originalEvent.dataTransfer.files, function(i, file) {
-                // TODO: reject if not img, not png, or too small
-                // TODO: confirm?
-                data.append('jls', file);
-            });
 
             CallRemote({
                 SUB: 'Flavors::Data::Collection::UpdateCover',
@@ -238,26 +244,6 @@ jQuery(document).ready(function() {
                 },
                 UPLOAD: true,
             });
-
-  /*$.ajax({
-    url: $form.attr('action'),
-    type: $form.attr('method'),
-    data: data,
-    dataType: 'json',
-    cache: false,
-    contentType: false,
-    processData: false,
-    complete: function() {
-      $form.removeClass('is-uploading');
-    },
-    success: function(data) {
-      $form.addClass( data.success == true ? 'is-success' : 'is-error' );
-      if (!data.success) $errorMsg.text(data.error);
-    },
-    error: function() {
-      // Log the error, show an alert, whatever works for you
-    }
-  });*/
         });
     }
 });

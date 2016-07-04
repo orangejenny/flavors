@@ -59,6 +59,14 @@ print Flavors::HTML::FilterControl($dbh, {
 
 print qq{ <div class="post-nav"> };
 
+print qq{
+    <form id="album-cover-upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" id="file" multiple />
+        <input type="text" name="sub" value="Flavors::Data::Collection::UpdateCover" />
+        <input type="text" name="id" value="" />
+    </form>
+};
+
 print "<div class=\"collections clearfix\">";
 
 my %colors;

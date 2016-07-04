@@ -66,7 +66,7 @@ function CallRemote(args) {
 			}
 		}, 100);
 	}
-	jQuery.ajax({
+    var options = {
 		type: args.METHOD || 'POST',
 		url: args.URL || 'remote.pl',
 		dataType: 'json',
@@ -83,8 +83,13 @@ function CallRemote(args) {
 		},
 		error: function(xhr, textStatus) {
 			alert("Error in CallRemote: " + textStatus);
-		}
-	});
+		},
+    }
+    if (args.UPLOAD) {
+        options.contentType = false;
+        options.processData = false;
+    }
+	jQuery.ajax(options);
 }
 
 /*

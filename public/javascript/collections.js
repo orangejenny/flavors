@@ -197,4 +197,67 @@ jQuery(document).ready(function() {
             COLLECTIONIDS: collectionids,
         });
     });
+
+    // Upload album cover
+    var div = document.createElement('div');
+    if ((('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window) {
+        var $targets = jQuery(".collection");
+        $targets.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        $targets.on('dragover dragenter', function() {
+            jQuery(this).addClass('accepting-drop');
+        });
+        $targets.on('dragleave dragend drop', function() {
+            jQuery(this).removeClass('accepting-drop');
+        });
+        $targets.on('drop', function(e) {
+            var $collection = jQuery(this),
+                $form = jQuery("#album-cover-upload"),
+                $input = $form.find("input[type='file']"),
+                id = $collection.data("id"),
+                data = new FormData($form.get(0));
+            data.append('id', id);
+            data.append('sub', 'Flavors::Data::Collection::UpdateCover');
+
+            $.each(e.originalEvent.dataTransfer.files, function(i, file) {
+                // TODO: reject if not img, not png, or too small
+                // TODO: confirm?
+                data.append('jls', file);
+            });
+
+            CallRemote({
+                SUB: 'Flavors::Data::Collection::UpdateCover',
+                ARGS: data,
+                FINISH: function(data) {
+                    var $img = jQuery("<img />");
+                    $img.addClass("album");
+                    $img.attr("src", "images/collections/" + id + ".png");
+                    $collection.find(".mix, img").replaceWith($img);
+                },
+                UPLOAD: true,
+            });
+
+  /*$.ajax({
+    url: $form.attr('action'),
+    type: $form.attr('method'),
+    data: data,
+    dataType: 'json',
+    cache: false,
+    contentType: false,
+    processData: false,
+    complete: function() {
+      $form.removeClass('is-uploading');
+    },
+    success: function(data) {
+      $form.addClass( data.success == true ? 'is-success' : 'is-error' );
+      if (!data.success) $errorMsg.text(data.error);
+    },
+    error: function() {
+      // Log the error, show an alert, whatever works for you
+    }
+  });*/
+        });
+    }
 });

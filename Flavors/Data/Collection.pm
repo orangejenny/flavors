@@ -458,4 +458,23 @@ sub TrackList {
     });
 }
 
+################################################################
+# UpdateCover
+#
+# Description: Save a new image file as a collections' cover art.
+#
+# Parameters
+#        ID: collection to update
+#        FILE:  file handle
+#
+# Return Value: none
+################################################################
+sub UpdateCover {
+    my ($dbh, $args) = @_;
+    use Data::Dumper;
+    #warn Dumper(\$args);
+
+    return;
+}
+
 1;

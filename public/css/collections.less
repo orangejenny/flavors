@@ -64,18 +64,13 @@
 			opacity: 0.3;
 		}
 	
-		.mix, .album {
+		.cover-art, .cover-art-missing, .accepting-drop {
 			border: 1px solid @grey;
-		}
-	
-		.album {
 			width: @albumSize;
 			height: @albumSize;
 		}
 	
-		.mix {
-			width: @albumSize;
-			height: @albumSize;
+		.cover-art-missing {
 			padding: @spacingNarrow;
 			div {
 				max-width: @albumSize - 2 * @spacingNarrow;
@@ -85,6 +80,18 @@
 				}
 			}
 		}
+
+        .accepting-drop {
+            position: absolute;
+            opacity: 0.9;
+            background-color: @white;
+            text-align: center;
+            padding-top: @spacingWide;
+
+            .glyphicon {
+                font-size: 64px;
+            }
+        }
 	}
 }
 

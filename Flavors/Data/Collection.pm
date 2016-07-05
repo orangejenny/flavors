@@ -458,4 +458,49 @@ sub TrackList {
     });
 }
 
+################################################################
+# CoverArtFilename
+#
+# Description: Get filename for cover art image.
+#
+# Parameters
+#        ID: collection
+#
+# Return Value: string
+################################################################
+sub CoverArtFilename {
+    my ($id) = @_;
+    return "images/collections/${id}.png";
+}
+
+################################################################
+# UpdateCoverArt
+#
+# Description: Save a new image file as a collections' cover art.
+#
+# Parameters
+#        ID: collection to update
+#        FILE:  file handle
+#
+# Return Value: none
+################################################################
+sub UpdateCoverArt {
+    my ($dbh, $args) = @_;
+
+    my $fh = $args->{FILE};
+    my $filename = CoverArtFilename($args->{ID});
+
+    my $buffer;
+    open(OUTPUT, ">" . $filename) || die "Can't create local file: $!";
+
+    binmode($fh);
+    binmode(OUTPUT);
+
+    while (read($fh, $buffer, 16384)) {
+        print OUTPUT $buffer;
+    }
+
+    return { FILENAME => $filename };
+}
+
 1;

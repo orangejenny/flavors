@@ -78,6 +78,11 @@ foreach my $collection (@collections) {
                 data-starred="%s",
                 class="collection clearfix"
             >
+                <div class="accepting-drop hide">
+                    <i class="glyphicon glyphicon-cloud-upload"></i>
+                    <br /><br />
+                    Drop new cover art
+                </div>
         },
         $collection->{ID},
         $collection->{NAME},
@@ -88,14 +93,14 @@ foreach my $collection (@collections) {
         $collection->{ISSTARRED} ? 1 : 0,
     );
 
-    my $image = sprintf("images/collections/%s.jpg", $collection->{ID});
+    my $image = Flavors::Data::Collection::CoverArtFilename($collection->{ID});
     if (-e $image) {
-        printf(qq{<img src="%s" class="album" />}, $image);
+        printf(qq{<img src="%s" class="cover-art" />}, $image);
     }
     else {
         my $color = $colors{$collection->{COLOR}};
         printf(qq{
-                <div class="mix" style="%s%s">
+                <div class="cover-art-missing" style="%s%s">
                     %s
                 </div>
             },

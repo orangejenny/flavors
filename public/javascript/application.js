@@ -42,6 +42,7 @@ jQuery(document).ready(function() {
  *	SUB: name of perl sub to call
  *	ARGS: args for the sub
  *	FINISH: JavaScript function to call when complete
+ *  UPLOAD: true if this is a file upload rather than a standard JSON-based call
  */
 function CallRemote(args) {
 	if (!args.ARGS) {
@@ -66,7 +67,7 @@ function CallRemote(args) {
 			}
 		}, 100);
 	}
-	jQuery.ajax({
+    var options = {
 		type: args.METHOD || 'POST',
 		url: args.URL || 'remote.pl',
 		dataType: 'json',
@@ -83,8 +84,13 @@ function CallRemote(args) {
 		},
 		error: function(xhr, textStatus) {
 			alert("Error in CallRemote: " + textStatus);
-		}
-	});
+		},
+    }
+    if (args.UPLOAD) {
+        options.contentType = false;
+        options.processData = false;
+    }
+	jQuery.ajax(options);
 }
 
 /*

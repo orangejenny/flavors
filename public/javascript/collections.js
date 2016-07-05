@@ -197,4 +197,62 @@ jQuery(document).ready(function() {
             COLLECTIONIDS: collectionids,
         });
     });
+
+    // Upload cover art
+    var div = document.createElement('div');
+    if ((('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window) {
+        var $targets = jQuery(".collection");
+        $targets.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        var current = undefined;
+        $targets.on('dragover dragenter', function(e) {
+            current = jQuery(e.currentTarget).data("id");
+            jQuery('.accepting-drop').addClass('hide');
+            jQuery(this).find('.accepting-drop').removeClass("hide");
+        });
+        $targets.on('dragleave dragend drop', function(e) {
+            if (jQuery(e.currentTarget).data("id") !== current) {
+                jQuery(this).find('.accepting-drop').addClass("hide");
+                current = undefined;
+            }
+        });
+        $targets.on('drop', function(e) {
+            var $collection = jQuery(this),
+                id = $collection.data("id"),
+                data = new FormData();
+
+            $collection.find('.accepting-drop').addClass('hide');
+
+            if (!confirm("Upload new art for " + $collection.data("originalTitle") + "?")) {
+                return;
+            }
+            if (e.originalEvent.dataTransfer.files.length !== 1) {
+                alert("Please drag a single file.");
+                return;
+            }
+            var file = e.originalEvent.dataTransfer.files[0];
+            if (file.type !== "image/png") {
+                alert("File must be a PNG.");
+                return;
+            }
+            data.append('file', file);
+            data.append('id', id);
+            data.append('sub', 'Flavors::Data::Collection::UpdateCoverArt');
+
+            CallRemote({
+                ARGS: data,
+                FINISH: function(data) {
+                    if (data.FILENAME) {
+                        var $img = jQuery("<img />");
+                        $img.addClass("cover-art");
+                        $img.attr("src", data.FILENAME + "?" + (new Date()).getTime());
+                        $collection.find(".cover-art-missing, img").replaceWith($img);
+                    }
+                },
+                UPLOAD: true,
+            });
+        });
+    }
 });

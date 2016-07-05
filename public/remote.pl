@@ -19,7 +19,6 @@ my $fdat = Flavors::Util::Fdat($cgi);
 my $sub = delete $fdat->{SUB};
 
 my $dbh = Flavors::Data::Util::DBH();
-#warn "DO THIS: $sub(\$dbh, \$fdat)";
 my $results = eval("$sub(\$dbh, \$fdat)");
 warn $@ if $@;
 

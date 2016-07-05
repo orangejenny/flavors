@@ -88,7 +88,7 @@ foreach my $collection (@collections) {
         $collection->{ISSTARRED} ? 1 : 0,
     );
 
-    my $image = sprintf("images/collections/%s.jpg", $collection->{ID});
+    my $image = Flavors::Data::Collection::CoverArtFilename($collection->{ID});
     if (-e $image) {
         printf(qq{<img src="%s" class="cover-art" />}, $image);
     }

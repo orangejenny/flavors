@@ -231,16 +231,17 @@ jQuery(document).ready(function() {
             }
             data.append('file', file);
             data.append('id', id);
-            data.append('sub', 'Flavors::Data::Collection::UpdateCover');
+            data.append('sub', 'Flavors::Data::Collection::UpdateCoverArt');
 
             CallRemote({
-                SUB: 'Flavors::Data::Collection::UpdateCover',
                 ARGS: data,
                 FINISH: function(data) {
-                    var $img = jQuery("<img />");
-                    $img.addClass("cover-art");
-                    $img.attr("src", "images/collections/" + id + ".png?" + (new Date()).getTime());
-                    $collection.find(".cover-art-missing, img").replaceWith($img);
+                    if (data.FILENAME) {
+                        var $img = jQuery("<img />");
+                        $img.addClass("cover-art");
+                        $img.attr("src", data.FILENAME + "?" + (new Date()).getTime());
+                        $collection.find(".cover-art-missing, img").replaceWith($img);
+                    }
                 },
                 UPLOAD: true,
             });

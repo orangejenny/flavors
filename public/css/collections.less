@@ -64,7 +64,7 @@
 			opacity: 0.3;
 		}
 	
-		.cover-art, .cover-art-missing {
+		.cover-art, .cover-art-missing, .accepting-drop {
 			border: 1px solid @grey;
 			width: @albumSize;
 			height: @albumSize;
@@ -81,8 +81,16 @@
 			}
 		}
 
-        &.accepting-drop {
-            background-color: lime;
+        .accepting-drop {
+            position: absolute;
+            opacity: 0.9;
+            background-color: @white;
+            text-align: center;
+            padding-top: @spacingWide;
+
+            .glyphicon {
+                font-size: 64px;
+            }
         }
 	}
 }

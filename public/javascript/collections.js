@@ -206,16 +206,24 @@ jQuery(document).ready(function() {
             e.preventDefault();
             e.stopPropagation();
         });
-        $targets.on('dragover dragenter', function() {
-            jQuery(this).addClass('accepting-drop');
+        var current = undefined;
+        $targets.on('dragover dragenter', function(e) {
+            current = jQuery(e.currentTarget).data("id");
+            jQuery('.accepting-drop').addClass('hide');
+            jQuery(this).find('.accepting-drop').removeClass("hide");
         });
-        $targets.on('dragleave dragend drop', function() {
-            jQuery(this).removeClass('accepting-drop');
+        $targets.on('dragleave dragend drop', function(e) {
+            if (jQuery(e.currentTarget).data("id") !== current) {
+                jQuery(this).find('.accepting-drop').addClass("hide");
+                current = undefined;
+            }
         });
         $targets.on('drop', function(e) {
             var $collection = jQuery(this),
                 id = $collection.data("id"),
                 data = new FormData();
+
+            $collection.find('.accepting-drop').addClass('hide');
 
             if (!confirm("Upload new art for " + $collection.data("originalTitle") + "?")) {
                 return;

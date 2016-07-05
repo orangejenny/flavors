@@ -78,6 +78,11 @@ foreach my $collection (@collections) {
                 data-starred="%s",
                 class="collection clearfix"
             >
+                <div class="accepting-drop hide">
+                    <i class="glyphicon glyphicon-cloud-upload"></i>
+                    <br /><br />
+                    Drop new cover art
+                </div>
         },
         $collection->{ID},
         $collection->{NAME},

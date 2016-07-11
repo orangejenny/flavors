@@ -218,6 +218,7 @@ jQuery(document).ready(function() {
                 current = undefined;
             }
         });
+        var formats = [];
         $targets.on('drop', function(e) {
             var $collection = jQuery(this),
                 id = $collection.data("id"),
@@ -233,11 +234,12 @@ jQuery(document).ready(function() {
                 return;
             }
             var file = e.originalEvent.dataTransfer.files[0];
-            if (file.type !== "image/png") {
-                alert("File must be a PNG.");
+            if (file.type !== "image/png" && file.type !== "image/jpeg") {
+                alert("File must be either a PNG or JPEG.");
                 return;
             }
             data.append('file', file);
+            data.append('ext', file.type.replace(/.*\//, '').replace(/e/, ''));
             data.append('id', id);
             data.append('sub', 'Flavors::Data::Collection::UpdateCoverArt');
 
@@ -245,6 +247,7 @@ jQuery(document).ready(function() {
                 ARGS: data,
                 FINISH: function(data) {
                     if (data.FILENAME) {
+                    console.log(data.FILENAME);
                         var $img = jQuery("<img />");
                         $img.addClass("cover-art");
                         $img.attr("src", data.FILENAME + "?" + (new Date()).getTime());

@@ -93,21 +93,27 @@ foreach my $collection (@collections) {
         $collection->{ISSTARRED} ? 1 : 0,
     );
 
-    my $image = Flavors::Data::Collection::CoverArtFilename($collection->{ID});
+    my $image = Flavors::Data::Collection::CoverArtFilename({ ID => $collection->{ID}, EXT => 'png' });
     if (-e $image) {
         printf(qq{<img src="%s" class="cover-art" />}, $image);
     }
     else {
-        my $color = $colors{$collection->{COLOR}};
-        printf(qq{
-                <div class="cover-art-missing" style="%s%s">
-                    %s
-                </div>
-            },
-            $color ? ("background-color: #" . $color->{HEX} . ";") : "",
-            $color->{WHITETEXT} ? " color: white; font-weight: bold;" : "",
-            join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..8]),
-        );
+        $image = Flavors::Data::Collection::CoverArtFilename({ ID => $collection->{ID}, EXT => 'jpg' });
+        if (-e $image) {
+            printf(qq{<img src="%s" class="cover-art" />}, $image);
+        }
+        else {
+            my $color = $colors{$collection->{COLOR}};
+            printf(qq{
+                    <div class="cover-art-missing" style="%s%s">
+                        %s
+                    </div>
+                },
+                $color ? ("background-color: #" . $color->{HEX} . ";") : "",
+                $color->{WHITETEXT} ? " color: white; font-weight: bold;" : "",
+                join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..8]),
+            );
+        }
     }
     printf(qq{
             <div class="name">%s</div>

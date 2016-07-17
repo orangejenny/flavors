@@ -3,6 +3,8 @@ package Flavors::Data::Collection;
 use strict;
 use Flavors::Data::Util;
 
+my $COVER_ART_ROOT = "images/collections/";
+
 ################################################################
 # AcquisitionStats
 #
@@ -459,20 +461,25 @@ sub TrackList {
 }
 
 ################################################################
-# CoverArtFilename
+# CoverArtFiles
 #
-# Description: Get filename for cover art image.
+# Description: Get filenames for cover art images.
 #
 # Parameters
 #       ID: collection
-#       EXT: filetype extension (defaults to png)
 #
 # Return Value: string
 ################################################################
-sub CoverArtFilename {
-    my ($args) = @_;
-    $args->{EXT} ||= "png";
-    return "images/collections/" . $args->{ID} . "." . lc($args->{EXT});
+sub CoverArtFiles {
+    my ($id) = @_;
+    my @files = ();
+    my $dir = $COVER_ART_ROOT . $id;
+    if (opendir my $handle, $dir) {
+        @files = grep { /^[^.]/ && -e "$dir/$_" } readdir $handle;
+        closedir $handle;
+    }
+    @files = map { $COVER_ART_ROOT . $id . "/" . $_ } @files;
+    return @files;
 }
 
 ################################################################
@@ -490,8 +497,16 @@ sub CoverArtFilename {
 sub UpdateCoverArt {
     my ($dbh, $args) = @_;
 
+    my $dir = $COVER_ART_ROOT . $args->{ID};
+    if (opendir my $handle, $dir) {
+        closedir $handle;
+    } else {
+        mkdir $dir;
+    }
+
     my $fh = $args->{FILE};
-    my $filename = CoverArtFilename({ ID => $args->{ID}, EXT => $args->{EXT} });
+    my @files = CoverArtFiles($args->{ID});
+    my $filename = sprintf("%s/%s.%s", $dir, @files + 1, $args->{EXT});
 
     my $buffer;
     open(OUTPUT, ">" . $filename) || die "Can't create local file $filename: $!";

@@ -247,9 +247,16 @@ jQuery(document).ready(function() {
                 ARGS: data,
                 FINISH: function(data) {
                     if (data.FILENAME) {
-                        var $img = jQuery("<img />");
+                        var $art = $collection.find(".cover-art"),
+                            $img = jQuery("<img />");
                         $img.attr("src", data.FILENAME + "?" + (new Date()).getTime());
-                        $collection.find(".cover-art").removeClass("missing").html($img);
+                        if ($art.hasClass("missing")) {
+                            $art.removeClass("missing");
+                            $art.html("");
+                        } else {
+                            $art.addClass("multiple");
+                        }
+                        $art.append($img);
                     }
                 },
                 UPLOAD: true,

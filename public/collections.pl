@@ -78,11 +78,6 @@ foreach my $collection (@collections) {
                 data-starred="%s",
                 class="collection clearfix"
             >
-                <div class="accepting-drop hide">
-                    <i class="glyphicon glyphicon-cloud-upload"></i>
-                    <br /><br />
-                    Drop new cover art
-                </div>
         },
         $collection->{ID},
         $collection->{NAME},
@@ -93,9 +88,7 @@ foreach my $collection (@collections) {
         $collection->{ISSTARRED} ? 1 : 0,
     );
 
-    my $dir = "images/collections/" . $collection->{ID};
-    my @files = `ls $dir`;
-    @files = map { chomp $_; $_ } @files;
+    my @files = Flavors::Data::Collection::CoverArtFiles($collection->{ID});
     if (@files) {
         printf(qq{
                 <div class="cover-art%s">
@@ -103,7 +96,7 @@ foreach my $collection (@collections) {
                 </div>
             },
             @files > 1 ? " multiple" : "",
-            join("", map { sprintf("<img src='%s/%s' />", $dir, $_) } @files));
+            join("", map { sprintf("<img src='%s' />", $_) } @files));
     }
     else {
         my $color = $colors{$collection->{COLOR}};
@@ -118,6 +111,11 @@ foreach my $collection (@collections) {
         );
     }
     printf(qq{
+            <div class="accepting-drop hide">
+                <i class="glyphicon glyphicon-cloud-upload"></i>
+                <br /><br />
+                Drop new cover art
+            </div>
             <div class="name">%s</div>
             <div class="artist">%s</div>
         },

@@ -71,6 +71,8 @@
 		}
 
         .cover-art {
+            position: relative;
+
     		&.missing {
 	    		padding: @spacingNarrow;
 		    	div {
@@ -85,6 +87,34 @@
             img {
 			    width: @albumSize;
     			height: @albumSize;
+            }
+
+
+            &.multiple img {
+                width: @albumSize / 2;
+                height: @albumSize / 2;
+                position: absolute;
+
+                &:nth-child(1) {
+                    top: 0;
+                    left: 0;
+                }
+
+                &:nth-child(2) {
+                    bottom: 0;
+                    right: 0;
+                }
+
+                &:nth-child(3) {
+                    top: 0;
+                    right: 0;
+                }
+
+                &:nth-child(4) {
+                    bottom: 0;
+                    left: 0;
+                }
+
             }
         }
 

@@ -96,27 +96,26 @@ foreach my $collection (@collections) {
     my $dir = "images/collections/" . $collection->{ID};
     my @files = `ls $dir`;
     @files = map { chomp $_; $_ } @files;
-    my $image = Flavors::Data::Collection::CoverArtFilename({ ID => $collection->{ID}, EXT => 'png' });
-    if (-e $image) {
-        printf(qq{ <div class="cover-art"><img src="%s" /></div> }, $image);
+    if (@files) {
+        printf(qq{
+                <div class="cover-art%s">
+                    %s
+                </div>
+            },
+            @files > 1 ? " multiple" : "",
+            join("", map { sprintf("<img src='%s/%s' />", $dir, $_) } @files));
     }
     else {
-        $image = Flavors::Data::Collection::CoverArtFilename({ ID => $collection->{ID}, EXT => 'jpg' });
-        if (-e $image) {
-            printf(qq{<img src="%s" class="cover-art" />}, $image);
-        }
-        else {
-            my $color = $colors{$collection->{COLOR}};
-            printf(qq{
-                    <div class="cover-art missing" style="%s%s">
-                        %s
-                    </div>
-                },
-                $color ? ("background-color: #" . $color->{HEX} . ";") : "",
-                $color->{WHITETEXT} ? " color: white; font-weight: bold;" : "",
-                join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..8]),
-            );
-        }
+        my $color = $colors{$collection->{COLOR}};
+        printf(qq{
+                <div class="cover-art missing" style="%s%s">
+                    %s
+                </div>
+            },
+            $color ? ("background-color: #" . $color->{HEX} . ";") : "",
+            $color->{WHITETEXT} ? " color: white; font-weight: bold;" : "",
+            join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..8]),
+        );
     }
     printf(qq{
             <div class="name">%s</div>

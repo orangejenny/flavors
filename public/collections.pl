@@ -93,9 +93,12 @@ foreach my $collection (@collections) {
         $collection->{ISSTARRED} ? 1 : 0,
     );
 
+    my $dir = "images/collections/" . $collection->{ID};
+    my @files = `ls $dir`;
+    @files = map { chomp $_; $_ } @files;
     my $image = Flavors::Data::Collection::CoverArtFilename({ ID => $collection->{ID}, EXT => 'png' });
     if (-e $image) {
-        printf(qq{<img src="%s" class="cover-art" />}, $image);
+        printf(qq{ <div class="cover-art"><img src="%s" /></div> }, $image);
     }
     else {
         $image = Flavors::Data::Collection::CoverArtFilename({ ID => $collection->{ID}, EXT => 'jpg' });
@@ -105,7 +108,7 @@ foreach my $collection (@collections) {
         else {
             my $color = $colors{$collection->{COLOR}};
             printf(qq{
-                    <div class="cover-art-missing" style="%s%s">
+                    <div class="cover-art missing" style="%s%s">
                         %s
                     </div>
                 },

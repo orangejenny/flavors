@@ -64,22 +64,29 @@
 			opacity: 0.3;
 		}
 	
-		.cover-art, .cover-art-missing, .accepting-drop {
+		.cover-art, .accepting-drop {
 			border: 1px solid @grey;
 			width: @albumSize;
 			height: @albumSize;
 		}
-	
-		.cover-art-missing {
-			padding: @spacingNarrow;
-			div {
-				max-width: @albumSize - 2 * @spacingNarrow;
-                .ellipsis();
-				&:not(:last-child) {
-					margin-bottom: @spacingNarrow;
-				}
-			}
-		}
+
+        .cover-art {
+    		&.missing {
+	    		padding: @spacingNarrow;
+		    	div {
+			    	max-width: @albumSize - 2 * @spacingNarrow;
+                    .ellipsis();
+    				&:not(:last-child) {
+	    				margin-bottom: @spacingNarrow;
+		    		}
+			    }
+		    }
+
+            img {
+			    width: @albumSize;
+    			height: @albumSize;
+            }
+        }
 
         .accepting-drop {
             position: absolute;

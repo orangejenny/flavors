@@ -483,6 +483,30 @@ sub CoverArtFiles {
 }
 
 ################################################################
+# RemoveCoverArt
+#
+# Description: Remove a given image ad cover art.
+#
+# Parameters
+#       ID: collection to update
+#       FILENAME: file to remove
+#
+# Return Value: none
+################################################################
+sub RemoveCoverArt {
+    my ($dbh, $args) = @_;
+    my @files = CoverArtFiles($args->{ID});
+    foreach my $file (@files) {
+        if ($file eq $args->{FILENAME}) {
+            if (unlink $file) {
+                return { FILENAME => $args->{FILENAME} };
+            }
+        }
+    }
+    return { FILENAME => ''};
+}
+
+################################################################
 # UpdateCoverArt
 #
 # Description: Save a new image file as a collections' cover art.

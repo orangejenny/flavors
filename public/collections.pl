@@ -172,7 +172,7 @@ foreach my $collection (@collections) {
             </div>
             </div>
             <ol class="track-list hide">%s</ol>
-            <div class="cover-art-thumbnails clearfix hide">%s</div>
+            <ul class="cover-art-thumbnails clearfix hide">%s</ul>
         },
         Flavors::Util::TrimDate($collection->{CREATED}),
         $exporttext,
@@ -188,7 +188,7 @@ foreach my $collection (@collections) {
         $collection->{COMPLETION} == 1 ? "&nbsp;" : sprintf("(%s%% complete)", floor($collection->{COMPLETION} * 100)),
         join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..2]),
         join("", map { "<li>" . $_->{NAME} . "</li>" } @{ $tracks{$collection->{ID}} }),
-        join("", map { sprintf("<img src='%s' />", $_) } @files),
+        join("", map { sprintf("<li><img src='%s' /><div class='trash'><i class='glyphicon glyphicon-trash'></i></div></li>", $_) } @files),
     );
 
     print "</div>";

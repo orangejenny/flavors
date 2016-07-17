@@ -78,11 +78,6 @@ foreach my $collection (@collections) {
                 data-starred="%s",
                 class="collection clearfix"
             >
-                <div class="accepting-drop hide">
-                    <i class="glyphicon glyphicon-cloud-upload"></i>
-                    <br /><br />
-                    Drop new cover art
-                </div>
         },
         $collection->{ID},
         $collection->{NAME},
@@ -93,29 +88,35 @@ foreach my $collection (@collections) {
         $collection->{ISSTARRED} ? 1 : 0,
     );
 
-    my $image = Flavors::Data::Collection::CoverArtFilename({ ID => $collection->{ID}, EXT => 'png' });
-    if (-e $image) {
-        printf(qq{<img src="%s" class="cover-art" />}, $image);
+    my @files = Flavors::Data::Collection::CoverArtFiles($collection->{ID});
+    if (@files) {
+        printf(qq{
+                <div class="cover-art%s">
+                    %s
+                </div>
+            },
+            @files > 1 ? " multiple" : "",
+            # TODO: select at most four, at random, and store the filenames
+            join("", map { sprintf("<img src='%s' />", $_) } @files));
     }
     else {
-        $image = Flavors::Data::Collection::CoverArtFilename({ ID => $collection->{ID}, EXT => 'jpg' });
-        if (-e $image) {
-            printf(qq{<img src="%s" class="cover-art" />}, $image);
-        }
-        else {
-            my $color = $colors{$collection->{COLOR}};
-            printf(qq{
-                    <div class="cover-art-missing" style="%s%s">
-                        %s
-                    </div>
-                },
-                $color ? ("background-color: #" . $color->{HEX} . ";") : "",
-                $color->{WHITETEXT} ? " color: white; font-weight: bold;" : "",
-                join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..8]),
-            );
-        }
+        my $color = $colors{$collection->{COLOR}};
+        printf(qq{
+                <div class="cover-art missing" style="%s%s">
+                    %s
+                </div>
+            },
+            $color ? ("background-color: #" . $color->{HEX} . ";") : "",
+            $color->{WHITETEXT} ? " color: white; font-weight: bold;" : "",
+            join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..8]),
+        );
     }
     printf(qq{
+            <div class="accepting-drop hide">
+                <i class="glyphicon glyphicon-cloud-upload"></i>
+                <br /><br />
+                Drop new cover art
+            </div>
             <div class="name">%s</div>
             <div class="artist">%s</div>
         },
@@ -171,6 +172,7 @@ foreach my $collection (@collections) {
             </div>
             </div>
             <ol class="track-list hide">%s</ol>
+            <ul class="cover-art-thumbnails clearfix hide">%s</ul>
         },
         Flavors::Util::TrimDate($collection->{CREATED}),
         $exporttext,
@@ -186,6 +188,7 @@ foreach my $collection (@collections) {
         $collection->{COMPLETION} == 1 ? "&nbsp;" : sprintf("(%s%% complete)", floor($collection->{COMPLETION} * 100)),
         join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..2]),
         join("", map { "<li>" . $_->{NAME} . "</li>" } @{ $tracks{$collection->{ID}} }),
+        join("", map { sprintf("<li><img src='%s' /><div class='trash'><i class='glyphicon glyphicon-trash'></i></div></li>", $_) } @files),
     );
 
     print "</div>";

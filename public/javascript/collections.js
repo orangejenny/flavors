@@ -68,10 +68,13 @@ function simpleFilter(force) {
 
 jQuery(document).ready(function() {
     jQuery(".collection").click(function() {
-        var $collection = jQuery(this);
-        var $modal = jQuery("#track-list").data("id", $collection.data("id"));
+        var $collection = jQuery(this),
+            $modal = jQuery("#track-list").data("id", $collection.data("id")),
+            $body = $modal.find(".modal-body");
         $modal.find(".modal-title").html($collection.find(".name").text());
-        $modal.find(".modal-body").html($collection.find(".track-list").clone().removeClass("hide"));
+        $body.html("");
+        $body.append($collection.find(".track-list").clone().removeClass("hide"));
+        $body.append($collection.find(".cover-art-thumbnails").clone().removeClass("hide"));
         $modal.modal();
     });
 
@@ -247,15 +250,47 @@ jQuery(document).ready(function() {
                 ARGS: data,
                 FINISH: function(data) {
                     if (data.FILENAME) {
-                    console.log(data.FILENAME);
-                        var $img = jQuery("<img />");
-                        $img.addClass("cover-art");
+                        var $art = $collection.find(".cover-art"),
+                            $img = jQuery("<img />");
                         $img.attr("src", data.FILENAME + "?" + (new Date()).getTime());
-                        $collection.find(".cover-art-missing, img").replaceWith($img);
+                        if ($art.hasClass("missing")) {
+                            $art.removeClass("missing");
+                            $art.html("");
+                        } else {
+                            $art.addClass("multiple");
+                        }
+                        $art.append($img);
+                        $collection.find(".cover-art-thumbnails").append($img.clone());
                     }
                 },
                 UPLOAD: true,
             });
         });
     }
+
+    // Remove cover art
+    $(document).on('click', '.cover-art-thumbnails .trash', function() {
+        if (confirm('Remove image?')) {
+            var $li = $(this).closest("li"),
+                src = $li.find("img").attr("src"),
+                id = $("#track-list").data("id");
+            CallRemote({
+                SUB: 'Flavors::Data::Collection::RemoveCoverArt',
+                ARGS: {
+                    id: id,
+                    filename: src,
+                },
+                FINISH: function(data) {
+                    if (data.FILENAME === src) {
+                        $li.remove();
+                        $collection = $(".collection[data-id='" + id + "']");
+                        $collection.find(".cover-art img[src='" + src + "']").remove();
+                        $collection.find(".cover-art-thumbnails img[src='" + src + "']").closest("li").remove();
+                    } else {
+                        alert("Unable to remove image");
+                    }
+                }
+            });
+        }
+    });
 });

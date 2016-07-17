@@ -68,10 +68,13 @@ function simpleFilter(force) {
 
 jQuery(document).ready(function() {
     jQuery(".collection").click(function() {
-        var $collection = jQuery(this);
-        var $modal = jQuery("#track-list").data("id", $collection.data("id"));
+        var $collection = jQuery(this),
+            $modal = jQuery("#track-list").data("id", $collection.data("id")),
+            $body = $modal.find(".modal-body");
         $modal.find(".modal-title").html($collection.find(".name").text());
-        $modal.find(".modal-body").html($collection.find(".track-list").clone().removeClass("hide"));
+        $body.html("");
+        $body.append($collection.find(".track-list").clone().removeClass("hide"));
+        $body.append($collection.find(".cover-art-thumbnails").clone().removeClass("hide"));
         $modal.modal();
     });
 
@@ -257,6 +260,7 @@ jQuery(document).ready(function() {
                             $art.addClass("multiple");
                         }
                         $art.append($img);
+                        $collection.find(".cover-art-thumbnails").append($img.clone());
                     }
                 },
                 UPLOAD: true,

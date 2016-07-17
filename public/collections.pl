@@ -96,6 +96,7 @@ foreach my $collection (@collections) {
                 </div>
             },
             @files > 1 ? " multiple" : "",
+            # TODO: select at most four, at random, and store the filenames
             join("", map { sprintf("<img src='%s' />", $_) } @files));
     }
     else {
@@ -171,6 +172,7 @@ foreach my $collection (@collections) {
             </div>
             </div>
             <ol class="track-list hide">%s</ol>
+            <div class="cover-art-thumbnails clearfix hide">%s</div>
         },
         Flavors::Util::TrimDate($collection->{CREATED}),
         $exporttext,
@@ -186,6 +188,7 @@ foreach my $collection (@collections) {
         $collection->{COMPLETION} == 1 ? "&nbsp;" : sprintf("(%s%% complete)", floor($collection->{COMPLETION} * 100)),
         join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..2]),
         join("", map { "<li>" . $_->{NAME} . "</li>" } @{ $tracks{$collection->{ID}} }),
+        join("", map { sprintf("<img src='%s' />", $_) } @files),
     );
 
     print "</div>";

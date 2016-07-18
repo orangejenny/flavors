@@ -91,7 +91,7 @@ foreach my $collection (@collections) {
 
     my @files = Flavors::Data::Collection::CoverArtFiles($collection->{ID});
     if (@files) {
-		  @file = shuffle(@files);
+		  @files = shuffle(@files);
         printf(qq{
                 <div class="cover-art%s">
                     %s

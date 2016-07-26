@@ -99,6 +99,9 @@ jQuery(document).ready(function() {
                     })));
                 });
                 $body.html($table);
+                if ($collection.find(".cover-art.multiple").length) {
+                    $body.append($collection.find(".cover-art-thumbnails").clone().removeClass("hide"));
+                }
 			}
 		});
     });

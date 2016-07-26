@@ -24,7 +24,7 @@ Flavors::HTML::Header($dbh, {
             New
         </button>
     },
-    CSS => ['collections.css', 'filters.css'],
+    CSS => ['collections.css', 'filters.css', 'song_attributes.css'],
     JS => ['collections.js', 'song-attributes.js'],
     SPINNER => 1,
 });

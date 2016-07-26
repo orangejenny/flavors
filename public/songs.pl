@@ -77,7 +77,7 @@ Flavors::HTML::Header($dbh, {
         LETTERCOUNTS => $lettercounts,
         STARRED => $starred,
     },
-    CSS => ['filters.css', 'songs.css'],
+    CSS => ['filters.css', 'songs.css', 'song_attributes.css'],
     JS => ['songs.js', 'song-attributes.js'],
 });
 
@@ -112,7 +112,7 @@ print Flavors::HTML::FilterControl($dbh, {
 
 print qq{ <div id="song-table-container"> };
 
-print qq{ <table><tbody> };
+print qq{ <table class='song-table'><tbody> };
 
 my @colors = Flavors::Data::Tag::ColorList($dbh);
 my %colormap = ();

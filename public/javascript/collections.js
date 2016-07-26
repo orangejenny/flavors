@@ -82,14 +82,15 @@ jQuery(document).ready(function() {
             },
 			FINISH: function(songs) {
                 var songTemplate = _.template("<tr data-song-id='<%= ID %>'>"
-                                                + "<td><%= TRACKNUMBER %></td>"
+                                                + "<td><div class='pull-right'><%= TRACKNUMBER %>.</div></td>"
                                                 + "<td><%= NAME %></td>"
+                                                + "<td><%= ARTIST %></td>"
                                                 + "<td class='rating' contenteditable='true' data-key='rating'><%= RATINGHTML %></td>"
                                                 + "<td class='rating' contenteditable='true' data-key='energy'><%= ENERGYHTML %></td>"
                                                 + "<td class='rating' contenteditable='true' data-key='mood'><%= MOODHTML %></td>"
                                                 + "<td contenteditable='true' data-key='tags'><%= TAGS %></td>"
                                                 + "</tr>"),
-                    $table = $("<table></table>");
+                    $table = $("<table class='song-table'></table>");
                 _.each(songs, function(song) {
                     $table.append(songTemplate(_.extend(song, {
                         RATINGHTML: ratingHTML(iconClasses['rating'], song.RATING),

@@ -78,7 +78,7 @@ Flavors::HTML::Header($dbh, {
         STARRED => $starred,
     },
     CSS => ['filters.css', 'songs.css'],
-    JS => ['songs.js'],
+    JS => ['songs.js', 'song-attributes.js'],
 });
 
 my @playlists = grep { !$_->{ISDEFAULT} } Flavors::Data::Playlist::List($dbh);
@@ -126,10 +126,10 @@ foreach my $song (@songs) {
             <td class='name clickable'>%s</td>
             <td class='artist clickable'>%s</td>
             <td class='collections clickable'>%s</td>
-            <td contenteditable='true' class='rating'>%s</td>
-            <td contenteditable='true' class='rating'>%s</td>
-            <td contenteditable='true' class='rating'>%s</td>
-            <td contenteditable='true'>%s</td>
+            <td contenteditable='true' data-key='rating' class='rating'>%s</td>
+            <td contenteditable='true' data-key='energy' class='rating'>%s</td>
+            <td contenteditable='true' data-key='mood' class='rating'>%s</td>
+            <td contenteditable='true' data-key='tags'>%s</td>
             <td class='icon-cell %s'>
                 <i class='glyphicon glyphicon-font'></i>
             </td>

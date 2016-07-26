@@ -1,5 +1,4 @@
 // Globals
-var oldValue = undefined;
 var lastQuery = "";
 var tokens;
 var letters;
@@ -185,10 +184,6 @@ jQuery(document).ready(function() {
         }
     });
 });
-
-function ratingHTML(iconClass, number) {
-	return StringMultiply("<span class='glyphicon " + (number ? "" : "blank ") + iconClass + "'></span>", number || 5);
-}
 
 function toggleStar($star, id, sub) {
 	var isstarred = !$star.hasClass("glyphicon-star");

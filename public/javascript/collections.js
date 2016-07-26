@@ -69,13 +69,37 @@ function simpleFilter(force) {
 jQuery(document).ready(function() {
     jQuery(".collection").click(function() {
         var $collection = jQuery(this),
-            $modal = jQuery("#track-list").data("id", $collection.data("id")),
+            id = $collection.data("id"),
+            $modal = jQuery("#track-list").data("id", id),
             $body = $modal.find(".modal-body");
         $modal.find(".modal-title").html($collection.find(".name").text());
-        $body.html("");
-        $body.append($collection.find(".track-list").clone().removeClass("hide"));
-        $body.append($collection.find(".cover-art-thumbnails").clone().removeClass("hide"));
+        $body.html(jQuery("body .loading").clone().show());
         $modal.modal();
+		CallRemote({
+			SUB: 'Flavors::Data::Collection::TrackList', 
+			ARGS: {
+                COLLECTIONIDS: id,
+            },
+			FINISH: function(songs) {
+                var songTemplate = _.template("<tr data-song-id='<%= ID %>'>"
+                                                + "<td><%= TRACKNUMBER %></td>"
+                                                + "<td><%= NAME %></td>"
+                                                + "<td class='rating' contenteditable='true' data-key='rating'><%= RATINGHTML %></td>"
+                                                + "<td class='rating' contenteditable='true' data-key='energy'><%= ENERGYHTML %></td>"
+                                                + "<td class='rating' contenteditable='true' data-key='mood'><%= MOODHTML %></td>"
+                                                + "<td contenteditable='true' data-key='tags'><%= TAGS %></td>"
+                                                + "</tr>"),
+                    $table = $("<table></table>");
+                _.each(songs, function(song) {
+                    $table.append(songTemplate(_.extend(song, {
+                        RATINGHTML: ratingHTML(iconClasses['rating'], song.RATING),
+                        ENERGYHTML: ratingHTML(iconClasses['energy'], song.ENERGY),
+                        MOODHTML: ratingHTML(iconClasses['mood'], song.MOOD),
+                    })));
+                });
+                $body.html($table);
+			}
+		});
     });
 
     // Column names hint for filter

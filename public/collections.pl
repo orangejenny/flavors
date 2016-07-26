@@ -25,7 +25,7 @@ Flavors::HTML::Header($dbh, {
         </button>
     },
     CSS => ['collections.css', 'filters.css'],
-    JS => ['collections.js'],
+    JS => ['collections.js', 'song-attributes.js'],
     SPINNER => 1,
 });
 
@@ -43,14 +43,6 @@ my %songs;
 my @songs = Flavors::Data::Song::List($dbh);
 foreach my $song (@songs) {
     $songs{$song->{ID}} = $song;
-}
-my @tracks = Flavors::Data::Collection::TrackList($dbh);
-my %tracks;
-foreach my $song (@tracks) {
-    if (!exists $tracks{$song->{COLLECTIONID}}) {
-        $tracks{$song->{COLLECTIONID}} = [];
-    }
-    push(@{ $tracks{$song->{COLLECTIONID}} }, $song);
 }
 
 print Flavors::HTML::FilterControl($dbh, {
@@ -171,8 +163,6 @@ foreach my $collection (@collections) {
                 <div class="tags">%s</div>
             </div>
             </div>
-            <ol class="track-list hide">%s</ol>
-            <ul class="cover-art-thumbnails clearfix hide">%s</ul>
         },
         Flavors::Util::TrimDate($collection->{CREATED}),
         $exporttext,
@@ -187,8 +177,6 @@ foreach my $collection (@collections) {
         Flavors::HTML::Rating($collection->{MAXMOOD}, 'heart'),
         $collection->{COMPLETION} == 1 ? "&nbsp;" : sprintf("(%s%% complete)", floor($collection->{COMPLETION} * 100)),
         join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..2]),
-        join("", map { "<li>" . $_->{NAME} . "</li>" } @{ $tracks{$collection->{ID}} }),
-        join("", map { sprintf("<li><img src='%s' /><div class='trash'><i class='glyphicon glyphicon-trash'></i></div></li>", $_) } @files),
     );
 
     print "</div>";

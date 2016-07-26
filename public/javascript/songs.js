@@ -32,11 +32,6 @@ jQuery(document).ready(function() {
 		$form.submit();
 	});
 
-	jQuery(".playlists .glyphicon").click(function() {
-		var $star = jQuery(this);
-		toggleStar($star, $star.closest("li").data("id"), 'Flavors::Data::Playlist::Star');
-	});
-
 	// Column names hint for filter
 	jQuery(".hint").tooltip({
 		html: true,
@@ -71,8 +66,12 @@ jQuery(document).ready(function() {
 	// Click to edit
 	var selector = "[contenteditable=true][data-key]";
     $("body").on('song-update', function(e, songData) {
+        if (songData.key === 'isstarred') {
+            starred[songData.id] = songData.value;
+            console.log("starred[" + songData.id + "] => " + songData.value);//jls
+        }
 		// Update tokens and letters; don't bother with letter counts
-		if (songData.key === 'tags') {
+		else if (songData.key === 'tags') {
 			var id = songData.id,
                 oldTokens = songData.oldValue.split(/\s+/),
 			    newTokens = songData.value.split(/\s+/),
@@ -100,10 +99,6 @@ jQuery(document).ready(function() {
 			});
 		}
     });
-	$table.on("click", ".is-starred .glyphicon", function() {
-		var $star = jQuery(this);
-		toggleStar($star, $star.closest("tr").data("song-id"), 'Flavors::Data::Song::Update');
-	});
 
 	// Export buttons
 	jQuery(".export-dropdown a").click(function() {
@@ -185,30 +180,6 @@ jQuery(document).ready(function() {
     });
 });
 
-function toggleStar($star, id, sub) {
-	var isstarred = !$star.hasClass("glyphicon-star");
-
-	// Update markup
-	$star.toggleClass("glyphicon-star-empty");
-	$star.toggleClass("glyphicon-star");
-
-    // Update client data
-    starred[id] = isstarred;
-
-	// Update server data
-	$star.addClass("update-in-progress");
-	CallRemote({
-		SUB: sub,
-		ARGS: {
-			ID: id,
-			ISSTARRED: isstarred ? 1 : 0,
-        },
-	    FINISH: function(data) {
-			$star.removeClass("update-in-progress");
-		}
-	});
-}
-
 function updateRowCount() {
 	jQuery("#song-count").text(jQuery("#song-table-container tbody tr:visible").length);
 }
@@ -237,7 +208,9 @@ function simpleFilter(force) {
         if (onlyStarred) {
             jQuery(rowselector).hide();
             _.each(_.keys(starred), function(songID) {
-    			jQuery("#song-" + songID).show();
+                if (starred[songID]) {
+    			    jQuery("#song-" + songID).show();
+                }
             });
         }
         else {

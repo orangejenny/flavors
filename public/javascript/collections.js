@@ -82,6 +82,7 @@ jQuery(document).ready(function() {
             },
 			FINISH: function(songs) {
                 var songTemplate = _.template("<tr data-song-id='<%= ID %>'>"
+                                                + "<td class='icon-cell is-starred'><%= ISSTARREDHTML %></td>"
                                                 + "<td><div class='pull-right'><%= TRACKNUMBER %>.</div></td>"
                                                 + "<td><%= NAME %></td>"
                                                 + "<td><%= ARTIST %></td>"
@@ -93,6 +94,7 @@ jQuery(document).ready(function() {
                     $table = $("<table class='song-table'></table>");
                 _.each(songs, function(song) {
                     $table.append(songTemplate(_.extend(song, {
+                        ISSTARREDHTML: ratingHTML(parseInt(song.ISSTARRED) ? 'glyphicon-star' : 'glyphicon-star-empty', 1),
                         RATINGHTML: ratingHTML(iconClasses['rating'], song.RATING),
                         ENERGYHTML: ratingHTML(iconClasses['energy'], song.ENERGY),
                         MOODHTML: ratingHTML(iconClasses['mood'], song.MOOD),

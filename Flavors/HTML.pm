@@ -249,7 +249,7 @@ sub SelectionControl {
 				Clear Selection
 			</button>
 			<button class="btn btn-info btn-xs songs-button">
-				<i class="glyphicon glyphicon-share-alt"></i>
+				<i class="glyphicon glyphicon-eye-open"></i>
 				View Songs
 			</button>
 		</span>

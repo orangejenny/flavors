@@ -9,7 +9,37 @@ jQuery(document).ready(function() {
 	jQuery(".songs-button").click(function() {
 		var condition = getSelectionCondition();
 		if (condition) {
-			window.open("songs.pl?FILTER=" + condition);
+            var $modal = jQuery("#song-list"),
+                $body = $modal.find(".modal-body");
+            $body.html(jQuery("body .loading").clone().show());
+            $modal.modal();
+    		CallRemote({
+    			SUB: 'Flavors::Data::Song::List', 
+    			ARGS: {
+                    FILTER: condition,
+                },
+    			FINISH: function(songs) {
+                    var songTemplate = _.template("<tr data-song-id='<%= ID %>'>"
+                                                    + "<td class='icon-cell is-starred'><%= ISSTARREDHTML %></td>"
+                                                    + "<td><%= NAME %></td>"
+                                                    + "<td><%= ARTIST %></td>"
+                                                    + "<td class='rating' contenteditable='true' data-key='rating'><%= RATINGHTML %></td>"
+                                                    + "<td class='rating' contenteditable='true' data-key='energy'><%= ENERGYHTML %></td>"
+                                                    + "<td class='rating' contenteditable='true' data-key='mood'><%= MOODHTML %></td>"
+                                                    + "<td contenteditable='true' data-key='tags'><%= TAGS %></td>"
+                                                    + "</tr>"),
+                        $table = $("<table class='song-table'></table>");
+                    _.each(songs, function(song) {
+                        $table.append(songTemplate(_.extend(song, {
+                            ISSTARREDHTML: ratingHTML(parseInt(song.ISSTARRED) ? 'glyphicon-star' : 'glyphicon-star-empty', 1),
+                            RATINGHTML: ratingHTML(iconClasses['rating'], song.RATING),
+                            ENERGYHTML: ratingHTML(iconClasses['energy'], song.ENERGY),
+                            MOODHTML: ratingHTML(iconClasses['mood'], song.MOOD),
+                        })));
+                    });
+                    $body.html($table);
+    			}
+    		});
 		}
 	});
 

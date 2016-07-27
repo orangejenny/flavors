@@ -77,8 +77,8 @@ Flavors::HTML::Header($dbh, {
         LETTERCOUNTS => $lettercounts,
         STARRED => $starred,
     },
-    CSS => ['filters.css', 'songs.css'],
-    JS => ['songs.js'],
+    CSS => ['filters.css', 'songs.css', 'song_attributes.css'],
+    JS => ['songs.js', 'song_attributes.js', 'stars.js'],
 });
 
 my @playlists = grep { !$_->{ISDEFAULT} } Flavors::Data::Playlist::List($dbh);
@@ -112,7 +112,7 @@ print Flavors::HTML::FilterControl($dbh, {
 
 print qq{ <div id="song-table-container"> };
 
-print qq{ <table><tbody> };
+print qq{ <table class='song-table'><tbody> };
 
 my @colors = Flavors::Data::Tag::ColorList($dbh);
 my %colormap = ();
@@ -126,10 +126,10 @@ foreach my $song (@songs) {
             <td class='name clickable'>%s</td>
             <td class='artist clickable'>%s</td>
             <td class='collections clickable'>%s</td>
-            <td contenteditable='true' class='rating'>%s</td>
-            <td contenteditable='true' class='rating'>%s</td>
-            <td contenteditable='true' class='rating'>%s</td>
-            <td contenteditable='true'>%s</td>
+            <td contenteditable='true' data-key='rating' class='rating'>%s</td>
+            <td contenteditable='true' data-key='energy' class='rating'>%s</td>
+            <td contenteditable='true' data-key='mood' class='rating'>%s</td>
+            <td contenteditable='true' data-key='tags'>%s</td>
             <td class='icon-cell %s'>
                 <i class='glyphicon glyphicon-font'></i>
             </td>

@@ -1,6 +1,4 @@
 // Globals
-var oldValue = undefined;
-var iconClasses = ['glyphicon-star', 'glyphicon-fire', 'glyphicon-heart'];
 var lastQuery = "";
 var tokens;
 var letters;
@@ -32,11 +30,6 @@ jQuery(document).ready(function() {
 		var $form = jQuery("#complex-filter form");
 		$form.find("textarea").val($link.text());
 		$form.submit();
-	});
-
-	jQuery(".playlists .glyphicon").click(function() {
-		var $star = jQuery(this);
-		toggleStar($star, $star.closest("li").data("id"), 'Flavors::Data::Playlist::Star');
 	});
 
 	// Column names hint for filter
@@ -71,78 +64,41 @@ jQuery(document).ready(function() {
 	});
 
 	// Click to edit
-	var selector = "td[contenteditable=true]";
-	var columns = ['isstarred', 'name', 'artist', 'collections', 'rating', 'energy', 'mood', 'tags'];
-	$table.on("focus", selector, function() {
-		var $td = jQuery(this);
-		if ($td.hasClass("rating")) {
-			oldValue = $td.children(".glyphicon:not(.blank)").length;
-			$td.html(StringMultiply("*", oldValue));
-		}
-		else {
-			oldValue = $td.text().trim();
-		}
-	});
-	$table.on("blur", selector, function() {
-		var $td = jQuery(this);
-		var value = $td.text().trim();
-		if ($td.hasClass("rating")) {
-			value = value.length;
-			$td.html(ratingHTML(iconClasses[$td.closest("tr").find(".rating").index($td)], value));
-		}
-		if (oldValue != value) {
-			var id = $td.closest("tr").data("song-id");
-			var args = {
-				id: id,
-			}
-			var index = jQuery("td", $td.closest("tr")).index($td);
-			var key = columns[index];
-			args[key] = value;
+	var selector = "[contenteditable=true][data-key]";
+    $("body").on('song-update', function(e, songData) {
+        if (songData.key === 'isstarred') {
+            starred[songData.id] = songData.value;
+            console.log("starred[" + songData.id + "] => " + songData.value);//jls
+        }
+		// Update tokens and letters; don't bother with letter counts
+		else if (songData.key === 'tags') {
+			var id = songData.id,
+                oldTokens = songData.oldValue.split(/\s+/),
+			    newTokens = songData.value.split(/\s+/),
+			    commonTokens = _.intersection(oldTokens, newTokens);
+			oldTokens = _.difference(oldTokens, commonTokens);
+			newTokens = _.difference(newTokens, commonTokens);
 
-			// Update tokens and letters; don't bother with letter counts
-			if (!$td.hasClass("rating")) {
-				var oldTokens = oldTokens ? oldValue.split(/\s+/) : [];
-				var newTokens = newTokens ? value.split(/\s+/) : [];
-				var commonTokens = _.intersection(oldTokens, newTokens);
-				oldTokens = _.difference(oldTokens, commonTokens);
-				newTokens = _.difference(newTokens, commonTokens);
+			// update letters; don't bother deduping
+			_.each(newTokens, function(token) {
+				letters[token.substring(0, 1)].push(token);
+			});
 
-				// update letters; don't bother deduping
-				_.each(newTokens, function(token) {
-					letters[token.substring(0, 1)].push(token);
-				});
-
-				// update token index and letter counts
-				_.each(newTokens, function(token) {
-					if (!tokens[token]) {
-						tokens[token] = [];
-						_.each(token.split(""), function(letter) {
-							letterCounts[letter] = (letterCounts[letter] || 0) + 1;
-						});
-					}
-					tokens[token].push(id);
-				});
-				_.each(oldTokens, function(token) {
-					tokens[token] = _.without(tokens[token], "" + id);
-				});
-			}
-
-			// Update server
-			$td.addClass("update-in-progress");
-			CallRemote({
-				SUB: 'Flavors::Data::Song::Update', 
-				ARGS: args, 
-				FINISH: function(data) {
-					$td.removeClass("update-in-progress");
+			// update token index and letter counts
+			_.each(newTokens, function(token) {
+				if (!tokens[token]) {
+					tokens[token] = [];
+					_.each(token.split(""), function(letter) {
+						letterCounts[letter] = (letterCounts[letter] || 0) + 1;
+					});
 				}
+				tokens[token].push(id);
+			});
+			_.each(oldTokens, function(token) {
+				tokens[token] = _.without(tokens[token], "" + id);
 			});
 		}
-		oldValue = undefined;
-	});
-	$table.on("click", ".is-starred .glyphicon", function() {
-		var $star = jQuery(this);
-		toggleStar($star, $star.closest("tr").data("song-id"), 'Flavors::Data::Song::Update');
-	});
+    });
 
 	// Export buttons
 	jQuery(".export-dropdown a").click(function() {
@@ -224,34 +180,6 @@ jQuery(document).ready(function() {
     });
 });
 
-function ratingHTML(iconClass, number) {
-	return StringMultiply("<span class='glyphicon " + (number ? "" : "blank ") + iconClass + "'></span>", number || 5);
-}
-
-function toggleStar($star, id, sub) {
-	var isstarred = !$star.hasClass("glyphicon-star");
-
-	// Update markup
-	$star.toggleClass("glyphicon-star-empty");
-	$star.toggleClass("glyphicon-star");
-
-    // Update client data
-    starred[id] = isstarred;
-
-	// Update server data
-	$star.addClass("update-in-progress");
-	CallRemote({
-		SUB: sub,
-		ARGS: {
-			ID: id,
-			ISSTARRED: isstarred ? 1 : 0,
-        },
-	    FINISH: function(data) {
-			$star.removeClass("update-in-progress");
-		}
-	});
-}
-
 function updateRowCount() {
 	jQuery("#song-count").text(jQuery("#song-table-container tbody tr:visible").length);
 }
@@ -280,7 +208,9 @@ function simpleFilter(force) {
         if (onlyStarred) {
             jQuery(rowselector).hide();
             _.each(_.keys(starred), function(songID) {
-    			jQuery("#song-" + songID).show();
+                if (starred[songID]) {
+    			    jQuery("#song-" + songID).show();
+                }
             });
         }
         else {

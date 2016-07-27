@@ -249,7 +249,7 @@ sub SelectionControl {
 				Clear Selection
 			</button>
 			<button class="btn btn-info btn-xs songs-button">
-				<i class="glyphicon glyphicon-share-alt"></i>
+				<i class="glyphicon glyphicon-eye-open"></i>
 				View Songs
 			</button>
 		</span>
@@ -335,6 +335,33 @@ sub FilterModal {
 	    $args->{FILTER},
         $args->{ADDITIONALMARKUP},
     );
+}
+
+################################################################
+# SongsModal
+#
+# Description: Generates HTML for modal with song list
+#
+# Params: None
+#
+# Return Value: HTML
+################################################################
+sub SongsModal {
+    return sprintf(qq{
+        <div id="song-list" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4>
+                            <div class="pull-right">%s</div>
+                            <span class="modal-title">Song Selection</span>
+                        </h4>
+                    </div>
+                    <div class="modal-body"></div>
+                </div>
+            </div>
+        </div>
+    }, Flavors::HTML::ExportControl());
 }
 
 ################################################################

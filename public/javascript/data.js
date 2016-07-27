@@ -9,7 +9,10 @@ jQuery(document).ready(function() {
 	jQuery(".songs-button").click(function() {
 		var condition = getSelectionCondition();
 		if (condition) {
-			window.open("songs.pl?FILTER=" + condition);
+            showSongModal({
+    			SUB: 'Flavors::Data::Song::List', 
+                FILTER: condition,
+            });
 		}
 	});
 

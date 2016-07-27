@@ -15,9 +15,9 @@ my $facet = $fdat->{FACET} || "rating";
 Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => "Acquisitions",
-    BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),
-    CSS => ['data.css'],
-    JS => ['data.js', 'chart/chart.js', 'chart/acquisitions.js', 'acquisitions.js'],
+    BUTTONS => Flavors::HTML::SelectionControl(),
+    CSS => ['data.css', 'song_attributes.css'],
+    JS => ['data.js', 'chart/chart.js', 'chart/acquisitions.js', 'acquisitions.js', 'song_attributes.js', 'stars.js'],
 });
 
 print qq{
@@ -27,5 +27,7 @@ print qq{
         </div>
     </div>
 };
+
+print Flavors::HTML::SongsModal();
 
 print Flavors::HTML::Footer();

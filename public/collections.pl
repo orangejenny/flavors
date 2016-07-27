@@ -24,8 +24,8 @@ Flavors::HTML::Header($dbh, {
             New
         </button>
     },
-    CSS => ['collections.css', 'filters.css'],
-    JS => ['collections.js'],
+    CSS => ['collections.css', 'filters.css', 'song_attributes.css'],
+    JS => ['collections.js', 'song_attributes.js', 'stars.js'],
     SPINNER => 1,
 });
 
@@ -43,14 +43,6 @@ my %songs;
 my @songs = Flavors::Data::Song::List($dbh);
 foreach my $song (@songs) {
     $songs{$song->{ID}} = $song;
-}
-my @tracks = Flavors::Data::Collection::TrackList($dbh);
-my %tracks;
-foreach my $song (@tracks) {
-    if (!exists $tracks{$song->{COLLECTIONID}}) {
-        $tracks{$song->{COLLECTIONID}} = [];
-    }
-    push(@{ $tracks{$song->{COLLECTIONID}} }, $song);
 }
 
 print Flavors::HTML::FilterControl($dbh, {
@@ -171,7 +163,6 @@ foreach my $collection (@collections) {
                 <div class="tags">%s</div>
             </div>
             </div>
-            <ol class="track-list hide">%s</ol>
             <ul class="cover-art-thumbnails clearfix hide">%s</ul>
         },
         Flavors::Util::TrimDate($collection->{CREATED}),
@@ -187,7 +178,6 @@ foreach my $collection (@collections) {
         Flavors::HTML::Rating($collection->{MAXMOOD}, 'heart'),
         $collection->{COMPLETION} == 1 ? "&nbsp;" : sprintf("(%s%% complete)", floor($collection->{COMPLETION} * 100)),
         join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..2]),
-        join("", map { "<li>" . $_->{NAME} . "</li>" } @{ $tracks{$collection->{ID}} }),
         join("", map { sprintf("<li><img src='%s' /><div class='trash'><i class='glyphicon glyphicon-trash'></i></div></li>", $_) } @files),
     );
 
@@ -201,23 +191,6 @@ print Flavors::HTML::FilterModal($dbh, {
     FILTER => $fdat->{FILTER},
     HINTS => [ Flavors::Data::Collection::ListColumns() ],
 });
-
-# Modal for track list
-printf(qq{
-    <div id="track-list" class="modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4>
-                        <div class="pull-right">%s</div>
-                        <span class="modal-title"></span>
-                    </h4>
-                </div>
-                <div class="modal-body"></div>
-            </div>
-        </div>
-    </div>
-}, Flavors::HTML::ExportControl());
 
 # Modal for new collection
 print q{
@@ -265,5 +238,7 @@ print q{
         </div>
     </div>
 };
+
+print Flavors::HTML::SongsModal();
 
 print Flavors::HTML::Footer();

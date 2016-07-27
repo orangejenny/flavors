@@ -19,6 +19,7 @@ module.exports = function(grunt) {
 				"./css/filters.css": "./css/filters.less",
 				"./css/matrix.css": "./css/matrix.less",
 				"./css/songs.css": "./css/songs.less",
+				"./css/song_attributes.css": "./css/song_attributes.less",
 				"./css/tags.css": "./css/tags.less",
 			}
 		}

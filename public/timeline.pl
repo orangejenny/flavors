@@ -19,7 +19,7 @@ Flavors::HTML::Header($dbh, {
     TITLE => "Timeline",
     BUTTONS => Flavors::HTML::SelectionControl(),
     CSS => ['data.css', 'song_attributes.css'],
-    JS => ['data.js', 'chart/chart.js', 'chart/timeline.js', 'timeline.js', 'song-attributes.js', 'stars.js'],
+    JS => ['data.js', 'chart/chart.js', 'chart/timeline.js', 'timeline.js', 'song_attributes.js', 'stars.js'],
 });
 
 print qq{

@@ -25,7 +25,7 @@ Flavors::HTML::Header($dbh, {
     TITLE => ucfirst $facet,
     BUTTONS => Flavors::HTML::SelectionControl(),
     CSS => ['data.css', 'facet.css', 'song_attributes.css'],
-    JS => ['data.js', 'facet.js', 'song-attributes.js', 'stars.js'],
+    JS => ['data.js', 'facet.js', 'song_attributes.js', 'stars.js'],
 });
 
 print qq{ <div class="post-nav"> };

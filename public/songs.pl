@@ -78,7 +78,7 @@ Flavors::HTML::Header($dbh, {
         STARRED => $starred,
     },
     CSS => ['filters.css', 'songs.css', 'song_attributes.css'],
-    JS => ['songs.js', 'song-attributes.js', 'stars.js'],
+    JS => ['songs.js', 'song_attributes.js', 'stars.js'],
 });
 
 my @playlists = grep { !$_->{ISDEFAULT} } Flavors::Data::Playlist::List($dbh);

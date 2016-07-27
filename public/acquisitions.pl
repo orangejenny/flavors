@@ -28,20 +28,6 @@ print qq{
     </div>
 };
 
-printf(qq{
-    <div id="song-list" class="modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4>
-                        <div class="pull-right">%s</div>
-                        <span class="modal-title">Song Selection</span>
-                    </h4>
-                </div>
-                <div class="modal-body"></div>
-            </div>
-        </div>
-    </div>
-}, Flavors::HTML::ExportControl());
+print Flavors::HTML::SongsModal();
 
 print Flavors::HTML::Footer();

@@ -23,9 +23,9 @@ my %icons = (
 Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => ucfirst $facet,
-    BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),
-    CSS => ['data.css', 'facet.css'],
-    JS => ['data.js', 'facet.js'],
+    BUTTONS => Flavors::HTML::SelectionControl(),
+    CSS => ['data.css', 'facet.css', 'song_attributes.css'],
+    JS => ['data.js', 'facet.js', 'song-attributes.js'],
 });
 
 print qq{ <div class="post-nav"> };
@@ -66,5 +66,6 @@ print qq{ </div> };
 
 print qq{ </div> };    # .post-nav
 
+print Flavors::HTML::SongsModal();
 
 print Flavors::HTML::Footer();

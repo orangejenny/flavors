@@ -338,6 +338,33 @@ sub FilterModal {
 }
 
 ################################################################
+# SongsModal
+#
+# Description: Generates HTML for modal with song list
+#
+# Params: None
+#
+# Return Value: HTML
+################################################################
+sub SongsModal {
+    return sprintf(qq{
+        <div id="song-list" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4>
+                            <div class="pull-right">%s</div>
+                            <span class="modal-title">Song Selection</span>
+                        </h4>
+                    </div>
+                    <div class="modal-body"></div>
+                </div>
+            </div>
+        </div>
+    }, Flavors::HTML::ExportControl());
+}
+
+################################################################
 # TagSongList
 #
 # Description: Generates HTML for dialog to view all songs with

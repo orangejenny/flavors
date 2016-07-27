@@ -15,9 +15,9 @@ my $dbh = Flavors::Data::Util::DBH();
 Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => "Matrix",
-    BUTTONS => Flavors::HTML::ExportControl() . Flavors::HTML::SelectionControl(),
-    CSS => ['data.css', 'matrix.css'],
-    JS => ['data.js', 'chart/matrix.js', 'matrix.js'],
+    BUTTONS => Flavors::HTML::SelectionControl(),
+    CSS => ['data.css', 'matrix.css', 'song_attributes.css'],
+    JS => ['data.js', 'chart/matrix.js', 'matrix.js', 'song-attributes.js'],
 });
 
 printf(qq{
@@ -38,5 +38,7 @@ printf(qq{
     Flavors::HTML::Rating(1, 'fire'),
     Flavors::HTML::Rating(1, 'heart'),
 );
+
+print Flavors::HTML::SongsModal();
 
 print Flavors::HTML::Footer();

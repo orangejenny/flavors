@@ -68,44 +68,17 @@ function simpleFilter(force) {
 
 jQuery(document).ready(function() {
     jQuery(".collection").click(function() {
-        var $collection = jQuery(this),
-            id = $collection.data("id"),
-            $modal = jQuery("#track-list").data("id", id),
-            $body = $modal.find(".modal-body");
-        $modal.find(".modal-title").html($collection.find(".name").text());
-        $body.html(jQuery("body .loading").clone().show());
-        $modal.modal();
-		CallRemote({
+        var $collection = jQuery(this);
+        showSongModal({
 			SUB: 'Flavors::Data::Collection::TrackList', 
-			ARGS: {
-                COLLECTIONIDS: id,
-            },
-			FINISH: function(songs) {
-                var songTemplate = _.template("<tr data-song-id='<%= ID %>'>"
-                                                + "<td class='icon-cell is-starred'><%= ISSTARREDHTML %></td>"
-                                                + "<td><div class='pull-right'><%= TRACKNUMBER %>.</div></td>"
-                                                + "<td><%= NAME %></td>"
-                                                + "<td><%= ARTIST %></td>"
-                                                + "<td class='rating' contenteditable='true' data-key='rating'><%= RATINGHTML %></td>"
-                                                + "<td class='rating' contenteditable='true' data-key='energy'><%= ENERGYHTML %></td>"
-                                                + "<td class='rating' contenteditable='true' data-key='mood'><%= MOODHTML %></td>"
-                                                + "<td contenteditable='true' data-key='tags'><%= TAGS %></td>"
-                                                + "</tr>"),
-                    $table = $("<table class='song-table'></table>");
-                _.each(songs, function(song) {
-                    $table.append(songTemplate(_.extend(song, {
-                        ISSTARREDHTML: ratingHTML(parseInt(song.ISSTARRED) ? 'glyphicon-star' : 'glyphicon-star-empty', 1),
-                        RATINGHTML: ratingHTML(iconClasses['rating'], song.RATING),
-                        ENERGYHTML: ratingHTML(iconClasses['energy'], song.ENERGY),
-                        MOODHTML: ratingHTML(iconClasses['mood'], song.MOOD),
-                    })));
-                });
-                $body.html($table);
-                if ($collection.find(".cover-art.multiple").length) {
-                    $body.append($collection.find(".cover-art-thumbnails").clone().removeClass("hide"));
-                }
-			}
-		});
+            COLLECTIONIDS: $collection.data("id"),
+        }, function() {
+            var $modal = $("#song-list");
+            $modal.find(".modal-title").html($collection.find(".name").text());
+            if ($collection.find(".cover-art.multiple").length) {
+                $modal.find(".modal-body").append($collection.find(".cover-art-thumbnails").clone().removeClass("hide"));
+            }
+        });
     });
 
     // Column names hint for filter
@@ -204,8 +177,8 @@ jQuery(document).ready(function() {
     });
 
     // Export single collection, from modal
-    jQuery("#track-list .export-dropdown a").click(function(event) {
-        var $collection = jQuery(".collection[data-id='" + jQuery(this).closest("#track-list").data("id") + "']");
+    jQuery("#song-list .export-dropdown a").click(function(event) {
+        var $collection = jQuery(".collection[data-id='" + jQuery(this).closest("#song-list").data("id") + "']");
         var $details = $collection.find(".details");
         ExportPlaylist({
             PATH: jQuery(this).text(),
@@ -303,7 +276,7 @@ jQuery(document).ready(function() {
         if (confirm('Remove image?')) {
             var $li = $(this).closest("li"),
                 src = $li.find("img").attr("src"),
-                id = $("#track-list").data("id");
+                id = $("#song-list").data("id");
             CallRemote({
                 SUB: 'Flavors::Data::Collection::RemoveCoverArt',
                 ARGS: {

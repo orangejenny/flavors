@@ -17,7 +17,7 @@ Flavors::HTML::Header($dbh, {
     TITLE => "Matrix",
     BUTTONS => Flavors::HTML::SelectionControl(),
     CSS => ['data.css', 'matrix.css', 'song_attributes.css'],
-    JS => ['data.js', 'chart/matrix.js', 'matrix.js', 'song-attributes.js'],
+    JS => ['data.js', 'chart/matrix.js', 'matrix.js', 'song-attributes.js', 'stars.js'],
 });
 
 printf(qq{

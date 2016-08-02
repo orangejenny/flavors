@@ -16,13 +16,12 @@ Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => "Matrix",
     BUTTONS => Flavors::HTML::SelectionControl(),
-    CSS => ['data.css', 'matrix.css', 'song_attributes.css'],
     JS => ['data.js', 'chart/matrix.js', 'matrix.js', 'song_attributes.js', 'stars.js'],
 });
 
 printf(qq{
         <div class="post-nav">
-            <div class="post-nav-positioning">
+            <div class="matrix-container">
                 <div class="axis-label mood-high">%s</div>
                 <div class="axis-label energy-high">%s</div>
                 <div class="axis-label energy-low">%s</div>

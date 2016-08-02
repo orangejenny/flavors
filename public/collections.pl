@@ -25,9 +25,7 @@ Flavors::HTML::Header($dbh, {
             New
         </button>
     },
-    CSS => ['collections.css', 'filters.css', 'song_attributes.css'],
     JS => ['collections.js', 'song_attributes.js', 'stars.js'],
-    SPINNER => 1,
 });
 
 my $results = Flavors::Data::Util::TrySQL($dbh, {
@@ -198,10 +196,10 @@ print q{
     <div id="new-collection" class="modal">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <button type="button" class="close" data-dismiss="modal">
-                    <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-                </button>
                 <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                    </button>
                     <h4>
                         <input type='text' name='name' placeholder='collection' />
                         <label>

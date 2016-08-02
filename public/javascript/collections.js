@@ -68,12 +68,14 @@ function simpleFilter(force) {
 
 jQuery(document).ready(function() {
     jQuery(".collection").click(function() {
-        var $collection = jQuery(this);
+        var $collection = jQuery(this),
+            id = $collection.data("id");
         showSongModal({
 			SUB: 'Flavors::Data::Collection::TrackList', 
-            COLLECTIONIDS: $collection.data("id"),
+            COLLECTIONIDS: id,
         }, function() {
             var $modal = $("#song-list");
+            $modal.data("id", id);
             $modal.find(".modal-title").html($collection.find(".name").text());
             if ($collection.find(".cover-art.multiple").length) {
                 $modal.find(".modal-body").append($collection.find(".cover-art-thumbnails").clone().removeClass("hide"));

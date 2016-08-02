@@ -1,5 +1,5 @@
 jQuery(document).ready(function() {
-	jQuery(".loading").fadeOut('slow');
+	jQuery(".loading").addClass("hide");
 
     // Complex filter events
     var $complexFilter = jQuery("#complex-filter");

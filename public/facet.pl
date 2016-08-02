@@ -24,11 +24,10 @@ Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => ucfirst $facet,
     BUTTONS => Flavors::HTML::SelectionControl(),
-    CSS => ['data.css', 'facet.css', 'song_attributes.css'],
     JS => ['data.js', 'facet.js', 'song_attributes.js', 'stars.js'],
 });
 
-print qq{ <div class="post-nav"> };
+print qq{ <div class="post-nav text-center"> };
 
 # Distribution and rated/unrated chart
 printf(qq{

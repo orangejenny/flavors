@@ -62,7 +62,7 @@ function ratingHTML(iconClass, number) {
 function showSongModal(args, callback) {
     var $modal = jQuery("#song-list"),
         $body = $modal.find(".modal-body");
-    $body.html(jQuery("body .loading").clone().show());
+    $body.html(jQuery("body .loading").clone().removeClass("hide"));
     $modal.modal();
 	CallRemote({
 		ARGS: args || {},

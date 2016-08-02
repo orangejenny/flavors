@@ -22,7 +22,6 @@ my $results = Flavors::Data::Util::TrySQL($dbh, {
     ARGS => {
         FILTER => $fdat->{FILTER},
         ORDERBY => $fdat->{ORDERBY},
-        SPINNER => 1,
     },
 });
 my $sqlerror = $results->{ERROR} || "";
@@ -77,7 +76,6 @@ Flavors::HTML::Header($dbh, {
         LETTERCOUNTS => $lettercounts,
         STARRED => $starred,
     },
-    CSS => ['filters.css', 'songs.css', 'song_attributes.css'],
     JS => ['songs.js', 'song_attributes.js', 'stars.js'],
 });
 

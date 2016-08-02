@@ -16,7 +16,6 @@ Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => "Acquisitions",
     BUTTONS => Flavors::HTML::SelectionControl(),
-    CSS => ['data.css', 'song_attributes.css'],
     JS => ['data.js', 'chart/chart.js', 'chart/acquisitions.js', 'acquisitions.js', 'song_attributes.js', 'stars.js'],
 });
 

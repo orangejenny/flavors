@@ -1,4 +1,4 @@
-@import "imports.less";
+@import "base.less";
 
 @barColor: #31b0d5;	// bootstrap "info"
 
@@ -47,12 +47,27 @@ svg {
 	}
 }
 
-#song-list {
-    .modal-dialog {
-        min-width: 80%;
+// Not necessarily inside an axis, or an avg, because matrix fakes its axes with CSS
+.axis-label {
+    color: @grey;
+	font-size: @fontSizeLarge;
+}
 
-        .modal-body {
-            min-width: 100px;
-        }
-    }
+#tooltip {
+	position: absolute;
+	padding: @spacingNarrow;
+	background-color: @greyDark;
+	color: @white;
+	opacity: 0.8;
+	border-radius: @borderRadius;
+	> div {
+		font-weight: bold;
+	}
+	ul {
+		margin: @spacingNormal 0 0 0;
+		padding: 0;
+		li {
+			list-style-type: none;
+		}
+	}
 }

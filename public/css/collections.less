@@ -1,12 +1,11 @@
-@import "imports.less";
-
-.post-nav {
-    top: 150px;
-    margin: 0 @spacingWide @spacingWide @spacingWide;
-}
+@import "mixins.less";
+@import "variables.less";
+@import "filters.less";
 
 .collections {
     text-align: center;
+    padding: @spacingWide;
+    margin-top: @filterContainerHeight;
 
 	.collection {
 		@albumSize: 200px;
@@ -223,7 +222,7 @@
 		}
 
 		.glyphicon-trash {
-			.clickable();
+			cursor: pointer;
 			margin-top: @spacingNormal;
 		}
 	}

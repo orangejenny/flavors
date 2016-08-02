@@ -11,16 +11,13 @@ module.exports = function(grunt) {
 			files: {
 				"./css/flavors.css": "./css/flavors.less",
 
-				"./css/categories.css": "./css/categories.less",
+				"./css/base.css": "./css/base.less",
 				"./css/collections.css": "./css/collections.less",
-				"./css/colors.css": "./css/colors.less",
 				"./css/data.css": "./css/data.less",
 				"./css/facet.css": "./css/facet.less",
 				"./css/filters.css": "./css/filters.less",
 				"./css/matrix.css": "./css/matrix.less",
 				"./css/songs.css": "./css/songs.less",
-				"./css/song_attributes.css": "./css/song_attributes.less",
-				"./css/tags.css": "./css/tags.less",
 			}
 		}
 	},

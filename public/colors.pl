@@ -14,9 +14,7 @@ print $cgi->header();
 my $fdat = Flavors::Util::Fdat($cgi);
 
 Flavors::HTML::Header($dbh, {
-    CSS => ['colors.css'],
     JS => ['colors.js'],
-    SPINNER => 1,
 });
 
 my @colors = Flavors::Data::Tag::ColorList($dbh);

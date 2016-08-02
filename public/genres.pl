@@ -16,7 +16,6 @@ my $fdat = Flavors::Util::Fdat($cgi);
 Flavors::HTML::Header($dbh, {
     CSS => ['categories.css'],
     JS => ['categories.js'],
-    SPINNER => 1,
 });
 
 my @artists = Flavors::Data::Tag::ArtistGenreList($dbh);

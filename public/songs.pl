@@ -22,7 +22,6 @@ my $results = Flavors::Data::Util::TrySQL($dbh, {
     ARGS => {
         FILTER => $fdat->{FILTER},
         ORDERBY => $fdat->{ORDERBY},
-        SPINNER => 1,
     },
 });
 my $sqlerror = $results->{ERROR} || "";

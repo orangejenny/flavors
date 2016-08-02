@@ -96,10 +96,10 @@ sub Header {
 				<script src="/javascript/application.js"></script>
 				<script src="/javascript/api.js"></script>
 				%s
-				<title>$args->{TITLE}</title>
+				<title>%s</title>
 			</head>
 			<body>
-			<div class="loading%s">
+			<div class="loading">
 				<div>
 					<div></div>
 				</div>
@@ -107,7 +107,6 @@ sub Header {
 		},
 		join("", map { sprintf(qq{ <link href="/css/%s" rel="stylesheet" type="text/css" /> }, $_) } @{ $args->{CSS} || [] }),
 		join("", map { sprintf(qq{ <script type="text/javascript" src="/javascript/%s"></script> }, $_) } @{ $args->{JS} || [] }),
-		$args->{SPINNER} ? "" : " hide",
 		$args->{TITLE},
 	);
 

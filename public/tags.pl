@@ -15,7 +15,6 @@ Flavors::HTML::Header($dbh, {
     CSS => ['tags.css'],
     JS => ['tags.js'],
     TITLE => "Tags",
-    SPINNER => 1,
 });
 
 my @tags = Flavors::Data::Tag::List($dbh);

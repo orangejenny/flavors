@@ -17,7 +17,6 @@ my $fdat = Flavors::Util::Fdat($cgi);
 Flavors::HTML::Header($dbh, {
     TITLE => "Profiles",
     JS => ['profiles.js'],
-    SPINNER => 1,
 });
 
 my @playlists = Flavors::Data::Playlist::List($dbh);

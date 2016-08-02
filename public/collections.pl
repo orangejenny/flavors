@@ -26,7 +26,6 @@ Flavors::HTML::Header($dbh, {
     },
     CSS => ['collections.css', 'filters.css', 'song_attributes.css'],
     JS => ['collections.js', 'song_attributes.js', 'stars.js'],
-    SPINNER => 1,
 });
 
 my $results = Flavors::Data::Util::TrySQL($dbh, {

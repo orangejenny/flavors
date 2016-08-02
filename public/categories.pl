@@ -14,7 +14,6 @@ print $cgi->header();
 my $fdat = Flavors::Util::Fdat($cgi);
 
 Flavors::HTML::Header($dbh, {
-    CSS => ['categories.css'],
     JS => ['categories.js'],
 });
 

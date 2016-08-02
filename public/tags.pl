@@ -12,7 +12,6 @@ my $dbh = Flavors::Data::Util::DBH();
 my $cgi = CGI->new;
 print $cgi->header();
 Flavors::HTML::Header($dbh, {
-    CSS => ['tags.css'],
     JS => ['tags.js'],
     TITLE => "Tags",
 });
@@ -22,7 +21,7 @@ my @tags = Flavors::Data::Tag::List($dbh);
 # Print tags by frequency, click to pull up related tags
 printf(qq{
     <div class='post-nav'>
-        <ul class='tags'>%s</ul>
+        <ul class='text-center'>%s</ul>
     </div>
 }, join("", map { Flavors::HTML::Tag($_) } @tags));
 
@@ -37,8 +36,7 @@ printf(q{
                     </h4>
                 </div>
                 <div class="modal-body clearfix">
-                    <ul class="tags"></ul>
-                    <table class="songs"></table>
+                    <ul class="text-center"></ul>
                 </div>
             </div>
         </div>

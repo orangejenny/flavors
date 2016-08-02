@@ -1,71 +1,61 @@
-@import "imports.less";
+@import "base.less";
 @import "data.less";
 
-.post-nav {
-	text-align: center;
+.facet-container {
+	width: 50%;
+	margin: 0 25%;
+
+	.axis {
+		margin: @spacingNarrow;
+
+		.axis-label {
+			display: inline-block;
+			width: 20%;
+		}
+	}
+
+	svg {
+		margin-top: @spacingNormal;
+
+		text {
+			font: @fontSizeDefault sans-serif;
+		}
+	}
+
+	.histogram-container svg text {
+		text-anchor: middle;
+	}
+
+	.binary-container svg {
+		g:first-child text {
+			text-anchor: start;
+		}
+		g:not(:first-child) {
+			rect {
+				.background-with-states(@greyLight);
+			}
+			text {
+				text-anchor: end;
+			}
+		}
+	}
+}
+
+.category-container {
+	vertical-align: top;
 	padding: @spacingWide;
 
-	.category-buttons.active {
-		background-color: @greyLight;
-	}
+	svg {
+		margin: @spacingNormal;
 
-	.facet-container {
-		width: 50%;
-		margin: 0 25%;
+		.rating-1 { .background-with-states(#82a6b0) }
+		.rating-2 { .background-with-states(#559aaf) }
+		.rating-3 { .background-with-states(#31b0d5) }
+		.rating-4 { .background-with-states(#18bbec) }
+		.rating-5 { .background-with-states(#08c3fd) }
 
-		.axis {
-			margin: @spacingNarrow;
-			.axis-label {
-				display: inline-block;
-				width: 20%;
-				font-size: @fontSizeLarge;
-				color: @grey;
-			}
-		}
-
-		svg {
-			margin-top: @spacingNormal;
-
-			text {
-				font: @fontSizeDefault sans-serif;
-			}
-		}
-
-		.histogram-container svg text {
-			text-anchor: middle;
-		}
-
-		.binary-container svg {
-			g:first-child text {
-				text-anchor: start;
-			}
-			g:not(:first-child) {
-				rect {
-					.background-with-states(@greyLight);
-				}
-				text {
-					text-anchor: end;
-				}
-			}
-		}
-	}
-
-	.category-container {
-		vertical-align: top;
-		padding: @spacingWide;
-
-		svg {
-			margin: @spacingNormal;
-
-			.rating-1 { .background-with-states(#82a6b0) }
-			.rating-2 { .background-with-states(#559aaf) }
-			.rating-3 { .background-with-states(#31b0d5) }
-			.rating-4 { .background-with-states(#18bbec) }
-			.rating-5 { .background-with-states(#08c3fd) }
-
-			text {
-				fill: @black;
-			}
+		text {
+			fill: @black;
 		}
 	}
 }

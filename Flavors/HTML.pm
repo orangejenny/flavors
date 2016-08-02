@@ -58,7 +58,6 @@ sub Rating {
 # Params:
 #		TITLE: (optional) page title
 #		INITIALPAGEDATA: (optional) hash to convert to JSON
-#		CSS (optional): arrayref of strings
 #		JS (optional): arrayref of strings
 #		FDAT (optional)
 #
@@ -84,7 +83,6 @@ sub Header {
                 <link href="bower_components/jquery-minicolors/jquery.minicolors.css" rel="stylesheet" type="text/css" />
                 <link href="bower_components/At.js/dist/css/jquery.atwho.min.css" rel="stylesheet" type="text/css" />
 				<link href="/css/flavors.css" rel="stylesheet" type="text/css" />
-				%s
 				<script src="bower_components/jquery/dist/jquery.min.js"></script>
 				<script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
 				<script src="bower_components/underscore/underscore-min.js"></script>
@@ -105,13 +103,12 @@ sub Header {
 				</div>
 			</div>
 		},
-		join("", map { sprintf(qq{ <link href="/css/%s" rel="stylesheet" type="text/css" /> }, $_) } @{ $args->{CSS} || [] }),
 		join("", map { sprintf(qq{ <script type="text/javascript" src="/javascript/%s"></script> }, $_) } @{ $args->{JS} || [] }),
 		$args->{TITLE},
 	);
 
 	if ($args->{INITIALPAGEDATA}) {
-		printf(qq{ <div id="initial-page-data">%s</div> }, JSON::to_json($args->{INITIALPAGEDATA}));
+		printf(qq{ <div id="initial-page-data" class="hide">%s</div> }, JSON::to_json($args->{INITIALPAGEDATA}));
 	}
 
 	my @urls = qw(
@@ -364,31 +361,6 @@ sub SongsModal {
 }
 
 ################################################################
-# TagSongList
-#
-# Description: Generates HTML for dialog to view all songs with
-# 	given tag.
-#
-# Params:
-# 	TAG
-#
-# Return Value: HTML
-################################################################
-sub TagSongList {
-	my ($dbh, $args) = @_;
-
-	my @songs = Flavors::Data::Song::List($dbh, {
-		FILTER => sprintf("exists (select 1 from songtag where id=songid and tag = '%s')", $args->{TAG}),
-	});
-	@songs = sort { $a->{ARTIST} cmp $b->{ARTIST} || $a->{NAME} cmp $b->{NAME} } @songs;
-
-	return {
-		TITLE => "Songs tagged with '$args->{TAG}'",
-		CONTENT => "<ul class=plain>" . join("", map { "<li>" . $_->{NAME} . " (" . $_->{ARTIST} . ")</li>" } @songs) . "</ul>",
-	}
-}
-
-################################################################
 # Categorize
 #
 # Description: Generates HTML for a catgorization UI
@@ -425,7 +397,7 @@ sub Categorize {
 	$html .= "</div>";
 
 	# Uncategorized items
-	$html .= "<div class=\"uncategorized\">";
+	$html .= "<div class=\"text-center\">";
 	foreach my $item (@uncategorized) {
 		$html .= Flavors::HTML::Tag({ TAG => $item });
 	}

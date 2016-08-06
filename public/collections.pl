@@ -9,6 +9,7 @@ use Flavors::Data::Tag;
 use Flavors::Data::Util;
 use Flavors::HTML;
 use Flavors::Util;
+use List::Util qw(shuffle);
 use POSIX qw(floor);
 
 my $dbh = Flavors::Data::Util::DBH();
@@ -80,14 +81,14 @@ foreach my $collection (@collections) {
 
     my @files = Flavors::Data::Collection::CoverArtFiles($collection->{ID});
     if (@files) {
+        @files = shuffle(@files);
         printf(qq{
                 <div class="cover-art%s">
                     %s
                 </div>
             },
             @files > 1 ? " multiple" : "",
-            # TODO: select at most four, at random, and store the filenames
-            join("", map { sprintf("<img src='%s' />", $_) } @files));
+            join("", map { sprintf("<img src='%s' />", $_) } @files[0 .. (scalar(@files) < 4 ? scalar(@files) - 1 : 4)]));
     }
     else {
         my $color = $colors{$collection->{COLOR}};

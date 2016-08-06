@@ -61,7 +61,6 @@ print $cgi->header(-type => 'text/text', -attachment => "$filename.m3u");
 
 my $directory;
 foreach my $path (@{ Flavors::Util::Config->{paths} }) {
-    warn $path->{name} . ", " . $fdat->{PATH};
     if (!$directory || lc $path->{name} eq lc $fdat->{PATH}) {
         $directory = $path->{path};
     }

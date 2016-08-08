@@ -17,6 +17,7 @@ jQuery(document).ready(function() {
         ARGS: {
             STRENGTH: 1,
             CATEGORY: "people",
+            ORPHANS: 1,
         },
         SPINNER: ".chart-container",
         FINISH: function(data) {

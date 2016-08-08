@@ -263,16 +263,20 @@ sub NetworkStats {
     }
     
     my @nodes = Flavors::Data::Util::Results($dbh, {
-        SQL => qq{
+        SQL => sprintf(qq{
             select tagcategory.tag, tagcategory.category, count(*) as songcount
             from tagcategory, songtag
             where songtag.tag = tagcategory.tag
+            %s
             group by tagcategory.tag, tagcategory.category
-        },
+        }, $args->{CATEGORY} ? "and tagcategory.category = ?" : ""),
         COLUMNS => [qw(tag category count)],
+        BINDS => [$args->{CATEGORY}],
     });
     my $id = 1;
-    @nodes = grep { $tagstokeep{$_->{TAG}} } @nodes;
+    if (!$args->{ORPHANS}) {
+        @nodes = grep { $tagstokeep{$_->{TAG}} } @nodes;
+    }
     @nodes = map { { group => $id++, id => $_->{TAG}, count => $_->{COUNT} } } @nodes;
     
     return {

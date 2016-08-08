@@ -71,7 +71,7 @@ BubbleMatrixChart.prototype.drawLabels = function(bubbles) {
 
 BubbleMatrixChart.prototype.getScale = function(data) {
 	var self = this;
-	var scale = d3.scale.linear().range([0, self.bubbleSize * 2]);
+	var scale = d3.scaleLinear().range([0, self.bubbleSize * 2]);
 	scale.domain([0, _.max(_.pluck(data, 'count'))]);
 	return scale;
 };

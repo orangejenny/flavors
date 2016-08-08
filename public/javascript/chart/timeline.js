@@ -113,14 +113,14 @@ TimelineChart.prototype.getMinYear = function(data) {
 
 TimelineChart.prototype.getXScale = function(data) {
 	var self = this;
-	var scale = d3.scale.linear().range([0, self.width]);
+	var scale = d3.scaleLinear().range([0, self.width]);
 	scale.domain([self.getMinYear(data), self.getMaxYear(data)]);
 	return scale;
 };
 
 TimelineChart.prototype.getYScale = function(data) {
 	var self = this;
-	var scale = d3.scale.linear().range([0, self.height - self.xAxisMargin]);
+	var scale = d3.scaleLinear().range([0, self.height - self.xAxisMargin]);
 	scale.domain([_.reduce(data, function(memo, d) { return Math.max(memo, d.count); }, 0), 0]);
 	return scale;
 };

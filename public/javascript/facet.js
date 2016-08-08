@@ -81,7 +81,7 @@ CategoryChart.prototype.reformatData = function(data) {
 
 CategoryChart.prototype.drawBars = function(data) {
 	var self = this;
-	var xScale = d3.scale.linear().range([0, self.width]);
+	var xScale = d3.scaleLinear().range([0, self.width]);
 	xScale.domain([0, 2 * _.max(_.map(self.getTagCounts(data), function(d) {
 		return d.counts[2] / 2 + Math.max(d.counts[0] + d.counts[1], d.counts[3] + d.counts[4]);
 	}))]);
@@ -237,7 +237,7 @@ BinaryHorizontalStack.prototype.drawBars = function(ratedData, unratedData) {
 
 BinaryHorizontalStack.prototype.getScale = function(total) {
 	var self = this;
-	var scale = d3.scale.linear();
+	var scale = d3.scaleLinear();
 	scale.range([0, self.width - self.barMargin]);
 	scale.domain([0, total]);
 	return scale;
@@ -306,7 +306,7 @@ Histogram.prototype.drawBars = function(data) {
 
 Histogram.prototype.getYScale = function(data) {
 	var self = this;
-	var scale = d3.scale.linear().range([self.height, 0]);
+	var scale = d3.scaleLinear().range([self.height, 0]);
 	scale.domain([0, d3.max(_.pluck(data, 'value'))])
 	return scale;
 };

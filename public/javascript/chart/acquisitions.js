@@ -69,7 +69,7 @@ AcquisitionsChart.prototype.formatXAxis = function(data) {
 
 AcquisitionsChart.prototype.reformatData = function(data) {
 	var self = this;
-	var dateFormat = d3.time.format("%b %Y");
+	var dateFormat = d3.timeFormat("%b %Y");
 	data = _.map(data, function(d) {
 		var date = new Date(d.DATESTRING + "-15");
 		var text = dateFormat(date);
@@ -108,7 +108,7 @@ AcquisitionsChart.prototype.getMinMonthCount = function(data) {
 
 AcquisitionsChart.prototype.getXScale = function(data) {
 	var self = this;
-	var scale = d3.scale.linear().range([0, self.height - self.xAxisMargin]);
+	var scale = d3.scaleLinear().range([0, self.height - self.xAxisMargin]);
 	scale.domain([0, d3.max(_.pluck(data, 'count'))]);
 	return scale;
 }; 

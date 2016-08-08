@@ -14,17 +14,24 @@ jQuery(document).ready(function() {
     
     CallRemote({
         SUB: 'Flavors::Data::Tag::NetworkStats',
+        ARGS: {
+            STRENGTH: 1,
+            CATEGORY: "people",
+        },
         SPINNER: ".chart-container",
         FINISH: function(data) {
+            console.log("# nodes: " + data.nodes.length);
             data.nodes = _.map(data.nodes, function(node) {
                 return _.extend(node, {
-                    description: node.id,
+                    count: +node.count,
+                    description: node.id + "<br />" + node.count + " " + Pluralize(+node.count, "song"),
                 });
             });
 
+            console.log("# links: " + data.links.length);
             data.links = _.map(data.links, function(link) {
                 return _.extend(link, {
-                    description: link.source + " and " + link.target + "<br />" + link.value + " song" + (link.value > 1 ? "s" : ""),
+                    description: link.source + " and " + link.target + "<br />" + link.value + " " + Pluralize(link.value, "song"),
                 });
             });
 

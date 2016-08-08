@@ -213,16 +213,24 @@ sub List {
 }
 
 sub NetworkStats {
-    my ($dbh) = @_;
+    my ($dbh, $args) = @_;
 
-    my @rows = Flavors::Data::Util::Results($dbh, {
-        SQL => sprintf(qq{
+    my $strength = $args->{STRENGTH} || 1;
+    my $sql = sprintf(qq{
             select songid, group_concat(songtag.tag separator '%s') tags
             from songtag, tagcategory
             where songtag.tag = tagcategory.tag
+            %s
             group by songid
-        }, $Flavors::Data::Util::SEPARATOR),
+        },
+        $Flavors::Data::Util::SEPARATOR,
+        $args->{CATEGORY} ? "and tagcategory.category = ?" : "",
+    );
+
+    my @rows = Flavors::Data::Util::Results($dbh, {
+        SQL => $sql,
         COLUMNS => [qw(songid tags)],
+        BINDS => [$args->{CATEGORY}],
         GROUPCONCAT => ['tags'],
     });
     my %pairs = {};
@@ -240,9 +248,12 @@ sub NetworkStats {
         }
     }
     my @links = ();
+    my %tagstokeep = ();
     foreach my $key (keys %pairs) {
-        if ($pairs{$key} > 3) {
+        if ($pairs{$key} >= $strength) {
             my @tags = split(/\+/, $key);
+            $tagstokeep{$tags[0]} = 1;
+            $tagstokeep{$tags[1]} = 1;
             push(@links, {
                 source => $tags[0],
                 target => $tags[1],
@@ -252,11 +263,17 @@ sub NetworkStats {
     }
     
     my @nodes = Flavors::Data::Util::Results($dbh, {
-        SQL => "select tag, category from tagcategory",
-        COLUMNS => [qw(tag category)],
+        SQL => qq{
+            select tagcategory.tag, tagcategory.category, count(*) as songcount
+            from tagcategory, songtag
+            where songtag.tag = tagcategory.tag
+            group by tagcategory.tag, tagcategory.category
+        },
+        COLUMNS => [qw(tag category count)],
     });
     my $id = 1;
-    @nodes = map { { group => $id++, id => $_->{TAG} } } @nodes;
+    @nodes = grep { $tagstokeep{$_->{TAG}} } @nodes;
+    @nodes = map { { group => $id++, id => $_->{TAG}, count => $_->{COUNT} } } @nodes;
     
     return {
         nodes => \@nodes,

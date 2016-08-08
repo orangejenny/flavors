@@ -17,7 +17,7 @@ svg {
 		cursor: pointer;
 	}
 	rect, circle {
-		.background-with-states(@barColor);
+		//.background-with-states(@barColor);
 	}
 	path {
 		stroke-width: 2px;
@@ -33,6 +33,18 @@ svg {
 		stroke-width: 2;
 		stroke: @grey;
 	}
+
+    &.network {
+        circle {
+            stroke: @white;
+            stroke-width: 2px;
+        }
+
+        line {
+            opacity: 0.6;
+        }
+    }
+
 	.axis {
 		stroke-width: 1px;	// hand-drawn
 

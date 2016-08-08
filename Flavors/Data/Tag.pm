@@ -212,6 +212,58 @@ sub List {
     return wantarray ? @results : \@results;
 }
 
+sub NetworkStats {
+    my ($dbh) = @_;
+
+    my @rows = Flavors::Data::Util::Results($dbh, {
+        SQL => sprintf(qq{
+            select songid, group_concat(songtag.tag separator '%s') tags
+            from songtag, tagcategory
+            where songtag.tag = tagcategory.tag
+            group by songid
+        }, $Flavors::Data::Util::SEPARATOR),
+        COLUMNS => [qw(songid tags)],
+        GROUPCONCAT => ['tags'],
+    });
+    my %pairs = {};
+    foreach my $row (@rows) {
+        my @tags = @{ $row->{TAGS} };
+        while (scalar(@tags)) {
+            my $source = pop @tags;
+            foreach my $tag (@tags) {
+                my $key = $tag < $source ? "$tag+$source" : "$source+$tag";
+                if (!$pairs{$key}) {
+                    $pairs{$key} = 0;
+                }
+                $pairs{$key}++;
+            }
+        }
+    }
+    my @links = ();
+    foreach my $key (keys %pairs) {
+        if ($pairs{$key} > 3) {
+            my @tags = split(/\+/, $key);
+            push(@links, {
+                source => $tags[0],
+                target => $tags[1],
+                value => $pairs{$key},
+            });
+        }
+    }
+    
+    my @nodes = Flavors::Data::Util::Results($dbh, {
+        SQL => "select tag, category from tagcategory",
+        COLUMNS => [qw(tag category)],
+    });
+    my $id = 1;
+    @nodes = map { { group => $id++, id => $_->{TAG} } } @nodes;
+    
+    return {
+        nodes => \@nodes,
+        links => \@links,
+    };
+}
+
 ################################################################
 # SeasonStats
 #

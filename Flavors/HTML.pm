@@ -86,7 +86,7 @@ sub Header {
 				<script src="bower_components/jquery/dist/jquery.min.js"></script>
 				<script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
 				<script src="bower_components/underscore/underscore-min.js"></script>
-				<script src="bower_components/d3/d3.min.js"></script>
+				<script src="bower_components/d3/d3.js"></script>
 				<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 				<script src="bower_components/jquery-minicolors/jquery.minicolors.min.js"></script>
                 <script src="bower_components/Caret.js/dist/jquery.caret.min.js"></script>

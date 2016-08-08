@@ -3,7 +3,7 @@ function TimelineChart(selector) {
 	Chart.call(self, selector);
 	self.maxYear = undefined;
 	self.minYear = undefined;
-	self.xAxis = d3.svg.axis();
+	self.xAxis = undefined;
 	self.xAxisMargin = 20;
 };
 TimelineChart.prototype = Object.create(Chart.prototype);
@@ -25,7 +25,7 @@ TimelineChart.prototype.drawXAxisLabels = function() {
 
 TimelineChart.prototype.formatXAxis = function(data) {
 	var self = this;
-	self.xAxis.orient('bottom')
+	self.xAxis = d3.axisBottom(self.getXScale(data))
 					.scale(self.getXScale(data))
 					.tickFormat(function(y) { return parseInt(y); })
 					.tickValues(_.map(_.range(self.getMinYear(data), self.getMaxYear(data)), function(y) { return y + .5; }));

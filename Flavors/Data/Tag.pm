@@ -230,7 +230,7 @@ sub NetworkStats {
     my @rows = Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
         COLUMNS => [qw(songid tags)],
-        BINDS => [$args->{CATEGORY}],
+        BINDS => $args->{CATEGORY} ? [$args->{CATEGORY}] : [],
         GROUPCONCAT => ['tags'],
     });
     my %pairs = {};
@@ -271,7 +271,7 @@ sub NetworkStats {
             group by tagcategory.tag, tagcategory.category
         }, $args->{CATEGORY} ? "and tagcategory.category = ?" : ""),
         COLUMNS => [qw(tag category count)],
-        BINDS => [$args->{CATEGORY}],
+        BINDS => $args->{CATEGORY} ? [$args->{CATEGORY}] : [],
     });
     my $id = 1;
     if (!$args->{ORPHANS}) {

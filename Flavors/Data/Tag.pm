@@ -212,6 +212,26 @@ sub List {
     return wantarray ? @results : \@results;
 }
 
+################################################################
+# NetworkStats
+#
+# Description: Get statistics on tag network
+#
+# Args (optional):
+#    STRENGTH: minimum number of co-occurence to include link
+#    CATEGORY: string
+#    ORPHANS: include nodes without links to any other nodes
+#
+# Return Value: hashref containing
+#    NODES: arrayref of hashrefs, each containing
+#           source: a tag
+#           target: another tag
+#           value: number of times source and target occur in the same song
+#    LINKS: arrayref of hashrefs, each containing
+#           id: tag
+#           count: total number of songs containing tag
+#           group: integer id, mapping to a category
+################################################################
 sub NetworkStats {
     my ($dbh, $args) = @_;
 

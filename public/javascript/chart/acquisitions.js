@@ -2,7 +2,7 @@ function AcquisitionsChart(selector) {
 	var self = this;
 	Chart.call(self, selector);
 	self.barMargin = 0;
-	self.xAxis = d3.svg.axis();
+	self.xAxis = undefined;
 	self.xAxisMargin = 20;
 };
 AcquisitionsChart.prototype = Object.create(Chart.prototype);
@@ -32,11 +32,11 @@ AcquisitionsChart.prototype.drawBars = function(data) {
 								return "translate(" + d.monthCount * barSize + ", 0)";
 							});
 
-	var xScale = self.getXScale(data);
+	var yScale = self.getYScale(data);
 	bars.append("rect")
-			.attr("y", function(d) { return self.height - self.xAxisMargin - xScale(d.count); })
+			.attr("y", function(d) { return self.height - self.xAxisMargin - yScale(d.count); })
 			.attr("width", barSize - self.barMargin)
-			.attr("height", function(d) { return xScale(d.count); });
+			.attr("height", function(d) { return yScale(d.count); });
 };
 
 AcquisitionsChart.prototype.drawXAxis = function() {
@@ -61,15 +61,19 @@ AcquisitionsChart.prototype.drawXAxisLabels = function() {
 AcquisitionsChart.prototype.formatXAxis = function(data) {
 	var self = this;
 	var barSize = self.getBarSize(self.getMinMonthCount(data), self.getMaxMonthCount(data));
-	var minYear = d3.min(_.pluck(data, "date")).getFullYear();
-	self.xAxis.orient('bottom')
-					.tickValues(_.map(_.range(0, self.width, barSize * 12), function(x) { return x + barSize * 6; }))
-					.tickFormat(function(t) { return Math.round((t - barSize * 6) / barSize) / 12 + minYear; });
+	var minYear = d3.min(_.pluck(data, "date")).getFullYear(),
+        maxYear = d3.max(_.pluck(data, "date")).getFullYear(),
+	    xScale = d3.scaleLinear().range([0, self.width]).domain([minYear, maxYear + 1]);
+	self.xAxis = d3.axisBottom(xScale)
+                    .tickValues(_.map(_.range(minYear, maxYear + 1), function(t) { return t + 0.5; }))
+                    .tickFormat(function(t) { return Math.floor(t); });
+					//.tickValues(_.map(_.range(0, self.width, barSize * 12), function(x) { return x + barSize * 6; }))
+					//.tickFormat(function(t) { return Math.round((t - barSize * 6) / barSize) / 12 + minYear; });
 };
 
 AcquisitionsChart.prototype.reformatData = function(data) {
 	var self = this;
-	var dateFormat = d3.time.format("%b %Y");
+	var dateFormat = d3.timeFormat("%b %Y");
 	data = _.map(data, function(d) {
 		var date = new Date(d.DATESTRING + "-15");
 		var text = dateFormat(date);
@@ -106,9 +110,9 @@ AcquisitionsChart.prototype.getMinMonthCount = function(data) {
 	return d3.min(_.pluck(data, "date")).getFullYear() * 12;
 };
 
-AcquisitionsChart.prototype.getXScale = function(data) {
+AcquisitionsChart.prototype.getYScale = function(data) {
 	var self = this;
-	var scale = d3.scale.linear().range([0, self.height - self.xAxisMargin]);
+	var scale = d3.scaleLinear().range([0, self.height - self.xAxisMargin]);
 	scale.domain([0, d3.max(_.pluck(data, 'count'))]);
 	return scale;
 }; 

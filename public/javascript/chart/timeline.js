@@ -3,7 +3,7 @@ function TimelineChart(selector) {
 	Chart.call(self, selector);
 	self.maxYear = undefined;
 	self.minYear = undefined;
-	self.xAxis = d3.svg.axis();
+	self.xAxis = undefined;
 	self.xAxisMargin = 20;
 };
 TimelineChart.prototype = Object.create(Chart.prototype);
@@ -25,7 +25,7 @@ TimelineChart.prototype.drawXAxisLabels = function() {
 
 TimelineChart.prototype.formatXAxis = function(data) {
 	var self = this;
-	self.xAxis.orient('bottom')
+	self.xAxis = d3.axisBottom(self.getXScale(data))
 					.scale(self.getXScale(data))
 					.tickFormat(function(y) { return parseInt(y); })
 					.tickValues(_.map(_.range(self.getMinYear(data), self.getMaxYear(data)), function(y) { return y + .5; }));
@@ -113,14 +113,14 @@ TimelineChart.prototype.getMinYear = function(data) {
 
 TimelineChart.prototype.getXScale = function(data) {
 	var self = this;
-	var scale = d3.scale.linear().range([0, self.width]);
+	var scale = d3.scaleLinear().range([0, self.width]);
 	scale.domain([self.getMinYear(data), self.getMaxYear(data)]);
 	return scale;
 };
 
 TimelineChart.prototype.getYScale = function(data) {
 	var self = this;
-	var scale = d3.scale.linear().range([0, self.height - self.xAxisMargin]);
+	var scale = d3.scaleLinear().range([0, self.height - self.xAxisMargin]);
 	scale.domain([_.reduce(data, function(memo, d) { return Math.max(memo, d.count); }, 0), 0]);
 	return scale;
 };

@@ -1,0 +1,23 @@
+@import "base.less";
+@import "data.less";
+
+.network-filters {
+    min-width: 200px;
+
+    .input-group {
+        @width: 100px;
+    
+        margin-top: @spacingNormal;
+        margin-bottom: @spacingNormal;
+    
+        .input-group-addon {
+            width: @width / 4;
+            cursor: pointer;
+        }
+    
+        .form-control {
+            width: @width / 2;
+            text-align: center;
+        }
+    }
+}

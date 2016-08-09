@@ -17,6 +17,7 @@ module.exports = function(grunt) {
 				"./css/facet.css": "./css/facet.less",
 				"./css/filters.css": "./css/filters.less",
 				"./css/matrix.css": "./css/matrix.less",
+				"./css/network.css": "./css/network.less",
 				"./css/songs.css": "./css/songs.less",
 			}
 		}

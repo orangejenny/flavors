@@ -260,12 +260,15 @@ jQuery(document).ready(function() {
                         $img.attr("src", data.FILENAME + "?" + (new Date()).getTime());
                         if ($art.hasClass("missing")) {
                             $art.removeClass("missing");
+                            $art.css("background-color", "");
                             $art.html("");
                         } else {
                             $art.addClass("multiple");
                         }
                         $art.append($img);
-                        $collection.find(".cover-art-thumbnails").append($img.clone());
+                        var $li = jQuery("<li></li>");
+                        $li.append($img.clone());
+                        $collection.find(".cover-art-thumbnails").append($li);
                     }
                 },
                 UPLOAD: true,

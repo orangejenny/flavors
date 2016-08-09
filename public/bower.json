@@ -21,7 +21,7 @@
     "At.js": "jquery.atwho#^1.4.1",
     "jquery-minicolors": "^2.2.3",
     "jquery-ui": "^1.11.4",
-    "d3": "^3.5.14",
+    "d3": "^4.2.1",
     "underscore": "^1.8.3",
     "Caret.js": "^0.2.2",
     "datatables": "DataTables#^1.10.10",

@@ -88,7 +88,7 @@ foreach my $collection (@collections) {
                 </div>
             },
             @files > 1 ? " multiple" : "",
-            join("", map { sprintf("<img src='%s' />", $_) } @files[0 .. 3]));
+            join("", map { sprintf("<img src='%s' />", $_) } @files[0 .. (scalar(@files) < 4 ? scalar(@files) - 1 : 4)]));
     }
     else {
         my $color = $colors{$collection->{COLOR}};

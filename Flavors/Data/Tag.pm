@@ -213,6 +213,99 @@ sub List {
 }
 
 ################################################################
+# NetworkStats
+#
+# Description: Get statistics on tag network
+#
+# Args (optional):
+#    STRENGTH: minimum number of co-occurence to include link
+#    CATEGORY: string
+#    ORPHANS: include nodes without links to any other nodes
+#
+# Return Value: hashref containing
+#    NODES: arrayref of hashrefs, each containing
+#           source: a tag
+#           target: another tag
+#           value: number of times source and target occur in the same song
+#    LINKS: arrayref of hashrefs, each containing
+#           id: tag
+#           count: total number of songs containing tag
+#           group: integer id, mapping to a category
+################################################################
+sub NetworkStats {
+    my ($dbh, $args) = @_;
+
+    my $strength = $args->{STRENGTH} || 1;
+    my $sql = sprintf(qq{
+            select songid, group_concat(songtag.tag separator '%s') tags
+            from songtag, tagcategory
+            where songtag.tag = tagcategory.tag
+            %s
+            group by songid
+        },
+        $Flavors::Data::Util::SEPARATOR,
+        $args->{CATEGORY} ? "and tagcategory.category = ?" : "",
+    );
+
+    my @rows = Flavors::Data::Util::Results($dbh, {
+        SQL => $sql,
+        COLUMNS => [qw(songid tags)],
+        BINDS => $args->{CATEGORY} ? [$args->{CATEGORY}] : [],
+        GROUPCONCAT => ['tags'],
+    });
+    my %pairs = {};
+    foreach my $row (@rows) {
+        my @tags = @{ $row->{TAGS} };
+        while (scalar(@tags)) {
+            my $source = pop @tags;
+            foreach my $tag (@tags) {
+                my $key = $tag < $source ? "$tag+$source" : "$source+$tag";
+                if (!$pairs{$key}) {
+                    $pairs{$key} = 0;
+                }
+                $pairs{$key}++;
+            }
+        }
+    }
+    my @links = ();
+    my %tagstokeep = ();
+    foreach my $key (keys %pairs) {
+        if ($pairs{$key} >= $strength) {
+            my @tags = split(/\+/, $key);
+            $tagstokeep{$tags[0]} = 1;
+            $tagstokeep{$tags[1]} = 1;
+            push(@links, {
+                source => $tags[0],
+                target => $tags[1],
+                value => $pairs{$key},
+            });
+        }
+    }
+    
+    my @nodes = Flavors::Data::Util::Results($dbh, {
+        SQL => sprintf(qq{
+            select tagcategory.tag, tagcategory.category, count(*) as songcount
+            from tagcategory, songtag
+            where songtag.tag = tagcategory.tag
+            %s
+            group by tagcategory.tag, tagcategory.category
+        }, $args->{CATEGORY} ? "and tagcategory.category = ?" : ""),
+        COLUMNS => [qw(tag category count)],
+        BINDS => $args->{CATEGORY} ? [$args->{CATEGORY}] : [],
+    });
+    my $id = 1;
+    if (!$args->{ORPHANS}) {
+        @nodes = grep { $tagstokeep{$_->{TAG}} } @nodes;
+    }
+    @nodes = map { { group => $id++, id => $_->{TAG}, count => $_->{COUNT} } } @nodes;
+    
+    return {
+        nodes => \@nodes,
+        links => \@links,
+    };
+}
+
+################################################################
 # SeasonStats
 #
 # Description: Get season-based song counts

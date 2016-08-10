@@ -1,7 +1,7 @@
 jQuery(document).ready(function() {
     $("body").on("click", ".glyphicon-star, .glyphicon-star-empty", function() {
 		var $star = jQuery(this);
-        if ($star.closest(".rating").length || $star.closest("#filter-container").length) {
+        if ($star.closest(".rating").length || $star.closest("#filter-container").length || $star.closest("nav").length) {
             return;
         }
         if ($star.closest(".playlists").length) {

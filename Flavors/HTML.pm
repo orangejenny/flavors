@@ -111,10 +111,17 @@ sub Header {
 		printf(qq{ <div id="initial-page-data" class="hide">%s</div> }, JSON::to_json($args->{INITIALPAGEDATA}));
 	}
 
-	my @urls = qw(
-		songs.pl
-		collections.pl
-		tags.pl
+	my @pages = (
+		{ name => 'songs', icon => 'music' },
+		{ name => 'collections', icon => 'list' },
+		{ name => 'tags', icon => 'tag' },
+        { name => 'rating', icon => 'star', url => 'facet.pl?facet=rating' },
+        { name => 'energy', icon => 'fire', url => 'facet.pl?facet=energy' },
+        { name => 'mood', icon => 'heart', url => 'facet.pl?facet=mood' },
+        { name => 'matrix', icon => 'th-large' },
+        { name => 'acquisitions', icon => 'shopping-cart' },
+        { name => 'timeline', icon => 'time' },
+        { name => 'network', icon => 'tags' },
 	);
 
 	print qq{
@@ -125,54 +132,25 @@ sub Header {
 	};
 
 	# Single menu items
-	foreach my $u (@urls) {
-		if ($u =~ m/(.*)\.[^.]+/) {		# all elements will match
-			printf("<li class='%s'><a href='%s'>%s</a></li>", $u eq $url ? 'active' : '', $u, ucfirst($1));
-		}
+    my $facet = $args->{FDAT}->{FACET} || "rating";
+	foreach my $p (@pages) {
+        my $pageurl = $p->{url} || ($p->{name} . ".pl");
+        printf(qq{
+                <li class='%s'>
+                    <a href='%s'>
+                        <i class="glyphicon glyphicon-%s"></i>
+                        %s
+                    </a>
+                </li>
+            },
+            $url eq $pageurl || $url eq "facet.pl" && $p->{name} eq $facet ? 'active' : '',
+            $pageurl,
+            $p->{icon},
+            ucfirst($p->{name})
+        );
 	}
 
-    # Visualization dropdown
-	my %icons = (
-		rating => 'star',
-		energy => 'fire',
-		mood => 'heart',
-		matrix => 'th-large',
-		acquisitions => 'shopping-cart',
-		timeline => 'time',
-        network => 'tags',
-	);
-	my @datapages = qw(matrix acquisitions timeline network);
-	printf(qq{ <li class='dropdown %s'> }, (grep { $url eq $_ . ".pl" } ('facet', @datapages)) ? "active" : "");
-	print qq{
-		<a class='dropdown-toggle' data-toggle='dropdown' role='label' href='#'>
-			Visualizations <span class="caret"></span>
-		</a>
-	};
-	print qq{ <ul class="dropdown-menu"> };
-	$args->{FDAT}->{FACET} ||= 'rating';
-	$args->{FDAT}->{FACET} = lc($args->{FDAT}->{FACET});
-	foreach my $facet (qw(rating energy mood)) {
-		printf(qq{ <li class='%s'><a href='facet.pl?facet=%s'><i class='glyphicon glyphicon-%s'></i> %s</a></li> }, 
-			$url eq 'facet.pl' && $args->{FDAT}->{FACET} eq $facet ? "active" : "",
-			$facet,
-			$icons{$facet},
-			ucfirst($facet),
-		);
-	}
-	foreach my $page (@datapages) {
-		printf(qq{ 
-				<li class='%s'><a href='%s.pl'>%s%s</a></li> 
-			}, 
-			($url eq $page . ".pl" ? 'active' : ''), 
-			$page, 
-			exists $icons{$page} ? sprintf("<i class='glyphicon glyphicon-%s'></i> ", $icons{$page}) : "",
-			ucfirst($page),
-		);
-	}
-	print qq{ </ul> };
-	print qq{ </li> };
-
-	# Category dropdown
+	# Data entry dropdown
 	my @pages = qw(genres.pl colors.pl profiles.pl categories.pl);
 	my %pagetitles = (
 		'categories.pl' => 'Tags &rArr; Categories',
@@ -183,7 +161,7 @@ sub Header {
 	printf(qq{ <li class='dropdown %s'> }, (grep { $url eq $_ } @pages) ? "active" : "");
 	print qq{
 		<a class='dropdown-toggle' data-toggle='dropdown' role='label' href='#'>
-			Data <span class="caret"></span>
+			<i class='glyphicon glyphicon-edit'></i> Data <span class="caret"></span>
 		</a>
 	};
 	print qq{ <ul class="dropdown-menu"> };

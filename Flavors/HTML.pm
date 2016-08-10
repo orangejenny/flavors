@@ -139,8 +139,9 @@ sub Header {
 		matrix => 'th-large',
 		acquisitions => 'shopping-cart',
 		timeline => 'time',
+        network => 'tags',
 	);
-	my @datapages = qw(matrix acquisitions timeline);
+	my @datapages = qw(matrix acquisitions timeline network);
 	printf(qq{ <li class='dropdown %s'> }, (grep { $url eq $_ . ".pl" } ('facet', @datapages)) ? "active" : "");
 	print qq{
 		<a class='dropdown-toggle' data-toggle='dropdown' role='label' href='#'>

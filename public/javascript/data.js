@@ -112,6 +112,7 @@ function attachSelectionHandlers(selector, actsOn) {
 		};
 	}
 
+    jQuery(selector).css("cursor", "pointer");
 	highlightOnHover(selector, actsOn);
 	selectOnClick(selector, actsOn);
 	exportOnDoubleClick(selector, actsOn);
@@ -131,7 +132,7 @@ function highlightOnHover(selector, actsOn) {
 function selectOnClick(selector, actsOn) {
 	d3.selectAll(selector).on("click", function() {
 		var obj = actsOn(this);
-		var isSelected = obj.classed("selected") || obj.selectAll(".selected")[0].length;
+		var isSelected = obj.classed("selected");
 		obj.classed("selected", !isSelected);
 		obj.selectAll("rect, circle").classed("selected", !isSelected);
 		setClearVisibility();
@@ -150,7 +151,7 @@ function exportOnDoubleClick(selector, actsOn) {
 }
 
 function getSelectionCondition() {
-	var selected = d3.selectAll("g.selected");
+	var selected = d3.selectAll("svg .selected");
 	if (!selected.data().length) {
 		alert("Nothing selected");
 		return '';

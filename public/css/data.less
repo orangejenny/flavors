@@ -4,11 +4,14 @@
 
 .background-with-states(@color) {
 	fill: @color;
+    stroke: @color;
 	&.highlighted {
 		fill: lighten(@color, 5%);
+		stroke: lighten(@color, 5%);
 	}
 	&.selected {
 		fill: darken(@color, 25%);
+		stroke: darken(@color, 25%);
 	}
 }
 
@@ -41,7 +44,8 @@ svg {
         }
 
         line {
-            opacity: 0.6;
+		    .background-with-states(@grey);
+            stroke-width: 3px;
         }
     }
 

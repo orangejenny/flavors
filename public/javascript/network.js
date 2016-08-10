@@ -71,12 +71,16 @@ function draw() {
                 return _.extend(node, {
                     count: +node.count,
                     description: node.id + "<br />" + node.count + " " + Pluralize(+node.count, "song"),
+                    condition: "taglist like '% " + node.id + " %'",
+                    filename: "[" + node.id + "]",
                 });
             });
 
             data.links = _.map(data.links, function(link) {
                 return _.extend(link, {
                     description: link.source + " and " + link.target + "<br />" + link.value + " " + Pluralize(link.value, "song"),
+                    condition: "taglist like '% " + link.source + " %' and taglist like '% " + link.target + " %'",
+                    filename: "[" + link.source + "][" + link.target + "]",
                 });
             });
 
@@ -108,6 +112,7 @@ function draw() {
             simulation.force("link").links(data.links);
         
             attachTooltip(selector + " g circle, " + selector + " g line");
+            attachSelectionHandlers(selector + " g circle, " + selector + " g line");
         },
     });
 }

@@ -16,7 +16,7 @@ Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => "Network",
     BUTTONS => Flavors::HTML::SelectionControl(),
-    JS => ['data.js', 'network.js'],
+    JS => ['data.js', 'network.js', 'song_attributes.js', 'stars.js'],
 });
 
 print qq{ <div class="post-nav"> };

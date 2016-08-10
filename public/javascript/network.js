@@ -61,7 +61,6 @@ function draw() {
         ARGS: {
             STRENGTH: strength,
             CATEGORY: category,
-            ORPHANS: 0,
         },
         SPINNER: ".chart-container",
         FINISH: function(data) {

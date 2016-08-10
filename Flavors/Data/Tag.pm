@@ -220,7 +220,6 @@ sub List {
 # Args (optional):
 #    STRENGTH: minimum number of co-occurence to include link
 #    CATEGORY: string
-#    ORPHANS: include nodes without links to any other nodes
 #
 # Return Value: hashref containing
 #    NODES: arrayref of hashrefs, each containing
@@ -294,9 +293,7 @@ sub NetworkStats {
         BINDS => $args->{CATEGORY} ? [$args->{CATEGORY}] : [],
     });
     my $id = 1;
-    if (!$args->{ORPHANS}) {
-        @nodes = grep { $tagstokeep{$_->{TAG}} } @nodes;
-    }
+    @nodes = grep { $tagstokeep{$_->{TAG}} } @nodes;
     @nodes = map { { group => $id++, id => $_->{TAG}, count => $_->{COUNT} } } @nodes;
     
     return {

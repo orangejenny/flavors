@@ -30,7 +30,7 @@ printf(qq{
         </select>
         <div class="input-group strength-select">
             <span class="input-group-addon" data-increment="-1">-</span>
-            <input type="text" class="form-control" value="3" />
+            <input type="text" class="form-control" value="25" />
             <span class="input-group-addon" data-increment="1">+</span>
         </div>
         <div><span class="label label-info"></span></div>

@@ -87,12 +87,16 @@ function draw() {
                           .enter().append("line")
                                   .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
         
+            var count = function(n) { return n.count; },
+                rScale = d3.scaleLinear()
+                           .range([5, 15])
+                           .domain([d3.min(data.nodes, count), d3.max(data.nodes, count)]);
             var node = svg.append("g")
                           .attr("class", "nodes")
                           .selectAll("circle")
                           .data(data.nodes)
                           .enter().append("circle")
-                                  .attr("r", 5)
+                                  .attr("r", function(n) { return rScale(n.count); })
                                   .attr("fill", function(d) { return color(d.group); })
                                   .call(d3.drag()
                                           .on("start", function(d) { dragStarted(d, simulation); })

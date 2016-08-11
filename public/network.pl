@@ -24,10 +24,13 @@ print qq{ <div class="post-nav"> };
 my @categories = Flavors::Data::Tag::CategoryList($dbh);
 printf(qq{
     <div class="well pull-right network-filters">
-        <select class="category-select form-control">
-            <option value=''>(all tags)</option>
-            %s
-        </select>
+        <div>
+            <select class="category-select form-control">
+                <option value=''>(all categories)</option>
+                %s
+            </select>
+        </div>
+        <div><input type="text" class="tag-select" value="" placeholder="all tags" /></div>
         <div class="input-group strength-select">
             <span class="input-group-addon" data-increment="-1">-</span>
             <input type="text" class="form-control" value="25" />
@@ -40,7 +43,7 @@ printf(qq{
 # Chart
 print qq{
         <div class="chart-container">
-            <svg class="network" width="800" height="400"></svg>
+            <svg class="network" width="800" height="600"></svg>
         </div>
 };
 

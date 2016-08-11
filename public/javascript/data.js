@@ -115,7 +115,7 @@ function attachSelectionHandlers(selector, actsOn) {
     jQuery(selector).css("cursor", "pointer");
 	highlightOnHover(selector, actsOn);
 	selectOnClick(selector, actsOn);
-	exportOnDoubleClick(selector, actsOn);
+	viewOnDoubleClick(selector, actsOn);
 }
 
 function highlightOnHover(selector, actsOn) {
@@ -139,14 +139,16 @@ function selectOnClick(selector, actsOn) {
 	});
 }
 
-function exportOnDoubleClick(selector, actsOn) {
+function viewOnDoubleClick(selector, actsOn) {
 	d3.selectAll(selector).on("dblclick", function() {
 		var data = actsOn(this).data()[0];
 		var condition = data.condition;
-		ExportPlaylist({
-			FILENAME: data.filename || data.condition,
-			FILTER: data.condition,
-		});
+		if (condition) {
+            showSongModal({
+    			SUB: 'Flavors::Data::Song::List', 
+                FILTER: condition,
+            });
+		}
 	});
 }
 

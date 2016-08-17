@@ -79,7 +79,6 @@ TimelineChart.prototype.formatSeasonData = function(data) {
 			),
 			description: text + "\n" + d.COUNT + " " + Pluralize(d.COUNT, "song"),
 			filename: text,
-			samples: d.SAMPLES,
 		}; 
 	});
 };
@@ -91,7 +90,6 @@ TimelineChart.prototype.formatYearData = function(data) {
 		condition: "exists (select 1 from songtag where songtag.songid = songs.id and tag = '" + d.YEAR + "')",
 		description: d.YEAR + "\n" + d.COUNT + " " + Pluralize(+d.COUNT, "song"),
 		filename: d.YEAR,
-		samples: d.SAMPLES,
 	}; });
 };
 

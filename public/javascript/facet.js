@@ -75,7 +75,6 @@ CategoryChart.prototype.reformatData = function(data) {
 		description: d.COUNT + ' ' + StringMultiply("<span class='glyphicon " + icons[self.facet] + "'></span>", +d.RATING),
 		condition: "exists (select 1 from songtag where songid = songs.id and tag = '" + d.TAG + "') and " + self.facet + " = " + d.RATING,
 		filename: '[' + d.TAG + '] ' + self.facet + ' ' + d.RATING,
-		samples: d.SAMPLES,
 	}; });
 };
 
@@ -193,7 +192,6 @@ BinaryHorizontalStack.prototype.draw = function(data) {
 		condition: self.facet + '=' + i,
 		value: +d.COUNT,
 		description: +d.COUNT + " " + StringMultiply("<span class='glyphicon " + icons[self.facet] + "'></span>", i),
-		samples: d.SAMPLES,
 	} });
 	var unratedData = data[0];
 	unratedData.condition = self.facet + ' is null';
@@ -203,7 +201,6 @@ BinaryHorizontalStack.prototype.draw = function(data) {
 		condition: self.facet + ' is not null',
 	};
 	ratedData.description = ratedData.value + " rated " + Pluralize(ratedData.value, "song");
-	ratedData.samples = _.reduce(_.rest(data), function(memo, value) { return memo.concat(value.samples); }, []);
 	var bars = self.drawBars(ratedData, unratedData);
 	self.drawBarLabels(ratedData, unratedData, bars);
 	self.attachEvents();
@@ -273,7 +270,6 @@ Histogram.prototype.draw = function(data) {
 		condition: self.facet + '=' + i,
 		value: +d.COUNT,
 		description: +d.COUNT + " " + StringMultiply("<span class='glyphicon " + icons[self.facet] + "'></span>", i),
-		samples: d.SAMPLES,
 	} }));
 	self.setDimensions();
 	var bars = self.drawBars(data);

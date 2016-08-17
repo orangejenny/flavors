@@ -19,23 +19,17 @@ my $COVER_ART_ROOT = "images/collections/";
 sub AcquisitionStats {
     my ($dbh) = @_;
 
-    my $sql = sprintf(qq{
-        select date_format(created, '%%Y-%%m') datestring, count(*) count,
-        group_concat(concat(artist, ' - ', collection.name) separator '%s') samples
-        from (
-            select collection.name, collection.created, case when count(distinct artist) = 1 then min(artist) else 'Various' end artist
-            from collection, songcollection, song
-            where songcollection.collectionid = collection.id
-            and songcollection.songid = song.id
-            group by collection.id, collection.created
-        ) collection
-        group by date_format(created, '%%Y-%%m')
-    }, $Flavors::Data::Util::SEPARATOR);
+    my $sql = qq{
+        select date_format(collection.created, '%Y-%m') datestring, count(*) count
+        from collection, songcollection, song
+        where songcollection.collectionid = collection.id
+        and songcollection.songid = song.id
+        group by date_format(collection.created, '%Y-%m')
+    };
 
     return [Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
-        COLUMNS => [qw(datestring count samples)],
-        GROUPCONCAT => ['samples'],
+        COLUMNS => [qw(datestring count)],
     })];
 }
 

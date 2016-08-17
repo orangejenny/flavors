@@ -68,31 +68,11 @@ function attachTooltip(selector) {
 		var $tooltip = jQuery("#tooltip");
 		var show = false;
 
-		var $title = $tooltip.children("div");
-		$title.html("");
+		$tooltip.html("");
 		if (data.description) {
 			show = true;
 			var description = data.description;
-			$title.html(description);
-			$title.removeClass("hide");
-		}
-		else {
-			$title.addClass("hide");
-		}
-
-		var $list = $tooltip.find("ul");
-		$list.html("");
-		if (data.samples) {
-			show = true;
-			var displayMax = 5;
-			$list.html(_.map(_.sample(data.samples, displayMax), function(s) { return "<li>" + s + "</li>"; }).join(""));
-			if (data.samples.length > displayMax) {
-				$list.append("<li>...</li>");
-			}
-			$list.removeClass("hide");
-		}
-		else {
-			$list.addClass("hide");
+			$tooltip.html(description);
 		}
 
 		if (show) {

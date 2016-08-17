@@ -77,7 +77,7 @@ sub CategoryStats {
             select partials.*
             from (
                 select
-                    %s as tag, %s, count(*) as count, group_concat(concat(song.artist, ' - ', song.name) separator '%s') as samples
+                    %s as tag, %s, count(*) as count
                 from song, %s
                 where %s and %s is not null
                 group by %s, %s
@@ -94,7 +94,6 @@ sub CategoryStats {
         # partials
         $tagcolumn,
         $args->{FACET},
-        $Flavors::Data::Util::SEPARATOR,
         $tables,
         $joins,
         $args->{FACET},
@@ -120,8 +119,7 @@ sub CategoryStats {
     return [Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
         BINDS => \@binds,
-        COLUMNS => [qw(tag rating count samples)],
-        GROUPCONCAT => ['samples'],
+        COLUMNS => [qw(tag rating count)],
     })];
 }
 
@@ -316,8 +314,8 @@ sub NetworkStats {
 sub SeasonStats {
     my ($dbh) = @_;
 
-    my $sql = sprintf(qq{
-        select count(distinct id), year, season, group_concat(name separator'%s') from (
+    my $sql = qq{
+        select count(distinct id), year, season from(
             select 
                 seasons.name,
                 years.id, 
@@ -352,12 +350,11 @@ sub SeasonStats {
         ) stats
         group by year, season
         order by year, season;
-    }, $Flavors::Data::Util::SEPARATOR);
+    };
 
     return [Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
-        COLUMNS => [qw(count year season samples)],
-        GROUPCONCAT => ['samples'],
+        COLUMNS => [qw(count year season)],
     })];
 }
 
@@ -489,8 +486,7 @@ sub YearStats {
     my $sql = sprintf(qq{
         select
             tagcategory.tag,
-            count(*) count,
-            group_concat(concat(song.artist, ' - ', song.name) separator '%s')
+            count(*) count
         from song, songtag, tagcategory
         where song.id = songtag.songid
         and songtag.tag = tagcategory.tag
@@ -501,8 +497,7 @@ sub YearStats {
 
     return [Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
-        COLUMNS => [qw(year count samples)],
-        GROUPCONCAT => ['samples'],
+        COLUMNS => [qw(year count)],
     })];
 }
 

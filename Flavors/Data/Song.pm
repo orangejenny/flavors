@@ -193,7 +193,6 @@ sub Stats {
     my $sql = sprintf(qq{
             select 
                 %s, 
-                group_concat(concat(song.artist, ' - ', song.name) separator '%s') samples,
                 count(*)
             from
                 song
@@ -201,14 +200,12 @@ sub Stats {
             order by %s;
         },
         join(", ", map { sprintf("coalesce(%s, 0)", $_) } @groupby),
-        $Flavors::Data::Util::SEPARATOR,
         join(", ", @groupby),
         join(", ", @groupby),
     );
     return [Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
-        COLUMNS => [@groupby, 'samples', 'count'],
-        GROUPCONCAT => ['samples'],
+        COLUMNS => [@groupby, 'count'],
     })];
 }
 

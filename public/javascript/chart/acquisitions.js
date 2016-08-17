@@ -86,7 +86,6 @@ AcquisitionsChart.prototype.reformatData = function(data) {
                         + " and extract(year from mincollectioncreated) = " + date.getFullYear(),
 			filename: "acquired " + text,
 			description: text + "\n" + d.COUNT + Pluralize(+d.COUNT, " collection"),
-			samples: d.SAMPLES,
 		};
 	});
 	var minMonthCount = self.getMinMonthCount(data);

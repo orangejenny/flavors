@@ -424,10 +424,7 @@ sub Footer {
             <% } %>
         </script>
     } . qq{
-		<div id="tooltip" class="hide">
-			<div></div>
-			<ul></ul>
-		</div>
+		<div id="tooltip" class="hide"></div>
 		</body></html>
 	};
 }

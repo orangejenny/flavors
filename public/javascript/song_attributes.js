@@ -76,6 +76,7 @@ function showSongModal(args, callback) {
                                             + "<td><div class='pull-right'><%= TRACKNUMBER %>.</div></td>"
                                             + "<td><%= NAME %></td>"
                                             + "<td><%= ARTIST %></td>"
+                                            + "<td><%= COLLECTIONS.join('<br>') %></td>"
                                             + "<td class='rating' contenteditable='true' data-key='rating'><%= RATINGHTML %></td>"
                                             + "<td class='rating' contenteditable='true' data-key='energy'><%= ENERGYHTML %></td>"
                                             + "<td class='rating' contenteditable='true' data-key='mood'><%= MOODHTML %></td>"

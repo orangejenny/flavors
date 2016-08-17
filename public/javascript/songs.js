@@ -68,7 +68,6 @@ jQuery(document).ready(function() {
     $("body").on('song-update', function(e, songData) {
         if (songData.key === 'isstarred') {
             starred[songData.id] = songData.value;
-            console.log("starred[" + songData.id + "] => " + songData.value);//jls
         }
 		// Update tokens and letters; don't bother with letter counts
 		else if (songData.key === 'tags') {

@@ -71,12 +71,12 @@ jQuery(document).ready(function() {
         var $collection = jQuery(this),
             id = $collection.data("id");
         showSongModal({
+            TITLE: $collection.find(".name").text(),
 			SUB: 'Flavors::Data::Collection::TrackList', 
             COLLECTIONIDS: id,
         }, function() {
             var $modal = $("#song-list");
             $modal.data("id", id);
-            $modal.find(".modal-title").html($collection.find(".name").text());
             if ($collection.find(".cover-art.multiple").length) {
                 $modal.find(".modal-body").append($collection.find(".cover-art-thumbnails").clone().removeClass("hide"));
             }

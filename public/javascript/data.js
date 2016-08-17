@@ -10,6 +10,7 @@ jQuery(document).ready(function() {
 		var condition = getSelectionCondition();
 		if (condition) {
             showSongModal({
+                TITLE: getSelectionFilename(),
     			SUB: 'Flavors::Data::Song::List', 
                 FILTER: condition,
             });
@@ -19,16 +20,18 @@ jQuery(document).ready(function() {
 	// Controls: export selections
 	jQuery(".export-dropdown a").click(function() {
 		var condition = getSelectionCondition();
-		console.log(condition);
 		if (condition) {
 			ExportPlaylist({
 		        PATH: jQuery(this).text(),
 				FILTER: condition,
 			});
-			d3.selectAll('.selected').classed("selected", false);
-			setClearVisibility();
 		}
 	});
+
+    jQuery("#song-list").on("hide hide.bs.modal", function() {
+        d3.selectAll('.selected').classed("selected", false);
+        setClearVisibility();
+    });
 });
 
 function setClearVisibility() {
@@ -131,25 +134,40 @@ function highlightOnHover(selector, actsOn) {
 
 function selectOnClick(selector, actsOn) {
 	d3.selectAll(selector).on("click", function() {
-		var obj = actsOn(this);
-		var isSelected = obj.classed("selected");
-		obj.classed("selected", !isSelected);
-		obj.selectAll("rect, circle").classed("selected", !isSelected);
-		setClearVisibility();
+		selectData(actsOn(this));
 	});
+}
+
+function selectData(obj) {
+    var isSelected = obj.classed("selected");
+    obj.classed("selected", !isSelected);
+    obj.selectAll("rect, circle").classed("selected", !isSelected);
+    setClearVisibility();
 }
 
 function viewOnDoubleClick(selector, actsOn) {
 	d3.selectAll(selector).on("dblclick", function() {
-		var data = actsOn(this).data()[0];
+		var obj = actsOn(this),
+            data = obj.data()[0];
 		var condition = data.condition;
 		if (condition) {
             showSongModal({
+                TITLE: data.filename,
     			SUB: 'Flavors::Data::Song::List', 
                 FILTER: condition,
+            }, function() {
+                selectData(obj);
             });
 		}
 	});
+}
+
+function getSelectionFilename() {
+	var filenames = _.uniq(_.pluck(d3.selectAll("svg .selected").data(), 'filename'));
+    if (filenames.length === 1) {
+        return filenames[0];
+    }
+    return "";
 }
 
 function getSelectionCondition() {
@@ -158,5 +176,5 @@ function getSelectionCondition() {
 		alert("Nothing selected");
 		return '';
 	}
-	return _.map(_.pluck(selected.data(), 'condition'), function(c) { return "(" + c + ")"; }).join(" or ");
+	return _.map(_.uniq(_.pluck(selected.data(), 'condition')), function(c) { return "(" + c + ")"; }).join(" or ");
 };

@@ -329,7 +329,7 @@ sub SongsModal {
                     <div class="modal-header">
                         <h4>
                             <div class="pull-right">%s</div>
-                            <span class="modal-title">Song Selection</span>
+                            <span class="modal-title"></span>
                         </h4>
                     </div>
                     <div class="modal-body"></div>

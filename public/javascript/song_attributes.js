@@ -63,6 +63,7 @@ function showSongModal(args, callback) {
     var $modal = jQuery("#song-list"),
         $body = $modal.find(".modal-body");
     $body.html(jQuery("body .loading").clone().removeClass("hide"));
+    $modal.find(".modal-title").text(args.TITLE || "Songs");
     $modal.modal();
 	CallRemote({
 		ARGS: args || {},

@@ -220,7 +220,6 @@ sub List {
 # Args (optional):
 #    STRENGTH: minimum number of co-occurence to include link
 #    CATEGORY: string
-#    TAG: if provided, limit to songs containing this tag
 #
 # Return Value: hashref containing
 #    NODES: arrayref of hashrefs, each containing
@@ -236,38 +235,21 @@ sub NetworkStats {
     my ($dbh, $args) = @_;
 
     my $strength = $args->{STRENGTH} || 1;
-    my $categorywhere = "";
-    my $tagwhere = "";
-    if ($args->{CATEGORY}) {
-        $categorywhere = "and tagcategory.category = ?";
-    }
-    if ($args->{TAG}) {
-        $tagwhere = "and exists (select 1 from songtag s2 where songtag.songid = s2.songid and s2.tag = ?)";
-    }
     my $sql = sprintf(qq{
-            select songtag.songid, group_concat(songtag.tag separator '%s') tags
+            select songid, group_concat(songtag.tag separator '%s') tags
             from songtag, tagcategory
             where songtag.tag = tagcategory.tag
-            %s
             %s
             group by songid
         },
         $Flavors::Data::Util::SEPARATOR,
-        $categorywhere,
-        $tagwhere
+        $args->{CATEGORY} ? "and tagcategory.category = ?" : "",
     );
 
-    my @binds = ();
-    if ($categorywhere) {
-        push(@binds, $args->{CATEGORY});
-    }
-    if ($tagwhere) {
-        push(@binds, $args->{TAG});
-    }
     my @rows = Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
         COLUMNS => [qw(songid tags)],
-        BINDS => \@binds,
+        BINDS => $args->{CATEGORY} ? [$args->{CATEGORY}] : [],
         GROUPCONCAT => ['tags'],
     });
     my %pairs = {};
@@ -299,10 +281,6 @@ sub NetworkStats {
         }
     }
     
-    my @nodebinds = ();
-    if ($categorywhere) {
-        push(@nodebinds, $args->{CATEGORY});
-    }
     my @nodes = Flavors::Data::Util::Results($dbh, {
         SQL => sprintf(qq{
             select tagcategory.tag, tagcategory.category, count(*) as songcount
@@ -310,9 +288,9 @@ sub NetworkStats {
             where songtag.tag = tagcategory.tag
             %s
             group by tagcategory.tag, tagcategory.category
-        }, $categorywhere),
+        }, $args->{CATEGORY} ? "and tagcategory.category = ?" : ""),
         COLUMNS => [qw(tag category count)],
-        BINDS => \@nodebinds,
+        BINDS => $args->{CATEGORY} ? [$args->{CATEGORY}] : [],
     });
     my $id = 1;
     @nodes = grep { $tagstokeep{$_->{TAG}} } @nodes;

@@ -68,6 +68,7 @@ CategoryChart.prototype.draw = function(data) {
 };
 
 CategoryChart.prototype.reformatData = function(data) {
+    var self = this;
 	return _.map(data, function(d) { return {
 		tag: d.TAG,
 		rating: +d.RATING,

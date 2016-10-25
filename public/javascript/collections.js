@@ -6,6 +6,18 @@ function addSong(focus) {
     if (lastArtist) {
         $newSong.find("[name='artist']").val(lastArtist);
     }
+    var $rows = $modal.find(".song:visible");
+    _.each($rows, function(row, r) {
+        _.each($(row).find("input"), function(input, i) {
+            if (i < 2) {
+                // First two columns: name and artist
+                $(input).attr("tabindex", $rows.length * i + r + 1);
+            } else {
+                // Time columns
+                $(input).attr("tabindex", $rows.length * 2 + r + i - 1);
+            }
+        });
+    });
     if (focus) {
         $newSong.find("input:first").focus();
     }

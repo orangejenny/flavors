@@ -126,7 +126,7 @@ function selectData(obj) {
 }
 
 function viewOnDoubleClick(selector, actsOn) {
-	d3.selectAll(selector).on("dblclick", function() {
+	d3.selectAll(selector).on("dblclick", function(e) {
 		var obj = actsOn(this),
             data = obj.data()[0];
 		var condition = data.condition;
@@ -139,6 +139,7 @@ function viewOnDoubleClick(selector, actsOn) {
                 selectData(obj);
             });
 		}
+        e.preventDefault();
 	});
 }
 

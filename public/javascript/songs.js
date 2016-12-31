@@ -10,7 +10,7 @@ jQuery(document).ready(function() {
     letters = InitialPageData('letters');
     letterCounts = InitialPageData('lettercounts');
     starred = InitialPageData('starred');
-	updateRowCount();
+	updateItemCount();
 
     simpleFilter();
 	jQuery('#filter').on("keyup blur", _.throttle(function(event) {
@@ -179,8 +179,8 @@ jQuery(document).ready(function() {
     });
 });
 
-function updateRowCount() {
-	jQuery("#song-count").text(jQuery("#song-table-container tbody tr:visible").length);
+function updateItemCount() {
+	jQuery("#item-count").text(jQuery("#song-table-container tbody tr:visible").length);
 }
 
 function simpleFilter(force) {
@@ -215,7 +215,7 @@ function simpleFilter(force) {
         else {
             jQuery(rowselector).show();
         }
-	    updateRowCount();
+	    updateItemCount();
         return;
     }
 
@@ -244,7 +244,7 @@ function simpleFilter(force) {
 		}
 	});
 
-	updateRowCount();
+	updateItemCount();
 }
 
 function closeLyricsModal() {

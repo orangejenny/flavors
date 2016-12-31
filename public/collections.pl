@@ -184,6 +184,8 @@ foreach my $collection (@collections) {
 }
 print "</div></div>";
 
+print Flavors::HTML::ItemCount("collections");
+
 # Modal for complex filtering
 print Flavors::HTML::FilterModal($dbh, {
     ERROR => $sqlerror,

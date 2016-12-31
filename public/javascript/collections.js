@@ -76,9 +76,13 @@ function simpleFilter(force) {
     if (!jQuery("#simple-filter .glyphicon-star-empty").length) {
            jQuery(selector + "[data-starred!='1']").hide();
     }
+
+    updateItemCount();
 }
 
 jQuery(document).ready(function() {
+    updateItemCount();
+
     jQuery(".collection").click(function() {
         var $collection = jQuery(this),
             id = $collection.data("id");
@@ -314,3 +318,7 @@ jQuery(document).ready(function() {
         }
     });
 });
+
+function updateItemCount() {
+	jQuery("#item-count").text(jQuery(".collections .collection:visible").length);
+}

@@ -157,13 +157,7 @@ print qq{ </tbody></table> };
 
 print qq{ </div> };
 
-print qq{
-    <div id="song-count-container">
-        <span id="song-count-span">
-            <span id="song-count"></span> songs
-        </span>
-    </div>
-};
+print Flavors::HTML::ItemCount("songs");
 
 print qq{
     <div id="lyrics-detail" class="modal">

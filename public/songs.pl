@@ -30,6 +30,7 @@ my @songs = @{ $results->{RESULTS} };
 if (!$sqlerror) {
     Flavors::Data::Playlist::Update($dbh, {
         FILTER => $fdat->{FILTER},
+        TYPE => "song",
     });
 }
 
@@ -79,7 +80,7 @@ Flavors::HTML::Header($dbh, {
     JS => ['songs.js', 'song_attributes.js', 'stars.js'],
 });
 
-my @playlists = grep { !$_->{ISDEFAULT} } Flavors::Data::Playlist::List($dbh);
+my @playlists = grep { !$_->{ISDEFAULT} } Flavors::Data::Playlist::List($dbh, { TYPE => 'song' });
 print Flavors::HTML::FilterModal($dbh, {
     ADDITIONALMARKUP => sprintf(qq{
             <ul class="playlists">

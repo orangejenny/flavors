@@ -108,7 +108,7 @@ sub Update {
         };
         Flavors::Data::Util::Results($dbh, {
             SQL => $sql,
-            BINDS => [$results[0]->{ID} + 1, $filter, $args->{TYPE} || "song"],
+            BINDS => [$results[0]->{ID} + 1, $filter, $args->{TYPE}],
             SKIPFETCH => 1,
         });
 

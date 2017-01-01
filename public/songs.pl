@@ -77,25 +77,11 @@ Flavors::HTML::Header($dbh, {
         LETTERCOUNTS => $lettercounts,
         STARRED => $starred,
     },
-    JS => ['songs.js', 'song_attributes.js', 'stars.js'],
+    JS => ['songs.js', 'song_attributes.js', 'stars.js', 'playlists.js'],
 });
 
-my @playlists = grep { !$_->{ISDEFAULT} } Flavors::Data::Playlist::List($dbh, { TYPE => 'song' });
 print Flavors::HTML::FilterModal($dbh, {
-    ADDITIONALMARKUP => sprintf(qq{
-            <ul class="playlists">
-                %s
-            </ul>
-        },
-        join("", map {
-            sprintf(
-                "<li data-id='%s'>%s <a href='#'>%s</a></li>",
-                $_->{ID}, 
-                Flavors::HTML::Rating(1, $_->{ISSTARRED} ? 'star' : 'star-empty'), 
-                $_->{FILTER},
-            )
-        } @playlists),
-    ),
+    PLAYLISTS => [grep { !$_->{ISDEFAULT} } Flavors::Data::Playlist::List($dbh, { TYPE => 'song' })],
     ERROR => $sqlerror,
     FILTER => $fdat->{FILTER},
     HINTS => [qw(

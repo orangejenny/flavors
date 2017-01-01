@@ -298,7 +298,9 @@ sub FilterModal {
 								<input type="button" value="Filter" class="btn btn-default btn-lg"/>
 								<input type="hidden" name="placeholder" value="" />
 							</form>
-                            %s
+                            <ul class="playlists">
+                                %s
+                            </ul>
 						</div>
 					</div>
 				</div>
@@ -308,7 +310,14 @@ sub FilterModal {
     	$args->{ERROR} ? "" : "hide",
 	    $args->{ERROR},
 	    $args->{FILTER},
-        $args->{ADDITIONALMARKUP},
+        join("", map {
+            sprintf(
+                "<li data-id='%s'>%s <a href='#'>%s</a></li>",
+                $_->{ID}, 
+                Flavors::HTML::Rating(1, $_->{ISSTARRED} ? 'star' : 'star-empty'), 
+                $_->{FILTER},
+            )
+        } @{ $args->{PLAYLISTS} || [] }),
     );
 }
 

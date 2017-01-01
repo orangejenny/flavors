@@ -25,13 +25,6 @@ jQuery(document).ready(function() {
         simpleFilter(true);
     });
 
-	jQuery(".playlists a").click(function() {
-		var $link = jQuery(this);
-		var $form = jQuery("#complex-filter form");
-		$form.find("textarea").val($link.text());
-		$form.submit();
-	});
-
 	// Column names hint for filter
 	jQuery(".hint").tooltip({
 		html: true,

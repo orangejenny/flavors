@@ -4,6 +4,7 @@ use lib "..";
 use strict;
 
 use Flavors::Data::Collection;
+use Flavors::Data::Playlist;
 use Flavors::Data::Song;
 use Flavors::Data::Tag;
 use Flavors::Data::Util;
@@ -25,7 +26,7 @@ Flavors::HTML::Header($dbh, {
             New
         </button>
     },
-    JS => ['collections.js', 'song_attributes.js', 'stars.js'],
+    JS => ['collections.js', 'song_attributes.js', 'stars.js', 'playlists.js'],
 });
 
 my $results = Flavors::Data::Util::TrySQL($dbh, {
@@ -37,6 +38,13 @@ my $results = Flavors::Data::Util::TrySQL($dbh, {
 });
 my $sqlerror = $results->{ERROR} || "";
 my @collections = @{ $results->{RESULTS} };
+
+if (!$sqlerror) {
+    Flavors::Data::Playlist::Update($dbh, {
+        FILTER => $fdat->{FILTER},
+        TYPE => "collection",
+    });
+}
 
 my %songs;
 my @songs = Flavors::Data::Song::List($dbh);
@@ -191,6 +199,7 @@ print Flavors::HTML::FilterModal($dbh, {
     ERROR => $sqlerror,
     FILTER => $fdat->{FILTER},
     HINTS => [ Flavors::Data::Collection::ListColumns() ],
+    PLAYLISTS => [grep { !$_->{ISDEFAULT} } Flavors::Data::Playlist::List($dbh, { TYPE => 'collection' })],
 });
 
 # Modal for new collection

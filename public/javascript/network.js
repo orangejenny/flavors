@@ -2,6 +2,7 @@
 jQuery(document).ready(function() {
     jQuery(".category-select").change(draw);
     jQuery(".strength-select").change(draw);
+    jQuery(".tag-select").change(draw);
     jQuery(".strength-select .input-group-addon").click(function() {
         var $nudge = jQuery(this),
             $input = $nudge.siblings("input");
@@ -41,6 +42,12 @@ function ticked(link, node) {
 }
 
 function draw() {
+    var condition = function(tags) {
+        return _.map(_.uniq(_.compact(tags)), function(t) { return "taglist like '% " + t + " %'" }).join(" and ");
+    };
+    var filename = function(tags) {
+        return _.map(_.uniq(_.compact(tags)), function(t) { return "[" + t + "]"; }).join("");
+    };
     var selector = ".chart-container",
         svg = d3.select(selector + " svg"),
         width = +svg.attr("width"),
@@ -56,11 +63,13 @@ function draw() {
     
     var category = jQuery(".category-select").val(),
         strength = jQuery(".strength-select input").val();
+        tag = jQuery(".tag-select").val();
     CallRemote({
         SUB: 'Flavors::Data::Tag::NetworkStats',
         ARGS: {
             STRENGTH: strength,
             CATEGORY: category,
+            TAG: tag,
         },
         SPINNER: ".chart-container",
         FINISH: function(data) {
@@ -70,16 +79,16 @@ function draw() {
                 return _.extend(node, {
                     count: +node.count,
                     description: node.id + "<br />" + node.count + " " + Pluralize(+node.count, "song"),
-                    condition: "taglist like '% " + node.id + " %'",
-                    filename: "[" + node.id + "]",
+                    condition: condition([node.id, tag]),
+                    filename: filename([node.id, tag]),
                 });
             });
 
             data.links = _.map(data.links, function(link) {
                 return _.extend(link, {
                     description: link.source + " and " + link.target + "<br />" + link.value + " " + Pluralize(link.value, "song"),
-                    condition: "taglist like '% " + link.source + " %' and taglist like '% " + link.target + " %'",
-                    filename: "[" + link.source + "][" + link.target + "]",
+                    condition: condition([link.source, link.target, tag]),
+                    filename: filename([link.source, link.target, tag]),
                 });
             });
 

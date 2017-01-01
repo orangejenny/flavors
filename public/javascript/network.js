@@ -1,8 +1,7 @@
 // Modified from https://bl.ocks.org/mbostock/4062045
 jQuery(document).ready(function() {
     jQuery(".category-select").change(draw);
-    jQuery(".strength-select").change(draw);
-    jQuery(".tag-select").change(draw);
+    jQuery(".strength-select, .tag-select").keyup(_.debounce(draw, 500));
     jQuery(".strength-select .input-group-addon").click(function() {
         var $nudge = jQuery(this),
             $input = $nudge.siblings("input");

@@ -139,7 +139,7 @@ function viewOnDoubleClick(selector, actsOn) {
                 selectData(obj);
             });
 		}
-        e.preventDefault();
+        d3.event.preventDefault();
 	});
 }
 

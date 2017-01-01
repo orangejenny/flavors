@@ -18,6 +18,8 @@ BubbleMatrixChart.prototype.draw = function(data) {
 	var self = this;
 	data = self.reformatData(data);
 	self.setDimensions();
+
+    document.querySelector(".matrix-container svg").innerHTML = "";
 	self.drawAxes();
 	var bubbles = self.drawBubbles(data);
 	self.drawLabels(bubbles);
@@ -66,7 +68,7 @@ BubbleMatrixChart.prototype.drawLabels = function(bubbles) {
 				.attr("x", self.bubbleSize / 2)
 				.attr("y", self.bubbleSize / 2)
 				.attr("dy", "0.35em")
-				.text(function(d) { return d.count; });
+				.text(function(d) { return d.count || ""; });
 };
 
 BubbleMatrixChart.prototype.getScale = function(data) {

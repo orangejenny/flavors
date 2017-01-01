@@ -54,7 +54,6 @@ function draw() {
         height = +svg.attr("height");
     
     svg.html("");
-    var color = d3.scaleOrdinal(d3.schemeCategory20);
     
     var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function(d) { return d.id; }))
@@ -73,7 +72,7 @@ function draw() {
         },
         SPINNER: ".chart-container",
         FINISH: function(data) {
-            jQuery(".post-nav .label").text(data.nodes.length + Pluralize(data.nodes.length, " node")
+            jQuery(".post-nav .label").text(data.nodes.length + Pluralize(data.nodes.length, " tag")
                                             + ", " + data.links.length + Pluralize(data.links.length, " link"));
             data.nodes = _.map(data.nodes, function(node) {
                 return _.extend(node, {
@@ -109,7 +108,7 @@ function draw() {
                           .data(data.nodes)
                           .enter().append("circle")
                                   .attr("r", function(n) { return rScale(n.count); })
-                                  .attr("fill", function(d) { return color(d.group); })
+                                  .classed("tagged", function(d) { return d.id === tag; })
                                   .call(d3.drag()
                                           .on("start", function(d) { dragStarted(d, simulation); })
                                           .on("drag", function(d) { dragged(d, simulation); })

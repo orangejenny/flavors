@@ -7,11 +7,16 @@
     stroke: @color;
 	&.highlighted {
 		fill: lighten(@color, 5%);
-		stroke: lighten(@color, 5%);
+	}
+	&.tagged {
+        @taggedColor: #6f5499;
+		fill: @taggedColor;
+        &.selected {
+		    fill: darken(@taggedColor, 15%);
+        }
 	}
 	&.selected {
 		fill: darken(@color, 25%);
-		stroke: darken(@color, 25%);
 	}
 }
 

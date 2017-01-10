@@ -21,9 +21,7 @@ sub AcquisitionStats {
 
     my $sql = qq{
         select date_format(collection.created, '%Y-%m') datestring, count(*) count
-        from collection, songcollection, song
-        where songcollection.collectionid = collection.id
-        and songcollection.songid = song.id
+        from collection
         group by date_format(collection.created, '%Y-%m')
     };
 

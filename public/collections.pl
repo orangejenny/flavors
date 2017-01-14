@@ -34,17 +34,11 @@ my $results = Flavors::Data::Util::TrySQL($dbh, {
     ARGS => {
         FILTER => $fdat->{FILTER},
         ORDERBY => $fdat->{ORDERBY},
+        UPDATEPLAYLISTS => 1,
     },
 });
 my $sqlerror = $results->{ERROR} || "";
 my @collections = @{ $results->{RESULTS} };
-
-if (!$sqlerror) {
-    Flavors::Data::Playlist::Update($dbh, {
-        FILTER => $fdat->{FILTER},
-        TYPE => "collection",
-    });
-}
 
 my %songs;
 my @songs = Flavors::Data::Song::List($dbh);
@@ -54,6 +48,9 @@ foreach my $song (@songs) {
 
 print Flavors::HTML::FilterControl($dbh, {
     FILTER => $fdat->{FILTER},
+    ERROR => $sqlerror,
+    HINTS => [ Flavors::Data::Collection::ListColumns() ],
+    PLAYLISTS => [grep { !$_->{ISDEFAULT} } Flavors::Data::Playlist::List($dbh, { TYPE => 'collection' })],
 });
 
 print qq{ <div class="post-nav"> };
@@ -193,14 +190,6 @@ foreach my $collection (@collections) {
 print "</div></div>";
 
 print Flavors::HTML::ItemCount("collections");
-
-# Modal for complex filtering
-print Flavors::HTML::FilterModal($dbh, {
-    ERROR => $sqlerror,
-    FILTER => $fdat->{FILTER},
-    HINTS => [ Flavors::Data::Collection::ListColumns() ],
-    PLAYLISTS => [grep { !$_->{ISDEFAULT} } Flavors::Data::Playlist::List($dbh, { TYPE => 'collection' })],
-});
 
 # Modal for new collection
 print q{

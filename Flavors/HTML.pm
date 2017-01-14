@@ -239,7 +239,10 @@ sub SelectionControl {
 #   jquery.caret.min.js, and jquery.atwho.min.js.
 #
 # Params:
+#   ERROR
 #   FILTER
+#   HINTS
+#   PLAYLISTS
 #
 # Return Value: HTML
 ################################################################
@@ -262,30 +265,7 @@ sub FilterControl {
 			    	<a href='#'>%s</a> %s %s
 		    	</div>
 	    	</div>
-        },
-    	$iconcount,
-    	$args->{FILTER} || "advanced search",
-    	$iconcount == 2 ? "<span class='glyphicon glyphicon-refresh'></span>" : "",
-    	$iconcount > 0 ? "<span class='glyphicon glyphicon-remove'></span>" : "",
-    );
-}
 
-################################################################
-# FilterModal
-#
-# Description: Generates HTML for modal with advanced filter form
-#
-# Params:
-#   ERROR
-#   FILTER
-#   HINTS
-#
-# Return Value: HTML
-################################################################
-sub FilterModal {
-    my ($dbh, $args) = @_;
-
-    return sprintf(qq{
 			<div id="complex-filter" class="modal" data-hints="%s">
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -306,6 +286,10 @@ sub FilterModal {
 				</div>
 			</div>
         },
+    	$iconcount,
+    	$args->{FILTER} || "advanced search",
+    	$iconcount == 2 ? "<span class='glyphicon glyphicon-refresh'></span>" : "",
+    	$iconcount > 0 ? "<span class='glyphicon glyphicon-remove'></span>" : "",
         Flavors::Util::EscapeHTMLAttribute(JSON::to_json($args->{HINTS} || [])),
     	$args->{ERROR} ? "" : "hide",
 	    $args->{ERROR},

@@ -125,6 +125,7 @@ sub Add {
 # Parameters (optional)
 #        ID: only this collection
 #        SONGID: only collections that include this song
+#        UPDATEPLAYLISTS: if true, add filter to collection playlists
 #
 # Return Value: array/arrayref of hashrefs UNLESS ID is passed,
 #        in which case, return that single hashref
@@ -261,6 +262,13 @@ sub List {
         COLUMNS => \@collectioncolumns,
         GROUPCONCAT => ['tags'],
     });
+
+    if ($args->{UPDATEPLAYLISTS}) {
+        Flavors::Data::Playlist::Update($dbh, {
+            FILTER => $args->{FILTER},
+            TYPE => "collection",
+        });
+    }
 
     if ($args->{ID}) {
         return $results[0];

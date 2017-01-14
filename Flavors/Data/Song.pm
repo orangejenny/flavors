@@ -1,6 +1,7 @@
 package Flavors::Data::Song;
 
 use strict;
+use Flavors::Data::Playlist;
 use Flavors::Data::Util;
 
 ################################################################
@@ -44,6 +45,8 @@ sub Count {
 #        SIMPLEFILTER: string to apply against name, artist, and 
 #            collection names (disjunctive)
 #       STARRED: limit to starred songs
+#       UPDATEPLAYLIST: if true, update songs playlists with
+#           given filter
 #
 # Return Value: array/arrayref of hashrefs UNLESS ID is passed,
 #        in which case, return the single hashref
@@ -166,6 +169,13 @@ sub List {
         GROUPCONCAT => ['collections'],
         BINDS => \@binds,
     });
+
+    if ($args->{UPDATEPLAYLIST}) {
+        Flavors::Data::Playlist::Update($dbh, {
+            FILTER => $args->{FILTER},
+            TYPE => "song",
+        });
+    }
 
     if ($args->{ID}) {
         return $results[0];

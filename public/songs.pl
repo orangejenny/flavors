@@ -22,17 +22,11 @@ my $results = Flavors::Data::Util::TrySQL($dbh, {
     ARGS => {
         FILTER => $fdat->{FILTER},
         ORDERBY => $fdat->{ORDERBY},
+        UPDATEPLAYLIST => 1,
     },
 });
 my $sqlerror = $results->{ERROR} || "";
 my @songs = @{ $results->{RESULTS} };
-
-if (!$sqlerror) {
-    Flavors::Data::Playlist::Update($dbh, {
-        FILTER => $fdat->{FILTER},
-        TYPE => "song",
-    });
-}
 
 my $tokens = {};    # token => [songid1, songid2, ... ]
 foreach my $song (@songs) {
@@ -80,7 +74,7 @@ Flavors::HTML::Header($dbh, {
     JS => ['songs.js', 'song_attributes.js', 'stars.js', 'playlists.js'],
 });
 
-print Flavors::HTML::FilterModal($dbh, {
+print Flavors::HTML::FilterControl($dbh, {
     PLAYLISTS => [grep { !$_->{ISDEFAULT} } Flavors::Data::Playlist::List($dbh, { TYPE => 'song' })],
     ERROR => $sqlerror,
     FILTER => $fdat->{FILTER},
@@ -89,10 +83,6 @@ print Flavors::HTML::FilterModal($dbh, {
         maxcollectioncreated taglist tagcount collectionlist minyear maxyear isstarred
         lyrics haslyrics
     )],
-});
-
-print Flavors::HTML::FilterControl($dbh, {
-    FILTER => $fdat->{FILTER},
 });
 
 print qq{ <div id="song-table-container"> };

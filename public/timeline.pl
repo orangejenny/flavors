@@ -18,7 +18,18 @@ Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => "Timeline",
     BUTTONS => Flavors::HTML::SelectionControl(),
-    JS => ['data.js', 'chart/chart.js', 'chart/timeline.js', 'timeline.js', 'song_attributes.js', 'stars.js'],
+    JS => ['data.js', 'chart/chart.js', 'chart/timeline.js', 'timeline.js', 'song_attributes.js', 'playlists.js', 'stars.js'],
+});
+
+print Flavors::HTML::FilterControl($dbh, {
+    PLAYLISTTYPE => "song",
+    FILTER => $fdat->{FILTER},
+    COMPLEXONLY => 1,
+    HINTS => [qw(
+        id name artist rating energy mood time filename ismix mincollectioncreated
+        maxcollectioncreated taglist tagcount collectionlist minyear maxyear isstarred
+        lyrics haslyrics
+    )],
 });
 
 print qq{

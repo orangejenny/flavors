@@ -334,9 +334,11 @@ sub NetworkStats {
 #    { 'winter' => number, 'spring' => number, ... }
 ################################################################
 sub SeasonStats {
-    my ($dbh) = @_;
+    my ($dbh, $args) = @_;
 
-    my $sql = qq{
+    $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
+
+    my $sql = sprintf(qq{
         select count(distinct id), year, season from(
             select 
                 seasons.name,
@@ -351,6 +353,7 @@ sub SeasonStats {
                     where song.id = songtag.songid
                     and songtag.tag = tagcategory.tag
                     and category = 'years'
+                    and (%s)
                 ) years, (
                     select 
                         song.id, 
@@ -372,7 +375,7 @@ sub SeasonStats {
         ) stats
         group by year, season
         order by year, season;
-    };
+    }, $args->{FILTER} || "1 = 1");
 
     return [Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
@@ -386,17 +389,17 @@ sub SeasonStats {
 # Description: Get year-based and season-based counts
 #
 # Args:
-#    None
+#    FILTER
 #
 # Return Value: hashref with keys YEARS and SEASONS, values the
 #    return values of YearStats and SeasonStats, respectively
 ################################################################
 sub TimelineStats {
-    my ($dbh) = @_;
+    my ($dbh, $args) = @_;
 
     return {
-        YEARS => YearStats($dbh),
-        SEASONS => SeasonStats($dbh),
+        YEARS => YearStats($dbh, $args),
+        SEASONS => SeasonStats($dbh, $args),
     };
 }
 
@@ -498,12 +501,14 @@ sub UpdateColor {
 # Description: Get year-based song counts
 #
 # Args:
-#    None
+#    FILTER
 #
 # Return Value: hashref with keys years, values counts
 ################################################################
 sub YearStats {
-    my ($dbh) = @_;
+    my ($dbh, $args) = @_;
+
+    $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
 
     my $sql = sprintf(qq{
         select
@@ -513,9 +518,10 @@ sub YearStats {
         where song.id = songtag.songid
         and songtag.tag = tagcategory.tag
         and category = 'years'
+        and (%s)
         group by tagcategory.tag
         order by tagcategory.tag;
-    }, $Flavors::Data::Util::SEPARATOR);
+    }, $args->{FILTER} || "1 = 1");
 
     return [Flavors::Data::Util::Results($dbh, {
         SQL => $sql,

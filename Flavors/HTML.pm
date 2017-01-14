@@ -244,6 +244,7 @@ sub SelectionControl {
 #   FILTER
 #   HINTS
 #   PLAYLISTTYPE
+#   COMPLEXONLY
 #
 # Return Value: HTML
 ################################################################
@@ -252,7 +253,7 @@ sub FilterControl {
 
     my $iconcount = $args->{FILTER} ? 2 : 0;
     return sprintf(qq{
-    		<div id="filter-container">
+    		<div id="filter-container"%s>
                 <div id="simple-filter">
                     <div id="last-query">
     			        <span class='glyphicon glyphicon-search'></span>
@@ -287,6 +288,7 @@ sub FilterControl {
 				</div>
 			</div>
         },
+        $args->{COMPLEXONLY} ? " class='hide'" : "",
     	$iconcount,
     	$args->{FILTER} || "advanced search",
     	$iconcount == 2 ? "<span class='glyphicon glyphicon-refresh'></span>" : "",

@@ -75,14 +75,9 @@ Flavors::HTML::Header($dbh, {
 });
 
 print Flavors::HTML::FilterControl($dbh, {
-    PLAYLISTTYPE => "song",
+    TYPE => "song",
     ERROR => $sqlerror,
     FILTER => $fdat->{FILTER},
-    HINTS => [qw(
-        id name artist rating energy mood time filename ismix mincollectioncreated
-        maxcollectioncreated taglist tagcount collectionlist minyear maxyear isstarred
-        lyrics haslyrics
-    )],
 });
 
 print qq{ <div id="song-table-container"> };

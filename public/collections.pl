@@ -49,8 +49,7 @@ foreach my $song (@songs) {
 print Flavors::HTML::FilterControl($dbh, {
     FILTER => $fdat->{FILTER},
     ERROR => $sqlerror,
-    HINTS => [ Flavors::Data::Collection::ListColumns() ],
-    PLAYLISTTYPE => "collection",
+    TYPE => "collection",
 });
 
 print qq{ <div class="post-nav"> };

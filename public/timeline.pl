@@ -22,14 +22,9 @@ Flavors::HTML::Header($dbh, {
 });
 
 print Flavors::HTML::FilterControl($dbh, {
-    PLAYLISTTYPE => "song",
+    TYPE => "song",
     FILTER => $fdat->{FILTER},
     COMPLEXONLY => 1,
-    HINTS => [qw(
-        id name artist rating energy mood time filename ismix mincollectioncreated
-        maxcollectioncreated taglist tagcount collectionlist minyear maxyear isstarred
-        lyrics haslyrics
-    )],
 });
 
 print qq{

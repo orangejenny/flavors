@@ -75,7 +75,7 @@ Flavors::HTML::Header($dbh, {
 });
 
 print Flavors::HTML::FilterControl($dbh, {
-    PLAYLISTS => [grep { !$_->{ISDEFAULT} } Flavors::Data::Playlist::List($dbh, { TYPE => 'song' })],
+    PLAYLISTTYPE => "song",
     ERROR => $sqlerror,
     FILTER => $fdat->{FILTER},
     HINTS => [qw(

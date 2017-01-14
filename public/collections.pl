@@ -50,7 +50,7 @@ print Flavors::HTML::FilterControl($dbh, {
     FILTER => $fdat->{FILTER},
     ERROR => $sqlerror,
     HINTS => [ Flavors::Data::Collection::ListColumns() ],
-    PLAYLISTS => [grep { !$_->{ISDEFAULT} } Flavors::Data::Playlist::List($dbh, { TYPE => 'collection' })],
+    PLAYLISTTYPE => "collection",
 });
 
 print qq{ <div class="post-nav"> };

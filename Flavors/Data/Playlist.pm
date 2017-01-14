@@ -23,21 +23,19 @@ sub List {
         select
             id,
             filter,
-            isdefault,
             isstarred,
             refreshed
         from
             playlist
         where type = ?
         order by
-            isdefault desc,
             isstarred,
             updated desc
     };
 
     return Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
-        COLUMNS => [qw(id filter isdefault isstarred refreshed)],
+        COLUMNS => [qw(id filter isstarred refreshed)],
         BINDS => \@binds,
     });
 }
@@ -102,9 +100,9 @@ sub Update {
         });
         my $sql = qq{
             insert into playlist
-                (id, filter, isdefault, created, updated, type)
+                (id, filter, created, updated, type)
             values
-                (?, ?, 0, now(), now(), ?)
+                (?, ?, now(), now(), ?)
         };
         Flavors::Data::Util::Results($dbh, {
             SQL => $sql,

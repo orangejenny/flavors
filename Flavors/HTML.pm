@@ -1,6 +1,7 @@
 package Flavors::HTML;
 
 use strict;
+use Flavors::Data::Playlist;
 use Flavors::Data::Song;
 use Flavors::Data::Tag;
 use JSON qw(to_json);
@@ -242,7 +243,7 @@ sub SelectionControl {
 #   ERROR
 #   FILTER
 #   HINTS
-#   PLAYLISTS
+#   PLAYLISTTYPE
 #
 # Return Value: HTML
 ################################################################
@@ -301,7 +302,7 @@ sub FilterControl {
                 Flavors::HTML::Rating(1, $_->{ISSTARRED} ? 'star' : 'star-empty'), 
                 $_->{FILTER},
             )
-        } @{ $args->{PLAYLISTS} || [] }),
+        } $args->{PLAYLISTTYPE} ? Flavors::Data::Playlist::List($dbh, { TYPE => $args->{PLAYLISTTYPE} }) : ()),
     );
 }
 

@@ -25,7 +25,7 @@ print qq{ <div class="post-nav"> };
 
 print qq{ <table class="table table-striped table-hover"> };
 foreach my $playlist (@playlists) {
-    if ($playlist->{ISSTARRED} || $playlist->{ISDEFAULT}) {
+    if ($playlist->{ISSTARRED}) {
         printf(qq{
             <tr>
                 <td>%s</td>

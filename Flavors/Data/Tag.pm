@@ -53,6 +53,7 @@ sub CategoryList {
 #
 # Args:
 #    FACET: one of qw(rating energy mood)
+#    FILTER
 #    CATEGORY: string, may be 'genres'
 #
 # Return Value: array of hashrefs, each containing
@@ -66,6 +67,8 @@ sub CategoryStats {
     my $sql;
     my @binds = ();
     my $isgenre = $category =~ m/genre/i;
+    $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
+    $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
 
     my $tagcolumn = $isgenre ? "artistgenre.genre" : "songtag.tag";
     my $tables = $isgenre ? "artistgenre" : "songtag, tagcategory";
@@ -80,6 +83,7 @@ sub CategoryStats {
                     %s as tag, %s, count(*) as count
                 from song, %s
                 where %s and %s is not null
+                %s
                 group by %s, %s
             ) partials, (
                 select %s, %s as tag, count(*) as count
@@ -97,6 +101,7 @@ sub CategoryStats {
         $tables,
         $joins,
         $args->{FACET},
+        $args->{FILTER} ? sprintf("and (%s)", $args->{FILTER}) : "",
         $tagcolumn,
         $args->{FACET},
         # totals
@@ -159,6 +164,7 @@ sub ColorList {
 # Description: Get a list of tags
 #
 # Parameters (optional)
+#        FILTER
 #        RELATED: only tags that appear in a song with this tag
 #
 # Return Value: array of hashrefs
@@ -174,13 +180,15 @@ sub List {
             count(*) count
         from
             songtag
+        inner join song on songtag.songid = song.id
         left join tagcategory on tagcategory.tag = songtag.tag
         left join metacategory on tagcategory.category = metacategory.category
+        where 1=1
     };
 
     if ($args->{RELATED}) {
         $sql .= qq{
-            where 
+            and
                 songtag.tag <> '$args->{RELATED}'
                 and exists (
                     select 
@@ -192,6 +200,11 @@ sub List {
                         and original.tag = '$args->{RELATED}'
                 )
         };
+    }
+
+    if ($args->{FILTER}) {
+        $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
+        $sql .= sprintf("and (%s)", $args->{FILTER});
     }
 
     $sql .= qq{
@@ -218,6 +231,7 @@ sub List {
 # Args (optional):
 #    STRENGTH: minimum number of co-occurence to include link
 #    CATEGORY: string
+#    FILTER
 #    TAG: if provided, limit to songs containing this tag
 #
 # Return Value: hashref containing
@@ -233,6 +247,7 @@ sub List {
 sub NetworkStats {
     my ($dbh, $args) = @_;
 
+    $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
     my $strength = $args->{STRENGTH} || 1;
     my $categorywhere = "";
     my $tagwhere = "";
@@ -244,15 +259,18 @@ sub NetworkStats {
     }
     my $sql = sprintf(qq{
             select songtag.songid, group_concat(songtag.tag separator '%s') tags
-            from songtag, tagcategory
-            where songtag.tag = tagcategory.tag
+            from song, songtag, tagcategory
+            where song.id = songtag.songid
+            and songtag.tag = tagcategory.tag
+            %s
             %s
             %s
             group by songid
         },
         $Flavors::Data::Util::SEPARATOR,
         $categorywhere,
-        $tagwhere
+        $tagwhere,
+        $args->{FILTER} ? sprintf("and (%s)", $args->{FILTER}) : "",
     );
 
     my @binds = ();

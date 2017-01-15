@@ -16,7 +16,12 @@ Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => "Network",
     BUTTONS => Flavors::HTML::SelectionControl(),
-    JS => ['data.js', 'network.js', 'song_attributes.js', 'stars.js'],
+    JS => ['data.js', 'network.js', 'playlists.js', 'song_attributes.js', 'stars.js'],
+});
+
+print Flavors::HTML::FilterControl($dbh, {
+    TYPE => "collection",
+    FILTER => $fdat->{FILTER},
 });
 
 print qq{ <div class="post-nav"> };

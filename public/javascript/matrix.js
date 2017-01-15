@@ -8,6 +8,7 @@ function draw() {
 	CallRemote({
 		SUB: 'Flavors::Data::Song::Stats',
 		ARGS: {
+            FILTER: $("textarea[name='filter']").val(),
             GROUPBY: "rating, energy, mood",
             TAG: $(".tag-select").val(),
         },

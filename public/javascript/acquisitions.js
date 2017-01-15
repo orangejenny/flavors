@@ -2,6 +2,9 @@ jQuery(document).ready(function() {
 	var selector = ".chart-container";
 	CallRemote({
 		SUB: 'Flavors::Data::Collection::AcquisitionStats',
+        ARGS: {
+            FILTER: $("textarea[name='filter']").val(),
+        },
 		SPINNER: selector,
 		FINISH: function(data) {
 			var chart = new AcquisitionsChart(selector);

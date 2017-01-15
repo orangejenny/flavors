@@ -16,7 +16,12 @@ Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => "Acquisitions",
     BUTTONS => Flavors::HTML::SelectionControl(),
-    JS => ['data.js', 'chart/chart.js', 'chart/acquisitions.js', 'acquisitions.js', 'song_attributes.js', 'stars.js'],
+    JS => ['data.js', 'chart/chart.js', 'chart/acquisitions.js', 'acquisitions.js', 'playlists.js', 'song_attributes.js', 'stars.js'],
+});
+
+print Flavors::HTML::FilterControl($dbh, {
+    TYPE => "collection",
+    FILTER => $fdat->{FILTER},
 });
 
 print qq{

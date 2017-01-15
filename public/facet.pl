@@ -24,7 +24,12 @@ Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => ucfirst $facet,
     BUTTONS => Flavors::HTML::SelectionControl(),
-    JS => ['data.js', 'facet.js', 'song_attributes.js', 'stars.js'],
+    JS => ['data.js', 'facet.js', 'playlists.js', 'song_attributes.js', 'stars.js'],
+});
+
+print Flavors::HTML::FilterControl($dbh, {
+    TYPE => "song",
+    FILTER => $fdat->{FILTER},
 });
 
 print qq{ <div class="post-nav text-center"> };

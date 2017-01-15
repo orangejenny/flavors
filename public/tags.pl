@@ -11,12 +11,21 @@ my $dbh = Flavors::Data::Util::DBH();
 
 my $cgi = CGI->new;
 print $cgi->header();
+my $fdat = Flavors::Util::Fdat($cgi);
+
 Flavors::HTML::Header($dbh, {
-    JS => ['tags.js'],
+    JS => ['playlists.js', 'stars.js', 'tags.js'],
     TITLE => "Tags",
 });
 
-my @tags = Flavors::Data::Tag::List($dbh);
+my @tags = Flavors::Data::Tag::List($dbh, {
+    FILTER => $fdat->{FILTER},
+});
+
+print Flavors::HTML::FilterControl($dbh, {
+    TYPE => "song",
+    FILTER => $fdat->{FILTER},
+});
 
 # Print tags by frequency, click to pull up related tags
 printf(qq{

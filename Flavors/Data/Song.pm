@@ -191,6 +191,7 @@ sub List {
 # Description: Get statistics, by song
 #
 # Args:
+#    FILTER
 #    GROUPBY: CSV of strings, each one of qw(rating energy mood)
 #    TAG: Limit to songs containing this tag
 #
@@ -200,11 +201,12 @@ sub List {
 sub Stats {
     my ($dbh, $args) = @_;
     my @groupby = split(/\s*,\s*/, Flavors::Util::Sanitize($args->{GROUPBY}));
+    $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
 
     my $tagwhere = "";
     my @binds = ();
     if ($args->{TAG}) {
-        $tagwhere = "where exists (select 1 from songtag where songtag.songid = song.id and tag = ?)";
+        $tagwhere = "and exists (select 1 from songtag where songtag.songid = song.id and tag = ?)";
         @binds = ($args->{TAG});
     }
 
@@ -214,12 +216,15 @@ sub Stats {
                 count(*)
             from
                 song
+            where 1 = 1
+            %s
             %s
             group by %s
             order by %s;
         },
         join(", ", map { sprintf("coalesce(%s, 0)", $_) } @groupby),
         $tagwhere,
+        $args->{FILTER} ? sprintf("and (%s)", $args->{FILTER}) : "",
         join(", ", @groupby),
         join(", ", @groupby),
     );

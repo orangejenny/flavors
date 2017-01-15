@@ -10,20 +10,23 @@ my $COVER_ART_ROOT = "images/collections/";
 #
 # Description: Get stats related to song acquisition
 #
-# Args: None
+# Args:
+#    FILTER
 #
 # Return Value: arrayref of hashrefs:
 #    DATESTRING: YYYY-MM
 #    COUNT
 ################################################################
 sub AcquisitionStats {
-    my ($dbh) = @_;
+    my ($dbh, $args) = @_;
+    $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
 
-    my $sql = qq{
+    my $sql = sprintf(qq{
         select date_format(collection.created, '%Y-%m') datestring, count(*) count
         from collection
+        %s
         group by date_format(collection.created, '%Y-%m')
-    };
+    }, $args->{FILTER} ? "where " . $args->{FILTER} : "");
 
     return [Flavors::Data::Util::Results($dbh, {
         SQL => $sql,

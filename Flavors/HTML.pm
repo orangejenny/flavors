@@ -1,6 +1,7 @@
 package Flavors::HTML;
 
 use strict;
+use Flavors::Data::Collection;
 use Flavors::Data::Playlist;
 use Flavors::Data::Song;
 use Flavors::Data::Tag;

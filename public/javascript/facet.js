@@ -3,7 +3,10 @@ jQuery(document).ready(function() {
 	var facet = jQuery(selector).data("facet");
 	CallRemote({
 		SUB: 'Flavors::Data::Song::Stats',
-		ARGS: { GROUPBY: facet },
+		ARGS: {
+            FILTER: $("textarea[name='filter']").val(),
+            GROUPBY: facet,
+        },
 		SPINNER: selector,
 		FINISH: function(data) {
 			(new Histogram(".histogram-container", facet, 5)).draw(data);
@@ -23,6 +26,7 @@ jQuery(document).ready(function() {
 				SUB: 'Flavors::Data::Tag::CategoryStats',
 				ARGS: {
 					FACET: facet,
+                    FILTER: $("textarea[name='filter']").val(),
 					CATEGORY: category,
 				},
 				SPINNER: selector,

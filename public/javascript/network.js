@@ -65,8 +65,9 @@ function draw() {
     CallRemote({
         SUB: 'Flavors::Data::Tag::NetworkStats',
         ARGS: {
-            STRENGTH: strength,
             CATEGORY: category,
+            FILTER: $("textarea[name='filter']").val(),
+            STRENGTH: strength,
             TAG: tag,
         },
         SPINNER: ".chart-container",

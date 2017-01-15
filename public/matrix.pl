@@ -37,10 +37,6 @@ printf(qq{
             </div>
 
             <!-- after .matrix-container so it appears on top -->
-            <div class="well matrix-filters">
-                <div><input type="text" class="tag-select" value="" placeholder="all tags" /></div>
-                <div><span class="label label-info"></span></div>
-            </div>
         </div>
     },
     Flavors::HTML::Rating(5, 'heart'),

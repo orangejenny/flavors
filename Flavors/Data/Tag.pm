@@ -232,7 +232,6 @@ sub List {
 #    STRENGTH: minimum number of co-occurence to include link
 #    CATEGORY: string
 #    FILTER
-#    TAG: if provided, limit to songs containing this tag
 #
 # Return Value: hashref containing
 #    NODES: arrayref of hashrefs, each containing
@@ -250,12 +249,8 @@ sub NetworkStats {
     $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
     my $strength = $args->{STRENGTH} || 1;
     my $categorywhere = "";
-    my $tagwhere = "";
     if ($args->{CATEGORY}) {
         $categorywhere = "and tagcategory.category = ?";
-    }
-    if ($args->{TAG}) {
-        $tagwhere = "and exists (select 1 from songtag s2 where songtag.songid = s2.songid and s2.tag = ?)";
     }
     my $sql = sprintf(qq{
             select songtag.songid, group_concat(songtag.tag separator '%s') tags
@@ -264,21 +259,16 @@ sub NetworkStats {
             and songtag.tag = tagcategory.tag
             %s
             %s
-            %s
             group by songid
         },
         $Flavors::Data::Util::SEPARATOR,
         $categorywhere,
-        $tagwhere,
         $args->{FILTER} ? sprintf("and (%s)", $args->{FILTER}) : "",
     );
 
     my @binds = ();
     if ($categorywhere) {
         push(@binds, $args->{CATEGORY});
-    }
-    if ($tagwhere) {
-        push(@binds, $args->{TAG});
     }
     my @rows = Flavors::Data::Util::Results($dbh, {
         SQL => $sql,

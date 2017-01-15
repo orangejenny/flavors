@@ -193,7 +193,6 @@ sub List {
 # Args:
 #    FILTER
 #    GROUPBY: CSV of strings, each one of qw(rating energy mood)
-#    TAG: Limit to songs containing this tag
 #
 # Return Value: arrayref of hashrefs, each with a count and
 #    a value for each grouped-by attribute
@@ -203,12 +202,7 @@ sub Stats {
     my @groupby = split(/\s*,\s*/, Flavors::Util::Sanitize($args->{GROUPBY}));
     $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
 
-    my $tagwhere = "";
     my @binds = ();
-    if ($args->{TAG}) {
-        $tagwhere = "and exists (select 1 from songtag where songtag.songid = song.id and tag = ?)";
-        @binds = ($args->{TAG});
-    }
 
     my $sql = sprintf(qq{
             select 
@@ -218,12 +212,10 @@ sub Stats {
                 song
             where 1 = 1
             %s
-            %s
             group by %s
             order by %s;
         },
         join(", ", map { sprintf("coalesce(%s, 0)", $_) } @groupby),
-        $tagwhere,
         $args->{FILTER} ? sprintf("and (%s)", $args->{FILTER}) : "",
         join(", ", @groupby),
         join(", ", @groupby),

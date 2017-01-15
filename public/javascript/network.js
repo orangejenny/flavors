@@ -1,7 +1,7 @@
 // Modified from https://bl.ocks.org/mbostock/4062045
 jQuery(document).ready(function() {
     jQuery(".category-select").change(draw);
-    jQuery(".strength-select, .tag-select").keyup(_.debounce(draw, 500));
+    jQuery(".strength-select").keyup(_.debounce(draw, 500));
     jQuery(".strength-select .input-group-addon").click(function() {
         var $nudge = jQuery(this),
             $input = $nudge.siblings("input");
@@ -61,14 +61,12 @@ function draw() {
     
     var category = jQuery(".category-select").val(),
         strength = jQuery(".strength-select input").val();
-        tag = jQuery(".tag-select").val();
     CallRemote({
         SUB: 'Flavors::Data::Tag::NetworkStats',
         ARGS: {
             CATEGORY: category,
             FILTER: $("textarea[name='filter']").val(),
             STRENGTH: strength,
-            TAG: tag,
         },
         SPINNER: ".chart-container",
         FINISH: function(data) {
@@ -78,16 +76,16 @@ function draw() {
                 return _.extend(node, {
                     count: +node.count,
                     description: node.id + "<br />" + node.count + " " + Pluralize(+node.count, "song"),
-                    condition: condition([node.id, tag]),
-                    filename: filename([node.id, tag]),
+                    condition: condition([node.id]),
+                    filename: filename([node.id]),
                 });
             });
 
             data.links = _.map(data.links, function(link) {
                 return _.extend(link, {
                     description: link.source + " and " + link.target + "<br />" + link.value + " " + Pluralize(link.value, "song"),
-                    condition: condition([link.source, link.target, tag]),
-                    filename: filename([link.source, link.target, tag]),
+                    condition: condition([link.source, link.target]),
+                    filename: filename([link.source, link.target]),
                 });
             });
 
@@ -108,7 +106,6 @@ function draw() {
                           .data(data.nodes)
                           .enter().append("circle")
                                   .attr("r", function(n) { return rScale(n.count); })
-                                  .classed("tagged", function(d) { return d.id === tag; })
                                   .call(d3.drag()
                                           .on("start", function(d) { dragStarted(d, simulation); })
                                           .on("drag", function(d) { dragged(d, simulation); })

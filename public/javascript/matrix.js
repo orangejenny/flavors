@@ -1,5 +1,4 @@
 jQuery(document).ready(function() {
-    jQuery(".tag-select").keyup(_.debounce(draw, 500));
     draw();
 });
 
@@ -10,7 +9,6 @@ function draw() {
 		ARGS: {
             FILTER: $("textarea[name='filter']").val(),
             GROUPBY: "rating, energy, mood",
-            TAG: $(".tag-select").val(),
         },
 		SPINNER: selector,
 		FINISH: function(data) {

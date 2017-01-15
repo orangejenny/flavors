@@ -28,22 +28,24 @@ print qq{ <div class="post-nav"> };
 
 my @categories = Flavors::Data::Tag::CategoryList($dbh);
 printf(qq{
-    <div class="well pull-right network-filters">
-        <div>
-            <select class="category-select form-control">
-                <option value=''>(all categories)</option>
-                %s
-            </select>
+        <div class="well pull-right network-filters">
+            <div>
+                <select class="category-select form-control">
+                    <option value=''>(all categories)</option>
+                    %s
+                </select>
+            </div>
+            <div class="input-group strength-select">
+                <span class="input-group-addon" data-increment="-1">-</span>
+                <input type="text" class="form-control" value="%i" />
+                <span class="input-group-addon" data-increment="1">+</span>
+            </div>
+            <div><span class="label label-info"></span></div>
         </div>
-        <div><input type="text" class="tag-select" value="" placeholder="all tags" /></div>
-        <div class="input-group strength-select">
-            <span class="input-group-addon" data-increment="-1">-</span>
-            <input type="text" class="form-control" value="25" />
-            <span class="input-group-addon" data-increment="1">+</span>
-        </div>
-        <div><span class="label label-info"></span></div>
-    </div>
-}, join("", map { "<option>$_</option>" } sort @categories));
+    },
+    join("", map { "<option>$_</option>" } sort @categories),
+    $fdat->{FILTER} ? 2 : 25,
+);
 
 # Chart
 print qq{

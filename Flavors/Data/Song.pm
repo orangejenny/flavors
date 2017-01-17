@@ -173,7 +173,6 @@ sub List {
     if ($args->{UPDATEPLAYLIST}) {
         Flavors::Data::Playlist::Update($dbh, {
             FILTER => $args->{FILTER},
-            TYPE => "song",
         });
     }
 

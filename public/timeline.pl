@@ -22,7 +22,6 @@ Flavors::HTML::Header($dbh, {
 });
 
 print Flavors::HTML::FilterControl($dbh, {
-    TYPE => "song",
     FILTER => $fdat->{FILTER},
 });
 

@@ -251,11 +251,6 @@ sub FilterControl {
     my ($dbh, $args) = @_;
 
     my $iconcount = $args->{FILTER} ? 2 : 0;
-    my $hints = lc $args->{TYPE} eq 'song' ? [qw(
-        id name artist rating energy mood time filename ismix mincollectioncreated
-        maxcollectioncreated taglist tagcount collectionlist minyear maxyear isstarred
-        lyrics haslyrics
-    )] : [ Flavors::Data::Collection::ListColumns() ];
     return sprintf(qq{
     		<div id="filter-container">
                 <div id="simple-filter">
@@ -296,7 +291,11 @@ sub FilterControl {
     	$args->{FILTER} || "advanced search",
     	$iconcount == 2 ? "<span class='glyphicon glyphicon-refresh'></span>" : "",
     	$iconcount > 0 ? "<span class='glyphicon glyphicon-remove'></span>" : "",
-        Flavors::Util::EscapeHTMLAttribute(JSON::to_json($hints)),
+        Flavors::Util::EscapeHTMLAttribute(JSON::to_json([qw(
+            id name artist rating energy mood time filename ismix mincollectioncreated
+            maxcollectioncreated taglist tagcount collectionlist minyear maxyear isstarred
+            lyrics haslyrics
+        )])),
     	$args->{ERROR} ? "" : "hide",
 	    $args->{ERROR},
 	    $args->{FILTER},

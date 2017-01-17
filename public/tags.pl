@@ -23,7 +23,6 @@ my @tags = Flavors::Data::Tag::List($dbh, {
 });
 
 print Flavors::HTML::FilterControl($dbh, {
-    TYPE => "song",
     FILTER => $fdat->{FILTER},
 });
 

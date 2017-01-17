@@ -9,15 +9,12 @@ use Flavors::Data::Util;
 # Description: Get a list of playlists
 #
 # Args:
-#   TYPE: one of qw(song collection)
+#   None
 #
 # Return Value: array of hashrefs
 ################################################################
 sub List {
     my ($dbh, $args) = @_;
-
-    $args->{TYPE} ||= "song";
-    my @binds = ($args->{TYPE});
 
     my $sql = qq{
         select
@@ -27,7 +24,6 @@ sub List {
             refreshed
         from
             playlist
-        where type = ?
         order by
             isstarred,
             updated desc
@@ -36,7 +32,6 @@ sub List {
     return Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
         COLUMNS => [qw(id filter isstarred refreshed)],
-        BINDS => \@binds,
     });
 }
 
@@ -100,13 +95,13 @@ sub Update {
         });
         my $sql = qq{
             insert into playlist
-                (id, filter, created, updated, type)
+                (id, filter, created, updated)
             values
-                (?, ?, now(), now(), ?)
+                (?, ?, now(), now())
         };
         Flavors::Data::Util::Results($dbh, {
             SQL => $sql,
-            BINDS => [$results[0]->{ID} + 1, $filter, $args->{TYPE}],
+            BINDS => [$results[0]->{ID} + 1, $filter],
             SKIPFETCH => 1,
         });
 

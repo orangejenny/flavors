@@ -75,7 +75,6 @@ Flavors::HTML::Header($dbh, {
 });
 
 print Flavors::HTML::FilterControl($dbh, {
-    TYPE => "song",
     ERROR => $sqlerror,
     FILTER => $fdat->{FILTER},
 });

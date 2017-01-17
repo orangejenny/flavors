@@ -20,7 +20,6 @@ Flavors::HTML::Header($dbh, {
 });
 
 print Flavors::HTML::FilterControl($dbh, {
-    TYPE => "collection",
     FILTER => $fdat->{FILTER},
 });
 

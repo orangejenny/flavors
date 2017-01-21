@@ -94,7 +94,7 @@ foreach my $collection (@collections) {
             join("", map { sprintf("<img src='%s' />", $_) } @files[0 .. (scalar(@files) < 4 ? scalar(@files) - 1 : 4)]));
     }
     else {
-        my $color = $colors{$collection->{COLOR}};
+        my $color = $colors{@{ $collection->{COLORS} }[0]};
         printf(qq{
                 <div class="cover-art missing" style="%s%s">
                     %s

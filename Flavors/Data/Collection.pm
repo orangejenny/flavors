@@ -127,6 +127,7 @@ sub Add {
 #
 # Parameters (optional)
 #        ID: only this collection
+#        FILTER
 #        SONGID: only collections that include this song
 #        UPDATEPLAYLISTS: if true, add filter to collection playlists
 #
@@ -136,102 +137,93 @@ sub Add {
 sub List {
     my ($dbh, $args) = @_;
 
-    my @collectioncolumns = ListColumns();
+    my @basecolumns = qw(
+        id
+        name
+        ismix
+        created
+        lastexport
+        exportcount
+    );
+
+    my @aggregationcolumns = qw(
+        artist
+        artistlist
+        maxrating
+        maxenergy
+        maxmood
+        minrating
+        minenergy
+        minmood
+        avgrating
+        avgenergy
+        avgmood
+        completion
+        tags
+        colors
+        isstarred
+    );
 
     my $sql = sprintf(qq{
-        select
-            %s
-        from
-            collection
-        inner join (
-            select 
-                collectionid, 
-                max(rating) maxrating, 
-                max(energy) maxenergy, 
-                max(mood) maxmood,
-                min(rating) minrating, 
-                min(energy) minenergy, 
-                min(mood) minmood,
-                avg(rating) avgrating, 
-                avg(energy) avgenergy, 
-                avg(mood) avgmood,
-                min(year) minyear,
-                max(year) maxyear,
-                (count(rating) + count(energy) + count(mood)) / (count(*) * 3) completion,
-                max(isstarred) isstarred
-            from 
-                songcollection
-                inner join song on song.id = songcollection.songid
-                inner join collection on collection.id = songcollection.collectionid
-            group by 
-                songcollection.collectionid
-        ) ratings on ratings.collectionid = collection.id
-        inner join (
-            select 
-                collectionid,
-                group_concat(distinct artist separator ' ') as artistlist,
-                case 
-                    when count(distinct artist) = 1 then max(artist)
-                    else 'Various Artists'
-                end artist
-            from 
-                songcollection
-                inner join song on song.id = songcollection.songid
-            group by 
-                collectionid
-        ) artist on artist.collectionid = collection.id
-        left join (
-            select 
-                collectionid, 
-                substring_index(group_concat(genre order by num desc separator ','), ',', 1) as genre
-            from (
-                select 
-                    collectionid, 
-                    genre, 
-                    count(*) num
-                from 
-                    songcollection
-                    inner join song on song.id = songcollection.songid
-                    inner join artistgenre on artistgenre.artist = song.artist
-                group by 
-                    collectionid, 
-                    genre
-            ) genre
-            group by 
-                collectionid
-        ) genre on genre.collectionid = collection.id
-        left join (
             select
-                collectionid,
-                group_concat(distinct tag order by rand() separator '%s') as tags
-            from
-                songcollection
-                inner join songtag on songcollection.songid = songtag.songid
-            group by
-                collectionid
-        ) tags on tags.collectionid = collection.id
-        left join (
-            select 
-                collectionid, 
-                substring_index(group_concat(tag order by num desc separator ' '), ' ', 1) as color
+                %s
             from (
-                select 
-                    collectionid, 
-                    songtag.tag, 
-                    count(*) num
-                from 
-                    songcollection
-                    inner join song on song.id = songcollection.songid
-                    inner join songtag on songtag.songid = song.id
-                    inner join tagcategory on songtag.tag = tagcategory.tag
+                select
+                    distinct %s
+                from
+                    collection
+                inner join songcollection on collection.id = songcollection.collectionid
+                inner join (%s) song on song.id = songcollection.songid
+            ) collection
+            left join (
+                select
+                    collection.id as collectionid,
+                    case 
+                        when count(distinct artist) = 1 then max(artist)
+                        else 'Various Artists'
+                    end artist,
+                    group_concat(distinct artist separator ' ') as artistlist,
+                    max(rating) as maxrating,
+                    max(energy) as maxenergy,
+                    max(mood) as maxmood,
+                    min(rating) as minrating,
+                    min(energy) as minenergy,
+                    min(mood) as minmood,
+                    avg(rating) as avgrating,
+                    avg(energy) as avgenergy,
+                    avg(mood) as avgmood,
+                    (count(rating) + count(energy) + count(mood)) / (count(*) * 3) as completion,
+                    tags,
+                    colors,
+                    max(isstarred) as isstarred
+                from
+                    collection, songcollection, song
+                left join (
+                    select
+                        songtag.songid,
+                        group_concat(distinct songtag.tag order by rand() separator '%s') as tags,
+                        group_concat(distinct case when category = 'colors' then songtag.tag else null end order by rand() separator '%s') as colors
+                    from songtag, tagcategory
+                    where songtag.tag = tagcategory.tag
+                    group by songid
+                ) tags on tags.songid = song.id
                 where
-                    category = 'colors'
-                group by 
-                    collectionid, tag
-            ) color
-            group by collectionid
-        ) color on color.collectionid = collection.id
-    }, join(", ", @collectioncolumns), $Flavors::Data::Util::SEPARATOR);
+                    collection.id = songcollection.collectionid
+                    and songcollection.songid = song.id
+                group by collection.id
+            ) aggregations on aggregations.collectionid = collection.id
+
+        },
+        join(", ", @basecolumns, @aggregationcolumns),
+        join(", ", map { "collection." . $_ } @basecolumns),
+        Flavors::Data::Song::List($dbh, {
+            FILTER => $args->{FILTER},
+            SQLONLY => 1,
+            UPDATEPLAYLIST => $args->{UPDATEPLAYLIST},
+        }),
+        $Flavors::Data::Util::SEPARATOR,
+        $Flavors::Data::Util::SEPARATOR,
+    );
 
     if ($args->{ID}) {
         $sql .= qq{
@@ -240,20 +232,8 @@ sub List {
     }
     elsif ($args->{SONGID}) {
         $sql .= qq{
-            where
-                exists (
-                    select
-                        1
-                    from
-                        songcollection
-                    where
-                        songcollection.collectionid = collection.id
-                        and songcollection.songid = $args->{SONGID}
-                )
+            where songs.id = $args->{SONGID}
         };
-    } elsif ($args->{FILTER}) {
-        $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
-        $sql .= " where (" . $args->{FILTER} . ")";
     }
 
     $sql .= qq{
@@ -262,15 +242,9 @@ sub List {
 
     my @results = Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
-        COLUMNS => \@collectioncolumns,
-        GROUPCONCAT => ['tags'],
+        COLUMNS => [@basecolumns, @aggregationcolumns],
+        GROUPCONCAT => ['tags', 'colors'],
     });
-
-    if ($args->{UPDATEPLAYLISTS}) {
-        Flavors::Data::Playlist::Update($dbh, {
-            FILTER => $args->{FILTER},
-        });
-    }
 
     if ($args->{ID}) {
         return $results[0];
@@ -278,43 +252,6 @@ sub List {
     else {
         return wantarray ? @results : \@results;
     }
-}
-
-################################################################
-# ListColumns
-#
-# Description: Get the column list used by the List method.
-#
-# Return Value: array/arrayref of strings
-################################################################
-sub ListColumns {
-    my @columns = qw(
-        id
-        name
-        artist
-        artistlist
-        ismix
-        created
-        minrating
-        minenergy
-        minmood
-        maxrating
-        maxenergy
-        maxmood
-        avgrating
-        avgenergy
-        avgmood
-        minyear
-        maxyear
-        completion
-        isstarred
-        genre
-        color
-        tags
-        lastexport
-        exportcount
-    );
-    return wantarray ? @columns : \@columns;
 }
 
 ################################################################

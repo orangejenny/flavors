@@ -44,6 +44,7 @@ sub Count {
 #        ORDERBY: order by this column (may include "desc")
 #        SIMPLEFILTER: string to apply against name, artist, and 
 #            collection names (disjunctive)
+#       SQLONLY: if true, return sql query, not results
 #       STARRED: limit to starred songs
 #       UPDATEPLAYLIST: if true, update songs playlists with
 #           given filter
@@ -56,26 +57,11 @@ sub List {
 
     $args->{ORDERBY} = Flavors::Util::Sanitize($args->{ORDERBY});
 
-    my @songcolumns = qw(
-        id
-        name
-        artist
-        rating
-        energy
-        mood
-        language
-        year
-        time
-        ispurchased
-        isstarred
-        filename
-        echonestid
-    );
+    my @songcolumns = Flavors::Data::Song::ColumnList();
 
-    my $songcolumnstring = join(", ", map { "song.$_" } @songcolumns);
     my $sql = sprintf(qq{
         select distinct
-            $songcolumnstring,
+            %s,
             artistgenre.genre,
             songlyrics.lyrics,
             case when songlyrics.lyrics is null then 0 else 1 end as haslyrics,
@@ -121,7 +107,7 @@ sub List {
                 and collection.id = collectionid
             )
         ) tracks on tracks.songid = song.id
-    }, $Flavors::Data::Util::SEPARATOR);
+    }, join(", ", map { "song." . $_ } @songcolumns), $Flavors::Data::Util::SEPARATOR);
 
     if ($args->{ID}) {
         $sql .= " where song.id = $args->{ID}";
@@ -161,11 +147,15 @@ sub List {
         $sql .= " and isstarred = 1";
     }
 
+    if ($args->{SQLONLY}) {
+        return $sql;
+    }
+
     $sql .= " order by " . ($args->{ORDERBY} ? $args->{ORDERBY} : "maxcollectioncreated desc, tracknumber");
 
     my @results = Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
-        COLUMNS => [@songcolumns, 'genre', 'lyrics', 'haslyrics', 'tags', 'collections'],
+        COLUMNS => [Flavors::Data::Song::FullColumnList()],
         GROUPCONCAT => ['collections'],
         BINDS => \@binds,
     });
@@ -182,6 +172,44 @@ sub List {
     else {
         return wantarray ? @results : \@results;
     }
+}
+
+sub FullColumnList {
+    my @columns = Flavors::Data::Song::ColumnList();
+    push(@columns, qw(
+        genre
+        lyrics
+        haslyrics
+        taglist
+        collections
+        tagcount
+        minyear
+        maxyear
+        mincollectioncreated
+        maxcollectioncreated
+        tracknumber
+        exportcount
+        lastexport
+    ));
+    return @columns;
+}
+
+sub ColumnList {
+    return qw(
+        id
+        name
+        artist
+        rating
+        energy
+        mood
+        language
+        year
+        time
+        ispurchased
+        isstarred
+        filename
+        echonestid
+    );
 }
 
 ################################################################

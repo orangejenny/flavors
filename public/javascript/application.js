@@ -29,7 +29,8 @@ jQuery(document).ready(function() {
         $complexFilter.find("textarea").atwho({
             at: "#",
             insertTpl: "${name}",
-            data: hints,
+            limit: 100,
+            data: _.sortBy(hints),
         });
     }
 });

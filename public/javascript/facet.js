@@ -6,6 +6,7 @@ jQuery(document).ready(function() {
 		ARGS: {
             FILTER: $("textarea[name='filter']").val(),
             GROUPBY: facet,
+            UPDATEPLAYLIST: 1,
         },
 		SPINNER: selector,
 		FINISH: function(data) {

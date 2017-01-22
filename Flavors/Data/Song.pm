@@ -220,6 +220,7 @@ sub ColumnList {
 # Args:
 #    FILTER
 #    GROUPBY: CSV of strings, each one of qw(rating energy mood)
+#    UPDATEPLAYLIST
 #
 # Return Value: arrayref of hashrefs, each with a count and
 #    a value for each grouped-by attribute
@@ -236,14 +237,17 @@ sub Stats {
                 %s, 
                 count(*)
             from
-                song
+                (%s) song
             where 1 = 1
-            %s
             group by %s
             order by %s;
         },
         join(", ", map { sprintf("coalesce(%s, 0)", $_) } @groupby),
-        $args->{FILTER} ? sprintf("and (%s)", $args->{FILTER}) : "",
+        Flavors::Data::Song::List($dbh, {
+            FILTER => $args->{FILTER},
+            SQLONLY => 1,
+            UPDATEPLAYLIST => $args->{UPDATEPLAYLIST},
+        }),
         join(", ", @groupby),
         join(", ", @groupby),
     );

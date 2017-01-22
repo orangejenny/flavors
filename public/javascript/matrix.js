@@ -9,6 +9,7 @@ function draw() {
 		ARGS: {
             FILTER: $("textarea[name='filter']").val(),
             GROUPBY: "rating, energy, mood",
+            UPDATEPLAYLIST: 1,
         },
 		SPINNER: selector,
 		FINISH: function(data) {

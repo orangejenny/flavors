@@ -30,6 +30,7 @@ my @tags = @{ $results->{RESULTS} };
 
 print Flavors::HTML::FilterControl($dbh, {
     FILTER => $fdat->{FILTER},
+    ERROR => $sqlerror,
 });
 
 # Print tags by frequency, click to pull up related tags

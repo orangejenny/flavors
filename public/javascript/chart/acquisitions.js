@@ -85,7 +85,7 @@ AcquisitionsChart.prototype.reformatData = function(data) {
 			condition: "extract(month from mincollectioncreated) = " + (date.getMonth() + 1)
                         + " and extract(year from mincollectioncreated) = " + date.getFullYear(),
 			filename: "acquired " + text,
-			description: text + "\n" + d.COUNT + Pluralize(+d.COUNT, " collection"),
+			description: text + "\n" + d.COUNT + Pluralize(+d.COUNT, " song"),
 		};
 	});
 	var minMonthCount = self.getMinMonthCount(data);

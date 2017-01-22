@@ -4,6 +4,7 @@ jQuery(document).ready(function() {
 		SUB: 'Flavors::Data::Collection::AcquisitionStats',
         ARGS: {
             FILTER: $("textarea[name='filter']").val(),
+            UPDATEPLAYLIST: 1,
         },
 		SPINNER: selector,
 		FINISH: function(data) {

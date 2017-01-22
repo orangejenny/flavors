@@ -22,11 +22,18 @@ sub AcquisitionStats {
     $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
 
     my $sql = sprintf(qq{
-        select date_format(collection.created, '%Y-%m') datestring, count(*) count
-        from collection
-        %s
-        group by date_format(collection.created, '%Y-%m')
-    }, $args->{FILTER} ? "where " . $args->{FILTER} : "");
+            select date_format(collection.created, '%%Y-%%m') datestring, count(distinct song.id) count
+            from collection
+            inner join songcollection on collection.id = songcollection.collectionid
+            inner join (%s) song on songcollection.songid = song.id
+            group by date_format(collection.created, '%%Y-%%m')
+        },
+        Flavors::Data::Song::List($dbh, {
+            FILTER => $args->{FILTER},
+            SQLONLY => 1,
+            UPDATEPLAYLIST => $args->{UPDATEPLAYLIST},
+        }),
+    );
 
     return [Flavors::Data::Util::Results($dbh, {
         SQL => $sql,

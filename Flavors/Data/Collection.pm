@@ -129,7 +129,7 @@ sub Add {
 #        ID: only this collection
 #        FILTER
 #        SONGID: only collections that include this song
-#        UPDATEPLAYLISTS: if true, add filter to collection playlists
+#        UPDATEPLAYLIST: if true, add filter to collection playlists
 #
 # Return Value: array/arrayref of hashrefs UNLESS ID is passed,
 #        in which case, return that single hashref

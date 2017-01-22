@@ -34,7 +34,7 @@ my $results = Flavors::Data::Util::TrySQL($dbh, {
     ARGS => {
         FILTER => $fdat->{FILTER},
         ORDERBY => $fdat->{ORDERBY},
-        UPDATEPLAYLISTS => 1,
+        UPDATEPLAYLIST => 1,
     },
 });
 my $sqlerror = $results->{ERROR} || "";

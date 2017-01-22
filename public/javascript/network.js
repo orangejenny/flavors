@@ -67,6 +67,7 @@ function draw() {
             CATEGORY: category,
             FILTER: $("textarea[name='filter']").val(),
             STRENGTH: strength,
+            UPDATEPLAYLIST: 1,
         },
         SPINNER: ".chart-container",
         FINISH: function(data) {

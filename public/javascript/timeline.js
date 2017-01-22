@@ -4,6 +4,7 @@ jQuery(document).ready(function() {
 		SUB: 'Flavors::Data::Tag::TimelineStats',
         ARGS: {
             FILTER: $("textarea[name='filter']").val(),
+            UPDATEPLAYLIST: 1,
         },
 		SPINNER: selector,
 		FINISH: function(data) {

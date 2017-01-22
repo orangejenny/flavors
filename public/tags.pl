@@ -18,9 +18,15 @@ Flavors::HTML::Header($dbh, {
     TITLE => "Tags",
 });
 
-my @tags = Flavors::Data::Tag::List($dbh, {
-    FILTER => $fdat->{FILTER},
+my $results = Flavors::Data::Util::TrySQL($dbh, {
+    SUB => 'Flavors::Data::Tag::List',
+    ARGS => {
+        FILTER => $fdat->{FILTER},
+        UPDATEPLAYLIST => 1,
+    }
 });
+my $sqlerror = $results->{ERROR} || "";
+my @tags = @{ $results->{RESULTS} };
 
 print Flavors::HTML::FilterControl($dbh, {
     FILTER => $fdat->{FILTER},

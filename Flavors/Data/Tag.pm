@@ -166,25 +166,32 @@ sub ColorList {
 # Parameters (optional)
 #        FILTER
 #        RELATED: only tags that appear in a song with this tag
+#        UPDATEPLAYLIST
 #
 # Return Value: array of hashrefs
 ################################################################
 sub List {
     my ($dbh, $args) = @_;
 
-    my $sql = qq{
-        select
-            songtag.tag,
-            tagcategory.category,
-            metacategory.metacategory,
-            count(*) count
-        from
-            songtag
-        inner join song on songtag.songid = song.id
-        left join tagcategory on tagcategory.tag = songtag.tag
-        left join metacategory on tagcategory.category = metacategory.category
-        where 1=1
-    };
+    my $sql = sprintf(qq{
+            select
+                songtag.tag,
+                tagcategory.category,
+                metacategory.metacategory,
+                count(*) count
+            from
+                songtag
+            inner join (%s) song on songtag.songid = song.id
+            left join tagcategory on tagcategory.tag = songtag.tag
+            left join metacategory on tagcategory.category = metacategory.category
+            where 1=1
+        },
+        Flavors::Data::Song::List($dbh, {
+            FILTER => $args->{FILTER},
+            SQLONLY => 1,
+            UPDATEPLAYLIST => $args->{UPDATEPLAYLIST},
+        }),
+    );
 
     if ($args->{RELATED}) {
         $sql .= qq{

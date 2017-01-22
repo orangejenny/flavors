@@ -30,7 +30,7 @@ my @songs = @{ $results->{RESULTS} };
 
 my $tokens = {};    # token => [songid1, songid2, ... ]
 foreach my $song (@songs) {
-    my @songtokens = split(/\s+/, lc(join(" ", $song->{NAME}, $song->{ARTIST}, join(" ", @{ $song->{COLLECTIONS} }), $song->{TAGS})));
+    my @songtokens = split(/\s+/, lc(join(" ", $song->{NAME}, $song->{ARTIST}, join(" ", @{ $song->{COLLECTIONS} }), $song->{TAGLIST})));
     my $songtokenset = {};
     foreach my $token (@songtokens) {
         if ($token) {
@@ -109,7 +109,7 @@ foreach my $song (@songs) {
         $song->{ID},
         $song->{ECHONESTID},
         Flavors::Util::EscapeHTMLAttribute(lc(JSON::to_json([
-            grep { $_->{HEX} } map { $colormap{$_} } grep { exists $colormap{$_} } split(/\s+/, $song->{TAGS})
+            grep { $_->{HEX} } map { $colormap{$_} } grep { exists $colormap{$_} } split(/\s+/, $song->{TAGLIST})
         ]))),
         Flavors::HTML::Rating(1, $song->{ISSTARRED} ? 'star' : 'star-empty'),
         $song->{NAME},
@@ -118,7 +118,7 @@ foreach my $song (@songs) {
         Flavors::HTML::Rating($song->{RATING}, 'star'),
         Flavors::HTML::Rating($song->{ENERGY}, 'fire'),
         Flavors::HTML::Rating($song->{MOOD}, 'heart'),
-        $song->{TAGS},
+        $song->{TAGLIST},
         $song->{HASLYRICS} ? "has-lyrics" : "no-lyrics",
         $song->{ECHONESTID} ? "<i class='glyphicon glyphicon-option-horizontal'></i>" : "",
     );

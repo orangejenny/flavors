@@ -71,7 +71,7 @@ sub Results {
 ################################################################
 # TrySQL
 #
-# Description: Attempt SQL query and result both results and
+# Description: Attempt SQL query and return both results and
 #   error message, if any
 #
 # Parameters
@@ -87,9 +87,11 @@ sub TrySQL {
     my @results = ();
     my $error = "";
 
+    $args->{SUB} ||= $args->{TRYSUB};
+
     eval {
         no strict 'refs';
-        @results = $args->{SUB}($dbh, $args->{ARGS});
+        @results = $args->{SUB}($dbh, $args->{ARGS} || $args);
     };
 
     if ($@) {

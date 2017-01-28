@@ -251,11 +251,12 @@ sub Stats {
         join(", ", @groupby),
         join(", ", @groupby),
     );
-    return [Flavors::Data::Util::Results($dbh, {
+    my @results = Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
         COLUMNS => [@groupby, 'count'],
         BINDS => \@binds,
-    })];
+    });
+    return wantarray ? @results : \@results;
 }
 
 ################################################################

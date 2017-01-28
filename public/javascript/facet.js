@@ -2,16 +2,23 @@ jQuery(document).ready(function() {
 	var selector = ".facet-container";
 	var facet = jQuery(selector).data("facet");
 	CallRemote({
-		SUB: 'Flavors::Data::Song::Stats',
+        SUB: 'Flavors::Data::Util::TrySQL',
 		ARGS: {
+		    TRYSUB: 'Flavors::Data::Song::Stats',
             FILTER: $("textarea[name='filter']").val(),
             GROUPBY: facet,
             UPDATEPLAYLIST: 1,
         },
 		SPINNER: selector,
 		FINISH: function(data) {
-			(new Histogram(".histogram-container", facet, 5)).draw(data);
-			(new BinaryHorizontalStack(".binary-container", facet)).draw(data);
+            if (data.ERROR) {
+                $("#complex-filter-trigger a").click();
+                $("#sql-error").html(data.ERROR).removeClass("hide");
+            } else {
+                data = data.RESULTS;
+    			(new Histogram(".histogram-container", facet, 5)).draw(data);
+	    		(new BinaryHorizontalStack(".binary-container", facet)).draw(data);
+            }
 		},
 	});
 

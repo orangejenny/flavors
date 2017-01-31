@@ -84,14 +84,14 @@ sub Results {
 ################################################################
 sub TrySQL {
     my ($dbh, $args) = @_;
-    my @results = ();
+    my $results;
     my $error = "";
 
     $args->{SUB} ||= $args->{TRYSUB};
 
     eval {
         no strict 'refs';
-        @results = $args->{SUB}($dbh, $args->{ARGS} || $args);
+        $results = $args->{SUB}($dbh, $args->{ARGS} || $args);
     };
 
     if ($@) {
@@ -102,7 +102,7 @@ sub TrySQL {
     }
 
     return {
-        RESULTS => \@results,
+        RESULTS => $results,
         ERROR => $error,
     };
 }

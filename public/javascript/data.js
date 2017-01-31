@@ -159,3 +159,12 @@ function getSelectionCondition() {
 	}
 	return _.map(_.uniq(_.pluck(selected.data(), 'condition')), function(c) { return "(" + c + ")"; }).join(" or ");
 };
+
+function handleComplexError(data, callback) {
+    if (data.ERROR) {
+        $("#complex-filter-trigger a").click();
+        $("#sql-error").html(data.ERROR).removeClass("hide");
+    } else {
+        callback(data.RESULTS);
+    }
+}

@@ -11,14 +11,10 @@ jQuery(document).ready(function() {
         },
 		SPINNER: selector,
 		FINISH: function(data) {
-            if (data.ERROR) {
-                $("#complex-filter-trigger a").click();
-                $("#sql-error").html(data.ERROR).removeClass("hide");
-            } else {
-                data = data.RESULTS;
-    			(new Histogram(".histogram-container", facet, 5)).draw(data);
-	    		(new BinaryHorizontalStack(".binary-container", facet)).draw(data);
-            }
+            handleComplexError(data, function(data) {
+        		(new Histogram(".histogram-container", facet, 5)).draw(data);
+	        	(new BinaryHorizontalStack(".binary-container", facet)).draw(data);
+            });
 		},
 	});
 

@@ -62,8 +62,9 @@ function draw() {
     var category = jQuery(".category-select").val(),
         strength = jQuery(".strength-select input").val();
     CallRemote({
-        SUB: 'Flavors::Data::Tag::NetworkStats',
+        SUB: 'Flavors::Data::Util::TrySQL',
         ARGS: {
+            TRYSUB: 'Flavors::Data::Tag::NetworkStats',
             CATEGORY: category,
             FILTER: $("textarea[name='filter']").val(),
             STRENGTH: strength,
@@ -71,53 +72,55 @@ function draw() {
         },
         SPINNER: ".chart-container",
         FINISH: function(data) {
-            jQuery(".post-nav .label").text(data.nodes.length + Pluralize(data.nodes.length, " tag")
-                                            + ", " + data.links.length + Pluralize(data.links.length, " link"));
-            data.nodes = _.map(data.nodes, function(node) {
-                return _.extend(node, {
-                    count: +node.count,
-                    description: node.id + "<br />" + node.count + " " + Pluralize(+node.count, "song"),
-                    condition: condition([node.id]),
-                    filename: filename([node.id]),
+            handleComplexError(data, function(data) {
+                jQuery(".post-nav .label").text(data.nodes.length + Pluralize(data.nodes.length, " tag")
+                                                + ", " + data.links.length + Pluralize(data.links.length, " link"));
+                data.nodes = _.map(data.nodes, function(node) {
+                    return _.extend(node, {
+                        count: +node.count,
+                        description: node.id + "<br />" + node.count + " " + Pluralize(+node.count, "song"),
+                        condition: condition([node.id]),
+                        filename: filename([node.id]),
+                    });
                 });
-            });
-
-            data.links = _.map(data.links, function(link) {
-                return _.extend(link, {
-                    description: link.source + " and " + link.target + "<br />" + link.value + " " + Pluralize(link.value, "song"),
-                    condition: condition([link.source, link.target]),
-                    filename: filename([link.source, link.target]),
+    
+                data.links = _.map(data.links, function(link) {
+                    return _.extend(link, {
+                        description: link.source + " and " + link.target + "<br />" + link.value + " " + Pluralize(link.value, "song"),
+                        condition: condition([link.source, link.target]),
+                        filename: filename([link.source, link.target]),
+                    });
                 });
+    
+                var link = svg.append("g")
+                              .attr("class", "links")
+                              .selectAll("line")
+                              .data(data.links)
+                              .enter().append("line")
+                                      .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+            
+                var count = function(n) { return n.count; },
+                    rScale = d3.scaleLinear()
+                               .range([5, 15])
+                               .domain([d3.min(data.nodes, count), d3.max(data.nodes, count)]);
+                var node = svg.append("g")
+                              .attr("class", "nodes")
+                              .selectAll("circle")
+                              .data(data.nodes)
+                              .enter().append("circle")
+                                      .attr("r", function(n) { return rScale(n.count); })
+                                      .call(d3.drag()
+                                              .on("start", function(d) { dragStarted(d, simulation); })
+                                              .on("drag", function(d) { dragged(d, simulation); })
+                                              .on("end", function(d) { dragEnded(d, simulation); }));
+            
+                simulation.nodes(data.nodes)
+                          .on("tick", function() { ticked(link, node); });
+                simulation.force("link").links(data.links);
+            
+                attachTooltip(selector + " g circle, " + selector + " g line");
+                attachSelectionHandlers(selector + " g circle, " + selector + " g line");
             });
-
-            var link = svg.append("g")
-                          .attr("class", "links")
-                          .selectAll("line")
-                          .data(data.links)
-                          .enter().append("line")
-                                  .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
-        
-            var count = function(n) { return n.count; },
-                rScale = d3.scaleLinear()
-                           .range([5, 15])
-                           .domain([d3.min(data.nodes, count), d3.max(data.nodes, count)]);
-            var node = svg.append("g")
-                          .attr("class", "nodes")
-                          .selectAll("circle")
-                          .data(data.nodes)
-                          .enter().append("circle")
-                                  .attr("r", function(n) { return rScale(n.count); })
-                                  .call(d3.drag()
-                                          .on("start", function(d) { dragStarted(d, simulation); })
-                                          .on("drag", function(d) { dragged(d, simulation); })
-                                          .on("end", function(d) { dragEnded(d, simulation); }));
-        
-            simulation.nodes(data.nodes)
-                      .on("tick", function() { ticked(link, node); });
-            simulation.force("link").links(data.links);
-        
-            attachTooltip(selector + " g circle, " + selector + " g line");
-            attachSelectionHandlers(selector + " g circle, " + selector + " g line");
         },
     });
 }

@@ -3,7 +3,7 @@ jQuery(document).ready(function() {
 	CallRemote({
         SUB: 'Flavors::Data::Util::TrySQL',
         ARGS: {
-		    TRYSUB: 'Flavors::Data::Tag::TimelineStats',
+		    INNERSUB: 'Flavors::Data::Tag::TimelineStats',
             FILTER: $("textarea[name='filter']").val(),
             UPDATEPLAYLIST: 1,
         },

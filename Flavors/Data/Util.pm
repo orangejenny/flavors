@@ -75,7 +75,7 @@ sub Results {
 #   error message, if any
 #
 # Parameters
-#        SUB: String; sub to execute
+#        INNERSUB: String; sub to execute
 #        ARGS: Hashref of args to pass to sub
 #
 # Return Value: hashref containing
@@ -87,7 +87,7 @@ sub TrySQL {
     my $results;
     my $error = "";
 
-    $args->{SUB} ||= $args->{TRYSUB};
+    $args->{SUB} ||= $args->{INNERSUB};
 
     eval {
         no strict 'refs';

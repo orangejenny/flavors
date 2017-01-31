@@ -4,7 +4,7 @@ jQuery(document).ready(function() {
 	CallRemote({
         SUB: 'Flavors::Data::Util::TrySQL',
 		ARGS: {
-		    TRYSUB: 'Flavors::Data::Song::Stats',
+		    INNERSUB: 'Flavors::Data::Song::Stats',
             FILTER: $("textarea[name='filter']").val(),
             GROUPBY: facet,
             UPDATEPLAYLIST: 1,

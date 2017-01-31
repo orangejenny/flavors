@@ -7,7 +7,7 @@ function draw() {
 	CallRemote({
         SUB: 'Flavors::Data::Util::TrySQL',
 		ARGS: {
-		    TRYSUB: 'Flavors::Data::Song::Stats',
+		    INNERSUB: 'Flavors::Data::Song::Stats',
             FILTER: $("textarea[name='filter']").val(),
             GROUPBY: "rating, energy, mood",
             UPDATEPLAYLIST: 1,

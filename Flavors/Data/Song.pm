@@ -227,7 +227,7 @@ sub ColumnList {
 ################################################################
 sub Stats {
     my ($dbh, $args) = @_;
-    my @groupby = split(/\s*,\s*/, Flavors::Util::Sanitize($args->{GROUPBY}));
+    my @groupby = map { uc $_ } split(/\s*,\s*/, Flavors::Util::Sanitize($args->{GROUPBY}));
     $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
 
     my @binds = ();
@@ -256,7 +256,31 @@ sub Stats {
         COLUMNS => [@groupby, 'count'],
         BINDS => \@binds,
     });
-    return wantarray ? @results : \@results;
+
+    # Fill in zeroes: expand query into data structure that has a place for every rating (0-5)
+    my @allresults = ({ COUNT => 0 });
+    foreach my $column (@groupby) {
+        my @expandedresults = ();
+        foreach my $rating (0..5) {
+            foreach my $result (@allresults) {
+                push(@expandedresults, {
+                    %$result,
+                    $column => $rating,
+                });
+            }
+        }
+        @allresults = @expandedresults;
+    }
+
+    foreach my $result (@results) {
+        foreach my $allresult (@allresults) {
+            if (!scalar(grep { $allresult->{$_} != $result->{$_} } @groupby)) {
+                $allresult->{COUNT} = $result->{COUNT};
+            }
+        }
+    }
+
+    return wantarray ? @allresults : \@allresults;
 }
 
 ################################################################

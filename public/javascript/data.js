@@ -12,7 +12,9 @@ jQuery(document).ready(function() {
             showSongModal({
                 TITLE: getSelectionFilename(),
     			SUB: 'Flavors::Data::Song::List', 
-                FILTER: condition,
+                FILTER: (condition || "1 = 1") + " and (" + $("#complex-filter textarea").val() + ")",
+                SIMPLEFILTER: jQuery("#filter").val(),
+                STARRED: jQuery("#simple-filter .glyphicon-star").length,
             });
 		}
 	});
@@ -22,8 +24,11 @@ jQuery(document).ready(function() {
 		var condition = getSelectionCondition();
 		if (condition) {
 			ExportPlaylist({
+                STARRED: !jQuery("#simple-filter .glyphicon-star-empty").length,
 		        PATH: jQuery(this).text(),
-				FILTER: condition,
+                FILTER: (condition || "1 = 1") + " and (" + $("#complex-filter textarea").val() + ")",
+                SIMPLEFILTER: jQuery("#filter").val(),
+                STARRED: jQuery("#simple-filter .glyphicon-star").length,
 			});
 		}
 	});
@@ -134,7 +139,9 @@ function viewOnDoubleClick(selector, actsOn) {
             showSongModal({
                 TITLE: data.filename,
     			SUB: 'Flavors::Data::Song::List', 
-                FILTER: condition,
+                FILTER: (condition || "1 = 1") + " and (" + $("#complex-filter textarea").val() + ")",
+                SIMPLEFILTER: jQuery("#filter").val(),
+                STARRED: jQuery("#simple-filter .glyphicon-star").length,
             }, function() {
                 selectData(obj);
             });

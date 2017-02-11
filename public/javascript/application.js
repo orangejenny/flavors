@@ -157,7 +157,6 @@ function BuildArgs(selector, args) {
  *	COLLECTIONIDS: Get all tracks from this collection
  *	or
  *	(variety of filters that will be passed to Song::List) 
- * and DISJUNCTION, which is truthy for "OR", falsy for "AND"
  */
 function ExportPlaylist(args) {
 	args.FILENAME = prompt("Playlist name?", args.FILENAME || "flavors");

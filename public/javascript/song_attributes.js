@@ -80,7 +80,7 @@ function showSongModal(args, callback) {
                                             + "<td class='rating' contenteditable='true' data-key='rating'><%= RATINGHTML %></td>"
                                             + "<td class='rating' contenteditable='true' data-key='energy'><%= ENERGYHTML %></td>"
                                             + "<td class='rating' contenteditable='true' data-key='mood'><%= MOODHTML %></td>"
-                                            + "<td contenteditable='true' data-key='tags'><%= TAGS %></td>"
+                                            + "<td contenteditable='true' data-key='tags'><%= TAGLIST %></td>"
                                             + "</tr>");
         
             _.each(songs, function(song) {

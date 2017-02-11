@@ -1,6 +1,6 @@
 jQuery(document).ready(function() {
     $("body").on("click", ".glyphicon-star, .glyphicon-star-empty", function() {
-		var $star = jQuery(this);
+        var $star = jQuery(this);
         if ($star.closest(".rating").length || $star.closest("#filter-container").length || $star.closest("nav").length) {
             return;
         }
@@ -16,7 +16,7 @@ function initSimpleFilter(callback) {
     callback();
 
     var $simpleFilter = $("#simple-filter");
-	jQuery('#filter').on("keyup blur", _.throttle(function(event) {
+    jQuery('#filter').on("keyup blur", _.throttle(function(event) {
         simpleFilter(event && event.keyCode === 13, callback);
     }, 100, { leading: false }));
     jQuery("#simple-filter .glyphicon-remove").click(function() {
@@ -30,14 +30,14 @@ function initSimpleFilter(callback) {
 }
 
 function simpleFilter(force, callback) {
-	var query = jQuery("#filter").val();
+    var query = jQuery("#filter").val();
 
     var lastQuery = jQuery("#last-query input").val();
     if (!force && query === lastQuery) {
         return;
     }
 
-	lastQuery = query;
+    lastQuery = query;
     jQuery("#last-query-text").text(lastQuery);
     jQuery("#last-query input").val(lastQuery);
     if (lastQuery) {
@@ -51,11 +51,11 @@ function simpleFilter(force, callback) {
 
 
 function toggleStar($star, id, sub) {
-	var isstarred = $star.hasClass("glyphicon-star") ? 0 : 1;
+    var isstarred = $star.hasClass("glyphicon-star") ? 0 : 1;
 
-	// Update markup
-	$star.toggleClass("glyphicon-star-empty");
-	$star.toggleClass("glyphicon-star");
+    // Update markup
+    $star.toggleClass("glyphicon-star-empty");
+    $star.toggleClass("glyphicon-star");
 
     $("body").trigger('song-update', {
         id: id,
@@ -63,17 +63,17 @@ function toggleStar($star, id, sub) {
         key: 'isstarred',
     });
 
-	// Update server data
-	$star.addClass("update-in-progress");
-	CallRemote({
-		SUB: sub,
-		ARGS: {
-			ID: id,
-			ISSTARRED: isstarred,
+    // Update server data
+    $star.addClass("update-in-progress");
+    CallRemote({
+        SUB: sub,
+        ARGS: {
+            ID: id,
+            ISSTARRED: isstarred,
         },
-	    FINISH: function(data) {
-			$star.removeClass("update-in-progress");
-		}
-	});
+        FINISH: function(data) {
+            $star.removeClass("update-in-progress");
+        }
+    });
 }
 

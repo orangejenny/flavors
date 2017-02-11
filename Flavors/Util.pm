@@ -6,7 +6,7 @@ use Data::Dumper;
 use YAML;
 
 sub Config {
-	return YAML::LoadFile("../config.yml");
+    return YAML::LoadFile("../config.yml");
 }
 
 ################################################################
@@ -19,28 +19,28 @@ sub Config {
 # Return Value: string
 ################################################################
 sub EscapeJS {
-	my ($string) = @_;
-	$string =~ s/'/\\'/g;
-	$string =~ s/"/\\"/g;
-	return $string;
+    my ($string) = @_;
+    $string =~ s/'/\\'/g;
+    $string =~ s/"/\\"/g;
+    return $string;
 }
 
 sub EscapeHTMLAttribute {
-	my $string = shift;
-	$string =~ s/"/&quot;/g;
-	return $string;
+    my $string = shift;
+    $string =~ s/"/&quot;/g;
+    return $string;
 }
 
 sub EscapeSQL {
-	my ($string) = @_;
-	$string =~ s/'/\'\'/g;
-	return $string;
+    my ($string) = @_;
+    $string =~ s/'/\'\'/g;
+    return $string;
 }
 
 sub TrimDate {
-	my ($date) = @_;
-	$date =~ s/ (.*)//;
-	return $date;
+    my ($date) = @_;
+    $date =~ s/ (.*)//;
+    return $date;
 }
 
 ################################################################
@@ -53,22 +53,22 @@ sub TrimDate {
 # Return Value: hashref
 ################################################################
 sub Fdat {
-	my $q = CGI->new;
-	my $fdat;
+    my $q = CGI->new;
+    my $fdat;
 
-	# GET
-	foreach my $key ($q->url_param()) {
-		my $value = $q->url_param($key);
-		$fdat->{uc($key)} = $value;
-	}
+    # GET
+    foreach my $key ($q->url_param()) {
+        my $value = $q->url_param($key);
+        $fdat->{uc($key)} = $value;
+    }
 
-	# POST (will override GET in conflicts)
-	foreach my $key ($q->param()) {
-		my $value = $q->param($key);
-		$fdat->{uc($key)} = $value;
-	}
+    # POST (will override GET in conflicts)
+    foreach my $key ($q->param()) {
+        my $value = $q->param($key);
+        $fdat->{uc($key)} = $value;
+    }
 
-	return $fdat;
+    return $fdat;
 }
 
 ################################################################
@@ -79,22 +79,22 @@ sub Fdat {
 # Params: two arrayrefs
 #
 # Return Value: Array of elements present in the first array
-#	but not the second
+#    but not the second
 ################################################################
 sub ArrayDifference {
-	my ($a1, $a2) = @_;
+    my ($a1, $a2) = @_;
 
-	my %a1 = map { $_ => 1 } @$a1;
-	my %a2 = map { $_ => 1 } @$a2;
+    my %a1 = map { $_ => 1 } @$a1;
+    my %a2 = map { $_ => 1 } @$a2;
 
-	my @difference;
-	foreach my $e (keys %a1) {
-		if (!$a2{$e}) {
-			push @difference, $e;
-		}
-	}
+    my @difference;
+    foreach my $e (keys %a1) {
+        if (!$a2{$e}) {
+            push @difference, $e;
+        }
+    }
 
-	return @difference;
+    return @difference;
 }
 
 ################################################################
@@ -107,18 +107,18 @@ sub ArrayDifference {
 # Return Value: Array of elements present in both arrays
 ################################################################
 sub ArrayIntersection {
-	my ($a1, $a2) = @_;
+    my ($a1, $a2) = @_;
 
-	my %a1 = map { $_ => 1 } @$a1;
+    my %a1 = map { $_ => 1 } @$a1;
 
-	my @intersection;
-	foreach my $e (@$a2) {
-		if ($a1{$e}) {
-			push @intersection, $e;
-		}
-	}
+    my @intersection;
+    foreach my $e (@$a2) {
+        if ($a1{$e}) {
+            push @intersection, $e;
+        }
+    }
 
-	return @intersection;
+    return @intersection;
 }
 
 ################################################################
@@ -129,53 +129,53 @@ sub ArrayIntersection {
 # Return Value: String (may be blank)
 ################################################################
 sub Sanitize {
-	my ($sql) = @_;
+    my ($sql) = @_;
 
-	$sql =~ s/;.*//;
-	if ($sql =~ /update|insert|delete|;/i) {
-		$sql = "";
-	}
+    $sql =~ s/;.*//;
+    if ($sql =~ /update|insert|delete|;/i) {
+        $sql = "";
+    }
 
-	return $sql;
+    return $sql;
 }
 
 ################################################################
 # Categorize
 #
 # Description: Group given rows by a "category" value and get 
-#		any uncategorized values
+#        any uncategorized values
 #
 # Parameters:
-#		ITEMS
+#        ITEMS
 #
 # Return Value: hashref
-#		CATEGORIES: hashref of categoryname => arrayref of values
-#		UNCATEGORIZED: arrayref of values without a category
+#        CATEGORIES: hashref of categoryname => arrayref of values
+#        UNCATEGORIZED: arrayref of values without a category
 ################################################################
 sub Categorize {
-	my ($dbh, $args) = @_;
+    my ($dbh, $args) = @_;
 
-	my @items = @{ $args->{ITEMS} };
+    my @items = @{ $args->{ITEMS} };
 
-	my $category = $args->{CATEGORY} || "CATEGORY";
+    my $category = $args->{CATEGORY} || "CATEGORY";
 
-	my %categories;
-	my @uncategorized;
-	foreach my $item (@items) {
-		if ($item->{$category}) {
-			$categories{$item->{$category}} ||= [];
-			push @{ $categories{$item->{$category}} }, $item->{TAG};
-		}
-		else {
-			push @uncategorized, $item->{TAG};
-		}
-	}
-	@uncategorized = sort @uncategorized;
+    my %categories;
+    my @uncategorized;
+    foreach my $item (@items) {
+        if ($item->{$category}) {
+            $categories{$item->{$category}} ||= [];
+            push @{ $categories{$item->{$category}} }, $item->{TAG};
+        }
+        else {
+            push @uncategorized, $item->{TAG};
+        }
+    }
+    @uncategorized = sort @uncategorized;
 
-	return {
-		CATEGORIES => \%categories,
-		UNCATEGORIZED => \@uncategorized,
-	};	
+    return {
+        CATEGORIES => \%categories,
+        UNCATEGORIZED => \@uncategorized,
+    };    
 }
 
 1;

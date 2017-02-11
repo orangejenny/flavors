@@ -6,27 +6,27 @@
     text-align: center;
     padding: @spacingWide;
 
-	.collection {
-		@albumSize: 200px;
+    .collection {
+        @albumSize: 200px;
         position: relative;
-	
+    
         display: inline-block;
-		margin: 0 0 @spacingWide @spacingWide;
-		border-radius: @borderRadius;
-		cursor: pointer;
-		overflow: hidden;
-		background-color: @white;
+        margin: 0 0 @spacingWide @spacingWide;
+        border-radius: @borderRadius;
+        cursor: pointer;
+        overflow: hidden;
+        background-color: @white;
         max-width: @albumSize;
 
-		.name, .artist {
-			.ellipsis();
-		}
+        .name, .artist {
+            .ellipsis();
+        }
 
         .name {
             margin-top: @spacingNarrow;
         }
-	
-		.details, .details-background {
+    
+        .details, .details-background {
             position: absolute;
             top: 0;
             left: 0;
@@ -39,52 +39,52 @@
             opacity: 0.9;
         }
 
-		.details {
+        .details {
             padding: @spacingNarrow;
             opacity: 1;
             text-align: left;
 
-			.rating {
+            .rating {
                 width: 60px;
-			}
+            }
 
             .ratings, .tags {
                 text-align: center;
                 line-height: 1.5;
             }
-		}
-
-		&:not(:hover) .details, &:not(:hover) .details-background {
-		    display: none;
         }
-	
-		&.selected {
-			opacity: 0.3;
-		}
-	
-		.cover-art, .accepting-drop {
-			border: 1px solid @grey;
-			width: @albumSize;
-			height: @albumSize;
-		}
+
+        &:not(:hover) .details, &:not(:hover) .details-background {
+            display: none;
+        }
+    
+        &.selected {
+            opacity: 0.3;
+        }
+    
+        .cover-art, .accepting-drop {
+            border: 1px solid @grey;
+            width: @albumSize;
+            height: @albumSize;
+        }
 
         .cover-art {
             position: relative;
 
-    		&.missing {
-	    		padding: @spacingNarrow;
-		    	div {
-			    	max-width: @albumSize - 2 * @spacingNarrow;
+            &.missing {
+                padding: @spacingNarrow;
+                div {
+                    max-width: @albumSize - 2 * @spacingNarrow;
                     .ellipsis();
-    				&:not(:last-child) {
-	    				margin-bottom: @spacingNarrow;
-		    		}
-			    }
-		    }
+                    &:not(:last-child) {
+                        margin-bottom: @spacingNarrow;
+                    }
+                }
+            }
 
             img {
-			    width: @albumSize;
-    			height: @albumSize;
+                width: @albumSize;
+                height: @albumSize;
             }
 
 
@@ -129,7 +129,7 @@
                 font-size: 64px;
             }
         }
-	}
+    }
 }
 
 #song-list {
@@ -186,60 +186,60 @@
 }
 
 #new-collection {
-	.modal-header {
-		input[type='text'] {
-			width: 500;
-		}
+    .modal-header {
+        input[type='text'] {
+            width: 500;
+        }
 
-		input[type='checkbox'] {
-			margin-left: @spacingNormal;
-		}
-	}
+        input[type='checkbox'] {
+            margin-left: @spacingNormal;
+        }
+    }
 
-	.song {
-		.ordinal {
-			display: inline-block;
-			font-size: @fontSizeLarge;
-			margin: @spacingNormal;
-		}
+    .song {
+        .ordinal {
+            display: inline-block;
+            font-size: @fontSizeLarge;
+            margin: @spacingNormal;
+        }
 
-		input {
-			margin-bottom: @spacingNormal;
-			&[name='name'], &[name='artist'], &[name='seconds'] {
-				margin-right: @spacingNormal;
-			}
-			&[name='name'] {
-				width: 300px;
-			}
-			&[name='artist'] {
-				width: 200px;
-			}
-			&[name='minutes'], &[name='seconds'] {
-				width: @inputHeight;
-				text-align: center;
-			}
-		}
+        input {
+            margin-bottom: @spacingNormal;
+            &[name='name'], &[name='artist'], &[name='seconds'] {
+                margin-right: @spacingNormal;
+            }
+            &[name='name'] {
+                width: 300px;
+            }
+            &[name='artist'] {
+                width: 200px;
+            }
+            &[name='minutes'], &[name='seconds'] {
+                width: @inputHeight;
+                text-align: center;
+            }
+        }
 
-		.glyphicon-trash {
-			cursor: pointer;
-			margin-top: @spacingNormal;
-		}
-	}
+        .glyphicon-trash {
+            cursor: pointer;
+            margin-top: @spacingNormal;
+        }
+    }
 
-	#add-song {
-		button, input {
-			width: @inputHeight;
-			height: @inputHeight;
-			text-align: center;
-		}
+    #add-song {
+        button, input {
+            width: @inputHeight;
+            height: @inputHeight;
+            text-align: center;
+        }
 
-		button {
-			padding: 0;
-			margin-right: @spacingNormal;
+        button {
+            padding: 0;
+            margin-right: @spacingNormal;
 
-			.glyphicon {
-				margin: 0 0 3px 3px;
-			}
-		}
-	}
+            .glyphicon {
+                margin: 0 0 3px 3px;
+            }
+        }
+    }
 }

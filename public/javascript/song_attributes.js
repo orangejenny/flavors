@@ -4,36 +4,36 @@ var iconClasses = {
     'mood': 'glyphicon-heart',
 };
 jQuery(document).ready(function() {
-	var selector = "[contenteditable=true][data-key]",
+    var selector = "[contenteditable=true][data-key]",
         $body = $("body"),
         oldValue = undefined;
 
-	$body.on("focus", selector, function() {
-		var $editable = jQuery(this);
-		if ($editable.hasClass("rating")) {
-			oldValue = $editable.children(".glyphicon:not(.blank)").length;
-			$editable.html(StringMultiply("*", oldValue));
-		}
-		else {
-			oldValue = $editable.text().trim();
-		}
-	});
+    $body.on("focus", selector, function() {
+        var $editable = jQuery(this);
+        if ($editable.hasClass("rating")) {
+            oldValue = $editable.children(".glyphicon:not(.blank)").length;
+            $editable.html(StringMultiply("*", oldValue));
+        }
+        else {
+            oldValue = $editable.text().trim();
+        }
+    });
 
-	$body.on("blur", selector, function() {
-		var $editable = jQuery(this),
+    $body.on("blur", selector, function() {
+        var $editable = jQuery(this),
             key = $editable.data("key"),
             $container = $editable.closest("[data-song-id]"),
-		    value = $editable.text().trim();
-		if ($editable.hasClass("rating")) {
-			value = value.length;
-			$editable.html(ratingHTML(iconClasses[key], value));
-		}
-		if (oldValue != value) {
-			var id = $container.data("song-id");
-			var args = {
-				id: id,
-			}
-			args[key] = value;
+            value = $editable.text().trim();
+        if ($editable.hasClass("rating")) {
+            value = value.length;
+            $editable.html(ratingHTML(iconClasses[key], value));
+        }
+        if (oldValue != value) {
+            var id = $container.data("song-id");
+            var args = {
+                id: id,
+            }
+            args[key] = value;
             $body.trigger('song-update', {
                 id: id,
                 value: value,
@@ -41,22 +41,22 @@ jQuery(document).ready(function() {
                 key: key,
             });
 
-			// Update server
-			$editable.addClass("update-in-progress");
-			CallRemote({
-				SUB: 'Flavors::Data::Song::Update', 
-				ARGS: args, 
-				FINISH: function(data) {
-					$editable.removeClass("update-in-progress");
-				}
-			});
-		}
-		oldValue = undefined;
-	});
+            // Update server
+            $editable.addClass("update-in-progress");
+            CallRemote({
+                SUB: 'Flavors::Data::Song::Update', 
+                ARGS: args, 
+                FINISH: function(data) {
+                    $editable.removeClass("update-in-progress");
+                }
+            });
+        }
+        oldValue = undefined;
+    });
 });
 
 function ratingHTML(iconClass, number) {
-	return StringMultiply("<span class='glyphicon " + (number ? "" : "blank ") + iconClass + "'></span>", number || 5);
+    return StringMultiply("<span class='glyphicon " + (number ? "" : "blank ") + iconClass + "'></span>", number || 5);
 }
 
 function showSongModal(args, callback) {
@@ -65,9 +65,9 @@ function showSongModal(args, callback) {
     $body.html(jQuery("body .loading").clone().removeClass("hide"));
     $modal.find(".modal-title").text(args.TITLE || "Songs");
     $modal.modal();
-	CallRemote({
-		ARGS: args || {},
-		FINISH: function(songs) {
+    CallRemote({
+        ARGS: args || {},
+        FINISH: function(songs) {
             var $body = $("#song-list .modal-body"),
                 $table = $("<table class='song-table'></table>"),
                 count = 0,
@@ -96,6 +96,6 @@ function showSongModal(args, callback) {
             if (callback && _.isFunction(callback)) {
                 callback.apply();
             }
-		}
-	});
+        }
+    });
 }

@@ -81,7 +81,7 @@ jQuery(document).ready(function() {
             id = $collection.data("id");
         showSongModal({
             TITLE: $collection.find(".name").text(),
-			SUB: 'Flavors::Data::Collection::TrackList', 
+            SUB: 'Flavors::Data::Collection::TrackList', 
             COLLECTIONIDS: id,
         }, function() {
             var $modal = $("#song-list");
@@ -305,5 +305,5 @@ jQuery(document).ready(function() {
 });
 
 function updateItemCount() {
-	jQuery("#item-count").text(jQuery(".collections .collection:visible").length);
+    jQuery("#item-count").text(jQuery(".collections .collection:visible").length);
 }

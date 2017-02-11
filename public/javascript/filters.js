@@ -49,6 +49,10 @@ function simpleFilter(force, callback) {
     callback();
 }
 
+// Add complex filter to given condition
+function augmentFilter(condition) {
+    return _.map(_.compact([condition, $("#complex-filter textarea").val()]), function(x) { return "(" + x + ")"; }).join(" and ");
+}
 
 function toggleStar($star, id, sub) {
     var isstarred = $star.hasClass("glyphicon-star") ? 0 : 1;

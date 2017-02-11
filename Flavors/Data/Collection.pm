@@ -388,7 +388,7 @@ sub TrackList {
             song.energy,
             song.mood,
             song.isstarred,
-            songtaglist.taglist as tags
+            songtaglist.taglist
         from 
             songcollection
         inner join song on song.id = songcollection.songid
@@ -410,7 +410,7 @@ sub TrackList {
 
     my @rows = Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
-        COLUMNS => [qw(collectionid id name artist tracknumber filename rating energy mood isstarred tags)],
+        COLUMNS => [qw(collectionid id name artist tracknumber filename rating energy mood isstarred taglist)],
     });
     return wantarray ? @rows : \@rows;
 }

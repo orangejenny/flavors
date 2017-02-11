@@ -7,7 +7,7 @@ jQuery(document).ready(function() {
             $input = $nudge.siblings("input");
         $input.val(+$input.val() + +$nudge.data("increment")).change();
     });
-    draw();
+    initSimpleFilter(draw);
 });
 
 function dragStarted(d, simulation) {
@@ -60,13 +60,16 @@ function draw() {
         .force("center", d3.forceCenter(width / 2, height / 2));
     
     var category = jQuery(".category-select").val(),
-        strength = jQuery(".strength-select input").val();
+        strength = jQuery(".strength-select input").val(),
+        $simpleFilter = $("#simple-filter");
     CallRemote({
         SUB: 'Flavors::Data::Util::TrySQL',
         ARGS: {
             INNERSUB: 'Flavors::Data::Tag::NetworkStats',
             CATEGORY: category,
             FILTER: $("textarea[name='filter']").val(),
+            SIMPLEFILTER: $simpleFilter.find("input[type='text']").val(),
+            STARRED: $simpleFilter.find(".glyphicon-star").length,
             STRENGTH: strength,
             UPDATEPLAYLIST: 1,
         },

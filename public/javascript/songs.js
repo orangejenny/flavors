@@ -1,5 +1,4 @@
 // Globals
-var lastQuery = "";
 var tokens;
 var letters;
 var letterCounts;
@@ -180,12 +179,14 @@ function simpleFilter(force) {
 	var query = jQuery("#filter").val();
 	var rowselector = "#song-table-container tbody tr";
 
+    var lastQuery = jQuery("#last-query input").val();
     if (!force && (query === lastQuery || query.length < 4)) {
         return;
     }
 
 	lastQuery = query;
     jQuery("#last-query-text").text(lastQuery);
+    jQuery("#last-query input").val(lastQuery);
     if (lastQuery) {
         jQuery("#simple-filter .glyphicon-remove").removeClass("hide");
     } else {

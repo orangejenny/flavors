@@ -255,6 +255,7 @@ sub FilterControl {
     		<div id="filter-container">
                 <div id="simple-filter">
                     <div id="last-query">
+                        <input type='hidden' />
     			        <span class='glyphicon glyphicon-search'></span>
     			        <span class='glyphicon glyphicon-star-empty'></span>
     			        <span class='glyphicon glyphicon-remove hide'></span>

@@ -1,6 +1,5 @@
 jQuery(document).ready(function() {
-    var lastQuery = "",
-        selector = ".timeline-container",
+    var selector = ".timeline-container",
         $simpleFilter = $("#simple-filter");
 
     draw();
@@ -21,11 +20,14 @@ jQuery(document).ready(function() {
     function simpleFilter(force) {
     	var query = jQuery("#filter").val();
     
+        var lastQuery = jQuery("#last-query input").val();
         if (!force && query === lastQuery) {
             return;
         }
     
     	lastQuery = query;
+        jQuery("#last-query-text").text(lastQuery);
+        jQuery("#last-query input").val(lastQuery);
         if (lastQuery) {
             jQuery("#simple-filter .glyphicon-remove").removeClass("hide");
         } else {

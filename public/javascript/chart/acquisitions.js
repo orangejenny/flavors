@@ -10,6 +10,7 @@ AcquisitionsChart.prototype = Object.create(Chart.prototype);
 AcquisitionsChart.prototype.draw = function(data) {
 	var self = this;
 	data = self.reformatData(data);
+    document.querySelector(self.selector + " svg").innerHTML = "";
 	self.drawBars(data);
 	self.drawAxes(data);
 	self.attachEvents();

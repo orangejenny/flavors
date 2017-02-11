@@ -12,6 +12,44 @@ jQuery(document).ready(function() {
     });
 });
 
+function initSimpleFilter(callback) {
+    callback();
+
+    var $simpleFilter = $("#simple-filter");
+	jQuery('#filter').on("keyup blur", _.throttle(function(event) {
+        simpleFilter(event && event.keyCode === 13, callback);
+    }, 100, { leading: false }));
+    jQuery("#simple-filter .glyphicon-remove").click(function() {
+        jQuery("#filter").val("");
+        simpleFilter(true, callback);
+    });
+    jQuery("#simple-filter .glyphicon-star-empty, #simple-filter .glyphicon-star").click(function() {
+        $(this).toggleClass("glyphicon-star-empty").toggleClass("glyphicon-star");
+        simpleFilter(true, callback);
+    });
+}
+
+function simpleFilter(force, callback) {
+	var query = jQuery("#filter").val();
+
+    var lastQuery = jQuery("#last-query input").val();
+    if (!force && query === lastQuery) {
+        return;
+    }
+
+	lastQuery = query;
+    jQuery("#last-query-text").text(lastQuery);
+    jQuery("#last-query input").val(lastQuery);
+    if (lastQuery) {
+        jQuery("#simple-filter .glyphicon-remove").removeClass("hide");
+    } else {
+        jQuery("#simple-filter .glyphicon-remove").addClass("hide");
+    }
+
+    callback();
+}
+
+
 function toggleStar($star, id, sub) {
 	var isstarred = $star.hasClass("glyphicon-star") ? 0 : 1;
 

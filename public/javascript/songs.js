@@ -11,18 +11,7 @@ jQuery(document).ready(function() {
     starred = InitialPageData('starred');
 	updateItemCount();
 
-    simpleFilter();
-	jQuery('#filter').on("keyup blur", _.throttle(function(event) {
-        simpleFilter(event && event.keyCode === 13);
-    }, 100, { leading: false }));
-    jQuery("#simple-filter .glyphicon-remove").click(function() {
-        jQuery("#filter").val("");
-        simpleFilter(true);
-    });
-    jQuery("#simple-filter .glyphicon-star-empty, #simple-filter .glyphicon-star").click(function() {
-        $(this).toggleClass("glyphicon-star-empty").toggleClass("glyphicon-star");
-        simpleFilter(true);
-    });
+    initSimpleFilter(filterSongs);
 
 	// Column names hint for filter
 	jQuery(".hint").tooltip({
@@ -175,28 +164,13 @@ function updateItemCount() {
 	jQuery("#item-count").text(jQuery("#song-table-container tbody tr:visible").length);
 }
 
-function simpleFilter(force) {
-	var query = jQuery("#filter").val();
-	var rowselector = "#song-table-container tbody tr";
-
-    var lastQuery = jQuery("#last-query input").val();
-    if (!force && (query === lastQuery || query.length < 4)) {
-        return;
-    }
-
-	lastQuery = query;
-    jQuery("#last-query-text").text(lastQuery);
-    jQuery("#last-query input").val(lastQuery);
-    if (lastQuery) {
-        jQuery("#simple-filter .glyphicon-remove").removeClass("hide");
-    } else {
-        jQuery("#simple-filter .glyphicon-remove").addClass("hide");
-    }
-
-    var queryTokens = _.without(query.split(/\s+/), "");
-    var onlyStarred = !jQuery("#simple-filter .glyphicon-star-empty").length;
+function filterSongs(force) {
+	var query = jQuery("#filter").val(),
+        queryTokens = _.without(query.split(/\s+/), ""),
+        onlyStarred = !jQuery("#simple-filter .glyphicon-star-empty").length;
 
     // If there's no text in the filter; just check the star filter
+	var rowselector = "#song-table-container tbody tr";
     if (!queryTokens.length) {
         if (onlyStarred) {
             jQuery(rowselector).hide();

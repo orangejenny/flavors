@@ -2,42 +2,7 @@ jQuery(document).ready(function() {
     var selector = ".timeline-container",
         $simpleFilter = $("#simple-filter");
 
-    draw();
-
-    var $simpleFilter = $("#simple-filter");
-	jQuery('#filter').on("keyup blur", _.throttle(function(event) {
-        simpleFilter(event && event.keyCode === 13);
-    }, 100, { leading: false }));
-    jQuery("#simple-filter .glyphicon-remove").click(function() {
-        jQuery("#filter").val("");
-        simpleFilter(true);
-    });
-    jQuery("#simple-filter .glyphicon-star-empty, #simple-filter .glyphicon-star").click(function() {
-        $(this).toggleClass("glyphicon-star-empty").toggleClass("glyphicon-star");
-        simpleFilter(true);
-    });
-
-    function simpleFilter(force) {
-    	var query = jQuery("#filter").val();
-    
-        var lastQuery = jQuery("#last-query input").val();
-        if (!force && query === lastQuery) {
-            return;
-        }
-    
-    	lastQuery = query;
-        jQuery("#last-query-text").text(lastQuery);
-        jQuery("#last-query input").val(lastQuery);
-        if (lastQuery) {
-            jQuery("#simple-filter .glyphicon-remove").removeClass("hide");
-        } else {
-            jQuery("#simple-filter .glyphicon-remove").addClass("hide");
-        }
-    
-        draw();
-    }
-
-    function draw() {
+    initSimpleFilter(function() {
     	CallRemote({
             SUB: 'Flavors::Data::Util::TrySQL',
             ARGS: {
@@ -56,5 +21,5 @@ jQuery(document).ready(function() {
                 });
     		},
     	});
-    }
+    });
 });

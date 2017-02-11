@@ -43,16 +43,9 @@ function numberSongs() {
     });
 }
 
-var lastQuery = "";
-function simpleFilter(force) {
+function filterCollections(force) {
     var query = jQuery("#filter").val().toLowerCase();
     var selector = ".collections .collection";
-
-    if (query === lastQuery && !force) {
-        return;
-    }
-    lastQuery = query;
-
     var queryTokens = _.without(query.split(/\s+/), "");
     if (!queryTokens.length) {
         jQuery(selector).show();
@@ -105,15 +98,7 @@ jQuery(document).ready(function() {
         placement: "right"
     });
 
-    // Simple filter
-    jQuery('#filter').keyup(_.throttle(function() {
-        simpleFilter();
-    }, 100, { leading: false }));
-
-    jQuery("#simple-filter .glyphicon-star-empty, #simple-filter .glyphicon-star").click(function() {
-        jQuery(this).toggleClass("glyphicon-star-empty").toggleClass("glyphicon-star");
-        simpleFilter(true);
-    });
+    initSimpleFilter(filterCollections);
 
     // Controls: Add collection
     jQuery("#add-collection").click(function() {

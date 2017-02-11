@@ -2,6 +2,7 @@ package Flavors::Data::Tag;
 
 use strict;
 use Flavors::Data::Util;
+use Flavors::Data::Song;
 
 ################################################################
 # ArtistGenreList
@@ -65,7 +66,6 @@ sub CategoryStats {
     my $facet = Flavors::Util::Sanitize($args->{FACET});
     my $category = Flavors::Util::Sanitize($args->{CATEGORY});
     my $sql;
-    my @binds = ();
     my $isgenre = $category =~ m/genre/i;
     $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
     $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
@@ -76,12 +76,17 @@ sub CategoryStats {
         ? "song.artist = artistgenre.artist"
         : "song.id = songtag.songid and songtag.tag = tagcategory.tag and tagcategory.category = ?"
     ;
+    my $songlist = Flavors::Data::Song::List($dbh, {
+        %$args,
+        SQLONLY => 1,
+    });
+    my @binds = @{ $songlist->{BINDS} };
     $sql = sprintf(qq{
             select partials.*
             from (
                 select
                     %s as tag, %s, count(*) as count
-                from song, %s
+                from (%s) song, %s
                 where %s and %s is not null
                 %s
                 group by %s, %s
@@ -98,6 +103,7 @@ sub CategoryStats {
         # partials
         $tagcolumn,
         $args->{FACET},
+        $songlist->{SQL},
         $tables,
         $joins,
         $args->{FACET},
@@ -119,7 +125,6 @@ sub CategoryStats {
     if (!$isgenre) {
         push(@binds, $args->{CATEGORY}, $args->{CATEGORY});
     }
-    warn $sql;
 
     return [Flavors::Data::Util::Results($dbh, {
         SQL => $sql,

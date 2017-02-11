@@ -1,22 +1,28 @@
 jQuery(document).ready(function() {
-	var selector = ".facet-container";
-	var facet = jQuery(selector).data("facet");
-	CallRemote({
-        SUB: 'Flavors::Data::Util::TrySQL',
-		ARGS: {
-		    INNERSUB: 'Flavors::Data::Song::Stats',
-            FILTER: $("textarea[name='filter']").val(),
-            GROUPBY: facet,
-            UPDATEPLAYLIST: 1,
-        },
-		SPINNER: selector,
-		FINISH: function(data) {
-            handleComplexError(data, function(data) {
-        		(new Histogram(".histogram-container", facet, 5)).draw(data);
-	        	(new BinaryHorizontalStack(".binary-container", facet)).draw(data);
-            });
-		},
-	});
+	var selector = ".facet-container",
+        facet = jQuery(selector).data("facet"),
+        $simpleFilter = $("#simple-filter");
+
+    initSimpleFilter(function() {
+    	CallRemote({
+            SUB: 'Flavors::Data::Util::TrySQL',
+    		ARGS: {
+    		    INNERSUB: 'Flavors::Data::Song::Stats',
+                FILTER: $("textarea[name='filter']").val(),
+                SIMPLEFILTER: $simpleFilter.find("input[type='text']").val(),
+                STARRED: $simpleFilter.find(".glyphicon-star").length,
+                GROUPBY: facet,
+                UPDATEPLAYLIST: 1,
+            },
+    		SPINNER: selector,
+    		FINISH: function(data) {
+                handleComplexError(data, function(data) {
+            		(new Histogram(".histogram-container", facet, 5)).draw(data);
+    	        	(new BinaryHorizontalStack(".binary-container", facet)).draw(data);
+                });
+    		},
+    	});
+    });
 
 	// Handler for generating category charts
 	jQuery(".category-buttons button").click(function() {
@@ -31,6 +37,8 @@ jQuery(document).ready(function() {
 				ARGS: {
 					FACET: facet,
                     FILTER: $("textarea[name='filter']").val(),
+                    SIMPLEFILTER: $simpleFilter.find("input[type='text']").val(),
+                    STARRED: $simpleFilter.find(".glyphicon-star").length,
 					CATEGORY: category,
 				},
 				SPINNER: selector,
@@ -210,6 +218,8 @@ BinaryHorizontalStack.prototype.draw = function(data) {
 		condition: self.facet + ' is not null',
 	};
 	ratedData.description = ratedData.value + " rated " + Pluralize(ratedData.value, "song");
+
+	jQuery(self.selector + " svg").html("");
 	var bars = self.drawBars(ratedData, unratedData);
 	self.drawBarLabels(ratedData, unratedData, bars);
 	self.attachEvents();
@@ -281,6 +291,7 @@ Histogram.prototype.draw = function(data) {
 		description: +d.COUNT + " " + StringMultiply("<span class='glyphicon " + icons[self.facet] + "'></span>", i),
 	} }));
 	self.setDimensions();
+	jQuery(self.selector + " svg").html("");
 	var bars = self.drawBars(data);
 	self.drawBarLabels(data, bars);
 	self.attachEvents();

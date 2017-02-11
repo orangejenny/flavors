@@ -14,7 +14,7 @@ print $cgi->header();
 my $fdat = Flavors::Util::Fdat($cgi);
 
 Flavors::HTML::Header($dbh, {
-    JS => ['playlists.js', 'stars.js', 'tags.js'],
+    JS => ['playlists.js', 'filters.js', 'tags.js'],
     TITLE => "Tags",
 });
 

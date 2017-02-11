@@ -71,7 +71,7 @@ Flavors::HTML::Header($dbh, {
         LETTERCOUNTS => $lettercounts,
         STARRED => $starred,
     },
-    JS => ['songs.js', 'song_attributes.js', 'stars.js', 'playlists.js'],
+    JS => ['songs.js', 'song_attributes.js', 'filters.js', 'playlists.js'],
 });
 
 print Flavors::HTML::FilterControl($dbh, {

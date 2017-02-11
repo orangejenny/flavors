@@ -16,7 +16,7 @@ Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => "Network",
     BUTTONS => Flavors::HTML::SelectionControl(),
-    JS => ['data.js', 'network.js', 'playlists.js', 'song_attributes.js', 'stars.js'],
+    JS => ['data.js', 'network.js', 'playlists.js', 'song_attributes.js', 'filters.js'],
 });
 
 print Flavors::HTML::FilterControl($dbh, {

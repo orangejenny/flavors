@@ -26,7 +26,7 @@ Flavors::HTML::Header($dbh, {
             New
         </button>
     },
-    JS => ['collections.js', 'song_attributes.js', 'stars.js', 'playlists.js'],
+    JS => ['collections.js', 'song_attributes.js', 'filters.js', 'playlists.js'],
 });
 
 my $results = Flavors::Data::Util::TrySQL($dbh, {

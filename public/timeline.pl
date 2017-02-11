@@ -18,7 +18,7 @@ Flavors::HTML::Header($dbh, {
     FDAT => $fdat,
     TITLE => "Timeline",
     BUTTONS => Flavors::HTML::SelectionControl(),
-    JS => ['data.js', 'chart/chart.js', 'chart/timeline.js', 'timeline.js', 'song_attributes.js', 'playlists.js', 'stars.js'],
+    JS => ['data.js', 'chart/chart.js', 'chart/timeline.js', 'timeline.js', 'song_attributes.js', 'playlists.js', 'filters.js'],
 });
 
 print Flavors::HTML::FilterControl($dbh, {

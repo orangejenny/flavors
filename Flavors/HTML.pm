@@ -7,24 +7,6 @@ use Flavors::Data::Song;
 use Flavors::Data::Tag;
 use JSON qw(to_json);
 
-################################################################
-# Tag
-#
-# Description: Generates HTML to display a tag and its frequency
-#
-# Params: tag (CATEGORY and COUNT may or may not be present)
-#
-# Return Value: HTML
-################################################################
-sub Tag {
-	my ($tag) = @_;
-	my $html = "<div class='tag' category='$tag->{CATEGORY}'>$tag->{TAG}";
-	if ($tag->{COUNT}) {
-		$html .= "<span class='tag-count'>($tag->{COUNT})</span>";
-	}
-	$html .= "</div> ";
-	return $html;
-}
 
 ################################################################
 # Rating
@@ -383,22 +365,27 @@ sub Categorize {
 	foreach my $category (sort keys %categories) {
 		my @categorytags = @{ $categories{$category} };
 		$html .= sprintf(qq{
-			<div class='category' category='%s' data-table='%s'>
-				<div class='header clickable'>
-					%s
-				</div>
-				<div class='category-tags hide'>
-					%s
-				</div>
-			</div>
-		}, $category, $args->{TABLE}, $category, join("", map { Flavors::HTML::Tag({ TAG => $_ }) } @categorytags));
+                <div class='category' category='%s' data-table='%s'>
+			    	<div class='header clickable'>
+		    			%s
+	    			</div>
+    				<div class='category-tags hide'>
+				    	%s
+			    	</div>
+		    	</div>
+	    	},
+            $category,
+            $args->{TABLE},
+            $category,
+            join("", map { "<div class='tag' category='$_->{CATEGORY}'>$_->{TAG}"; } @categorytags)
+        );
 	}
 	$html .= "</div>";
 
 	# Uncategorized items
 	$html .= "<div class=\"text-center\">";
 	foreach my $item (@uncategorized) {
-		$html .= Flavors::HTML::Tag({ TAG => $item });
+		$html .= "<div class='tag' category='$item->{CATEGORY}'>$item->{TAG}";
 	}
 	$html .= "</div>";
 

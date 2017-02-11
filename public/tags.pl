@@ -33,13 +33,14 @@ print Flavors::HTML::FilterControl($dbh, {
     ERROR => $sqlerror,
 });
 
-# Print tags by frequency, click to pull up related tags
+# Container for tags
 printf(qq{
     <div class='post-nav'>
-        <ul class='text-center'>%s</ul>
+        <ul class='tags text-center'></ul>
     </div>
-}, join("", map { Flavors::HTML::Tag($_) } @tags));
+});
 
+# Modal for related tags
 printf(q{
     <div id="item-detail" class="modal" data-tag="">
         <div class="modal-dialog modal-lg">

@@ -233,3 +233,21 @@ function StringMultiply(string, factor) {
 function Pluralize(count, stem) {
 	return +count === 1 ? stem : stem + "s";
 }
+
+/*
+ * handleComplexError
+ *
+ * Description: Pop up filter modal and display error
+ *
+ * Args
+ *	data: object in format returned by Flavors::Data::Utils::TrySQL
+ *  callback: will be performed on data.RESULTS
+ */
+function handleComplexError(data, callback) {
+    if (data.ERROR) {
+        $("#complex-filter-trigger a").click();
+        $("#sql-error").html(data.ERROR).removeClass("hide");
+    } else {
+        callback(data.RESULTS);
+    }
+}

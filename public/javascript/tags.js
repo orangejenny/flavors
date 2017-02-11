@@ -1,4 +1,34 @@
 jQuery(document).ready(function() {
+	var selector = ".chart-container",
+        $simpleFilter = $("#simple-filter");
+
+    initSimpleFilter(function() {
+    	CallRemote({
+            SUB: 'Flavors::Data::Util::TrySQL',
+    		ARGS: {
+                INNERSUB: 'Flavors::Data::Tag::List',
+                FILTER: $("textarea[name='filter']").val(),
+                SIMPLEFILTER: $simpleFilter.find("input[type='text']").val(),
+                STARRED: $simpleFilter.find(".glyphicon-star").length,
+                UPDATEPLAYLIST: 1,
+            },
+    		SPINNER: selector,
+    		FINISH: function(data) {
+                handleComplexError(data, function(tags) {
+                    var $list = $(".tags"),
+                        tagTemplate = _.template("<div class='tag' category='<%= CATEGORY %>'>"
+                                                + "<%= TAG %>"
+                                                + "<span class='tag-count'><%= COUNT %></span>"
+                                                + "</div>");
+                    $list.html("");
+                    _.each(tags, function(tag) {
+                        $list.append(tagTemplate(tag));
+                    });
+                });
+    		},
+    	});
+    });
+
 	jQuery(document).on('click', '.tag', function() {
 		var tag = jQuery(this).text();
 		tag = tag.replace(/\s*\(.*/, "");

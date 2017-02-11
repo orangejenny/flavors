@@ -21,6 +21,11 @@ sub AcquisitionStats {
     my ($dbh, $args) = @_;
     $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
 
+    my $songlist = Flavors::Data::Song::List($dbh, {
+        %$args,
+        SQLONLY => 1,
+    });
+
     my $sql = sprintf(qq{
             select date_format(collection.created, '%%Y-%%m') datestring, count(distinct song.id) count
             from collection
@@ -28,16 +33,13 @@ sub AcquisitionStats {
             inner join (%s) song on songcollection.songid = song.id
             group by date_format(collection.created, '%%Y-%%m')
         },
-        Flavors::Data::Song::List($dbh, {
-            FILTER => $args->{FILTER},
-            SQLONLY => 1,
-            UPDATEPLAYLIST => $args->{UPDATEPLAYLIST},
-        }),
+        $songlist->{SQL},
     );
 
     return [Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
         COLUMNS => [qw(datestring count)],
+        BINDS => $songlist->{BINDS},
     })];
 }
 
@@ -171,6 +173,11 @@ sub List {
         isstarred
     );
 
+    my $songlist = Flavors::Data::Song::List($dbh, {
+        %$args,
+        SQLONLY => 1,
+    });
+
     my $sql = sprintf(qq{
             select
                 %s
@@ -223,11 +230,7 @@ sub List {
         },
         join(", ", @basecolumns, @aggregationcolumns),
         join(", ", map { "collection." . $_ } @basecolumns),
-        Flavors::Data::Song::List($dbh, {
-            FILTER => $args->{FILTER},
-            SQLONLY => 1,
-            UPDATEPLAYLIST => $args->{UPDATEPLAYLIST},
-        }),
+        $songlist->{SQL},
         $Flavors::Data::Util::SEPARATOR,
         $Flavors::Data::Util::SEPARATOR,
     );
@@ -251,6 +254,7 @@ sub List {
         SQL => $sql,
         COLUMNS => [@basecolumns, @aggregationcolumns],
         GROUPCONCAT => ['tags', 'colors'],
+        BINDS => $songlist->{BINDS},
     });
 
     if ($args->{ID}) {

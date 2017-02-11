@@ -148,7 +148,10 @@ sub List {
     }
 
     if ($args->{SQLONLY}) {
-        return $sql;
+        return {
+            SQL => $sql,
+            BINDS => \@binds,
+        }
     }
 
     $sql .= " order by " . ($args->{ORDERBY} ? $args->{ORDERBY} : "maxcollectioncreated desc, tracknumber");
@@ -230,7 +233,10 @@ sub Stats {
     my @groupby = map { uc $_ } split(/\s*,\s*/, Flavors::Util::Sanitize($args->{GROUPBY}));
     $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
 
-    my @binds = ();
+    my $songlist = Flavors::Data::Song::List($dbh, {
+        %$args,
+        SQLONLY => 1,
+    });
 
     my $sql = sprintf(qq{
             select 
@@ -243,18 +249,14 @@ sub Stats {
             order by %s;
         },
         join(", ", map { sprintf("coalesce(%s, 0)", $_) } @groupby),
-        Flavors::Data::Song::List($dbh, {
-            FILTER => $args->{FILTER},
-            SQLONLY => 1,
-            UPDATEPLAYLIST => $args->{UPDATEPLAYLIST},
-        }),
+        $songlist->{SQL},
         join(", ", @groupby),
         join(", ", @groupby),
     );
     my @results = Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
         COLUMNS => [@groupby, 'count'],
-        BINDS => \@binds,
+        BINDS => $songlist->{BINDS},
     });
 
     # Fill in zeroes: expand query into data structure that has a place for every rating (0-5)

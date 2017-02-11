@@ -13,6 +13,7 @@ Chart.prototype.attachEvents = function() {
 Chart.prototype.draw = function(data) {
 	var self = this;
 	self.data = self.formatData(data);
+    document.querySelector(self.selector + " svg").innerHTML = "";
 	self.drawData();
 	self.drawAxes();
 	self.attachEvents();

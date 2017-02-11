@@ -173,6 +173,10 @@ sub ColorList {
 sub List {
     my ($dbh, $args) = @_;
 
+    my $songlist = Flavors::Data::Song::List($dbh, {
+        %$args,
+        SQLONLY => 1,
+    });
     my $sql = sprintf(qq{
             select
                 songtag.tag,
@@ -186,11 +190,7 @@ sub List {
             left join metacategory on tagcategory.category = metacategory.category
             where 1=1
         },
-        Flavors::Data::Song::List($dbh, {
-            FILTER => $args->{FILTER},
-            SQLONLY => 1,
-            UPDATEPLAYLIST => $args->{UPDATEPLAYLIST},
-        }),
+        $songlist->{SQL},
     );
 
     if ($args->{RELATED}) {
@@ -226,6 +226,7 @@ sub List {
     my @results = Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
         COLUMNS => [qw(tag category metacategory count)],
+        BINDS => $songlist->{BINDS},
     });
     return wantarray ? @results : \@results;
 }
@@ -260,6 +261,10 @@ sub NetworkStats {
     if ($args->{CATEGORY}) {
         $categorywhere = "and tagcategory.category = ?";
     }
+    my $songlist = Flavors::Data::Song::List($dbh, {
+        %$args,
+        SQLONLY => 1,
+    });
     my $sql = sprintf(qq{
             select songtag.songid, group_concat(songtag.tag separator '%s') tags
             from (%s) song, songtag, tagcategory
@@ -269,15 +274,11 @@ sub NetworkStats {
             group by songid
         },
         $Flavors::Data::Util::SEPARATOR,
-        Flavors::Data::Song::List($dbh, {
-            FILTER => $args->{FILTER},
-            SQLONLY => 1,
-            UPDATEPLAYLIST => $args->{UPDATEPLAYLIST},
-        }),
+        $songlist->{SQL},
         $categorywhere,
     );
 
-    my @binds = ();
+    my @binds = @{ $songlist->{BINDS} };
     if ($categorywhere) {
         push(@binds, $args->{CATEGORY});
     }
@@ -348,6 +349,8 @@ sub NetworkStats {
 #
 # Args:
 #    FILTER
+#    SIMPLEFILTER
+#    STARRED
 #    UPDATEPLAYLIST
 #
 # Return Value: hashref with keys years, values hashrefs of form
@@ -357,6 +360,10 @@ sub SeasonStats {
     my ($dbh, $args) = @_;
 
     $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
+    my $songlist = Flavors::Data::Song::List($dbh, {
+        %$args,
+        SQLONLY => 1,
+    });
 
     my $sql = sprintf(qq{
         select count(distinct id), year, season from(
@@ -397,15 +404,12 @@ sub SeasonStats {
         ) stats
         group by year, season
         order by year, season;
-    }, Flavors::Data::Song::List($dbh, {
-        FILTER => $args->{FILTER},
-        SQLONLY => 1,
-        UPDATEPLAYLIST => $args->{UPDATEPLAYLIST},
-    }));
+    }, $songlist->{SQL});
 
     return [Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
         COLUMNS => [qw(count year season)],
+        BINDS => $songlist->{BINDS},
     })];
 }
 
@@ -416,6 +420,9 @@ sub SeasonStats {
 #
 # Args:
 #    FILTER
+#    SIMPLEFILTER
+#    STARRED
+#    UPDATEPLAYLIST
 #
 # Return Value: hashref with keys YEARS and SEASONS, values the
 #    return values of YearStats and SeasonStats, respectively
@@ -528,6 +535,8 @@ sub UpdateColor {
 #
 # Args:
 #    FILTER
+#    SIMPLEFILTER
+#    STARRED
 #    UPDATEPLAYLIST
 #
 # Return Value: hashref with keys years, values counts
@@ -536,6 +545,10 @@ sub YearStats {
     my ($dbh, $args) = @_;
 
     $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
+    my $songlist = Flavors::Data::Song::List($dbh, {
+        %$args,
+        SQLONLY => 1,
+    });
 
     my $sql = sprintf(qq{
             select
@@ -548,16 +561,13 @@ sub YearStats {
             group by tagcategory.tag
             order by tagcategory.tag;
         },
-        Flavors::Data::Song::List($dbh, {
-            FILTER => $args->{FILTER},
-            SQLONLY => 1,
-            UPDATEPLAYLIST => $args->{UPDATEPLAYLIST},
-        }),
+        $songlist->{SQL},
     );
 
     return [Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
         COLUMNS => [qw(year count)],
+        BINDS => $songlist->{BINDS},
     })];
 }
 

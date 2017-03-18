@@ -89,6 +89,21 @@ jQuery(document).ready(function() {
             if ($collection.find(".cover-art.multiple").length) {
                 $modal.find(".modal-body").append($collection.find(".cover-art-thumbnails").clone().removeClass("hide"));
             }
+
+                var $backdrop = $(".modal-backdrop.in"),
+                    $image = $backdrop.clone(),
+                    $covers = $collection.find("img"),
+                    src = $covers[parseInt(Math.random() * $covers.length)].src;
+                console.log(id);
+                $image.css("background-color", "transparent")
+                      .css("background-image", "url('" + src + "')")
+                      .css("background-size", "cover")
+                      .css("background-repeat", "no-repeat")
+                      .css("background-position", "center");
+                $backdrop.after($image);
+            $modal.one("hide.bs.modal", function() {
+                $image.remove();
+            });
         });
     });
 

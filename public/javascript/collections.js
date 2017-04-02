@@ -92,14 +92,15 @@ jQuery(document).ready(function() {
 
                 var $backdrop = $(".modal-backdrop.in"),
                     $image = $backdrop.clone(),
-                    $covers = $collection.find("img"),
-                    src = $covers[parseInt(Math.random() * $covers.length)].src;
-                console.log(id);
+                    $covers = $collection.find("img");
                 $image.css("background-color", "transparent")
-                      .css("background-image", "url('" + src + "')")
                       .css("background-size", "cover")
                       .css("background-repeat", "no-repeat")
                       .css("background-position", "center");
+                if ($covers.length) {
+                    var src = $covers[parseInt(Math.random() * $covers.length)].src;
+                    $image.css("background-image", "url('" + src + "')")
+                }
                 $backdrop.after($image);
             $modal.one("hide.bs.modal", function() {
                 $image.remove();

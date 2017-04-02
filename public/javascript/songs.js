@@ -11,7 +11,9 @@ jQuery(document).ready(function() {
     starred = InitialPageData('starred');
     updateItemCount();
 
-    initSimpleFilter(filterSongs);
+    initSimpleFilter(filterSongs, {
+        minLength: 4,
+    });
 
     // Column names hint for filter
     jQuery(".hint").tooltip({
@@ -184,7 +186,7 @@ function filterSongs(force) {
             jQuery(rowselector).show();
         }
         updateItemCount();
-        return;
+        return true;
     }
 
     var matches = {};    // song id => { queryToken1 => 1, queryToken2 => 1, ... }
@@ -213,6 +215,7 @@ function filterSongs(force) {
     });
 
     updateItemCount();
+    return true;
 }
 
 function closeLyricsModal() {

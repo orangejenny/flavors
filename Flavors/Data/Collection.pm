@@ -211,16 +211,17 @@ sub List {
                     colors,
                     max(isstarred) as isstarred
                 from
-                    collection, songcollection, song
+                    song, songcollection, collection
                 left join (
                     select
-                        songtag.songid,
+                        songcollection.collectionid,
                         group_concat(distinct songtag.tag order by rand() separator '%s') as tags,
                         group_concat(distinct case when category = 'colors' then songtag.tag else null end order by rand() separator '%s') as colors
-                    from songtag, tagcategory
-                    where songtag.tag = tagcategory.tag
-                    group by songid
-                ) tags on tags.songid = song.id
+                    from songcollection, songtag
+                    left join tagcategory on tagcategory.tag = songtag.tag
+                    where songcollection.songid = songtag.songid
+                    group by songcollection.collectionid
+                ) tags on tags.collectionid = collection.id
                 where
                     collection.id = songcollection.collectionid
                     and songcollection.songid = song.id

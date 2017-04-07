@@ -1,6 +1,10 @@
 jQuery(document).ready(function() {
     var selector = ".chart-container",
-        $simpleFilter = $("#simple-filter");
+        $simpleFilter = $("#simple-filter"),
+        tagTemplate = _.template("<<%= ELEMENT %> class='tag' category='<%= CATEGORY %>'>"
+                                 + "<span class='tag-text'><%= TAG %></span>"
+                                 + "<span class='tag-count'><%= COUNT %></span>"
+                                 + "</<%= ELEMENT %>>");
 
     initSimpleFilter(function() {
         CallRemote({
@@ -15,14 +19,10 @@ jQuery(document).ready(function() {
             SPINNER: selector,
             FINISH: function(data) {
                 handleComplexError(data, function(tags) {
-                    var $list = $(".tags"),
-                        tagTemplate = _.template("<div class='tag' category='<%= CATEGORY %>'>"
-                                                + "<%= TAG %>"
-                                                + "<span class='tag-count'><%= COUNT %></span>"
-                                                + "</div>");
+                    var $list = $(".tags");
                     $list.html("");
                     _.each(tags, function(tag) {
-                        $list.append(tagTemplate(tag));
+                        $list.append(tagTemplate(_.extend(tag, { ELEMENT: 'div' })));
                     });
                 });
             },
@@ -30,7 +30,7 @@ jQuery(document).ready(function() {
     });
 
     jQuery(document).on('click', '.tag', function() {
-        var tag = jQuery(this).text();
+        var tag = jQuery(this).find(".tag-text").text();
         tag = tag.replace(/\s*\(.*/, "");
         var $modal = jQuery("#item-detail");
         $modal.data("tag", tag);
@@ -42,7 +42,7 @@ jQuery(document).ready(function() {
             SPINNER: ".modal-body .tags",
             FINISH: function(data) {
                 $modal.find('.modal-body ul').html(_.map(data, function(d) {
-                    return "<li class='tag'>" + d.TAG + " <span class='tag-count'>(" + d.COUNT + ")</span></li>";
+                    return tagTemplate(_.extend(d, { ELEMENT: 'li' }));
                 }).join(""));
             }
         });

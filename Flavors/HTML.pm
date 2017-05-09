@@ -377,7 +377,7 @@ sub Categorize {
             $category,
             $args->{TABLE},
             $category,
-            join("", map { "<div class='tag' category='$_->{CATEGORY}'>$_->{TAG}"; } @categorytags)
+            join("", map { "<div class='tag' category='$category'>$_</div>"; } @categorytags)
         );
     }
     $html .= "</div>";
@@ -385,7 +385,7 @@ sub Categorize {
     # Uncategorized items
     $html .= "<div class=\"text-center\">";
     foreach my $item (@uncategorized) {
-        $html .= "<div class='tag' category='$item->{CATEGORY}'>$item->{TAG}";
+        $html .= "<div class='tag'>$item</div>";
     }
     $html .= "</div>";
 

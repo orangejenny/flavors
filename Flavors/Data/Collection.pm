@@ -168,6 +168,7 @@ sub List {
         avgenergy
         avgmood
         completion
+        total
         tags
         colors
         isstarred
@@ -180,14 +181,15 @@ sub List {
 
     my $sql = sprintf(qq{
             select
-                %s
+                %s, collection.songcount
             from (
                 select
-                    distinct %s
+                    %s, count(*) songcount
                 from
                     collection
                 inner join songcollection on collection.id = songcollection.collectionid
                 inner join (%s) song on song.id = songcollection.songid
+                group by %s
             ) collection
             left join (
                 select
@@ -207,6 +209,7 @@ sub List {
                     avg(energy) as avgenergy,
                     avg(mood) as avgmood,
                     (count(rating) + count(energy) + count(mood)) / (count(*) * 3) as completion,
+                    count(*) as total,
                     tags,
                     colors,
                     max(isstarred) as isstarred
@@ -232,6 +235,7 @@ sub List {
         join(", ", @basecolumns, @aggregationcolumns),
         join(", ", map { "collection." . $_ } @basecolumns),
         $songlist->{SQL},
+        join(", ", map { "collection." . $_ } @basecolumns),
         $Flavors::Data::Util::SEPARATOR,
         $Flavors::Data::Util::SEPARATOR,
     );
@@ -253,7 +257,7 @@ sub List {
 
     my @results = Flavors::Data::Util::Results($dbh, {
         SQL => $sql,
-        COLUMNS => [@basecolumns, @aggregationcolumns],
+        COLUMNS => [@basecolumns, @aggregationcolumns, 'songcount'],
         GROUPCONCAT => ['tags', 'colors'],
         BINDS => $songlist->{BINDS},
     });

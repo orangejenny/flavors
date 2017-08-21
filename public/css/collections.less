@@ -18,6 +18,11 @@
         background-color: @white;
         max-width: @albumSize;
 
+        &:hover .cover-art {
+            width: @albumSize !important;
+            height: @albumSize !important;
+        }
+
         .name, .artist {
             .ellipsis();
         }

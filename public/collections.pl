@@ -69,7 +69,9 @@ foreach my $collection (@collections) {
                 data-name="%s"
                 data-artist="%s"
                 data-artist-list="%s"
-                data-starred="%s",
+                data-starred="%s"
+                data-song-count="%s"
+                data-total="%s"
                 class="collection clearfix"
             >
         },
@@ -80,6 +82,8 @@ foreach my $collection (@collections) {
         lc($collection->{ARTIST}),
         lc($collection->{ARTISTLIST}),
         $collection->{ISSTARRED} ? 1 : 0,
+        $collection->{SONGCOUNT},
+        $collection->{TOTAL},
     );
 
     my @files = Flavors::Data::Collection::CoverArtFiles($collection->{ID});
@@ -105,17 +109,13 @@ foreach my $collection (@collections) {
             join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..8]),
         );
     }
-    printf(qq{
+    print(qq{
             <div class="accepting-drop hide">
                 <i class="glyphicon glyphicon-cloud-upload"></i>
                 <br /><br />
                 Drop new cover art
             </div>
-            <div class="name">%s</div>
-            <div class="artist">%s</div>
-        },
-        $collection->{NAME},
-        $collection->{ARTIST},
+        }
     );
 
     my $exporttext = "";
@@ -142,6 +142,9 @@ foreach my $collection (@collections) {
     printf(qq{
             <div class="details-background">
             <div class="details">
+                <div>%s</div>
+                <div>%s</div>
+                <div></div>
                 <div>Acquired %s</div>
                 %s<br><br>
                 <div class="ratings">
@@ -162,11 +165,12 @@ foreach my $collection (@collections) {
                     </div>
                     <div>%s</div>
                 </div>
-                <div class="tags">%s</div>
             </div>
             </div>
             <ul class="cover-art-thumbnails clearfix hide">%s</ul>
         },
+        $collection->{NAME},
+        $collection->{ARTIST},
         Flavors::Util::TrimDate($collection->{CREATED}),
         $exporttext,
         Flavors::HTML::Rating($collection->{MINRATING}, 'star'),
@@ -179,7 +183,6 @@ foreach my $collection (@collections) {
         Flavors::HTML::Rating($collection->{MAXENERGY}, 'fire'),
         Flavors::HTML::Rating($collection->{MAXMOOD}, 'heart'),
         $collection->{COMPLETION} == 1 ? "&nbsp;" : sprintf("(%s%% complete)", floor($collection->{COMPLETION} * 100)),
-        join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..2]),
         join("", map { sprintf("<li><img src='%s' /><div class='trash'><i class='glyphicon glyphicon-trash'></i></div></li>", $_) } @files),
     );
 

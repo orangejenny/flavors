@@ -72,11 +72,8 @@ function filterCollections(force) {
 
     // Resize collections to match their song counts
     $(".collection").each(function(i, c) {
-        var $c = $(c),
-            original = $c.width(),
-            play = 0.75 * original,
-            dim = $c.data("song-count") / $c.data("total") * 0.9 * original + 0.1 * original;
-        $c.find(".cover-art").width(dim).height(dim);
+        var $c = $(c);
+        $c.css("opacity", $c.data("song-count") / $c.data("total"));
     });
 
     updateItemCount();

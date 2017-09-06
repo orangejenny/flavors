@@ -177,6 +177,7 @@ sub ColorList {
 ################################################################
 sub List {
     my ($dbh, $args) = @_;
+    $args ||= {};
 
     my $songlist = Flavors::Data::Song::List($dbh, {
         %$args,

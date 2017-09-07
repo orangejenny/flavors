@@ -96,18 +96,19 @@ jQuery(document).ready(function() {
                 $modal.find(".modal-body").append($collection.find(".cover-art-thumbnails").clone().removeClass("hide"));
             }
 
-                var $backdrop = $(".modal-backdrop.in"),
-                    $image = $backdrop.clone(),
-                    $covers = $collection.find("img");
-                $image.css("background-color", "transparent")
-                      .css("background-size", "cover")
-                      .css("background-repeat", "no-repeat")
-                      .css("background-position", "center");
-                if ($covers.length) {
-                    var src = $covers[parseInt(Math.random() * $covers.length)].src;
-                    $image.css("background-image", "url('" + src + "')")
-                }
-                $backdrop.after($image);
+            var $backdrop = $(".modal-backdrop.in"),
+                $image = $backdrop.clone(),
+                $covers = $collection.find("img");
+            $image.css("background-color", "transparent")
+                  .css("background-size", "cover")
+                  .css("background-repeat", "no-repeat")
+                  .css("background-position", "center");
+            if ($covers.length) {
+                var src = $covers[parseInt(Math.random() * $covers.length)].src;
+                $image.css("background-image", "url('" + src + "')")
+            }
+            $backdrop.after($image);
+
             $modal.one("hide.bs.modal", function() {
                 $image.remove();
             });

@@ -67,7 +67,7 @@ sub List {
             case when songlyrics.lyrics is null then 0 else 1 end as haslyrics,
             concat(' ', songtaglist.taglist, ' ') as taglist,
             group_concat(collection.name order by collection.created separator '%s') as collections,
-            songtaglist.tagcount,
+            coalesce(songtaglist.tagcount, 0) as tagcount,
             years.minyear,
             years.maxyear,
             min(collection.created) as mincollectioncreated,

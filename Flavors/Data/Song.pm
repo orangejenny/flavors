@@ -154,7 +154,7 @@ sub List {
         }
     }
 
-    $sql .= " order by " . ($args->{ORDERBY} ? $args->{ORDERBY} : "maxcollectioncreated desc, tracknumber");
+    $sql .= " order by " . ($args->{ORDERBY} ? $args->{ORDERBY} : "rand()");
 
     my @results = Flavors::Data::Util::Results($dbh, {
         SQL => $sql,

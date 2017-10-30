@@ -24,13 +24,21 @@ jQuery(document).ready(function() {
             $form.submit();
         });
 
-        // Complex filter autocomplete
+        // Complex filter autocompletes
         var hints = $complexFilter.data("hints");
         $complexFilter.find("textarea").atwho({
             at: "#",
             insertTpl: "${name}",
             limit: 100,
             data: _.sortBy(hints),
+        });
+        var shortcuts = $complexFilter.data("shortcuts");
+        $complexFilter.find("textarea").atwho({
+            at: "*",
+            insertTpl: "${name}",
+            displayTpl: "<li>${name} <span class='text-muted'>${expansion}</span></li>",
+            limit: 100,
+            data: _.sortBy(shortcuts),
         });
     }
 });

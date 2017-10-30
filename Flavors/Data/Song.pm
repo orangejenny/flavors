@@ -138,9 +138,31 @@ sub List {
         }
     }
 
-    $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
-    if ($args->{FILTER}) {
-        $sql .= " and (" . $args->{FILTER} . ")";
+    my $filter = $args->{FILTER};
+    my %replacements = (
+        'quality' => 'rating > 3',
+        'decent' => 'rating > 2',
+        'slow' => 'energy < 3',
+        'mellow' => 'energy < 3',
+        'energetic' => 'energy > 3',
+        'sad' => 'mood < 3',
+        'angry' => 'mood < 3',
+        'unhappy' => 'mood < 3',
+        'happy' => 'mood > 3',
+        'unrated' => 'mood is null or energy is null or rating is null',
+        'before' => 'minyear < ',
+        'after' => 'maxyear > ',
+    );
+    foreach my $find (keys %replacements) {
+        $filter =~ s/$find/$replacements{$find}/g;
+    }
+
+    $filter =~ s/\[([^]]*)]/taglist like '% $1 %'/g;
+    warn "===> " . $filter;
+
+    $filter = Flavors::Util::Sanitize($filter);
+    if ($filter) {
+        $sql .= " and (" . $filter . ")";
     }
 
     if ($args->{STARRED}) {

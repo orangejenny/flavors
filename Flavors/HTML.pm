@@ -250,7 +250,7 @@ sub FilterControl {
                 </div>
             </div>
 
-            <div id="complex-filter" class="modal" data-hints="%s">
+            <div id="complex-filter" class="modal" data-hints="%s" data-shortcuts="%s">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body">
@@ -258,7 +258,7 @@ sub FilterControl {
                             <div class="alert alert-danger %s" id="sql-error">%s</div>
         
                             <form method="POST">
-                                <textarea name=filter rows=3 placeholder="type &quot;#&quot; to see available columns">%s</textarea>
+                                <textarea name=filter rows=3 placeholder="&quot;#&quot; to see columns, &quot;*&quot; to see shortcuts">%s</textarea>
                                 <input type="button" value="Filter" class="btn btn-default btn-lg"/>
                                 <input type="hidden" name="placeholder" value="" />
                             </form>
@@ -279,6 +279,21 @@ sub FilterControl {
             maxcollectioncreated taglist tagcount collectionlist minyear maxyear isstarred
             lyrics haslyrics
         )])),
+        Flavors::Util::EscapeHTMLAttribute(JSON::to_json([
+            { name => '[TAG]',          'expansion' => 'taglist like \'% TAG %\'' },
+            { name => 'unrated',        'expansion' => 'rating is null or energy is null or mood is null' },
+            { name => 'before YEAR',    'expansion' => 'maxyear < YEAR' },
+            { name => 'after YEAR',     'expansion' => 'minyear > YEAR' },
+            { name => 'quality',        'expansion' => 'rating > 3' },
+            { name => 'decent',         'expansion' => 'rating > 2' },
+            { name => 'mellow',         'expansion' => 'energy < 3' },
+            { name => 'slow',           'expansion' => 'energy < 3' },
+            { name => 'energetic',      'expansion' => 'energy > 3' },
+            { name => 'happy',          'expansion' => 'mood > 3' },
+            { name => 'unhappy',        'expansion' => 'mood < 3' },
+            { name => 'sad',            'expansion' => 'mood < 3' },
+            { name => 'angry',          'expansion' => 'mood < 3' },
+        ])),
         $args->{ERROR} ? "" : "hide",
         $args->{ERROR},
         $args->{FILTER},

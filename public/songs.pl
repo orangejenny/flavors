@@ -116,8 +116,8 @@ print qq{
 
 print qq{
     <script type="text/html" id="template-song-row">
-        <tr id="song=<%= ID %>" data-song-id="<%= ID %>" data-echo-nest-id="<%= ECHONESTID %>" data-colors="TODO">
-            <td class='icon-cell is-starred'>TODO</td>
+        <tr id="song-<%= ID %>" data-song-id="<%= ID %>" data-echo-nest-id="<%= ECHONESTID %>" data-colors="TODO">
+            <td class='icon-cell is-starred'><%= ratingStar %></td>
             <td class='name clickable'><%= NAME %></td>
             <td class='artist clickable'><%= ARTIST %></td>
             <td class='collections clickable'>
@@ -125,9 +125,9 @@ print qq{
                     <div><%= c %></div>
                 <% }) %>
             </td>
-            <td contenteditable='true' data-key='rating' class='rating'>TODO</td>
-            <td contenteditable='true' data-key='energy' class='rating'>TODO</td>
-            <td contenteditable='true' data-key='mood' class='rating'>TODO</td>
+            <td contenteditable='true' data-key='rating' class='rating'><%= ratingRating %></td>
+            <td contenteditable='true' data-key='energy' class='rating'><%= ratingEnergy %></td>
+            <td contenteditable='true' data-key='mood' class='rating'><%= ratingMood %></td>
             <td contenteditable='true' data-key='tags'><%= TAGLIST %></td>
             <td class='icon-cell <%= lyricsClass %>'>
                 <i class='glyphicon glyphicon-font'></i>
@@ -138,6 +138,12 @@ print qq{
                 <% } %>
             </td>
         </tr>
+    </script>
+};
+
+print qq{
+    <script type="text/html" id="template-rating">
+        <% _.each(_.range(rating), function(i) { %><span class='glyphicon glyphicon-<%= symbol %><% if (!rating) { %> blank<% } %>'></span><% }) %>
     </script>
 };
 

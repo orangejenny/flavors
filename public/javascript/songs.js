@@ -175,12 +175,19 @@ function filterSongs(force) {
 
     // If there's no text in the filter; just check the star filter
     var $tbody = $("#song-table-container tbody");
-        template = _.template($("#template-song-row").text());
+        templateSong = _.template($("#template-song-row").text()),
+        templateRating = _.template($("#template-rating").text());
 
     $tbody.empty();
     var _showSong = function(id) {
-        $tbody.append(template(_.extend({}, songs[id], {
-            lyricsClass: songs[id].HASLYRICS ? "has-lyrics" : "no-lyrics",
+        var song = songs[id];
+        $tbody.append(templateSong(_.extend({}, song, {
+            // TODO: parseInt somewhere better (same below)
+            ratingStar: templateRating({ rating: 1, symbol: parseInt(song.ISSTARRED) ? 'star' : 'star-empty' }),
+            ratingRating: templateRating({ rating: song.RATING, symbol: 'star' }),
+            ratingEnergy: templateRating({ rating: song.ENERGY, symbol: 'fire' }),
+            ratingMood: templateRating({ rating: song.MOOD, symbol: 'heart' }),
+            lyricsClass: parseInt(song.HASLYRICS) ? "has-lyrics" : "no-lyrics",
         })));
     };
 

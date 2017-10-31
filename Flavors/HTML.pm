@@ -309,27 +309,6 @@ sub FilterControl {
 }
 
 ################################################################
-# ItemCount
-#
-# Description: Generates HTML for item count
-#
-# Params: description
-#
-# Return Value: HTML
-################################################################
-sub ItemCount {
-    my ($description) = @_;
-
-    return sprintf(qq{
-        <div id="item-count-container">
-            <span id="item-count-span">
-                <span id="item-count"></span> $description
-            </span>
-        </div>
-    });
-}
-
-################################################################
 # SongsModal
 #
 # Description: Generates HTML for modal with song list

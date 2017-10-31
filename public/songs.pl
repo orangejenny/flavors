@@ -93,9 +93,11 @@ print qq{
             <tbody></tbody>
         </table>
     </div>
-};
 
-print Flavors::HTML::ItemCount("songs");
+    <div id="item-pagination">
+        <ul class="pagination"></ul>
+    </div>
+};
 
 print qq{
     <div id="lyrics-detail" class="modal">

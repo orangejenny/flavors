@@ -13,7 +13,7 @@ jQuery(document).ready(function() {
     colors = InitialPageData('colors');
     starred = InitialPageData('starred');
     songs = InitialPageData('songs');
-    updateItemCount();
+    updatePagination();
 
     initSimpleFilter(filterSongs, {
         minLength: 4,
@@ -165,8 +165,18 @@ jQuery(document).ready(function() {
     });
 });
 
-function updateItemCount() {
-    jQuery("#item-count").text(jQuery("#song-table-container tbody tr:visible").length);
+function updatePagination() {
+    var count = jQuery("#song-table-container tbody tr:visible").length;
+    var $container = jQuery("#item-pagination .pagination");
+    $container.empty();
+    var template = _.template("<li class='<%= cssClass %>'><a href='#'><%= content %></a></li>");
+    $container.append(template({ content: "&laquo;", cssClass: "" }));
+    _.each(_.range(Math.ceil(count / 100)), function(p) {
+        $container.append(template({ content: p + 1, cssClass: "" }));
+    });
+    $container.append(template({ content: "&raquo;", cssClass: "" }));
+    // TODO: ellipsis (.disabled) if there are more than 9 pages
+    // TODO: make pagination work (keep track of 'visible' items, only display pageCount items, change page when link clicked, mark .active link)
 }
 
 function filterSongs(force) {
@@ -196,7 +206,7 @@ function filterSongs(force) {
     if (!queryTokens.length) {
         idsToShow = _.keys(onlyStarred ? starred : songs);
         _.each(_.keys(onlyStarred ? starred : songs), _showSong);
-        updateItemCount();
+        updatePagination();
         return true;
     }
 
@@ -224,7 +234,7 @@ function filterSongs(force) {
         }
     });
 
-    updateItemCount();
+    updatePagination();
     return true;
 }
 

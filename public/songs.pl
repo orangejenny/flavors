@@ -116,7 +116,7 @@ print qq{
 
 print qq{
     <script type="text/html" id="template-song-row">
-        <tr id="song-<%= ID %>" data-song-id="<%= ID %>" data-echo-nest-id="<%= ECHONESTID %>" data-colors="TODO">
+        <tr id="song-<%= ID %>" data-song-id="<%= ID %>" data-echo-nest-id="<%= ECHONESTID %>" data-colors='<%= colors %>'>
             <td class='icon-cell is-starred'><%= ratingStar %></td>
             <td class='name clickable'><%= NAME %></td>
             <td class='artist clickable'><%= ARTIST %></td>

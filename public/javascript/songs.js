@@ -2,6 +2,7 @@
 var tokens;
 var letters;
 var letterCounts;
+var colors;
 var starred;
 var songs;
 
@@ -9,6 +10,7 @@ jQuery(document).ready(function() {
     tokens = InitialPageData('tokens');
     letters = InitialPageData('letters');
     letterCounts = InitialPageData('lettercounts');
+    colors = InitialPageData('colors');
     starred = InitialPageData('starred');
     songs = InitialPageData('songs');
     updateItemCount();
@@ -25,7 +27,6 @@ jQuery(document).ready(function() {
 
     var $table = jQuery("#song-table-container");
 
-    // TODO
     // Highlight on hover
     $table.on("mouseover", "tr", function() {
         // default highlight: pale grey
@@ -36,8 +37,8 @@ jQuery(document).ready(function() {
         var colors = $row.data("colors");
         if (colors.length) {
             colors = colors[Math.floor(Math.random() * colors.length)];
-            backgroundColor = colors.hex;
-            if (parseInt(colors.whitetext)) {
+            backgroundColor = colors.HEX;
+            if (parseInt(colors.WHITETEXT)) {
                 color = "ffffff";
             }
         }
@@ -188,6 +189,7 @@ function filterSongs(force) {
             ratingEnergy: templateRating({ rating: song.ENERGY, symbol: 'fire' }),
             ratingMood: templateRating({ rating: song.MOOD, symbol: 'heart' }),
             lyricsClass: parseInt(song.HASLYRICS) ? "has-lyrics" : "no-lyrics",
+            colors: JSON.stringify(_.filter(_.compact(_.map((song.TAGLIST || "").split(/\s+/), function(t) { return colors[t]; })), function(c) { return c.HEX; })),
         })));
     };
 

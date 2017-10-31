@@ -95,6 +95,8 @@ print qq{
     </div>
 };
 
+print Flavors::HTML::ItemCount("songs");
+
 print qq{
     <div id="lyrics-detail" class="modal">
         <div class="modal-dialog">

@@ -3,12 +3,14 @@ var tokens;
 var letters;
 var letterCounts;
 var starred;
+var songs;
 
 jQuery(document).ready(function() {
     tokens = InitialPageData('tokens');
     letters = InitialPageData('letters');
     letterCounts = InitialPageData('lettercounts');
     starred = InitialPageData('starred');
+    songs = InitialPageData('songs');
     updateItemCount();
 
     initSimpleFilter(filterSongs, {
@@ -23,6 +25,7 @@ jQuery(document).ready(function() {
 
     var $table = jQuery("#song-table-container");
 
+    // TODO
     // Highlight on hover
     $table.on("mouseover", "tr", function() {
         // default highlight: pale grey
@@ -47,7 +50,6 @@ jQuery(document).ready(function() {
     });
 
     // Click to edit
-    var selector = "[contenteditable=true][data-key]";
     $("body").on('song-update', function(e, songData) {
         if (songData.key === 'isstarred') {
             starred[songData.id] = songData.value;
@@ -150,7 +152,7 @@ jQuery(document).ready(function() {
     jQuery(".see-more .glyphicon").on("click", function() {
         var $row = jQuery(this).closest("tr"),
             songID = $row.data("song-id"),
-            echoNestID = $row.data("echo-nest-id"),
+            echoNestID = $row.data("echo-nest-id"), // TODO
             name = $row.find(".name").text(),
             artist = $row.find(".artist").text();
         if (echoNestID) {
@@ -172,19 +174,19 @@ function filterSongs(force) {
         onlyStarred = !jQuery("#simple-filter .glyphicon-star-empty").length;
 
     // If there's no text in the filter; just check the star filter
-    var rowselector = "#song-table-container tbody tr";
+    var $tbody = $("#song-table-container tbody");
+        template = _.template($("#template-song-row").text());
+
+    $tbody.empty();
+    var _showSong = function(id) {
+        $tbody.append(template(_.extend({}, songs[id], {
+            lyricsClass: songs[id].HASLYRICS ? "has-lyrics" : "no-lyrics",
+        })));
+    };
+
     if (!queryTokens.length) {
-        if (onlyStarred) {
-            jQuery(rowselector).hide();
-            _.each(_.keys(starred), function(songID) {
-                if (starred[songID]) {
-                    jQuery("#song-" + songID).show();
-                }
-            });
-        }
-        else {
-            jQuery(rowselector).show();
-        }
+        idsToShow = _.keys(onlyStarred ? starred : songs);
+        _.each(_.keys(onlyStarred ? starred : songs), _showSong);
         updateItemCount();
         return true;
     }
@@ -207,10 +209,9 @@ function filterSongs(force) {
         });
     });
 
-    jQuery(rowselector).hide();
     _.each(matches, function(matchTriggers, songID) {
         if (_.values(matchTriggers).length === queryTokens.length && (!onlyStarred || starred[songID])) {
-            jQuery("#song-" + songID).show();
+            _showSong(songID);
         }
     });
 

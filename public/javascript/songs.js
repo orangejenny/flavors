@@ -153,7 +153,7 @@ jQuery(document).ready(function() {
     jQuery(".see-more .glyphicon").on("click", function() {
         var $row = jQuery(this).closest("tr"),
             songID = $row.data("song-id"),
-            echoNestID = $row.data("echo-nest-id"), // TODO
+            echoNestID = $row.data("echo-nest-id"),
             name = $row.find(".name").text(),
             artist = $row.find(".artist").text();
         if (echoNestID) {

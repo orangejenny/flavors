@@ -286,6 +286,7 @@ sub FilterControl {
             { name => 'after YEAR',     'expansion' => 'minyear > YEAR' },
             { name => 'quality',        'expansion' => 'rating > 3' },
             { name => 'decent',         'expansion' => 'rating > 2' },
+            { name => 'starred',        'expansion' => 'isstarred = 1' },
             { name => 'mellow',         'expansion' => 'energy < 3' },
             { name => 'slow',           'expansion' => 'energy < 3' },
             { name => 'energetic',      'expansion' => 'energy > 3' },

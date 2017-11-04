@@ -152,13 +152,13 @@ sub List {
         'unrated' => 'mood is null or energy is null or rating is null',
         'before' => 'minyear < ',
         'after' => 'maxyear > ',
+        'starred' => 'isstarred = 1',
     );
     foreach my $find (keys %replacements) {
         $filter =~ s/$find/$replacements{$find}/g;
     }
 
     $filter =~ s/\[([^]]*)]/taglist like '% $1 %'/g;
-    warn "===> " . $filter;
 
     $filter = Flavors::Util::Sanitize($filter);
     if ($filter) {

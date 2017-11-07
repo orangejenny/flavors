@@ -2,14 +2,20 @@
 var tokens;
 var letters;
 var letterCounts;
+var colors;
 var starred;
+var allSongs;       // { id: song }
+var visibleSongs;   // [ id ]
+var currentPage;
+var songsPerPage = 100;
 
 jQuery(document).ready(function() {
     tokens = InitialPageData('tokens');
     letters = InitialPageData('letters');
     letterCounts = InitialPageData('lettercounts');
+    colors = InitialPageData('colors');
     starred = InitialPageData('starred');
-    updateItemCount();
+    allSongs = InitialPageData('songs');
 
     initSimpleFilter(filterSongs, {
         minLength: 4,
@@ -33,8 +39,8 @@ jQuery(document).ready(function() {
         var colors = $row.data("colors");
         if (colors.length) {
             colors = colors[Math.floor(Math.random() * colors.length)];
-            backgroundColor = colors.hex;
-            if (parseInt(colors.whitetext)) {
+            backgroundColor = colors.HEX;
+            if (parseInt(colors.WHITETEXT)) {
                 color = "ffffff";
             }
         }
@@ -47,7 +53,6 @@ jQuery(document).ready(function() {
     });
 
     // Click to edit
-    var selector = "[contenteditable=true][data-key]";
     $("body").on('song-update', function(e, songData) {
         if (songData.key === 'isstarred') {
             starred[songData.id] = songData.value;
@@ -162,30 +167,16 @@ jQuery(document).ready(function() {
     });
 });
 
-function updateItemCount() {
-    jQuery("#item-count").text(jQuery("#song-table-container tbody tr:visible").length);
-}
-
 function filterSongs(force) {
     var query = jQuery("#filter").val(),
         queryTokens = _.without(query.split(/\s+/), ""),
         onlyStarred = !jQuery("#simple-filter .glyphicon-star-empty").length;
+    currentPage = 1;
 
     // If there's no text in the filter; just check the star filter
-    var rowselector = "#song-table-container tbody tr";
     if (!queryTokens.length) {
-        if (onlyStarred) {
-            jQuery(rowselector).hide();
-            _.each(_.keys(starred), function(songID) {
-                if (starred[songID]) {
-                    jQuery("#song-" + songID).show();
-                }
-            });
-        }
-        else {
-            jQuery(rowselector).show();
-        }
-        updateItemCount();
+        visibleSongs = _.keys(onlyStarred ? starred : allSongs);
+        showSongs();
         return true;
     }
 
@@ -207,16 +198,83 @@ function filterSongs(force) {
         });
     });
 
-    jQuery(rowselector).hide();
+    visibleSongs = [];
     _.each(matches, function(matchTriggers, songID) {
         if (_.values(matchTriggers).length === queryTokens.length && (!onlyStarred || starred[songID])) {
-            jQuery("#song-" + songID).show();
+            visibleSongs.push(songID);
         }
     });
+    showSongs();
 
-    updateItemCount();
     return true;
 }
+
+function showPage() {
+    var $tbody = $("#song-table-container tbody"),
+        templateSong = _.template($("#template-song-row").text()),
+        templateRating = _.template($("#template-rating").text());
+
+    $tbody.empty();
+    _.each(visibleSongs.slice(songsPerPage * (currentPage - 1), songsPerPage * currentPage), function(id) {
+        var song = allSongs[id];
+        $tbody.append(templateSong(_.extend({}, song, {
+            // TODO: parseInt somewhere better (same below)
+            ratingStar: templateRating({ rating: 1, symbol: parseInt(song.ISSTARRED) ? 'star' : 'star-empty' }),
+            ratingRating: templateRating({ rating: song.RATING, symbol: 'star' }),
+            ratingEnergy: templateRating({ rating: song.ENERGY, symbol: 'fire' }),
+            ratingMood: templateRating({ rating: song.MOOD, symbol: 'heart' }),
+            lyricsClass: parseInt(song.HASLYRICS) ? "has-lyrics" : "no-lyrics",
+            colors: JSON.stringify(_.filter(_.compact(_.map((song.TAGLIST || "").split(/\s+/), function(t) { return colors[t]; })), function(c) { return c.HEX; })),
+        })));
+    });
+}
+
+function showSongs() {
+    var count = visibleSongs.length,
+        $container = jQuery("#item-pagination .pagination"),
+        totalPages = Math.ceil(count / songsPerPage);
+    $container.empty();
+    var template = _.template("<li data-<%= dataName %>='<%= dataValue %>'><a href='#'><%= content %></a></li>");
+    $container.append(template({ content: "&laquo;", dataName: 'increment', dataValue: '-1' }));
+
+    // TODO: clean up magic numbers
+    _.each(_.range(Math.min(totalPages / 2, 4)), function(p) {
+        $container.append(template({ content: p + 1, dataName: 'page', dataValue: p + 1 }));
+    });
+    if (totalPages > 9) {
+        $container.append(template({ content: "...", dataName: 'disabled', dataValue: '1'}));
+        $container.find("li:last").addClass("disabled");
+    }
+    _.each(_.range(Math.floor(Math.min(totalPages / 2, 4))).reverse(), function(p) {
+        $container.append(template({ content: totalPages - p, dataName: 'page', dataValue: totalPages - p }));
+    });
+    $container.append(template({ content: "&raquo;", dataName: 'increment', dataValue: '1' }));
+}
+
+jQuery(document).ready(function() {
+    $(document).on('click', '#item-pagination li:not(.disabled)', function() {
+        var $item = $(this),
+            $list = $item.closest(".pagination"),
+            data = $item.data();
+        if (data.page) {
+            currentPage = data.page;
+        } else if (data.increment) {
+            currentPage = currentPage + parseInt(data.increment);
+            // TODO: adjust which pages are shown, if there's an ellipsis
+        }
+        $list.find(".active").removeClass("active");
+        $list.find(".disabled").removeClass("disabled");
+        $list.find("[data-disabled='1']").addClass("disabled");
+        $list.find("[data-page='" + currentPage + "']").addClass("active");
+        if (currentPage == 1) {
+            $list.find("li:first").addClass("disabled");
+        }
+        if (currentPage == Math.ceil(visibleSongs.length / songsPerPage)) {
+            $list.find("li:last").addClass("disabled");
+        }
+        showPage();
+    });
+});
 
 function closeLyricsModal() {
     var $modal = jQuery("#lyrics-detail");

@@ -62,14 +62,22 @@ foreach my $letter (keys $letters) {
     $lettercounts->{$letter} = scalar(@{ $letters->{$letter} });
 }
 
+my @colors = Flavors::Data::Tag::ColorList($dbh);
+my %colormap = ();
+foreach my $color (@colors) {
+    $colormap{$color->{NAME}} = $color;
+}
+
 Flavors::HTML::Header($dbh, {
     TITLE => "Songs",
     BUTTONS => Flavors::HTML::ExportControl(),
     INITIALPAGEDATA => {
         TOKENS => $tokens,
+        COLORS => \%colormap,
         LETTERS => $letters,
         LETTERCOUNTS => $lettercounts,
         STARRED => $starred,
+        SONGS => { map { $_->{ID} => $_ } @songs },
     },
     JS => ['songs.js', 'song_attributes.js', 'filters.js', 'playlists.js'],
 });
@@ -79,56 +87,17 @@ print Flavors::HTML::FilterControl($dbh, {
     FILTER => $fdat->{FILTER},
 });
 
-print qq{ <div id="song-table-container"> };
+print qq{
+    <div id="song-table-container">
+        <table class='song-table'>
+            <tbody></tbody>
+        </table>
+    </div>
 
-print qq{ <table class='song-table'><tbody> };
-
-my @colors = Flavors::Data::Tag::ColorList($dbh);
-my %colormap = ();
-foreach my $color (@colors) {
-    $colormap{$color->{NAME}} = $color;
-}
-foreach my $song (@songs) {
-    print sprintf(qq {
-        <tr id="song-%s" data-song-id="%s" data-echo-nest-id="%s" data-colors="%s">
-            <td class='icon-cell is-starred'>%s</td>
-            <td class='name clickable'>%s</td>
-            <td class='artist clickable'>%s</td>
-            <td class='collections clickable'>%s</td>
-            <td contenteditable='true' data-key='rating' class='rating'>%s</td>
-            <td contenteditable='true' data-key='energy' class='rating'>%s</td>
-            <td contenteditable='true' data-key='mood' class='rating'>%s</td>
-            <td contenteditable='true' data-key='tags'>%s</td>
-            <td class='icon-cell %s'>
-                <i class='glyphicon glyphicon-font'></i>
-            </td>
-            <td class='icon-cell see-more'>%s</td>
-        </tr>
-        },
-        $song->{ID},
-        $song->{ID},
-        $song->{ECHONESTID},
-        Flavors::Util::EscapeHTMLAttribute(lc(JSON::to_json([
-            grep { $_->{HEX} } map { $colormap{$_} } grep { exists $colormap{$_} } split(/\s+/, $song->{TAGLIST})
-        ]))),
-        Flavors::HTML::Rating(1, $song->{ISSTARRED} ? 'star' : 'star-empty'),
-        $song->{NAME},
-        $song->{ARTIST},
-        join("", map { sprintf("<div>%s</div>", $_) } @{ $song->{COLLECTIONS} }),
-        Flavors::HTML::Rating($song->{RATING}, 'star'),
-        Flavors::HTML::Rating($song->{ENERGY}, 'fire'),
-        Flavors::HTML::Rating($song->{MOOD}, 'heart'),
-        $song->{TAGLIST},
-        $song->{HASLYRICS} ? "has-lyrics" : "no-lyrics",
-        $song->{ECHONESTID} ? "<i class='glyphicon glyphicon-option-horizontal'></i>" : "",
-    );
-}
-
-print qq{ </tbody></table> };
-
-print qq{ </div> };
-
-print Flavors::HTML::ItemCount("songs");
+    <div id="item-pagination">
+        <ul class="pagination"></ul>
+    </div>
+};
 
 print qq{
     <div id="lyrics-detail" class="modal">
@@ -147,6 +116,39 @@ print qq{
             </div>
         </div>
     </div>
+};
+
+print qq{
+    <script type="text/html" id="template-song-row">
+        <tr id="song-<%= ID %>" data-song-id="<%= ID %>" data-echo-nest-id="<%= ECHONESTID %>" data-colors='<%= colors %>'>
+            <td class='icon-cell is-starred'><%= ratingStar %></td>
+            <td class='name clickable'><%= NAME %></td>
+            <td class='artist clickable'><%= ARTIST %></td>
+            <td class='collections clickable'>
+                <% _.each(COLLECTIONS, function(c) { %>
+                    <div><%= c %></div>
+                <% }) %>
+            </td>
+            <td contenteditable='true' data-key='rating' class='rating'><%= ratingRating %></td>
+            <td contenteditable='true' data-key='energy' class='rating'><%= ratingEnergy %></td>
+            <td contenteditable='true' data-key='mood' class='rating'><%= ratingMood %></td>
+            <td contenteditable='true' data-key='tags'><%= TAGLIST %></td>
+            <td class='icon-cell <%= lyricsClass %>'>
+                <i class='glyphicon glyphicon-font'></i>
+            </td>
+            <td class='icon-cell see-more'>
+                <% if (ECHONESTID) { %>
+                    <i class='glyphicon glyphicon-option-horizontal'></i>
+                <% } %>
+            </td>
+        </tr>
+    </script>
+};
+
+print qq{
+    <script type="text/html" id="template-rating">
+        <% _.each(_.range(rating), function(i) { %><span class='glyphicon glyphicon-<%= symbol %><% if (!rating) { %> blank<% } %>'></span><% }) %>
+    </script>
 };
 
 print Flavors::HTML::Footer();

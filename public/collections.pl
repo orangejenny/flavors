@@ -191,7 +191,13 @@ foreach my $collection (@collections) {
 }
 print "</div></div>";
 
-print Flavors::HTML::ItemCount("collections");
+print qq{
+    <div id="item-count-container">
+        <span id="item-count-span">
+            <span id="item-count"></span> collections
+        </span>
+    </div>
+};
 
 # Modal for new collection
 print q{

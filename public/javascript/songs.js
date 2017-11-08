@@ -260,12 +260,16 @@ jQuery(document).ready(function() {
             currentPage = data.page;
         } else if (data.increment) {
             currentPage = currentPage + parseInt(data.increment);
-            // TODO: adjust which pages are shown, if there's an ellipsis
         }
         $list.find(".active").removeClass("active");
         $list.find(".disabled").removeClass("disabled");
-        $list.find("[data-disabled='1']").addClass("disabled");
+        var $ellipsis = $list.find("[data-disabled='1']");
         $list.find("[data-page='" + currentPage + "']").addClass("active");
+        if ($ellipsis.length) {
+            $ellipsis.addClass("disabled");
+            var text = $list.find(".active").length ? "..." : "... " + currentPage + " ...";
+            $ellipsis.find("a").text(text);
+        }
         if (currentPage == 1) {
             $list.find("li:first").addClass("disabled");
         }

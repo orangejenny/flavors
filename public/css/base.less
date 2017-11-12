@@ -5,18 +5,56 @@
 }
 
 .category {
-    border: 1px @greyBlue solid;
-    border-radius: @borderRadius;
-    margin: @spacingNormal;
+    @size: 150px;
+    position: relative;
     padding: @spacingNormal;
-    float: left;
+    width: @size;
+    height: @size;
+    font-size: @fontSizeLarge;
+    border-radius: @size / 2;
+    border: 1px @greyBlue solid;
+    margin: @spacingWide;
+    display: inline-block;
     text-align: center;
-    width: 20%;
-}
 
-.category-tags {
-    max-height: 500px;
-    overflow-y: auto;
+    &.ui-droppable-hover {
+        background-color: lighten(@greyBlue, 19%);  /* 20% disappears */
+    }
+
+    .header {
+        position: absolute;
+        cursor: pointer;
+        left: 0;
+        top: @size / 2 - @fontSizeDefault;
+        width: 100%;
+    }
+
+    .tag {
+        font-size: @fontSizeDefault;
+        border-radius: @fontSizeDefault;
+        margin-right: @spacingNormal;
+        margin-bottom: @spacingNormal;
+        line-height: 1;
+    }
+
+    .category-tags {
+        display: none;
+        position: absolute;
+        max-height: @size - @spacingNormal * 2;
+        overflow-y: auto;
+    }
+
+    &.enlarged {
+        width: @size * 2;
+
+        .header {
+            display: none;
+        }
+
+        .category-tags {
+            display: block;
+        }
+    }
 }
 
 .color {
@@ -54,11 +92,12 @@
 }
 
 .tag, #item-count-span {
-    border-radius: @fontSizeDefault;
-    margin-right: @spacingNormal;
-    margin-bottom: @spacingNormal;
+    border-radius: @fontSizeDefault * 2;
+    min-width: @fontSizeDefault * 3;
+    margin-right: @spacingWide;
+    margin-bottom: @spacingWide;
     display: inline-block;
-    line-height: 1;
+    line-height: 2;
     padding: @spacingNarrow @spacingNormal;
     background-color: @blue;
     border: 1px solid @greyBlue;

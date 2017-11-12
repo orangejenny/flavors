@@ -355,18 +355,21 @@ sub Categorize {
     my @uncategorized = @{ $args->{UNCATEGORIZED} };
     my $html;
 
+    # Uncategorized items
+    $html .= "<div class=\"text-center\">";
+    foreach my $item (@uncategorized) {
+        $html .= "<div class='tag'>$item</div>";
+    }
+    $html .= "</div>";
+
     # Categories
-    $html .= "<div class=\"clearfix\">";
+    $html .= "<div class=\"clearfix text-center\">";
     foreach my $category (sort keys %categories) {
         my @categorytags = @{ $categories{$category} };
         $html .= sprintf(qq{
                 <div class='category' category='%s' data-table='%s'>
-                    <div class='header clickable'>
-                        %s
-                    </div>
-                    <div class='category-tags hide'>
-                        %s
-                    </div>
+                    <div class='header clickable'>%s</div>
+                    <div class='category-tags'>%s</div>
                 </div>
             },
             $category,
@@ -374,13 +377,6 @@ sub Categorize {
             $category,
             join("", map { "<div class='tag' category='$category'>$_</div>"; } @categorytags)
         );
-    }
-    $html .= "</div>";
-
-    # Uncategorized items
-    $html .= "<div class=\"text-center\">";
-    foreach my $item (@uncategorized) {
-        $html .= "<div class='tag'>$item</div>";
     }
     $html .= "</div>";
 

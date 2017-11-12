@@ -2,11 +2,10 @@ jQuery(document).ready(function() {
     jQuery('.tag').css("cursor", "move").draggable();
 
     jQuery('.category .header').click(function() {
-        jQuery(this).next('.category-tags').toggleClass("hide");
+        jQuery(this).closest(".category").addClass("enlarged");
     });
 
     jQuery('.category').droppable({
-        hoverClass: "ui-state-active",
         drop: function(event, ui) {
             var $container = jQuery('.category-tags', this);
             jQuery(ui.draggable).remove().css('position', 'static').appendTo($container);

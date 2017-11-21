@@ -38,10 +38,6 @@ function simpleFilter(force, callback, options) {
         return;
     }
 
-    if (options.minLength && !force && query.length < options.minLength) {
-        return false;
-    }
-
     lastQuery = query;
     jQuery("#last-query-text").text(lastQuery);
     jQuery("#last-query input").val(lastQuery);

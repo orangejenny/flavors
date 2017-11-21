@@ -17,9 +17,7 @@ jQuery(document).ready(function() {
     starred = InitialPageData('starred');
     allSongs = InitialPageData('songs');
 
-    initSimpleFilter(filterSongs, {
-        minLength: 4,
-    });
+    initSimpleFilter(filterSongs);
 
     // Column names hint for filter
     jQuery(".hint").tooltip({

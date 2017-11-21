@@ -231,7 +231,13 @@ function showSongs() {
     var count = visibleSongs.length,
         $container = jQuery("#item-pagination .pagination"),
         totalPages = Math.ceil(count / songsPerPage);
+
+    showPage();
     $container.empty();
+    if (count === 0) {
+        return;
+    }
+
     var template = _.template("<li data-<%= dataName %>='<%= dataValue %>'><a href='#'><%= content %></a></li>");
     $container.append(template({ content: "&laquo;", dataName: 'increment', dataValue: '-1' }));
 

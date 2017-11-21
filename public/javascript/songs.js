@@ -174,34 +174,38 @@ function filterSongs(force) {
     // If there's no text in the filter; just check the star filter
     if (!queryTokens.length) {
         visibleSongs = _.keys(onlyStarred ? starred : allSongs);
-        showSongs();
-        return true;
-    }
-
-    var matches = {};    // song id => { queryToken1 => 1, queryToken2 => 1, ... }
-    _.each(queryTokens, function(queryToken) {
-        var leastCommonLetter = _.min(queryToken.split(""), function(letter) {
-            return letterCounts[letter];
+    } else {
+        var matches = {};    // song id => { queryToken1 => 1, queryToken2 => 1, ... }
+        _.each(queryTokens, function(queryToken) {
+            var leastCommonLetter = _.min(queryToken.split(""), function(letter) {
+                return letterCounts[letter];
+            });
+    
+            _.each(letters[leastCommonLetter], function(searchToken) {
+                if (searchToken.indexOf(queryToken) != -1) {
+                    _.each(tokens[searchToken], function(songID) {
+                        if (!matches[songID]) {
+                            matches[songID] = {};
+                        }
+                        matches[songID][queryToken] = 1;
+                    });
+                }
+            });
         });
-
-        _.each(letters[leastCommonLetter], function(searchToken) {
-            if (searchToken.indexOf(queryToken) != -1) {
-                _.each(tokens[searchToken], function(songID) {
-                    if (!matches[songID]) {
-                        matches[songID] = {};
-                    }
-                    matches[songID][queryToken] = 1;
-                });
+    
+        visibleSongs = [];
+        _.each(matches, function(matchTriggers, songID) {
+            if (_.values(matchTriggers).length === queryTokens.length && (!onlyStarred || starred[songID])) {
+                visibleSongs.push(songID);
             }
         });
-    });
+    }
 
-    visibleSongs = [];
-    _.each(matches, function(matchTriggers, songID) {
-        if (_.values(matchTriggers).length === queryTokens.length && (!onlyStarred || starred[songID])) {
-            visibleSongs.push(songID);
-        }
-    });
+    // Randomize
+    if (!jQuery("#simple-filter .glyphicon-random").hasClass("text-muted")) {
+        visibleSongs = _.sortBy(visibleSongs, function() { return Math.random(); })
+    }
+
     showSongs();
 
     return true;

@@ -225,6 +225,7 @@ sub SelectionControl {
 # Params:
 #   ERROR
 #   FILTER
+#   HASRANDOM
 #   TYPE
 #
 # Return Value: HTML
@@ -240,6 +241,7 @@ sub FilterControl {
                         <input type='hidden' />
                         <span class='glyphicon glyphicon-search'></span>
                         <span class='glyphicon glyphicon-star-empty'></span>
+                        %s
                         <span class='glyphicon glyphicon-remove hide'></span>
                     </div>
                     <input id='filter' type='text'/>
@@ -269,6 +271,7 @@ sub FilterControl {
                 </div>
             </div>
         },
+        $args->{HASRANDOM} ? "<span class='glyphicon glyphicon-random text-muted'></span>" : "",
         $iconcount,
         $args->{FILTER} || "advanced search",
         $iconcount == 2 ? "<span class='glyphicon glyphicon-refresh'></span>" : "",

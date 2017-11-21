@@ -23,6 +23,10 @@ function initSimpleFilter(callback, options) {
         jQuery("#filter").val("");
         simpleFilter(true, callback, options);
     });
+    jQuery("#simple-filter .glyphicon-random").click(function() {
+        $(this).removeClass("text-muted");
+        simpleFilter(true, callback, options);
+    });
     jQuery("#simple-filter .glyphicon-star-empty, #simple-filter .glyphicon-star").click(function() {
         $(this).toggleClass("glyphicon-star-empty").toggleClass("glyphicon-star");
         simpleFilter(true, callback, options);

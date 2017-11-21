@@ -252,7 +252,7 @@ sub List {
     }
 
     $sql .= qq{
-        order by rand()
+        order by created desc
     };
 
     my @results = Flavors::Data::Util::Results($dbh, {

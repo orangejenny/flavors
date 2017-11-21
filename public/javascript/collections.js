@@ -70,6 +70,14 @@ function filterCollections(force) {
            jQuery(selector + "[data-starred!='1']").hide();
     }
 
+    // Randomize order if requested
+    if (!jQuery("#simple-filter .glyphicon-random").hasClass("text-muted")) {
+        var $container = $(".collections"),
+            collections = $container.find(".collection").remove();
+        collections = _.sortBy(collections, function() { return Math.random(); });
+        $container.append(collections);
+    }
+
     // Resize collections to match their song counts
     $(".collection").each(function(i, c) {
         var $c = $(c);

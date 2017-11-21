@@ -85,6 +85,7 @@ Flavors::HTML::Header($dbh, {
 print Flavors::HTML::FilterControl($dbh, {
     ERROR => $sqlerror,
     FILTER => $fdat->{FILTER},
+    HASRANDOM => 1,
 });
 
 print qq{

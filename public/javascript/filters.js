@@ -39,7 +39,6 @@ function simpleFilter(force, callback, options) {
     }
 
     lastQuery = query;
-    jQuery("#last-query-text").text(lastQuery);
     jQuery("#last-query input").val(lastQuery);
     if (lastQuery) {
         jQuery("#simple-filter .glyphicon-remove").removeClass("hide");

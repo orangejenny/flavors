@@ -241,7 +241,6 @@ sub FilterControl {
                         <span class='glyphicon glyphicon-search'></span>
                         <span class='glyphicon glyphicon-star-empty'></span>
                         <span class='glyphicon glyphicon-remove hide'></span>
-                        <span id="last-query-text"></span>
                     </div>
                     <input id='filter' type='text'/>
                 </div>

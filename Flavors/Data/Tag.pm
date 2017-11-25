@@ -16,13 +16,13 @@ sub ArtistGenreList {
 
     my $sql = qq{
         select distinct
-            song.artist,
-            artistgenre.genre
+            flavors_song.artist,
+            flavors_artistgenre.genre
         from
-            song
-            left join artistgenre on artistgenre.artist = song.artist
+            flavors_song
+            left join flavors_artistgenre on flavors_artistgenre.artist = flavors_song.artist
         order by
-            artistgenre.artist
+            flavors_artistgenre.artist
     };
 
     return Flavors::Data::Util::Results($dbh, {
@@ -42,7 +42,7 @@ sub CategoryList {
     my ($dbh, $args) = @_;
 
     return map { $_->{CATEGORY} } Flavors::Data::Util::Results($dbh, {
-        SQL => "select distinct category from tagcategory;",
+        SQL => "select distinct category from flavors_tagcategory;",
         COLUMNS => [qw(category)],
     });
 }
@@ -70,11 +70,11 @@ sub CategoryStats {
     $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
     $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
 
-    my $tagcolumn = $isgenre ? "artistgenre.genre" : "songtag.tag";
-    my $tables = $isgenre ? "artistgenre" : "songtag, tagcategory";
+    my $tagcolumn = $isgenre ? "flavors_artistgenre.genre" : "flavors_songtag.tag";
+    my $tables = $isgenre ? "flavors_artistgenre" : "flavors_songtag, flavors_tagcategory";
     my $joins = $isgenre
-        ? "song.artist = artistgenre.artist"
-        : "song.id = songtag.songid and songtag.tag = tagcategory.tag and tagcategory.category = ?"
+        ? "flavors_song.artist = flavors_artistgenre.artist"
+        : "flavors_song.id = flavors_songtag.songid and flavors_songtag.tag = flavors_tagcategory.tag and flavors_tagcategory.category = ?"
     ;
     my $songlist = Flavors::Data::Song::List($dbh, {
         %$args,
@@ -149,8 +149,8 @@ sub ColorList {
             hex,
             whitetext
         from
-            tagcategory
-            left join color on tagcategory.tag = color.name
+            flavors_tagcategory
+            left join flavors_color on flavors_tagcategory.tag = flavors_color.name
         where
             category = 'colors'
         order by
@@ -185,15 +185,15 @@ sub List {
     });
     my $sql = sprintf(qq{
             select
-                songtag.tag,
-                tagcategory.category,
-                metacategory.metacategory,
+                flavors_songtag.tag,
+                flavors_tagcategory.category,
+                flavors_metacategory.metacategory,
                 count(*) count
             from
-                songtag
-            inner join (%s) song on songtag.songid = song.id
-            left join tagcategory on tagcategory.tag = songtag.tag
-            left join metacategory on tagcategory.category = metacategory.category
+                flavors_songtag
+            inner join (%s) flavors_song on flavors_songtag.songid = flavors_song.id
+            left join flavors_tagcategory on flavors_tagcategory.tag = flavors_songtag.tag
+            left join flavors_metacategory on flavors_tagcategory.category = flavors_metacategory.category
             where 1=1
         },
         $songlist->{SQL},
@@ -202,14 +202,14 @@ sub List {
     if ($args->{RELATED}) {
         $sql .= qq{
             and
-                songtag.tag <> '$args->{RELATED}'
+                flavors_songtag.tag <> '$args->{RELATED}'
                 and exists (
                     select 
                         1
                     from 
-                        songtag original
+                        flavors_songtag original
                     where 
-                        original.songid = songtag.songid
+                        original.songid = flavors_songtag.songid
                         and original.tag = '$args->{RELATED}'
                 )
         };
@@ -222,8 +222,8 @@ sub List {
 
     $sql .= qq{
         group by
-            songtag.tag, 
-            tagcategory.category
+            flavors_songtag.tag, 
+            flavors_tagcategory.category
         order by
             count(*) desc,
             tag
@@ -265,17 +265,17 @@ sub NetworkStats {
     my $strength = $args->{STRENGTH} || 1;
     my $categorywhere = "";
     if ($args->{CATEGORY}) {
-        $categorywhere = "and tagcategory.category = ?";
+        $categorywhere = "and flavors_tagcategory.category = ?";
     }
     my $songlist = Flavors::Data::Song::List($dbh, {
         %$args,
         SQLONLY => 1,
     });
     my $sql = sprintf(qq{
-            select songtag.songid, group_concat(songtag.tag separator '%s') tags
-            from (%s) song, songtag, tagcategory
-            where song.id = songtag.songid
-            and songtag.tag = tagcategory.tag
+            select flavors_songtag.songid, group_concat(flavors_songtag.tag separator '%s') tags
+            from (%s) flavors_song, flavors_songtag, flavors_tagcategory
+            where flavors_song.id = flavors_songtag.songid
+            and flavors_songtag.tag = flavors_tagcategory.tag
             %s
             group by songid
         },
@@ -329,11 +329,11 @@ sub NetworkStats {
     }
     my @nodes = Flavors::Data::Util::Results($dbh, {
         SQL => sprintf(qq{
-            select tagcategory.tag, tagcategory.category, count(*) as songcount
-            from tagcategory, songtag
-            where songtag.tag = tagcategory.tag
+            select flavors_tagcategory.tag, flavors_tagcategory.category, count(*) as songcount
+            from flavors_tagcategory, flavors_songtag
+            where flavors_songtag.tag = flavors_tagcategory.tag
             %s
-            group by tagcategory.tag, tagcategory.category
+            group by flavors_tagcategory.tag, flavors_tagcategory.category
         }, $categorywhere),
         COLUMNS => [qw(tag category count)],
         BINDS => \@nodebinds,
@@ -381,32 +381,32 @@ sub SeasonStats {
                     else years.year
                 end as year,
                 seasons.season from (
-                    select song.id, tagcategory.tag as year
-                    from song, songtag, tagcategory
-                    where song.id = songtag.songid
-                    and songtag.tag = tagcategory.tag
+                    select flavors_song.id, flavors_tagcategory.tag as year
+                    from flavors_song, flavors_songtag, flavors_tagcategory
+                    where flavors_song.id = flavors_songtag.songid
+                    and flavors_songtag.tag = flavors_tagcategory.tag
                     and category = 'years'
                 ) years, (
                     select 
-                        song.id, 
-                        tagcategory.tag,
-                        concat(song.artist, ' - ', song.name) as name,
+                        flavors_song.id, 
+                        flavors_tagcategory.tag,
+                        concat(flavors_song.artist, ' - ', flavors_song.name) as name,
                         case
-                            when tagcategory.tag in ('winter', 'december', 'january', 'february') then 0
-                            when tagcategory.tag in ('spring', 'march', 'april', 'may') then 1
-                            when tagcategory.tag in ('summer', 'june', 'july', 'august') then 2
-                            when tagcategory.tag in ('autumn', 'september', 'october', 'november') then 3
-                            else tagcategory.tag 
+                            when flavors_tagcategory.tag in ('winter', 'december', 'january', 'february') then 0
+                            when flavors_tagcategory.tag in ('spring', 'march', 'april', 'may') then 1
+                            when flavors_tagcategory.tag in ('summer', 'june', 'july', 'august') then 2
+                            when flavors_tagcategory.tag in ('autumn', 'september', 'october', 'november') then 3
+                            else flavors_tagcategory.tag 
                         end as season
-                    from song, songtag, tagcategory
-                    where song.id = songtag.songid
-                    and songtag.tag = tagcategory.tag
+                    from flavors_song, flavors_songtag, flavors_tagcategory
+                    where flavors_song.id = flavors_songtag.songid
+                    and flavors_songtag.tag = flavors_tagcategory.tag
                     and category in ('seasons', 'months')
                 ) seasons, (
                     %s
-                ) song
+                ) flavors_song
             where years.id = seasons.id
-            and song.id = years.id
+            and flavors_song.id = years.id
         ) stats
         group by year, season
         order by year, season;
@@ -503,7 +503,7 @@ sub UpdateColor {
     my ($dbh, $args) = @_;
 
     my @colors = Flavors::Data::Util::Results($dbh, {
-        SQL => qq{ select * from color where name = ? },
+        SQL => qq{ select * from flavors_color where name = ? },
         BINDS => [$args->{NAME}],
         COLUMNS => [qw(name, hex, whitetext)],
     });
@@ -518,12 +518,12 @@ sub UpdateColor {
                 push(@binds, $args->{$column});
             }
         }
-        $sql .= "update color set " . join(", ", @clauses) . ", updated = now() where name = ?";
+        $sql .= "update flavors_color set " . join(", ", @clauses) . ", updated = now() where name = ?";
     }
     else {
         push(@binds, $args->{HEX} || "000000");
         push(@binds, $args->{WHITETEXT} || 0);
-        $sql .= "insert into color (hex, whitetext, name, created, updated) values (?, ?, ?, now(), now());";
+        $sql .= "insert into flavors_color (hex, whitetext, name, created, updated) values (?, ?, ?, now(), now());";
     }
     push (@binds, $args->{NAME});
 
@@ -558,14 +558,14 @@ sub YearStats {
 
     my $sql = sprintf(qq{
             select
-                tagcategory.tag,
+                flavors_tagcategory.tag,
                 count(*) count
-            from (%s) song, songtag, tagcategory
-            where song.id = songtag.songid
-            and songtag.tag = tagcategory.tag
+            from (%s) flavors_song, flavors_songtag, flavors_tagcategory
+            where flavors_song.id = flavors_songtag.songid
+            and flavors_songtag.tag = flavors_tagcategory.tag
             and category = 'years'
-            group by tagcategory.tag
-            order by tagcategory.tag;
+            group by flavors_tagcategory.tag
+            order by flavors_tagcategory.tag;
         },
         $songlist->{SQL},
     );

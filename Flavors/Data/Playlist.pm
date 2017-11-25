@@ -23,7 +23,7 @@ sub List {
             isstarred,
             refreshed
         from
-            playlist
+            flavors_playlist
         order by
             isstarred,
             updated desc
@@ -50,7 +50,7 @@ sub Star {
     my ($dbh, $args) = @_;
 
     Flavors::Data::Util::Results($dbh, {
-        SQL => "update playlist set isstarred = ?, updated = now() where id = ?",
+        SQL => "update flavors_playlist set isstarred = ?, updated = now() where id = ?",
         BINDS => [$args->{ISSTARRED} ? 1 : 0, $args->{ID}],
         SKIPFETCH => 1,
     });
@@ -75,14 +75,14 @@ sub Update {
     }
 
     my @results = Flavors::Data::Util::Results($dbh, {
-        SQL => "select id from playlist where filter = ?",
+        SQL => "select id from flavors_playlist where filter = ?",
         BINDS => [$filter],
         COLUMNS => ['id'],
     });
     if (@results) {
         # touch playlist
         Flavors::Data::Util::Results($dbh, {
-            SQL => "update playlist set updated = now() where id = ?",
+            SQL => "update flavors_playlist set updated = now() where id = ?",
             BINDS => [$results[0]->{ID}],
             SKIPFETCH => 1,
         });
@@ -90,11 +90,11 @@ sub Update {
     else {
         # create playlist
         @results = Flavors::Data::Util::Results($dbh, {
-            SQL => "select max(id) from playlist",
+            SQL => "select max(id) from flavors_playlist",
             COLUMNS => ['id'],
         });
         my $sql = qq{
-            insert into playlist
+            insert into flavors_playlist
                 (id, filter, created, updated)
             values
                 (?, ?, now(), now())
@@ -110,7 +110,7 @@ sub Update {
             select 
                 id
             from
-                playlist
+                flavors_playlist
             where
                 isstarred = 0
             order by
@@ -122,7 +122,7 @@ sub Update {
         });
         for (my $i = 5; $i < @results; $i++) {
             Flavors::Data::Util::Results($dbh, {
-                SQL => "delete from playlist where id = ?",
+                SQL => "delete from flavors_playlist where id = ?",
                 BINDS => [$results[$i]->{ID}],
                 SKIPFETCH => 1,
             });

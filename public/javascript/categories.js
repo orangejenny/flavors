@@ -15,11 +15,11 @@ jQuery(document).ready(function() {
             };
 
             args.TABLE = jQuery(this).closest(".category").data("table");
-            if (args.TABLE === "tagcategory") {
+            if (args.TABLE === "flavors_tagcategory") {
                 args.VALUECOLUMN = "tag";
                 args.CATEGORYCOLUMN = "category";
             }
-            else if (args.TABLE === "artistgenre") {
+            else if (args.TABLE === "flavors_artistgenre") {
                 args.VALUECOLUMN = "artist";
                 args.CATEGORYCOLUMN = "genre";
             }

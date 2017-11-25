@@ -155,7 +155,7 @@ sub List {
         'starred' => 'isstarred = 1',
     );
     foreach my $find (keys %replacements) {
-        $filter =~ s/$find/$replacements{$find}/g;
+        $filter =~ s/\b$find\b/$replacements{$find}/g;
     }
 
     $filter =~ s/\[([^]]*)]/taglist like '% $1 %'/g;

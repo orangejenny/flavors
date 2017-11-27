@@ -245,15 +245,16 @@ function showSongs() {
     var template = _.template("<li data-<%= dataName %>='<%= dataValue %>'><a href='#'><%= content %></a></li>");
     $container.append(template({ content: "&laquo;", dataName: 'increment', dataValue: '-1' }));
 
-    // TODO: clean up magic numbers
-    _.each(_.range(Math.min(totalPages / 2, 4)), function(p) {
+    var maxWidgetPages = 5,
+        halfWidgetPages = Math.floor(maxWidgetPages / 2);
+    _.each(_.range(Math.min(totalPages / 2, halfWidgetPages)), function(p) {
         $container.append(template({ content: p + 1, dataName: 'page', dataValue: p + 1 }));
     });
-    if (totalPages > 9) {
+    if (totalPages > maxWidgetPages) {
         $container.append(template({ content: "...", dataName: 'disabled', dataValue: '1'}));
         $container.find("li:last").addClass("disabled");
     }
-    _.each(_.range(Math.floor(Math.min(totalPages / 2, 4))).reverse(), function(p) {
+    _.each(_.range(Math.floor(Math.min(totalPages / 2, halfWidgetPages))).reverse(), function(p) {
         $container.append(template({ content: totalPages - p, dataName: 'page', dataValue: totalPages - p }));
     });
     $container.append(template({ content: "&raquo;", dataName: 'increment', dataValue: '1' }));

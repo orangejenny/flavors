@@ -18,7 +18,7 @@ use Flavors::Data::Util;
 sub Count {
     my ($dbh, $args) = @_;
 
-    my $sql = "select count(*) from song";
+    my $sql = "select count(*) from flavors_song";
 
     $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
     if ($args->{FILTER}) {
@@ -265,7 +265,7 @@ sub Stats {
                 %s, 
                 count(*)
             from
-                (%s) song
+                (%s) flavors_song
             where 1 = 1
             group by %s
             order by %s;

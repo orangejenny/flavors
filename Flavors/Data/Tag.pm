@@ -86,13 +86,13 @@ sub CategoryStats {
             from (
                 select
                     %s as tag, %s, count(*) as count
-                from (%s) song, %s
+                from (%s) flavors_song, %s
                 where %s and %s is not null
                 %s
                 group by %s, %s
             ) partials, (
                 select %s, %s as tag, count(*) as count
-                from song, %s
+                from flavors_song, %s
                 where %s and %s is not null
                 group by %s, %s
             ) totals

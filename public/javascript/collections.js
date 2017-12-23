@@ -73,7 +73,7 @@ function filterCollections(force) {
     // Randomize order if requested
     if (!jQuery("#simple-filter .glyphicon-random").hasClass("text-muted")) {
         var $container = $(".collections"),
-            collections = $container.find(".collection").remove();
+            collections = $container.find(".collection").detach();
         collections = _.sortBy(collections, function() { return Math.random(); });
         $container.append(collections);
     }

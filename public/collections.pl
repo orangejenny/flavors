@@ -218,15 +218,19 @@ print q{
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <div class='song hide'>
-                        <span class='ordinal'>0</span>
-                        <input type='text' name='name' placeholder='song' />
-                        <input type='text' name='artist' placeholder='artist' />
-                        <input type='text' name='minutes' placeholder='0' />
-                        :
-                        <input type='text' name='seconds' placeholder='00' />
-                        <span class='glyphicon glyphicon-trash'></span>
-                    </div>
+                    <table>
+                        <tr class='song hide'>
+                            <td class='ordinal'>0</td>
+                            <td><input type='text' name='name' placeholder='song' /></td>
+                            <td><input type='text' name='artist' placeholder='artist' /></td>
+                            <td>
+                                <input type='text' name='minutes' placeholder='0' />
+                                :
+                                <input type='text' name='seconds' placeholder='00' />
+                            </td>
+                            <td><span class='glyphicon glyphicon-trash'></span></td>
+                        </tr>
+                    </table>
                     <div id="add-song">
                         <button class='btn btn-default btn-large'>
                             <span class='glyphicon glyphicon-plus'></span>

@@ -115,7 +115,7 @@ sub List {
 
     $sql .= " group by flavors_song.id ";
 
-    $sql = "select * from ($sql) songs where 1 = 1";
+    $sql = "select * from ($sql) flavors_song where 1 = 1";
     my @binds;
     if ($args->{SIMPLEFILTER}) {
         my @tokens = grep { $_ } split(/\s+/, $args->{SIMPLEFILTER});
@@ -129,7 +129,7 @@ sub List {
                     or exists (
                         select 1 from flavors_collection, flavors_songcollection
                         where flavors_collection.id = flavors_songcollection.collectionid
-                        and flavors_songs.id = flavors_songcollection.songid
+                        and flavors_song.id = flavors_songcollection.songid
                         and concat(' ', flavors_collection.name, ' ') like concat(' %', ?, '% ')
                     )
                 )

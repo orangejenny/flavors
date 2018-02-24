@@ -97,15 +97,15 @@ sub Header {
 
     my @pages = (
         { name => 'songs', icon => 'music' },
-        { name => 'collections', icon => 'list' },
+        { name => 'collections', icon => 'cd' },
         { name => 'tags', icon => 'tag' },
         { name => 'rating', icon => 'star', url => 'facet.pl?facet=rating' },
         { name => 'energy', icon => 'fire', url => 'facet.pl?facet=energy' },
         { name => 'mood', icon => 'heart', url => 'facet.pl?facet=mood' },
-        { name => 'matrix', icon => 'th-large' },
+        { name => 'matrix', icon => 'th' },
         { name => 'acquisitions', icon => 'shopping-cart' },
-        { name => 'timeline', icon => 'time' },
-        { name => 'network', icon => 'tags' },
+        { name => 'timeline', icon => 'hourglass' },
+        { name => 'network', icon => 'globe' },
     );
 
     print qq{
@@ -145,7 +145,7 @@ sub Header {
     printf(qq{ <li class='dropdown %s'> }, (grep { $url eq $_ } @pages) ? "active" : "");
     print qq{
         <a class='dropdown-toggle' data-toggle='dropdown' role='label' href='#'>
-            <i class='glyphicon glyphicon-edit'></i> Data <span class="caret"></span>
+            <i class='glyphicon glyphicon-equalizer'></i> Data <span class="caret"></span>
         </a>
     };
     print qq{ <ul class="dropdown-menu"> };

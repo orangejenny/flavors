@@ -24,6 +24,7 @@ jQuery(document).ready(function() {
                     _.each(tags, function(tag) {
                         $list.append(tagTemplate(_.extend(tag, { ELEMENT: 'div' })));
                     });
+                    updateCount(tags.length);   // from filters.js
                 });
             },
         });

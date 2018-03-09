@@ -49,6 +49,7 @@ foreach my $song (@songs) {
 print Flavors::HTML::FilterControl($dbh, {
     FILTER => $fdat->{FILTER},
     ERROR => $sqlerror,
+    HASCOUNT => 1,
     HASRANDOM => 1,
 });
 
@@ -191,14 +192,6 @@ foreach my $collection (@collections) {
     print "</div>";
 }
 print "</div></div>";
-
-print qq{
-    <div id="item-count-container">
-        <span id="item-count-span">
-            <span id="item-count"></span> collections
-        </span>
-    </div>
-};
 
 # Modal for new collection
 print q{

@@ -225,6 +225,7 @@ sub SelectionControl {
 # Params:
 #   ERROR
 #   FILTER
+#   HASCOUNT
 #   HASRANDOM
 #   TYPE
 #
@@ -244,7 +245,7 @@ sub FilterControl {
                         %s
                         <span class='glyphicon glyphicon-remove hide'></span>
                     </div>
-                    <input id='filter' type='text'/>
+                    %s
                 </div>
                 <div id="complex-filter-trigger" class="icon-count-%i">
                     <a href='#'>%s</a> %s %s
@@ -272,6 +273,12 @@ sub FilterControl {
             </div>
         },
         $args->{HASRANDOM} ? "<span class='glyphicon glyphicon-random text-muted'></span>" : "",
+        $args->{HASCOUNT} ?  qq{
+            <div class='input-group'>
+                <span class='input-group-addon item-count'>0</span>
+                <input id='filter' type='text' class='form-control' />
+            </div>
+        } : qq{ <input id='filter' type='text' class='form-control' /> },
         $iconcount,
         $args->{FILTER} || "advanced search",
         $iconcount == 2 ? "<span class='glyphicon glyphicon-refresh'></span>" : "",

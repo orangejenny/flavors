@@ -31,6 +31,7 @@ my @tags = @{ $results->{RESULTS} };
 print Flavors::HTML::FilterControl($dbh, {
     FILTER => $fdat->{FILTER},
     ERROR => $sqlerror,
+    HASCOUNT => 1,
 });
 
 # Container for tags

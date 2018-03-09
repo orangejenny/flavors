@@ -13,7 +13,8 @@ jQuery(document).ready(function() {
 });
 
 function initSimpleFilter(callback, options) {
-    callback();
+    var originalCount = callback();
+    updateCount(originalCount);
 
     var $simpleFilter = $("#simple-filter");
     jQuery('#filter').on("keyup blur", _.throttle(function(event) {
@@ -50,7 +51,15 @@ function simpleFilter(force, callback, options) {
         jQuery("#simple-filter .glyphicon-remove").addClass("hide");
     }
 
-    callback();
+    var count = parseInt(callback());
+    updateCount(count);
+}
+
+function updateCount(count) {
+    count = parseInt(count);
+    if (count || count === 0) {
+        jQuery("#simple-filter .item-count").text(count.toLocaleString());
+    }
 }
 
 // Add complex filter to given condition

@@ -17,14 +17,17 @@
         height: 50px;
         text-align: center;
 
-        #filter {
-            margin: @spacingNarrow;
-            width: 100%;
+        // overrides for bootstrap
+        .input-group-addon, .form-control {
+            font-size: @fontSizeDefault;
+            border: 1px solid @greyBlue !important;
         }
+
         #last-query {
+            z-index: 4; // appear above input, which is z-index 2 due to .form-control
             position: absolute;
-            right: 5px;
-            top: 15px;
+            right: 10px;
+            top: 12px;
         }
 
         .glyphicon:not(.glyphicon-search) {

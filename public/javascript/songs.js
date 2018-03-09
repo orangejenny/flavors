@@ -208,7 +208,7 @@ function filterSongs(force) {
 
     showSongs();
 
-    return true;
+    return visibleSongs.length;
 }
 
 function showPage() {

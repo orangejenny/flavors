@@ -84,12 +84,10 @@ function filterCollections(force) {
         $c.css("opacity", $c.data("song-count") / $c.data("total"));
     });
 
-    updateItemCount();
+    return jQuery(".collections .collection:visible").length;
 }
 
 jQuery(document).ready(function() {
-    updateItemCount();
-
     jQuery(".collection").click(function() {
         var $collection = jQuery(this),
             id = $collection.data("id");
@@ -334,7 +332,3 @@ jQuery(document).ready(function() {
         }
     });
 });
-
-function updateItemCount() {
-    jQuery("#item-count").text(jQuery(".collections .collection:visible").length);
-}

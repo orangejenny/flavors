@@ -166,7 +166,7 @@ jQuery(document).ready(function() {
 });
 
 function filterSongs(force) {
-    var query = jQuery("#filter").val(),
+    var query = jQuery("#filter").val().toLowerCase(),
         queryTokens = _.without(query.split(/\s+/), ""),
         onlyStarred = !jQuery("#simple-filter .glyphicon-star-empty").length;
     currentPage = 1;

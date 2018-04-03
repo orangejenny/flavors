@@ -35,7 +35,7 @@ function initSimpleFilter(callback, options) {
 }
 
 function simpleFilter(force, callback, options) {
-    var query = jQuery("#filter").val();
+    var query = jQuery("#filter").val().toLowerCase();
     options = options || {};
 
     var lastQuery = jQuery("#last-query input").val();

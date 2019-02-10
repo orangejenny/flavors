@@ -134,7 +134,7 @@ print qq{
             <td contenteditable='true' data-key='rating' class='rating'><%= ratingRating %></td>
             <td contenteditable='true' data-key='energy' class='rating'><%= ratingEnergy %></td>
             <td contenteditable='true' data-key='mood' class='rating'><%= ratingMood %></td>
-            <td contenteditable='true' data-key='tags'><%= TAGLIST %></td>
+            <td contenteditable='true' data-key='tags' class='tags'><%= TAGLIST %></td>
             <td class='icon-cell <%= lyricsClass %>'>
                 <i class='glyphicon glyphicon-font'></i>
             </td>

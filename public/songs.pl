@@ -149,7 +149,7 @@ print qq{
 
 print qq{
     <script type="text/html" id="template-rating">
-        <% _.each(_.range(rating), function(i) { %><span class='glyphicon glyphicon-<%= symbol %><% if (!rating) { %> blank<% } %>'></span><% }) %>
+        <% _.each(_.range(rating || 5), function(i) { %><span class='glyphicon glyphicon-<%= symbol %><% if (!rating) { %> blank<% } %>'></span><% }) %>
     </script>
 };
 

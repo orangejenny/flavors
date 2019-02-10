@@ -22,7 +22,7 @@ Flavors::HTML::Header($dbh, {
     TITLE => "Collections",
     BUTTONS => Flavors::HTML::ExportControl() . qq{
         <button type="button" class="btn btn-xs btn-info" id="add-collection">
-            <span class="glyphicon glyphicon-plus"></span>
+            <span class="fas fa-plus"></span>
             New
         </button>
     },
@@ -113,7 +113,7 @@ foreach my $collection (@collections) {
     }
     printf(qq{
             <div class="accepting-drop hide">
-                <i class="glyphicon glyphicon-cloud-upload"></i>
+                <i class="fas fa-cloud-upload-alt"></i>
                 <br /><br />
                 Drop new cover art
             </div>
@@ -186,7 +186,7 @@ foreach my $collection (@collections) {
         Flavors::HTML::Rating($collection->{MAXMOOD}, 'heart'),
         $collection->{COMPLETION} == 1 ? "&nbsp;" : sprintf("(%s%% complete)", floor($collection->{COMPLETION} * 100)),
         join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..2]),
-        join("", map { sprintf("<li><img src='%s' /><div class='trash'><i class='glyphicon glyphicon-trash'></i></div></li>", $_) } @files),
+        join("", map { sprintf("<li><img src='%s' /><div class='trash'><i class='fas fa-trash'></i></div></li>", $_) } @files),
     );
 
     print "</div>";
@@ -221,12 +221,12 @@ print q{
                                 :
                                 <input type='text' name='seconds' placeholder='00' />
                             </td>
-                            <td><span class='glyphicon glyphicon-trash'></span></td>
+                            <td><span class='fas fa-trash'></span></td>
                         </tr>
                     </table>
                     <div id="add-song">
                         <button class='btn btn-default btn-large'>
-                            <span class='glyphicon glyphicon-plus'></span>
+                            <span class='fas fa-plus'></span>
                         </button>
                         <input type='text' value='1' />
                     </div>

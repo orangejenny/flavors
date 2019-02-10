@@ -15,10 +15,10 @@ jQuery(document).ready(function() {
         jQuery("#complex-filter-trigger a").click(function() {
             $complexFilter.modal().find("textarea").focus();
         });
-        jQuery("#complex-filter-trigger .glyphicon-refresh").click(function() {
+        jQuery("#complex-filter-trigger .fa-sync-alt").click(function() {
             $complexFilter.find("form").submit();
         });
-        jQuery("#complex-filter-trigger .glyphicon-remove").click(function() {
+        jQuery("#complex-filter-trigger .fa-times").click(function() {
             var $form = $complexFilter.find("form");
             $form.find("textarea").val("");
             $form.submit();

@@ -9,7 +9,7 @@ jQuery(document).ready(function() {
                 INNERSUB: 'Flavors::Data::Tag::TimelineStats',
                 FILTER: $("textarea[name='filter']").val(),
                 SIMPLEFILTER: $simpleFilter.find("input[type='text']").val(),
-                STARRED: $simpleFilter.find(".glyphicon-star").length,
+                STARRED: $simpleFilter.find(".fas.fa-star").length,
                 UPDATEPLAYLIST: 1,
             },
             SPINNER: selector,

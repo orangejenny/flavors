@@ -45,7 +45,7 @@
                 background-color: @backgroundColor;
                 border: none;
     
-                .glyphicon {
+                .far, .fas {
                     cursor: pointer;
                 }
             }
@@ -53,8 +53,8 @@
             &.is-starred {
                 text-align: right;
     
-                .glyphicon {
-                    &.glyphicon-star {
+                .fas {
+                    &.fa-star {
                         color: @grey;
                     }
     
@@ -65,13 +65,13 @@
                 }
             }
     
-            &.has-lyrics .glyphicon {
+            &.has-lyrics .fas {
                 color: @grey;
             }
     
             &.rating {
                 width: @fontSizeDefault * 5 + @spacingNarrow * 2;
-                .glyphicon {
+                .fas {
                     margin-left: -1px;    // cram icons together horizontally
                 }
             }

@@ -82,7 +82,7 @@
         display: inline-block;
     }
 
-    .glyphicon {
+    .fas {
         color: @grey;
         font-size: @fontSizeDefault;
         &.blank {
@@ -125,12 +125,10 @@
 }
 
 .update-in-progress, .highlight {
-    &.glyphicon {
-        color: @updateInProgressColor !important;
-    }
+    background-color: @updateInProgressColor !important;
 
-    &:not(.glyphicon) {
-        background-color: @updateInProgressColor !important;
+    &.fas, &.far {
+        color: @updateInProgressColor !important;
     }
 }
 

@@ -91,7 +91,7 @@ jQuery(document).ready(function() {
         options.PATH = jQuery(this).text();
         options.SIMPLEFILTER = jQuery("#filter").val();
         options.FILTER = jQuery('#complex-filter textarea').val();
-        options.STARRED = !jQuery("#simple-filter .glyphicon-star-empty").length;
+        options.STARRED = jQuery("#simple-filter .fas.fa-star").length;
         options.FILENAME = options.FILTER || (options.SIMPLEFILTER ? "[" + options.SIMPLEFILTER.trim().replace(/\s+/g, "][") + "]" : "flavors");
         ExportPlaylist(options);
     });
@@ -150,7 +150,7 @@ jQuery(document).ready(function() {
     });
 
     // Click on song table to pop up modal of EchoNest song results
-    jQuery(".see-more .glyphicon").on("click", function() {
+    jQuery(".see-more .fas").on("click", function() {
         var $row = jQuery(this).closest("tr"),
             songID = $row.data("song-id"),
             echoNestID = $row.data("echo-nest-id"),
@@ -168,7 +168,7 @@ jQuery(document).ready(function() {
 function filterSongs(force) {
     var query = jQuery("#filter").val().toLowerCase(),
         queryTokens = _.without(query.split(/\s+/), ""),
-        onlyStarred = !jQuery("#simple-filter .glyphicon-star-empty").length;
+        onlyStarred = jQuery("#simple-filter .fas.fa-star").length;
     currentPage = 1;
 
     // If there's no text in the filter; just check the star filter
@@ -202,7 +202,7 @@ function filterSongs(force) {
     }
 
     // Randomize
-    if (!jQuery("#simple-filter .glyphicon-random").hasClass("text-muted")) {
+    if (!jQuery("#simple-filter .fa-random").hasClass("text-muted")) {
         visibleSongs = _.sortBy(visibleSongs, function() { return Math.random(); })
     }
 
@@ -221,7 +221,7 @@ function showPage() {
         var song = allSongs[id];
         $tbody.append(templateSong(_.extend({}, song, {
             // TODO: parseInt somewhere better (same below)
-            ratingStar: templateRating({ rating: 1, symbol: parseInt(song.ISSTARRED) ? 'star' : 'star-empty' }),
+            ratingStar: "<i class='" + (parseInt(song.ISSTARRED) ? "fas" : "far") + " fa-star'></i>",
             ratingRating: templateRating({ rating: song.RATING, symbol: 'star' }),
             ratingEnergy: templateRating({ rating: song.ENERGY, symbol: 'fire' }),
             ratingMood: templateRating({ rating: song.MOOD, symbol: 'heart' }),

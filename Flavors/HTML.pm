@@ -27,7 +27,7 @@ sub Rating {
 
     my $html;
     while ($rating > 0) {
-        $html .= $symbol ? "<span class='glyphicon glyphicon-$symbol'></span>" : "*";
+        $html .= $symbol ? "<span class='fas fa-$symbol'></span>" : "*";
         $rating--;
     }
 
@@ -64,6 +64,7 @@ sub Header {
         <html>
             <head>
                 <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+                <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
                 <link href="bower_components/jquery-minicolors/jquery.minicolors.css" rel="stylesheet" type="text/css" />
                 <link href="bower_components/At.js/dist/css/jquery.atwho.min.css" rel="stylesheet" type="text/css" />
                 <link href="/css/flavors.css" rel="stylesheet" type="text/css" />
@@ -97,15 +98,15 @@ sub Header {
 
     my @pages = (
         { name => 'songs', icon => 'music' },
-        { name => 'collections', icon => 'cd' },
+        { name => 'collections', icon => 'compact-disc' },
         { name => 'tags', icon => 'tag' },
         { name => 'rating', icon => 'star', url => 'facet.pl?facet=rating' },
         { name => 'energy', icon => 'fire', url => 'facet.pl?facet=energy' },
         { name => 'mood', icon => 'heart', url => 'facet.pl?facet=mood' },
-        { name => 'matrix', icon => 'th' },
+        { name => 'matrix', icon => 'table' },
         { name => 'acquisitions', icon => 'shopping-cart' },
-        { name => 'timeline', icon => 'hourglass' },
-        { name => 'network', icon => 'globe' },
+        { name => 'timeline', icon => 'calendar-alt' },
+        { name => 'network', icon => 'globe-africa' },
     );
 
     print qq{
@@ -122,7 +123,7 @@ sub Header {
         printf(qq{
                 <li class='%s'>
                     <a href='%s'>
-                        <i class="glyphicon glyphicon-%s"></i>
+                        <i class="fas fa-%s"></i>
                         %s
                     </a>
                 </li>
@@ -145,7 +146,7 @@ sub Header {
     printf(qq{ <li class='dropdown %s'> }, (grep { $url eq $_ } @pages) ? "active" : "");
     print qq{
         <a class='dropdown-toggle' data-toggle='dropdown' role='label' href='#'>
-            <i class='glyphicon glyphicon-equalizer'></i> Data <span class="caret"></span>
+            <i class='fas fa-database'></i> Data <span class="caret"></span>
         </a>
     };
     print qq{ <ul class="dropdown-menu"> };
@@ -184,7 +185,7 @@ sub ExportControl {
     return sprintf(qq{
         <div class="dropdown export-dropdown pull-right">
             <button class="btn btn-info btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <!--span class="glyphicon glyphicon-download"></span-->
+                <!--span class="fas fa-cloud-download-alt"></span-->
                 Export
                 <span class="caret"></span>
             </button>
@@ -204,11 +205,11 @@ sub SelectionControl {
     return qq{
         <span class="selection-buttons hide">
             <button class="btn btn-info btn-xs clear-button">
-                <i class="glyphicon glyphicon-remove"></i>
+                <i class="fas fa-times"></i>
                 Clear Selection
             </button>
             <button class="btn btn-info btn-xs songs-button">
-                <i class="glyphicon glyphicon-eye-open"></i>
+                <i class="fas fa-eye"></i>
                 View Songs
             </button>
         </span>
@@ -240,10 +241,10 @@ sub FilterControl {
                 <div id="simple-filter">
                     <div id="last-query">
                         <input type='hidden' />
-                        <span class='glyphicon glyphicon-search'></span>
-                        <span class='glyphicon glyphicon-star-empty'></span>
+                        <span class='fas fa-search'></span>
+                        <span class='far fa-star'></span>
                         %s
-                        <span class='glyphicon glyphicon-remove hide'></span>
+                        <span class='fas fa-times hide'></span>
                     </div>
                     %s
                 </div>
@@ -272,7 +273,7 @@ sub FilterControl {
                 </div>
             </div>
         },
-        $args->{HASRANDOM} ? "<span class='glyphicon glyphicon-random text-muted'></span>" : "",
+        $args->{HASRANDOM} ? "<span class='fas fa-random text-muted'></span>" : "",
         $args->{HASCOUNT} ?  qq{
             <div class='input-group'>
                 <span class='input-group-addon item-count'>0</span>
@@ -281,8 +282,8 @@ sub FilterControl {
         } : qq{ <input id='filter' type='text' class='form-control' /> },
         $iconcount,
         $args->{FILTER} || "advanced search",
-        $iconcount == 2 ? "<span class='glyphicon glyphicon-refresh'></span>" : "",
-        $iconcount > 0 ? "<span class='glyphicon glyphicon-remove'></span>" : "",
+        $iconcount == 2 ? "<span class='fas fa-sync-alt'></span>" : "",
+        $iconcount > 0 ? "<span class='fas fa-times'></span>" : "",
         Flavors::Util::EscapeHTMLAttribute(JSON::to_json([qw(
             id name artist rating energy mood time filename ismix mincollectioncreated
             maxcollectioncreated taglist tagcount collectionlist minyear maxyear isstarred
@@ -311,7 +312,7 @@ sub FilterControl {
             sprintf(
                 "<li data-id='%s'>%s <a href='#'>%s</a></li>",
                 $_->{ID}, 
-                Flavors::HTML::Rating(1, $_->{ISSTARRED} ? 'star' : 'star-empty'), 
+                sprintf("<span class='%s fa-star'></span>", $_->{ISSTARRED} ? 'fas' : 'far'),
                 $_->{FILTER},
             )
         } Flavors::Data::Playlist::List($dbh, { TYPE => $args->{TYPE} })),

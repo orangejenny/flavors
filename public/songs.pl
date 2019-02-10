@@ -136,11 +136,11 @@ print qq{
             <td contenteditable='true' data-key='mood' class='rating'><%= ratingMood %></td>
             <td contenteditable='true' data-key='tags' class='tags'><%= TAGLIST %></td>
             <td class='icon-cell <%= lyricsClass %>'>
-                <i class='glyphicon glyphicon-font'></i>
+                <i class='fas fa-font'></i>
             </td>
             <td class='icon-cell see-more'>
                 <% if (ECHONESTID) { %>
-                    <i class='glyphicon glyphicon-option-horizontal'></i>
+                    <i class='fas fa-ellipsis-h'></i>
                 <% } %>
             </td>
         </tr>
@@ -149,7 +149,7 @@ print qq{
 
 print qq{
     <script type="text/html" id="template-rating">
-        <% _.each(_.range(rating || 5), function(i) { %><span class='glyphicon glyphicon-<%= symbol %><% if (!rating) { %> blank<% } %>'></span><% }) %>
+        <% _.each(_.range(rating || 5), function(i) { %><span class='fas fa-<%= symbol %><% if (!rating) { %> blank<% } %>'></span><% }) %>
     </script>
 };
 

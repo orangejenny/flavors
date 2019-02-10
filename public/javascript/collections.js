@@ -66,12 +66,12 @@ function filterCollections(force) {
     }
 
     // Account for stars
-    if (!jQuery("#simple-filter .glyphicon-star-empty").length) {
+    if (!jQuery("#simple-filter .far.fa-star").length) {
            jQuery(selector + "[data-starred!='1']").hide();
     }
 
     // Randomize order if requested
-    if (!jQuery("#simple-filter .glyphicon-random").hasClass("text-muted")) {
+    if (!jQuery("#simple-filter .fa-random").hasClass("text-muted")) {
         var $container = $(".collections"),
             collections = $container.find(".collection").detach();
         collections = _.sortBy(collections, function() { return Math.random(); });
@@ -153,7 +153,7 @@ jQuery(document).ready(function() {
         }
     });
 
-    jQuery("#new-collection").on("click", ".glyphicon-trash", function() {
+    jQuery("#new-collection").on("click", ".fa-trash", function() {
         jQuery(this).closest(".song").remove();
         numberSongs();
     });

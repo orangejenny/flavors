@@ -9,7 +9,7 @@ jQuery(document).ready(function() {
                 INNERSUB: 'Flavors::Data::Song::Stats',
                 FILTER: $("textarea[name='filter']").val(),
                 SIMPLEFILTER: $simpleFilter.find("input[type='text']").val(),
-                STARRED: $simpleFilter.find(".glyphicon-star").length,
+                STARRED: $simpleFilter.find(".fa-star").length,
                 GROUPBY: "rating, energy, mood",
                 UPDATEPLAYLIST: 1,
             },

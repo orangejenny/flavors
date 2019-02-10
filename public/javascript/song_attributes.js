@@ -1,7 +1,7 @@
 var iconClasses = {
-    'rating': 'glyphicon-star',
-    'energy': 'glyphicon-fire',
-    'mood': 'glyphicon-heart',
+    'rating': 'fa-star',
+    'energy': 'fa-fire',
+    'mood': 'fa-heart',
 };
 jQuery(document).ready(function() {
     var selector = "[contenteditable=true][data-key]",
@@ -11,7 +11,7 @@ jQuery(document).ready(function() {
     $body.on("focus", selector, function() {
         var $editable = jQuery(this);
         if ($editable.hasClass("rating")) {
-            oldValue = $editable.children(".glyphicon:not(.blank)").length;
+            oldValue = $editable.children(".fas:not(.blank)").length;
             $editable.html(StringMultiply("*", oldValue));
         }
         else {
@@ -56,7 +56,7 @@ jQuery(document).ready(function() {
 });
 
 function ratingHTML(iconClass, number) {
-    return StringMultiply("<span class='glyphicon " + (number ? "" : "blank ") + iconClass + "'></span>", number || 5);
+    return StringMultiply("<span class='fas " + (number ? "" : "blank ") + iconClass + "'></span>", number || 5);
 }
 
 function showSongModal(args, callback) {
@@ -86,7 +86,7 @@ function showSongModal(args, callback) {
             _.each(songs, function(song) {
                 $table.append(songTemplate(_.extend(song, {
                     TRACKNUMBER: ++count,
-                    ISSTARREDHTML: ratingHTML(parseInt(song.ISSTARRED) ? 'glyphicon-star' : 'glyphicon-star-empty', 1),
+                    ISSTARREDHTML: "<span class='" + (parseInt(song.ISSTARRED) ? "fas" : "far") + " fa-star'></span>",
                     RATINGHTML: ratingHTML(iconClasses['rating'], song.RATING),
                     ENERGYHTML: ratingHTML(iconClasses['energy'], song.ENERGY),
                     MOODHTML: ratingHTML(iconClasses['mood'], song.MOOD),

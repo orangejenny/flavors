@@ -1,5 +1,5 @@
 jQuery(document).ready(function() {
-    $("body").on("click", ".glyphicon-star, .glyphicon-star-empty", function() {
+    $("body").on("click", ".fa-star", function() {
         var $star = jQuery(this);
         if ($star.closest(".rating").length || $star.closest("#filter-container").length || $star.closest("nav").length) {
             return;
@@ -20,16 +20,16 @@ function initSimpleFilter(callback, options) {
     jQuery('#filter').on("keyup blur", _.throttle(function(event) {
         simpleFilter(event && event.keyCode === 13, callback, options);
     }, 100, { leading: false }));
-    jQuery("#simple-filter .glyphicon-remove").click(function() {
+    jQuery("#simple-filter .fa-times").click(function() {
         jQuery("#filter").val("");
         simpleFilter(true, callback, options);
     });
-    jQuery("#simple-filter .glyphicon-random").click(function() {
+    jQuery("#simple-filter .fa-random").click(function() {
         $(this).removeClass("text-muted");
         simpleFilter(true, callback, options);
     });
-    jQuery("#simple-filter .glyphicon-star-empty, #simple-filter .glyphicon-star").click(function() {
-        $(this).toggleClass("glyphicon-star-empty").toggleClass("glyphicon-star");
+    jQuery("#simple-filter .fa-star").click(function() {
+        $(this).toggleClass("far").toggleClass("fas");
         simpleFilter(true, callback, options);
     });
 }
@@ -46,9 +46,9 @@ function simpleFilter(force, callback, options) {
     lastQuery = query;
     jQuery("#last-query input").val(lastQuery);
     if (lastQuery) {
-        jQuery("#simple-filter .glyphicon-remove").removeClass("hide");
+        jQuery("#simple-filter .fa-times").removeClass("hide");
     } else {
-        jQuery("#simple-filter .glyphicon-remove").addClass("hide");
+        jQuery("#simple-filter .fa-times").addClass("hide");
     }
 
     var count = parseInt(callback());
@@ -68,11 +68,11 @@ function augmentFilter(condition) {
 }
 
 function toggleStar($star, id, sub) {
-    var isstarred = $star.hasClass("glyphicon-star") ? 0 : 1;
+    var isstarred = $star.hasClass("fas") ? 0 : 1;
 
     // Update markup
-    $star.toggleClass("glyphicon-star-empty");
-    $star.toggleClass("glyphicon-star");
+    $star.toggleClass("far");
+    $star.toggleClass("fas");
 
     $("body").trigger('song-update', {
         id: id,

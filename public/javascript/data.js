@@ -14,7 +14,7 @@ jQuery(document).ready(function() {
                 SUB: 'Flavors::Data::Song::List', 
                 FILTER: augmentFilter(condition),
                 SIMPLEFILTER: jQuery("#filter").val(),
-                STARRED: jQuery("#simple-filter .glyphicon-star").length,
+                STARRED: jQuery("#simple-filter .fas.fa-star").length,
             });
         }
     });
@@ -24,11 +24,10 @@ jQuery(document).ready(function() {
         var condition = getSelectionCondition();
         if (condition) {
             ExportPlaylist({
-                STARRED: !jQuery("#simple-filter .glyphicon-star-empty").length,
                 PATH: jQuery(this).text(),
                 FILTER: augmentFilter(condition),
                 SIMPLEFILTER: jQuery("#filter").val(),
-                STARRED: jQuery("#simple-filter .glyphicon-star").length,
+                STARRED: jQuery("#simple-filter .fas.fa-star").length,
             });
         }
     });
@@ -141,7 +140,7 @@ function viewOnDoubleClick(selector, actsOn) {
                 SUB: 'Flavors::Data::Song::List', 
                 FILTER: augmentFilter(condition),
                 SIMPLEFILTER: jQuery("#filter").val(),
-                STARRED: jQuery("#simple-filter .glyphicon-star").length,
+                STARRED: jQuery("#simple-filter .fas.fa-star").length,
             }, function() {
                 selectData(obj);
             });

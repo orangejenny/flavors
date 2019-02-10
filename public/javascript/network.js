@@ -69,7 +69,7 @@ function draw() {
             CATEGORY: category,
             FILTER: $("textarea[name='filter']").val(),
             SIMPLEFILTER: $simpleFilter.find("input[type='text']").val(),
-            STARRED: $simpleFilter.find(".glyphicon-star").length,
+            STARRED: $simpleFilter.find(".fas.fa-star").length,
             STRENGTH: strength,
             UPDATEPLAYLIST: 1,
         },

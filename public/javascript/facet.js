@@ -10,7 +10,7 @@ jQuery(document).ready(function() {
                 INNERSUB: 'Flavors::Data::Song::Stats',
                 FILTER: $("textarea[name='filter']").val(),
                 SIMPLEFILTER: $simpleFilter.find("input[type='text']").val(),
-                STARRED: $simpleFilter.find(".glyphicon-star").length,
+                STARRED: $simpleFilter.find(".fa-star").length,
                 GROUPBY: facet,
                 UPDATEPLAYLIST: 1,
             },
@@ -38,7 +38,7 @@ jQuery(document).ready(function() {
                     FACET: facet,
                     FILTER: $("textarea[name='filter']").val(),
                     SIMPLEFILTER: $simpleFilter.find("input[type='text']").val(),
-                    STARRED: $simpleFilter.find(".glyphicon-star").length,
+                    STARRED: $simpleFilter.find(".fa-star").length,
                     CATEGORY: category,
                 },
                 SPINNER: selector,
@@ -51,9 +51,9 @@ jQuery(document).ready(function() {
 });
 
 var icons = {
-    rating: 'glyphicon-star',
-    energy: 'glyphicon-fire',
-    mood: 'glyphicon-heart',
+    rating: 'fa-star',
+    energy: 'fa-fire',
+    mood: 'fa-heart',
 };
 
 function CategoryChart(selector, facet, range) {
@@ -89,7 +89,7 @@ CategoryChart.prototype.reformatData = function(data) {
         tag: d.TAG,
         rating: +d.RATING,
         count: +d.COUNT,
-        description: d.COUNT + ' ' + StringMultiply("<span class='glyphicon " + icons[self.facet] + "'></span>", +d.RATING),
+        description: d.COUNT + ' ' + StringMultiply("<span class='fas " + icons[self.facet] + "'></span>", +d.RATING),
         condition: "exists (select 1 from songtag where songid = songs.id and tag = '" + d.TAG + "') and " + self.facet + " = " + d.RATING,
         filename: '[' + d.TAG + '] ' + self.facet + ' ' + d.RATING,
     }; });
@@ -208,7 +208,7 @@ BinaryHorizontalStack.prototype.draw = function(data) {
     data = _.map(data, function(d, i) { return {
         condition: self.facet + '=' + i,
         value: +d.COUNT,
-        description: +d.COUNT + " " + StringMultiply("<span class='glyphicon " + icons[self.facet] + "'></span>", i),
+        description: +d.COUNT + " " + StringMultiply("<span class='fas " + icons[self.facet] + "'></span>", i),
     } });
     var unratedData = data[0];
     unratedData.condition = self.facet + ' is null';
@@ -288,7 +288,7 @@ Histogram.prototype.draw = function(data) {
     data = _.rest(_.map(data, function(d, i) { return {
         condition: self.facet + '=' + i,
         value: +d.COUNT,
-        description: +d.COUNT + " " + StringMultiply("<span class='glyphicon " + icons[self.facet] + "'></span>", i),
+        description: +d.COUNT + " " + StringMultiply("<span class='fas " + icons[self.facet] + "'></span>", i),
     } }));
     self.setDimensions();
     jQuery(self.selector + " svg").html("");

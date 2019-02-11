@@ -24,7 +24,7 @@ jQuery(document).ready(function() {
         var condition = getSelectionCondition();
         if (condition) {
             ExportPlaylist({
-                PATH: jQuery(this).text(),
+                CONFIG: jQuery(this).data("name"),
                 FILTER: augmentFilter(condition),
                 SIMPLEFILTER: jQuery("#filter").val(),
                 STARRED: jQuery("#simple-filter .fas.fa-star").length,

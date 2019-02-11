@@ -88,7 +88,7 @@ jQuery(document).ready(function() {
     // Export buttons
     jQuery(".export-dropdown a").click(function() {
         var options = {};
-        options.PATH = jQuery(this).text();
+        options.CONFIG = jQuery(this).data("name");
         options.SIMPLEFILTER = jQuery("#filter").val();
         options.FILTER = jQuery('#complex-filter textarea').val();
         options.STARRED = jQuery("#simple-filter .fas.fa-star").length;

@@ -185,13 +185,15 @@ sub ExportControl {
     return sprintf(qq{
         <div class="dropdown export-dropdown pull-right">
             <button class="btn btn-info btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <!--span class="fas fa-cloud-download-alt"></span-->
+                <span class="fas fa-cloud-download-alt"></span>
                 Export
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">%s</ul>
         </div>
-    }, join("", map { sprintf("<li><a href='#'>%s</a></li>", ucfirst($_->{name})) } @{ $paths }));
+    }, join("", map { sprintf(qq{
+        <li><a href='#' data-name='%s'><span class='fas %s'></span> %s</a></li>
+    }, $_->{name}, $_->{icon}, ucfirst($_->{name})) } @{ $paths }));
 }
 
 ################################################################

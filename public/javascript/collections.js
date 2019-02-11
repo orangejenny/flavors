@@ -213,7 +213,7 @@ jQuery(document).ready(function() {
         var $collection = jQuery(".collection[data-id='" + jQuery(this).closest("#song-list").data("id") + "']");
         var $details = $collection.find(".details");
         ExportPlaylist({
-            PATH: jQuery(this).text(),
+            CONFIG: jQuery(this).data("name"),
             COLLECTIONIDS: [$collection.data("id")],
             FILENAME: $collection.find(".artist").text() + " - " + $collection.find(".name").text(),
         });
@@ -231,7 +231,7 @@ jQuery(document).ready(function() {
             return;
         }
         ExportPlaylist({
-            PATH: jQuery(this).text(),
+            CONFIG: jQuery(this).data("name"),
             COLLECTIONIDS: collectionids,
         });
     });

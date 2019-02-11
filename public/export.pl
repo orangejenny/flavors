@@ -37,7 +37,7 @@ elsif ($fdat->{COLLECTIONIDS}) {
     );
 }
 elsif ($fdat->{SONGIDLIST}) {
-    # Export a specific set of songs
+    #- Export a specific set of songs
     $fdat->{SONGIDLIST} =~ s/\s+/,/g;
     my @unsorted = Flavors::Data::Song::List($dbh, { 
         FILTER => "song.id in ($fdat->{SONGIDLIST})",
@@ -57,12 +57,13 @@ Flavors::Data::Song::UpdateExport($dbh, \%updateexport);
 my $filename = $fdat->{FILENAME};
 $filename =~ s/[^\w \-[\]]+//g;
 #$filename .= " (" . @songs . ")";
-print $cgi->header(-type => 'text/text', -attachment => "$filename.m3u");
+$filename .= ".m3u";
+print $cgi->header(-type => 'text/text', -attachment => $filename);
 
-my $directory;
+my $config;
 foreach my $path (@{ Flavors::Util::Config->{paths} }) {
-    if (!$directory || lc $path->{name} eq lc $fdat->{PATH}) {
-        $directory = $path->{path};
+    if (!$config || $path->{name} eq $fdat->{CONFIG}) {
+        $config = $path
     }
 }
 
@@ -70,8 +71,9 @@ my $os = lc $fdat->{OS};
 if ($os !~ /^(mac|pc)$/) {
     $os = "mac";
 }
+print "# " . $config->{header_prefix} . $filename . $config->{header_suffix} . "\n";
 foreach my $song (@songs) {
-    my $song = "$directory$song->{FILENAME}\n";
+    my $song = $config->{prefix} . $song->{FILENAME} . $config->{suffix} . "\n";
     if ($os eq "pc") {
         $song =~ s/\//\\/g;
     }

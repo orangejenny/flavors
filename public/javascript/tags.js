@@ -52,7 +52,7 @@ jQuery(document).ready(function() {
     jQuery(".export-dropdown a").click(function() {
         var tag = jQuery("#item-detail").data("tag");
         ExportPlaylist({
-            PATH: jQuery(this).text(),
+            CONFIG: jQuery(this).data("name"),
             FILENAME: tag,
             FILTER: "taglist like concat('% ', '" + tag + "', ' %')",
         });

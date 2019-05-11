@@ -37,28 +37,28 @@ foreach my $song (@songs) {
             $songtokenset->{$token} = 1;
         }
     }
-    foreach my $token (keys $songtokenset) {
+    foreach my $token (keys %$songtokenset) {
         if (!$tokens->{$token}) {
             $tokens->{$token} = [];
         }
-        push($tokens->{$token}, $song->{ID});
+        push(@{ $tokens->{$token} }, $song->{ID});
     }
 }
 
 my $letters = {};    # letter => [token1, token2, ... ]
-foreach my $token (keys $tokens) {
+foreach my $token (keys %$tokens) {
     foreach my $letter (split(//, $token)) {
         if (!$letters->{$letter}) {
             $letters->{$letter} = [];
         }
-        push($letters->{$letter}, $token);
+        push(@{ $letters->{$letter} }, $token);
     }
 }
 
 my $starred = {map { $_->{ID} => 1 } grep { $_->{ISSTARRED} } @songs};
 
 my $lettercounts = {};
-foreach my $letter (keys $letters) {
+foreach my $letter (keys %$letters) {
     $lettercounts->{$letter} = scalar(@{ $letters->{$letter} });
 }
 

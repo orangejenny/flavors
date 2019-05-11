@@ -41,7 +41,7 @@ foreach my $song (@songs) {
         if (!$tokens->{$token}) {
             $tokens->{$token} = [];
         }
-        push($tokens->{$token}, $song->{ID});
+        push(@{ $tokens->{$token} }, $song->{ID});
     }
 }
 
@@ -51,7 +51,7 @@ foreach my $token (keys %$tokens) {
         if (!$letters->{$letter}) {
             $letters->{$letter} = [];
         }
-        push($letters->{$letter}, $token);
+        push(@{ $letters->{$letter} }, $token);
     }
 }
 

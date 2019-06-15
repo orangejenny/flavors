@@ -1,6 +1,25 @@
-App to manage user-specific music metadata. Primary use case is to generate playlists (m3u files). Individual pages:
-- Songs: view and edit user-specific data (rating, mood, energy, and tags) for individual songs
-- Collections: view groupings of songs
-- Tags: view information about tag frequency and correlation
-- Categories: Data entry facilitation. Group tags into categories, associate artists with genres, and pick colors (for display on collections page).
-- Lab: generate playlists based on a seed song and a number of other factors 
+Summary
+- Collate official and personal music data
+- Generate playlists tied to local files
+- Visualize personal data
+
+Core workflows: update songs, generate playlists
+- By song or by collection, though songs can be edited and exported from most pages
+- Update ratings, tags, and star
+- Simple and complex playlist generation
+
+Visualizations: playlist inspiration, motivation for data entry
+- Matrix: most frequently used; energy and mood combined
+- Network: interestin way to explore tags
+- Rating: overall and sliced by tag category
+- Time-based visualizations: acquisitions and timeline
+
+Tagging
+- View related tags
+- Categorizing tags, used primarily in visualizations
+
+Data entry
+- Originally populated by import of ID3 tags using AppleScript
+- Web entry for new collections
+- Web entry for genre, tag category
+- Color calibration for collections and songs pages

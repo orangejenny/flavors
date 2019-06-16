@@ -14,6 +14,10 @@ Visualizations: playlist inspiration, motivation for data entry
 - Rating: overall and sliced by tag category
 - Time-based visualizations: acquisitions and timeline
 
+![screenshot of timeline visualization](https://github.com/orangejenny/flavors/blob/master/readme/timeline.png?raw=true)
+
+![screenshot of network visualization](https://github.com/orangejenny/flavors/blob/master/readme/network.png?raw=true)
+
 Tagging
 - View related tags
 - Categorizing tags, used primarily in visualizations

@@ -19,7 +19,6 @@
   "dependencies": {
     "jquery": "^2.2.0",
     "At.js": "jquery.atwho#^1.4.1",
-    "jquery-minicolors": "^2.2.3",
     "jquery-ui": "^1.11.4",
     "d3": "^4.2.1",
     "underscore": "^1.8.3",

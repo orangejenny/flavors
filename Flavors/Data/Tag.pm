@@ -488,53 +488,6 @@ sub UpdateCategory {
 }
 
 ################################################################
-# UpdateColor
-#
-# Description: Update color row
-#
-# Args:
-#    NAME (required)
-#    HEX (optional)
-#    WHITETEXT (optional)
-#
-# Return value: none
-################################################################
-sub UpdateColor {
-    my ($dbh, $args) = @_;
-
-    my @colors = Flavors::Data::Util::Results($dbh, {
-        SQL => qq{ select * from flavors_color where name = ? },
-        BINDS => [$args->{NAME}],
-        COLUMNS => [qw(name, hex, whitetext)],
-    });
-
-    my $sql;
-    my @binds;
-    if (scalar(@colors)) {
-        my @clauses;
-        foreach my $column(qw(HEX WHITETEXT)) {
-            if (exists $args->{$column}) {
-                push(@clauses, "$column = ?");
-                push(@binds, $args->{$column});
-            }
-        }
-        $sql .= "update flavors_color set " . join(", ", @clauses) . ", updated = now() where name = ?";
-    }
-    else {
-        push(@binds, $args->{HEX} || "000000");
-        push(@binds, $args->{WHITETEXT} || 0);
-        $sql .= "insert into flavors_color (hex, whitetext, name, created, updated) values (?, ?, ?, now(), now());";
-    }
-    push (@binds, $args->{NAME});
-
-    Flavors::Data::Util::Results($dbh, {
-        SQL => $sql,
-        BINDS => \@binds,
-        SKIPFETCH => 1,
-    });
-}
-
-################################################################
 # YearStats
 #
 # Description: Get year-based song counts

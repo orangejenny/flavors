@@ -89,7 +89,7 @@ foreach my $collection (@collections) {
     );
 
     my @files = Flavors::Data::Collection::CoverArtFiles($collection->{ID});
-    if (@files) {
+    if (@files && !$collection->{ISMIX}) {
         @files = shuffle(@files);
         printf(qq{
                 <div class="cover-art%s">
@@ -101,14 +101,34 @@ foreach my $collection (@collections) {
     }
     else {
         my $color = $colors{@{ $collection->{COLORS} }[0]};
+        my $acronym = $collection->{NAME};
+        $acronym =~ s/[^\w\s]//g;
+        $acronym = join("", map { substr($_, 0, 1) } split(' ', $acronym));
+        my $acronymsize = "solo";
+        if (length($acronym) >= 8) {
+            $acronymsize = "xsmall";
+        }
+        elsif (length($acronym) >= 5) {
+            $acronymsize = "small";
+        }
+        elsif (length($acronym) == 4) {
+            $acronymsize = "medium";
+        }
+        elsif (length($acronym) == 3) {
+            $acronymsize = "large";
+        }
+        elsif (length($acronym) == 2) {
+            $acronymsize = "xlarge";
+        }
         printf(qq{
                 <div class="cover-art missing" style="%s%s">
-                    %s
+                    <div class="acronym-%s">%s</div>
                 </div>
             },
             $color ? ("background-color: #" . $color->{HEX} . ";") : "",
             $color->{WHITETEXT} ? " color: white; font-weight: bold;" : "",
-            join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..8]),
+            $acronymsize,
+            $acronym,
         );
     }
     printf(qq{

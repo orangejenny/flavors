@@ -38,7 +38,7 @@ jQuery(document).ready(function() {
                     FACET: facet,
                     FILTER: $("textarea[name='filter']").val(),
                     SIMPLEFILTER: $simpleFilter.find("input[type='text']").val(),
-                    STARRED: $simpleFilter.find(".fa-star").length,
+                    STARRED: $simpleFilter.find(".fa-star.fas").length,
                     CATEGORY: category,
                 },
                 SPINNER: selector,

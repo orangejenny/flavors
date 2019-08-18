@@ -22,13 +22,13 @@ Songs can be filtered by simple attributes or by complex query.
 
 ![screenshot of complex filtering](https://github.com/orangejenny/flavors/blob/master/readme/complex_filter.png?raw=true)
 
-Any filtered set ofsongs can then be exported into a playlist, an M3U file based on local filenames. Different devices with different file hierarchies can be configured.
+Any filtered set of songs can then be exported into a playlist, an M3U file based on local filenames. Different devices with different file hierarchies can be configured.
 
 ![screenshot of export actions](https://github.com/orangejenny/flavors/blob/master/readme/export.png?raw=true)
 
 ## Tags
 
-Users can browse tags and related tags.
+The user can browse tags and related tags.
 
 ![screenshot of tags display](https://github.com/orangejenny/flavors/blob/master/readme/tags.png?raw=true)
 
@@ -50,13 +50,7 @@ Visualizations allow exploration of data and the generation of novel playlists.
 
 ![screenshot of matrix visualization](https://github.com/orangejenny/flavors/blob/master/readme/matrix.png?raw=true)
 
-### Ratings: quality, mood, and energy
-
-High-level view
-
-![screenshot of rating visualization](https://github.com/orangejenny/flavors/blob/master/readme/facet_rating.png?raw=true)
-
-Breakdown by tag category
+### Ratings: quality, mood, and energy, at a high level and broken down by tag category
 
 ![screenshot of mood visualization broken down by year tags](https://github.com/orangejenny/flavors/blob/master/readme/facet_mood_years.png?raw=true)
 

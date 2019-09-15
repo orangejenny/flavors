@@ -136,11 +136,10 @@ sub Header {
     }
 
     # Data entry dropdown
-    my @pages = qw(genres.pl colors.pl profiles.pl categories.pl);
+    my @pages = qw(genres.pl profiles.pl categories.pl);
     my %pagetitles = (
         'categories.pl' => 'Tags &rArr; Categories',
         'genres.pl' => 'Artists &rArr; Genres',
-        'colors.pl' => 'Colors',
         'profiles.pl' => 'Profiles',
     );
     printf(qq{ <li class='dropdown %s'> }, (grep { $url eq $_ } @pages) ? "active" : "");

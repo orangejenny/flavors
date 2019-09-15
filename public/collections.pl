@@ -84,14 +84,15 @@ foreach my $collection (@collections) {
         $collection->{ISSTARRED} ? 1 : 0,
     );
 
-    my @files = Flavors::Data::Collection::CoverArtFiles($collection->{ID});
-    if (@files && !$collection->{ISMIX}) {
+    my $image = Flavors::Data::Collection::CoverArtFilename({ ID => $collection->{ID}, EXT => 'png' });
+    if (-e $image) {
         printf(qq{
                 <div class="cover-art">
                     <img src='%s' />
                 </div>
             },
-            $files[0]);
+            $image
+        );
     }
     else {
         my $color = $colors{@{ $collection->{COLORS} }[0]};
@@ -185,7 +186,6 @@ foreach my $collection (@collections) {
                 <div class="tags">%s</div>
             </div>
             </div>
-            <ul class="cover-art-thumbnails clearfix hide">%s</ul>
         },
         Flavors::Util::TrimDate($collection->{CREATED}),
         $exporttext,
@@ -200,7 +200,6 @@ foreach my $collection (@collections) {
         Flavors::HTML::Rating($collection->{MAXMOOD}, 'heart'),
         $collection->{COMPLETION} == 1 ? "&nbsp;" : sprintf("(%s%% complete)", floor($collection->{COMPLETION} * 100)),
         join("", map { "<div>$_</div>" } @{ $collection->{TAGS} }[0..2]),
-        join("", map { sprintf("<li><img src='%s' /><div class='trash'><i class='fas fa-trash'></i></div></li>", $_) } @files),
     );
 
     print "</div>";

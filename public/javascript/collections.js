@@ -90,12 +90,6 @@ jQuery(document).ready(function() {
             SUB: 'Flavors::Data::Collection::TrackList', 
             COLLECTIONIDS: id,
         }, function() {
-            var $modal = $("#song-list");
-            $modal.data("id", id);
-            if ($collection.find(".cover-art.multiple").length) {
-                $modal.find(".modal-body").append($collection.find(".cover-art-thumbnails").clone().removeClass("hide"));
-            }
-
             var $backdrop = $(".modal-backdrop.in"),
                 $image = $backdrop.clone(),
                 $covers = $collection.find("img");
@@ -288,7 +282,6 @@ jQuery(document).ready(function() {
                         $art.append($img);
                         var $li = jQuery("<li></li>");
                         $li.append($img.clone());
-                        $collection.find(".cover-art-thumbnails").append($li);
                     }
                 },
                 UPLOAD: true,

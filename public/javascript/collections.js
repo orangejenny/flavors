@@ -282,13 +282,9 @@ jQuery(document).ready(function() {
                         var $art = $collection.find(".cover-art"),
                             $img = jQuery("<img />");
                         $img.attr("src", data.FILENAME + "?" + (new Date()).getTime());
-                        if ($art.hasClass("missing")) {
-                            $art.removeClass("missing");
-                            $art.css("background-color", "");
-                            $art.html("");
-                        } else {
-                            $art.addClass("multiple");
-                        }
+                        $art.removeClass("missing");
+                        $art.css("background-color", "");
+                        $art.html("");
                         $art.append($img);
                         var $li = jQuery("<li></li>");
                         $li.append($img.clone());

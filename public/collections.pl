@@ -86,14 +86,12 @@ foreach my $collection (@collections) {
 
     my @files = Flavors::Data::Collection::CoverArtFiles($collection->{ID});
     if (@files && !$collection->{ISMIX}) {
-        @files = shuffle(@files);
         printf(qq{
-                <div class="cover-art%s">
-                    %s
+                <div class="cover-art">
+                    <img src='%s' />
                 </div>
             },
-            @files > 1 ? " multiple" : "",
-            join("", map { sprintf("<img src='%s' />", $_) } @files[0 .. (scalar(@files) < 4 ? scalar(@files) - 1 : 4)]));
+            $files[0]);
     }
     else {
         my $color = $colors{@{ $collection->{COLORS} }[0]};

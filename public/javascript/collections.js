@@ -295,30 +295,4 @@ jQuery(document).ready(function() {
             });
         });
     }
-
-    // Remove cover art
-    $(document).on('click', '.cover-art-thumbnails .trash', function() {
-        if (confirm('Remove image?')) {
-            var $li = $(this).closest("li"),
-                src = $li.find("img").attr("src"),
-                id = $("#song-list").data("id");
-            CallRemote({
-                SUB: 'Flavors::Data::Collection::RemoveCoverArt',
-                ARGS: {
-                    id: id,
-                    filename: src,
-                },
-                FINISH: function(data) {
-                    if (data.FILENAME === src) {
-                        $li.remove();
-                        $collection = $(".collection[data-id='" + id + "']");
-                        $collection.find(".cover-art img[src='" + src + "']").remove();
-                        $collection.find(".cover-art-thumbnails img[src='" + src + "']").closest("li").remove();
-                    } else {
-                        alert("Unable to remove image");
-                    }
-                }
-            });
-        }
-    });
 });

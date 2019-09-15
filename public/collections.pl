@@ -72,8 +72,6 @@ foreach my $collection (@collections) {
                 data-artist="%s"
                 data-artist-list="%s"
                 data-starred="%s"
-                data-song-count="%s"
-                data-total="%s"
                 class="collection clearfix"
             >
         },
@@ -84,8 +82,6 @@ foreach my $collection (@collections) {
         lc($collection->{ARTIST}),
         lc($collection->{ARTISTLIST}),
         $collection->{ISSTARRED} ? 1 : 0,
-        $collection->{SONGCOUNT},
-        $collection->{TOTAL},
     );
 
     my @files = Flavors::Data::Collection::CoverArtFiles($collection->{ID});

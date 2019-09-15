@@ -252,7 +252,7 @@ sub List {
     }
 
     $sql .= qq{
-        order by created desc
+        order by collection.songcount / aggregations.total desc, created desc
     };
 
     my @results = Flavors::Data::Util::Results($dbh, {

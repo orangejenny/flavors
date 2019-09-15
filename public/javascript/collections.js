@@ -78,12 +78,6 @@ function filterCollections(force) {
         $container.append(collections);
     }
 
-    // Resize collections to match their song counts
-    $(".collection").each(function(i, c) {
-        var $c = $(c);
-        $c.css("opacity", $c.data("song-count") / $c.data("total"));
-    });
-
     return jQuery(".collections .collection:visible").length;
 }
 

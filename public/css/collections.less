@@ -73,13 +73,19 @@
 
             &.missing {
                 padding: @spacingNarrow;
-                div {
+                .acronym(@size) {
+                    position: relative;
+                    top: calc(~'50% - ' @size / 2);
+                    font-size: @size;
+                    line-height: @size;
                     max-width: @albumSize - 2 * @spacingNarrow;
-                    .ellipsis();
-                    &:not(:last-child) {
-                        margin-bottom: @spacingNarrow;
-                    }
                 }
+                .acronym-solo { .acronym(96px) }
+                .acronym-xlarge { .acronym(80px) }
+                .acronym-large { .acronym(64px) }
+                .acronym-medium { .acronym(48px) }
+                .acronym-small { .acronym(32px) }
+                .acronym-xsmall { .acronym(24px) }
             }
 
             img {

@@ -21,7 +21,7 @@ my @artists = Flavors::Data::Tag::ArtistGenreList($dbh);
 my $categorizeargs = Flavors::Util::Categorize($dbh, {
     ITEMS => \@artists,
 });
-$categorizeargs->{TABLE} = 'flavors_artistgenre';
+$categorizeargs->{TABLE} = 'artistgenre';
 
 print qq{ <div class="post-nav"> };
 

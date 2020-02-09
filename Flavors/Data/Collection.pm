@@ -27,11 +27,11 @@ sub AcquisitionStats {
     });
 
     my $sql = sprintf(qq{
-            select date_format(flavors_collection.created, '%%Y-%%m') datestring, count(distinct flavors_song.id) count
-            from flavors_collection
-            inner join flavors_songcollection on flavors_collection.id = flavors_songcollection.collectionid
-            inner join (%s) flavors_song on flavors_songcollection.songid = flavors_song.id
-            group by date_format(flavors_collection.created, '%%Y-%%m')
+            select date_format(collection.created, '%%Y-%%m') datestring, count(distinct song.id) count
+            from collection
+            inner join songcollection on collection.id = songcollection.collectionid
+            inner join (%s) song on songcollection.songid = song.id
+            group by date_format(collection.created, '%%Y-%%m')
         },
         $songlist->{SQL},
     );
@@ -81,12 +81,12 @@ sub Add {
     # TODO: Everything within a transaction
     # Add collection
     my @ids = Flavors::Data::Util::Results($dbh, {
-        SQL => qq{ select max(id) id from flavors_collection },
+        SQL => qq{ select max(id) id from collection },
         COLUMNS => ['id'],
     });
     my $collectionid = $ids[0]->{ID} + 1;
     my $sql = qq{
-        insert into flavors_collection (id, name, ismix, created, exportcount, updated)
+        insert into collection (id, name, ismix, created, exportcount, updated)
         values (?, ?, ?, now(), 0, now())
     };
     Flavors::Data::Util::Results($dbh, {
@@ -97,14 +97,14 @@ sub Add {
 
     # Add songs
     my @songids = Flavors::Data::Util::Results($dbh, {
-        SQL => qq{ select max(id) id from flavors_song },
+        SQL => qq{ select max(id) id from song },
         COLUMNS => ['id'],
     });
     my $lastid = $songids[0]->{ID} + 1;
     my $firstid = $lastid;
     foreach my $song (@songs) {
         my $sql = qq{
-            insert into flavors_song (id, name, artist, time, ispurchased, filename, created, updated)
+            insert into song (id, name, artist, time, ispurchased, filename, created, updated)
             values (?, ?, ?, ?, 1, concat(?, '/', ?, '.mp3'), now(), now())
         };
         Flavors::Data::Util::Results($dbh, {
@@ -117,9 +117,9 @@ sub Add {
 
     # Add tracks
     my $sql = qq{
-        insert into flavors_songcollection (songid, collectionid, tracknumber, created, updated)
+        insert into songcollection (songid, collectionid, tracknumber, created, updated)
         select id, ?, id - ?, now(), now()
-        from flavors_song
+        from song
         where id >= ? and id <= ?
     };
     Flavors::Data::Util::Results($dbh, {
@@ -186,14 +186,14 @@ sub List {
                 select
                     %s, count(*) songcount
                 from
-                    flavors_collection
-                inner join flavors_songcollection on flavors_collection.id = flavors_songcollection.collectionid
-                inner join (%s) flavors_song on flavors_song.id = flavors_songcollection.songid
+                    collection
+                inner join songcollection on collection.id = songcollection.collectionid
+                inner join (%s) song on song.id = songcollection.songid
                 group by %s
             ) collection
             left join (
                 select
-                    flavors_collection.id as collectionid,
+                    collection.id as collectionid,
                     case 
                         when count(distinct artist) = 1 then max(artist)
                         else 'Various Artists'
@@ -214,28 +214,28 @@ sub List {
                     colors,
                     max(isstarred) as isstarred
                 from
-                    flavors_song, flavors_songcollection, flavors_collection
+                    song, songcollection, collection
                 left join (
                     select
-                        flavors_songcollection.collectionid,
-                        group_concat(distinct flavors_songtag.tag order by rand() separator '%s') as tags,
-                        group_concat(distinct case when category = 'colors' then flavors_songtag.tag else null end order by rand() separator '%s') as colors
-                    from flavors_songcollection, flavors_songtag
-                    left join flavors_tagcategory on flavors_tagcategory.tag = flavors_songtag.tag
-                    where flavors_songcollection.songid = flavors_songtag.songid
-                    group by flavors_songcollection.collectionid
-                ) tags on tags.collectionid = flavors_collection.id
+                        songcollection.collectionid,
+                        group_concat(distinct songtag.tag order by rand() separator '%s') as tags,
+                        group_concat(distinct case when category = 'colors' then songtag.tag else null end order by rand() separator '%s') as colors
+                    from songcollection, songtag
+                    left join tagcategory on tagcategory.tag = songtag.tag
+                    where songcollection.songid = songtag.songid
+                    group by songcollection.collectionid
+                ) tags on tags.collectionid = collection.id
                 where
-                    flavors_collection.id = flavors_songcollection.collectionid
-                    and flavors_songcollection.songid = flavors_song.id
-                group by flavors_collection.id
+                    collection.id = songcollection.collectionid
+                    and songcollection.songid = song.id
+                group by collection.id
             ) aggregations on aggregations.collectionid = collection.id
 
         },
         join(", ", @basecolumns, @aggregationcolumns),
-        join(", ", map { "flavors_collection." . $_ } @basecolumns),
+        join(", ", map { "collection." . $_ } @basecolumns),
         $songlist->{SQL},
-        join(", ", map { "flavors_collection." . $_ } @basecolumns),
+        join(", ", map { "collection." . $_ } @basecolumns),
         $Flavors::Data::Util::SEPARATOR,
         $Flavors::Data::Util::SEPARATOR,
     );
@@ -293,9 +293,9 @@ sub Suggestions {
     push(@clauses, qq{
             exists (
                 select 1
-                from flavors_song, flavors_songcollection
-                where flavors_song.id = flavors_songcollection.songid
-                and flavors_collection.id = flavors_songcollection.collectionid
+                from song, songcollection
+                where song.id = songcollection.songid
+                and collection.id = songcollection.collectionid
                 and song.isstarred = 1
             )
     });
@@ -307,19 +307,19 @@ sub Suggestions {
     push(@clauses, sprintf(qq{
         exists (
             select 1
-            from flavors_song, flavors_songcollection, flavors_songtag
-            where flavors_song.id = flavors_songcollection.songid
-            and flavors_collection.id = flavors_songcollection.collectionid
-            and flavors_songtag.songid = flavors_song.id
-            and flavors_songtag.tag in ('%s')
+            from song, songcollection, songtag
+            where song.id = songcollection.songid
+            and collection.id = songcollection.collectionid
+            and songtag.songid = song.id
+            and songtag.tag in ('%s')
         )
         and exists (
         select 1
-            from flavors_song, flavors_songcollection, flavors_songtag
-            where flavors_song.id = flavors_songcollection.songid
-            and flavors_collection.id = flavors_songcollection.collectionid
-            and flavors_songtag.songid = flavors_song.id
-            and flavors_songtag.tag in ('winter', 'january', 'february', 'march')
+            from song, songcollection, songtag
+            where song.id = songcollection.songid
+            and collection.id = songcollection.collectionid
+            and songtag.songid = song.id
+            and songtag.tag in ('winter', 'january', 'february', 'march')
         )
         },
         $year,
@@ -334,10 +334,10 @@ sub Suggestions {
     while (@clauses && scalar(keys %$collections) < $maxcollections) {
         my $sql = sprintf(qq{
             select 
-                flavors_collection.id,
-                flavors_collection.name
+                collection.id,
+                collection.name
             from
-                flavors_collection
+                collection
             where
                 %s
             order by created desc
@@ -383,34 +383,34 @@ sub TrackList {
 
     my $sql = qq{
         select 
-            flavors_songcollection.collectionid,
-            flavors_song.id, 
-            flavors_song.name, 
-            flavors_song.artist,
-            flavors_songcollection.tracknumber,
-            flavors_song.filename,
-            flavors_song.rating,
-            flavors_song.energy,
-            flavors_song.mood,
-            flavors_song.isstarred,
-            flavors_songtaglist.taglist
+            songcollection.collectionid,
+            song.id, 
+            song.name, 
+            song.artist,
+            songcollection.tracknumber,
+            song.filename,
+            song.rating,
+            song.energy,
+            song.mood,
+            song.isstarred,
+            songtaglist.taglist
         from 
-            flavors_songcollection
-        inner join flavors_song on flavors_song.id = flavors_songcollection.songid
-        left join flavors_songtaglist on flavors_songtaglist.songid = flavors_song.id
+            songcollection
+        inner join song on song.id = songcollection.songid
+        left join songtaglist on songtaglist.songid = song.id
     };
 
     if ($args->{COLLECTIONIDS}) {
         $sql .= qq{
             where 
-                flavors_songcollection.collectionid in ($args->{COLLECTIONIDS})
+                songcollection.collectionid in ($args->{COLLECTIONIDS})
         };
     }
 
     $sql .= qq{
         order by 
-            flavors_songcollection.collectionid,
-            flavors_songcollection.tracknumber
+            songcollection.collectionid,
+            songcollection.tracknumber
     };
 
     my @rows = Flavors::Data::Util::Results($dbh, {

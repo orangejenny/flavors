@@ -21,7 +21,7 @@ my @tags = Flavors::Data::Tag::List($dbh);
 my $categorizeargs = Flavors::Util::Categorize($dbh, {
     ITEMS => \@tags,
 });
-$categorizeargs->{TABLE} = 'flavors_tagcategory';
+$categorizeargs->{TABLE} = 'tagcategory';
 
 print qq{ <div class="post-nav"> };
 

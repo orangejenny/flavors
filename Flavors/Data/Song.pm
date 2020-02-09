@@ -18,7 +18,7 @@ use Flavors::Data::Util;
 sub Count {
     my ($dbh, $args) = @_;
 
-    my $sql = "select count(*) from flavors_song";
+    my $sql = "select count(*) from song";
 
     $args->{FILTER} = Flavors::Util::Sanitize($args->{FILTER});
     if ($args->{FILTER}) {
@@ -62,60 +62,60 @@ sub List {
     my $sql = sprintf(qq{
         select distinct
             %s,
-            flavors_artistgenre.genre,
-            flavors_songlyrics.lyrics,
-            case when flavors_songlyrics.lyrics is null then 0 else 1 end as haslyrics,
-            concat(' ', flavors_songtaglist.taglist, ' ') as taglist,
-            group_concat(flavors_collection.name order by flavors_collection.created separator '%s') as collections,
-            coalesce(flavors_songtaglist.tagcount, 0) as tagcount,
+            artistgenre.genre,
+            songlyrics.lyrics,
+            case when songlyrics.lyrics is null then 0 else 1 end as haslyrics,
+            concat(' ', songtaglist.taglist, ' ') as taglist,
+            group_concat(collection.name order by collection.created separator '%s') as collections,
+            coalesce(songtaglist.tagcount, 0) as tagcount,
             years.minyear,
             years.maxyear,
-            min(flavors_collection.created) as mincollectioncreated,
-            max(flavors_collection.created) as maxcollectioncreated,
+            min(collection.created) as mincollectioncreated,
+            max(collection.created) as maxcollectioncreated,
             tracks.tracknumber,
-            flavors_song.exportcount,
-            flavors_song.lastexport
+            song.exportcount,
+            song.lastexport
         from 
-            flavors_song
-        left join flavors_songcollection on flavors_song.id = flavors_songcollection.songid
-        left join flavors_collection on flavors_songcollection.collectionid = flavors_collection.id
-        left join flavors_songtaglist on flavors_song.id = flavors_songtaglist.songid
-        left join flavors_artistgenre on flavors_artistgenre.artist = flavors_song.artist
-        left join flavors_songlyrics on flavors_songlyrics.songid = flavors_song.id
+            song
+        left join songcollection on song.id = songcollection.songid
+        left join collection on songcollection.collectionid = collection.id
+        left join songtaglist on song.id = songtaglist.songid
+        left join artistgenre on artistgenre.artist = song.artist
+        left join songlyrics on songlyrics.songid = song.id
         left join (
             select
-                flavors_songtag.songid,
-                min(flavors_songtag.tag) minyear,
-                max(flavors_songtag.tag) maxyear
+                songtag.songid,
+                min(songtag.tag) minyear,
+                max(songtag.tag) maxyear
             from
-                flavors_songtag,
-                flavors_tagcategory
+                songtag,
+                tagcategory
             where
-                flavors_songtag.tag = flavors_tagcategory.tag
-                and flavors_tagcategory.category = 'years'
+                songtag.tag = tagcategory.tag
+                and tagcategory.category = 'years'
             group by
-                flavors_songtag.songid
-        ) years on years.songid = flavors_song.id
+                songtag.songid
+        ) years on years.songid = song.id
         left join (
             select songid, tracknumber 
-            from flavors_songcollection outersongcollection, flavors_collection 
-            where outersongcollection.collectionid = flavors_collection.id 
-            and flavors_collection.created = (
-                select max(flavors_collection.created) 
-                from flavors_collection, flavors_songcollection innersongcollection 
+            from songcollection outersongcollection, collection 
+            where outersongcollection.collectionid = collection.id 
+            and collection.created = (
+                select max(collection.created) 
+                from collection, songcollection innersongcollection 
                 where innersongcollection.songid = outersongcollection.songid
-                and flavors_collection.id = collectionid
+                and collection.id = collectionid
             )
-        ) tracks on tracks.songid = flavors_song.id
-    }, join(", ", map { "flavors_song." . $_ } @songcolumns), $Flavors::Data::Util::SEPARATOR);
+        ) tracks on tracks.songid = song.id
+    }, join(", ", map { "song." . $_ } @songcolumns), $Flavors::Data::Util::SEPARATOR);
 
     if ($args->{ID}) {
-        $sql .= " where flavors_song.id = $args->{ID}";
+        $sql .= " where song.id = $args->{ID}";
     }
 
-    $sql .= " group by flavors_song.id ";
+    $sql .= " group by song.id ";
 
-    $sql = "select * from ($sql) flavors_song where 1 = 1";
+    $sql = "select * from ($sql) song where 1 = 1";
     my @binds;
     if ($args->{SIMPLEFILTER}) {
         my @tokens = grep { $_ } split(/\s+/, $args->{SIMPLEFILTER});
@@ -127,10 +127,10 @@ sub List {
                     or artist like concat('%', ?, '%')
                     or taglist like concat('%', ?, '%')
                     or exists (
-                        select 1 from flavors_collection, flavors_songcollection
-                        where flavors_collection.id = flavors_songcollection.collectionid
-                        and flavors_song.id = flavors_songcollection.songid
-                        and concat(' ', flavors_collection.name, ' ') like concat(' %', ?, '% ')
+                        select 1 from collection, songcollection
+                        where collection.id = songcollection.collectionid
+                        and song.id = songcollection.songid
+                        and concat(' ', collection.name, ' ') like concat(' %', ?, '% ')
                     )
                 )
             };
@@ -265,7 +265,7 @@ sub Stats {
                 %s, 
                 count(*)
             from
-                (%s) flavors_song
+                (%s) song
             where 1 = 1
             group by %s
             order by %s;
@@ -339,7 +339,7 @@ sub Update {
     if (@updates) {
         my $sql = sprintf(qq{
             update
-                flavors_song
+                song
             set
                 %s, updated = now()
             where
@@ -355,8 +355,8 @@ sub Update {
     # genre
     if (exists $newsong->{GENRE} && $newsong->{GENRE} ne $oldsong->{GENRE}) {
         my $sql = $oldsong->{GENRE}
-            ? "update flavors_artistgenre set genre = ?, updated = now() where artist = ?"
-            : "insert into flavors_artistgenre (genre, artist, created) values (?, ?, now())"
+            ? "update artistgenre set genre = ?, updated = now() where artist = ?"
+            : "insert into artistgenre (genre, artist, created) values (?, ?, now())"
         ;
         Flavors::Data::Util::Results($dbh, {
             SQL => $sql,
@@ -368,7 +368,7 @@ sub Update {
     # tag table
     if (exists $newsong->{TAGS}) {
         my @oldtags = Flavors::Data::Util::Results($dbh, {
-            SQL => qq{ select tag from flavors_songtag where songid = $id },
+            SQL => qq{ select tag from songtag where songid = $id },
             COLUMNS => [qw(tag)],
         });
         @oldtags = map { $_->{TAG} } @oldtags;
@@ -379,7 +379,7 @@ sub Update {
         foreach my $tag (@tagstoadd) {
             Flavors::Data::Util::Results($dbh, {
                 SQL => qq{
-                    insert into flavors_songtag (songid, tag, created, updated) values (?, ?, now(), now())
+                    insert into songtag (songid, tag, created, updated) values (?, ?, now(), now())
                 },
                 BINDS => [$id, $tag],
                 SKIPFETCH => 1,
@@ -389,7 +389,7 @@ sub Update {
         if (@tagstoremove) {
             Flavors::Data::Util::Results($dbh, {
                 SQL => sprintf(qq{
-                    delete from flavors_songtag where songid = ? and tag in (%s)
+                    delete from songtag where songid = ? and tag in (%s)
                 }, join(", ", map { '?' } @tagstoremove)),
                 BINDS => [$id, @tagstoremove],
                 SKIPFETCH => 1,
@@ -416,7 +416,7 @@ sub UpdateExport {
 
     if ($args->{SONGIDS}) {
         my $sql = sprintf(qq{
-            update flavors_song
+            update song
             set
                 lastexport = now(),
                 exportcount = exportcount + 1,
@@ -432,7 +432,7 @@ sub UpdateExport {
 
     if ($args->{COLLECTIONIDS}) {
         my $sql = sprintf(qq{
-            update flavors_collection
+            update collection
             set
                 lastexport = now(),
                 exportcount = exportcount + 1,
@@ -463,7 +463,7 @@ sub Lyrics {
     my ($dbh, $args) = @_;
 
     my @rows = Flavors::Data::Util::Results($dbh, {
-        SQL => "select lyrics from flavors_songlyrics where songid = ?",
+        SQL => "select lyrics from songlyrics where songid = ?",
         BINDS => [$args->{ID}],
         COLUMNS => ['LYRICS'],
     });
@@ -486,15 +486,15 @@ sub UpdateLyrics {
     $args->{LYRICS} = Flavors::Util::Sanitize($args->{LYRICS});
 
     my @rows  = Flavors::Data::Util::Results($dbh, {
-        SQL => "select count(*) as count from flavors_songlyrics where songid = ?",
+        SQL => "select count(*) as count from songlyrics where songid = ?",
         BINDS => [$args->{ID}],
         COLUMNS => ['COUNT'],
     });
     my $count = $rows[0]->{COUNT};
 
     my $sql = $count
-        ? "update flavors_songlyrics set lyrics = ? where songid = ?"
-        : "insert into flavors_songlyrics (lyrics, songid) values (?, ?)"
+        ? "update songlyrics set lyrics = ? where songid = ?"
+        : "insert into songlyrics (lyrics, songid) values (?, ?)"
     ;
 
     Flavors::Data::Util::Results($dbh, {

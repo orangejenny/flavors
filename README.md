@@ -1,3 +1,5 @@
+This repository has been superseded by [Rhyme](https://github.com/orangejenny/dj-orange/#rhyme)
+
 # Flavors
 
 Flavors is a web app to manage a user's music collection and generate highly individualized playlists, combining standard metadata with a user's individual ratings and tagging.
